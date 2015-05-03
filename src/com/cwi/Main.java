@@ -2,7 +2,6 @@ package com.cwi;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 
 interface Point {
@@ -15,14 +14,6 @@ class BasicRecordInvocationHandler implements InvocationHandler {
         
         if (method.getName().equals("x")) {
             System.out.println("X!");
-
-            Parameter[] params = method.getParameters();
-            for (Parameter param : params) {
-                System.out.println(param.getName());
-            }
-
-//            Field field = paramTypes[0].getField("x");
-//            System.out.println(field.get(proxy));
         }
         
         if (method.getName().equals("y")) {
