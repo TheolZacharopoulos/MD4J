@@ -1,4 +1,4 @@
-package com.cwi;
+package com.cwi.examples;
 
 import java.lang.reflect.*;
 
@@ -12,7 +12,7 @@ public class ReflectionExamples {
             InvocationTargetException,
             NoSuchFieldException
     {
-        Class cPersonByName = Class.forName("com.cwi.Person");
+        Class cPersonByName = Class.forName("com.cwi.examples.Person");
 
         Class cPersonClass = Person.class;
         String PersonName = Person.class.getName();
@@ -90,7 +90,7 @@ public class ReflectionExamples {
         
         // Class loader ---
         ClassLoader classLoader = Person.class.getClassLoader();
-        Class cPerson = classLoader.loadClass("com.cwi.Person");
+        Class cPerson = classLoader.loadClass("com.cwi.examples.Person");
         Constructor cP = cPerson.getConstructor();
         Person p2 = (Person) cP.newInstance();
         System.out.println(p2.getName());

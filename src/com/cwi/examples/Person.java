@@ -1,4 +1,4 @@
-package com.cwi;
+package com.cwi.examples;
 
 public class Person {
 
