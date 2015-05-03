@@ -1,4 +1,4 @@
-package com.cwi.managed_data.data_manager;
+package com.cwi.managed_data.data_managers;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class BasicRecordProxy implements InvocationHandler {
 
-    private Map<String, Class> types = new HashMap<String, Class>();
-    private Map<String, Object> values = new HashMap<String, Object>();
+    protected Map<String, Class> types = new HashMap<String, Class>();
+    protected Map<String, Object> values = new HashMap<String, Object>();
 
     public static Object newInstance(Class _schema) {
         return Proxy.newProxyInstance(
@@ -18,7 +18,7 @@ public class BasicRecordProxy implements InvocationHandler {
                 new BasicRecordProxy(_schema));
     }
 
-    private BasicRecordProxy(Class _schema) {
+    protected BasicRecordProxy(Class _schema) {
 
         // Initialize types.
         for (Method schemaType : _schema.getMethods()) {
@@ -41,11 +41,11 @@ public class BasicRecordProxy implements InvocationHandler {
         }
     }
 
-    private void set(String _name, Object _value) {
+    protected void set(String _name, Object _value) {
         values.put(_name, _value);
     }
 
-    private Object get(String _name) {
+    protected Object get(String _name) {
         return values.get(_name);
     }
 
