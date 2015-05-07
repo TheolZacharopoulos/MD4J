@@ -17,7 +17,7 @@ public class Main {
 
         // Init & lockable.
         Point initPoint = (Point) InitRecordProxy.newInstance(
-                Point.class, new HashMap<String, Object>(){
+                Point.class, new HashMap<String, Object>(){ // TODO: Map as argument looks ugly.
                     { put("x", 8);
                       put("y", 66);
                     }

@@ -28,7 +28,7 @@ public class BasicRecordProxy implements InvocationHandler {
         // Initialize values.
         for (String name : types.keySet()) {
 
-            // TODO: Omit this because Java does the checking already (interface)???
+            // TODO: Better way to do this?
             if (types.get(name) == Integer.class) {
                 values.put(name, 0);
             } else if (types.get(name) == String.class) {
@@ -59,7 +59,7 @@ public class BasicRecordProxy implements InvocationHandler {
         String methodName = method.getName();
         boolean isAssignment = false;
 
-        // TODO: Think of it, find a better strategy to decide if it is assignment.
+        // TODO: Find a better strategy to decide if it is an assignment.
         // If there is an argument then is considered as assignment.
         if (proxyMethodVarArgs.length > 0) {
             isAssignment = true;
@@ -68,13 +68,11 @@ public class BasicRecordProxy implements InvocationHandler {
         // If is assignment
         if (isAssignment) {
 
-            // TODO: Omit this because Java does the checking already (interface)???
             // If there is no such type.
             if (!types.containsKey(methodName)) {
                 throw new NoSuchFieldError();
             }
 
-            // TODO: Omit this because Java does the checking already (interface)???
             // If the argument is of the right type.
             if (proxyMethodVarArgs[0].getClass() != values.get(methodName).getClass()) {
                 throw new IllegalArgumentException();
