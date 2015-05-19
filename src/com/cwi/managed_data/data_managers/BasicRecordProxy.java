@@ -19,25 +19,26 @@ public class BasicRecordProxy implements InvocationHandler {
     }
 
     protected BasicRecordProxy(Class _schema) {
-
-        // Initialize types.
-        for (Method schemaType : _schema.getMethods()) {
-            types.put(schemaType.getName(), schemaType.getReturnType());
+        for (Method typeInSchema : _schema.getMethods()) {
+            saveType(typeInSchema.getName(), typeInSchema.getReturnType());
+            initializeValue(typeInSchema.getName(), typeInSchema.getReturnType());
         }
-
-        // Initialize values.
-        for (String name : types.keySet()) {
-
-            // TODO: Better way to do this?
-            if (types.get(name) == Integer.class) {
-                values.put(name, 0);
-            } else if (types.get(name) == String.class) {
-                values.put(name, "");
-            } else if (types.get(name) == Double.class) {
-                values.put(name, 0.0);
-            } else if (types.get(name) == Object.class) {
-                values.put(name, new Object());
-            }
+    }
+    
+    private void saveType(String _name, Class _type) {
+        types.put(_name, _type);
+    }
+    
+    private void initializeValue(String _name, Class _type) {
+        // TODO: Better way to do this?
+        if (_type == Integer.class) {
+            values.put(_name, 0);
+        } else if (_type == String.class) {
+            values.put(_name, "");
+        } else if (_type == Double.class) {
+            values.put(_name, 0.0);
+        } else {
+            values.put(_name, new Object());
         }
     }
 
@@ -55,13 +56,13 @@ public class BasicRecordProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable
     {
-        Object [] proxyMethodVarArgs = (Object []) args[0];
+        Object [] methodArgs = (Object []) args[0];
         String methodName = method.getName();
         boolean isAssignment = false;
 
         // TODO: Find a better strategy to decide if it is an assignment.
         // If there is an argument then is considered as assignment.
-        if (proxyMethodVarArgs.length > 0) {
+        if (methodArgs.length > 0) {
             isAssignment = true;
         }
 
@@ -74,11 +75,11 @@ public class BasicRecordProxy implements InvocationHandler {
             }
 
             // If the argument is of the right type.
-            if (proxyMethodVarArgs[0].getClass() != values.get(methodName).getClass()) {
+            if (methodArgs[0].getClass() != values.get(methodName).getClass()) {
                 throw new IllegalArgumentException();
             }
 
-            set(methodName, proxyMethodVarArgs[0]);
+            set(methodName, methodArgs[0]);
 
         } else { // If is not assignment, return the value.
             return get(methodName);
