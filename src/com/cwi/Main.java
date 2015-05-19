@@ -1,17 +1,23 @@
 package com.cwi;
 
-import com.cwi.managed_data.data_managers.BasicRecordProxy;
-import com.cwi.managed_data.data_managers.InitRecordProxy;
+import com.cwi.managed_data.PointLogger;
+import com.cwi.managed_data.data_managers.BasicRecord;
+import com.cwi.managed_data.data_managers.InitRecord;
+import com.cwi.managed_data.data_managers.ObserverRecord;
 import com.cwi.managed_data.schemas.Point;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    throws Throwable {
+        
         // Base
         System.out.println("Base point: ");
-        Point basicPoint = (Point) BasicRecordProxy.newInstance(Point.class);
+        Point basicPoint = (Point) BasicRecord.newInstance(Point.class);
         basicPoint.x(3);
         basicPoint.y(-10);
         System.out.println("\t" + basicPoint.x() + " " + basicPoint.y());
@@ -19,7 +25,7 @@ public class Main {
         // Wrong Type
         System.out.println("\nTrying to set wrong type: ");
         try {
-            Point initPointWrongType = (Point) InitRecordProxy.newInstance(
+            Point initPointWrongType = (Point) InitRecord.newInstance(
                     Point.class, new HashMap<String, Object>(){ // TODO: Map as argument looks ugly.
                         {   put("x", "test");
                             put("y", 66);
@@ -31,11 +37,13 @@ public class Main {
         }
 
         System.out.println("\nInit & immutable: ");
+
         // Init & lockable.
-        Point initPoint = (Point) InitRecordProxy.newInstance(
-                Point.class, new HashMap<String, Object>(){ // TODO: Map as argument looks ugly.
-                    { put("x", 6);
-                      put("y", 66);
+        Point initPoint = (Point) InitRecord.newInstance(
+                Point.class, new HashMap<String, Object>() { // TODO: Map as argument looks ugly.
+                    {
+                        put("x", 6);
+                        put("y", 66);
                     }
                 });
         System.out.println("\t" + initPoint.x() + " " + initPoint.y() + "\n");
@@ -46,5 +54,21 @@ public class Main {
         } catch (IllegalAccessError e) {
             System.out.println("\t" + e.getMessage());
         }
+        
+        // Observer
+        System.out.println("\n Observer Pattern: ");
+        Point obsPoint = (Point) 
+                ObserverRecord.newInstance(Point.class);
+
+        ObserverRecord obsPointInvHandler =
+                (ObserverRecord) Proxy.getInvocationHandler(obsPoint);
+        
+        Method log = PointLogger.class.getMethod("log", new Class<?>[] {String.class, Object.class});
+        
+        obsPointInvHandler.observe(log);
+        
+        obsPoint.x(1);
+        obsPoint.y(6);
+        obsPoint.x(obsPoint.x() + obsPoint.y());
     }
 }

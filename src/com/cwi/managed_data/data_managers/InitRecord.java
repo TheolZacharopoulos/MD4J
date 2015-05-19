@@ -3,16 +3,16 @@ package com.cwi.managed_data.data_managers;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-public class InitRecordProxy extends LockableRecordProxy {
+public class InitRecord extends LockableRecord {
 
     public static Object newInstance(Class _schema, Map<String, Object> _values) {
         return Proxy.newProxyInstance(
                 _schema.getClassLoader(),
                 new Class<?>[]{_schema},
-                new InitRecordProxy(_schema, _values));
+                new InitRecord(_schema, _values));
     }
 
-    private InitRecordProxy(Class _schema, Map<String, Object> _values) {
+    private InitRecord(Class _schema, Map<String, Object> _values) {
         super(_schema);
         for (String initValueName : _values.keySet()) {
             for (String existingValueName : values.keySet()) {

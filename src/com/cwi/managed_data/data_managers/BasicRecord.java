@@ -6,7 +6,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasicRecordProxy implements InvocationHandler {
+public class BasicRecord implements InvocationHandler {
 
     protected Map<String, Class> types = new HashMap<String, Class>();
     protected Map<String, Object> values = new HashMap<String, Object>();
@@ -15,10 +15,10 @@ public class BasicRecordProxy implements InvocationHandler {
         return Proxy.newProxyInstance(
                 _schema.getClassLoader(),
                 new Class<?>[]{_schema},
-                new BasicRecordProxy(_schema));
+                new BasicRecord(_schema));
     }
 
-    protected BasicRecordProxy(Class _schema) {
+    protected BasicRecord(Class _schema) {
         for (Method typeInSchema : _schema.getMethods()) {
             saveType(typeInSchema.getName(), typeInSchema.getReturnType());
             initializeValue(typeInSchema.getName(), typeInSchema.getReturnType());
