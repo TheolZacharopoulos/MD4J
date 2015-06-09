@@ -26,8 +26,8 @@ public class ObserverRecord extends BasicRecord {
     }
 
     @Override
-    protected void set(String _name, Object _value) {
-        super.set(_name, _value);
+    protected void _set(String _name, Object _value) {
+        super._set(_name, _value);
         for (Method observer : observers) {
             try {
                 observer.invoke(this, _name, _value);

@@ -12,8 +12,7 @@ import java.util.HashMap;
 
 public class Main {
 
-    public static void main(String[] args) 
-    throws Throwable {
+    public static void main(String[] args) throws Throwable {
         
         // Base
         System.out.println("Base point: ");
@@ -23,7 +22,7 @@ public class Main {
         System.out.println("\t" + basicPoint.x() + " " + basicPoint.y());
 
         // Wrong Type
-        System.out.println("\nTrying to set wrong type: ");
+        System.out.println("\nTrying to _set wrong type: ");
         try {
             Point initPointWrongType = (Point) InitRecord.newInstance(
                     Point.class, new HashMap<String, Object>(){ // TODO: Map as argument looks ugly.
@@ -54,19 +53,19 @@ public class Main {
         } catch (IllegalAccessError e) {
             System.out.println("\t" + e.getMessage());
         }
-        
+
         // Observer
         System.out.println("\n Observer Pattern: ");
-        Point obsPoint = (Point) 
+        Point obsPoint = (Point)
                 ObserverRecord.newInstance(Point.class);
 
         ObserverRecord obsPointInvHandler =
                 (ObserverRecord) Proxy.getInvocationHandler(obsPoint);
-        
+
         Method log = PointLogger.class.getMethod("log", new Class<?>[] {String.class, Object.class});
-        
+
         obsPointInvHandler.observe(log);
-        
+
         obsPoint.x(1);
         obsPoint.y(6);
         obsPoint.x(obsPoint.x() + obsPoint.y());

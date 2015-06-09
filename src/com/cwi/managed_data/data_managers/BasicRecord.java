@@ -19,9 +19,9 @@ public class BasicRecord implements InvocationHandler {
     }
 
     protected BasicRecord(Class _schema) {
-        for (Method typeInSchema : _schema.getMethods()) {
-            saveType(typeInSchema.getName(), typeInSchema.getReturnType());
-            initializeValue(typeInSchema.getName(), typeInSchema.getReturnType());
+        for (Method field : _schema.getMethods()) {
+            saveType(field.getName(), field.getReturnType());
+            defaultValue(field.getName(), field.getReturnType());
         }
     }
     
@@ -29,7 +29,7 @@ public class BasicRecord implements InvocationHandler {
         types.put(_name, _type);
     }
     
-    private void initializeValue(String _name, Class _type) {
+    private void defaultValue(String _name, Class _type) {
         // TODO: Better way to do this?
         if (_type == Integer.class) {
             values.put(_name, 0);
@@ -38,15 +38,15 @@ public class BasicRecord implements InvocationHandler {
         } else if (_type == Double.class) {
             values.put(_name, 0.0);
         } else {
-            values.put(_name, new Object());
+            values.put(_name, null);
         }
     }
 
-    protected void set(String _name, Object _value) {
+    protected void _set(String _name, Object _value) {
         values.put(_name, _value);
     }
 
-    protected Object get(String _name) {
+    protected Object _get(String _name) {
         return values.get(_name);
     }
 
@@ -56,13 +56,14 @@ public class BasicRecord implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable
     {
-        Object [] methodArgs = (Object []) args[0];
-        String methodName = method.getName();
+        Object [] fieldArgs = (Object []) args[0]; // because is varargs
+
+        String fieldName = method.getName();
         boolean isAssignment = false;
 
         // TODO: Find a better strategy to decide if it is an assignment.
         // If there is an argument then is considered as assignment.
-        if (methodArgs.length > 0) {
+        if (fieldArgs.length > 0) {
             isAssignment = true;
         }
 
@@ -70,19 +71,19 @@ public class BasicRecord implements InvocationHandler {
         if (isAssignment) {
 
             // If there is no such type.
-            if (!types.containsKey(methodName)) {
+            if (!types.containsKey(fieldName)) {
                 throw new NoSuchFieldError();
             }
 
             // If the argument is of the right type.
-            if (methodArgs[0].getClass() != values.get(methodName).getClass()) {
+            if (fieldArgs[0].getClass() != values.get(fieldName).getClass()) {
                 throw new IllegalArgumentException();
             }
 
-            set(methodName, methodArgs[0]);
+            _set(fieldName, fieldArgs[0]);
 
         } else { // If is not assignment, return the value.
-            return get(methodName);
+            return _get(fieldName);
         }
 
         return null;

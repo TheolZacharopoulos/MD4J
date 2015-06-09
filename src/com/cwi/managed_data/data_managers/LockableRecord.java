@@ -22,10 +22,10 @@ public class LockableRecord extends BasicRecord {
     }
 
     @Override
-    protected void set(String _name, Object _value) {
+    protected void _set(String _name, Object _value) {
         if (isLocked) {
           throw new IllegalAccessError("Cannot change " + _name + " of locked object");
         }
-        super.set(_name, _value);
+        super._set(_name, _value);
     }
 }

@@ -17,7 +17,7 @@ public class InitRecord extends LockableRecord {
         for (String initValueName : _values.keySet()) {
             for (String existingValueName : values.keySet()) {
                 if (initValueName.equals(existingValueName)) {
-                    set(existingValueName, _values.get(initValueName));
+                    _set(existingValueName, _values.get(initValueName));
                 }
             }
         }
