@@ -1,19 +1,10 @@
 package com.cwi.managed_data.data_managers;
 
-import java.lang.reflect.Proxy;
-
 public class LockableRecord extends BasicRecord {
 
     private boolean isLocked = false;
 
-    public static Object newInstance(Class _schema) {
-        return Proxy.newProxyInstance(
-                _schema.getClassLoader(),
-                new Class<?>[]{_schema},
-                new LockableRecord(_schema));
-    }
-
-    protected LockableRecord(Class _schema) {
+    public LockableRecord(Class _schema) {
         super(_schema);
     }
 

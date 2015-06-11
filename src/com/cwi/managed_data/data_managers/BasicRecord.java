@@ -1,24 +1,15 @@
 package com.cwi.managed_data.data_managers;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasicRecord implements InvocationHandler {
+public class BasicRecord implements DataManager {
 
     protected Map<String, Class> types = new HashMap<String, Class>();
     protected Map<String, Object> values = new HashMap<String, Object>();
 
-    public static Object newInstance(Class _schema) {
-        return Proxy.newProxyInstance(
-                _schema.getClassLoader(),
-                new Class<?>[]{_schema},
-                new BasicRecord(_schema));
-    }
-
-    protected BasicRecord(Class _schema) {
+    public BasicRecord(Class _schema) {
         for (Method field : _schema.getMethods()) {
             saveType(field.getName(), field.getReturnType());
             defaultValue(field.getName(), field.getReturnType());
@@ -70,7 +61,7 @@ public class BasicRecord implements InvocationHandler {
         // If is assignment
         if (isAssignment) {
 
-            // If there is no such type.
+            // If there is no such filed.
             if (!types.containsKey(fieldName)) {
                 throw new NoSuchFieldError();
             }

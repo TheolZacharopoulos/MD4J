@@ -1,22 +1,14 @@
 package com.cwi.managed_data.data_managers;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ObserverRecord extends BasicRecord {
     
     private List<Method> observers;
-    
-    public static Object newInstance(Class _schema) {
-        return Proxy.newProxyInstance(
-                _schema.getClassLoader(),
-                new Class<?>[]{_schema},
-                new ObserverRecord(_schema));
-    }
 
-    protected ObserverRecord(Class _schema) {
+    public ObserverRecord(Class _schema) {
         super(_schema);
         observers = new ArrayList<Method>();
     }
