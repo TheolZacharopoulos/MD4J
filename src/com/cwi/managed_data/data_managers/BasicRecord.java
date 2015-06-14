@@ -8,8 +8,11 @@ public class BasicRecord implements DataManager {
 
     protected Map<String, Class> types = new HashMap<String, Class>();
     protected Map<String, Object> values = new HashMap<String, Object>();
+    protected final Class schema;
 
     public BasicRecord(Class _schema) {
+        this.schema = _schema;
+
         for (Method field : _schema.getMethods()) {
             saveType(field.getName(), field.getReturnType());
             defaultValue(field.getName(), field.getReturnType());

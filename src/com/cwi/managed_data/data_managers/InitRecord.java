@@ -1,12 +1,13 @@
 package com.cwi.managed_data.data_managers;
 
-import java.util.Map;
+import java.util.HashMap;
 
 public class InitRecord extends LockableRecord {
 
-    public InitRecord(Class _schema, Map<String, Object> _values) {
+    public InitRecord(Class _schema, HashMap<String, Object> _values) {
         super(_schema);
 
+        // initialize
         for (String initValueName : _values.keySet()) {
             for (String existingValueName : values.keySet()) {
                 if (initValueName.equals(existingValueName)) {
@@ -15,6 +16,7 @@ public class InitRecord extends LockableRecord {
             }
         }
 
+        // lock, not changes on the values allowed after that, Immutable.
         lock();
     }
 }
