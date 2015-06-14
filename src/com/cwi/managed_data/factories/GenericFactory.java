@@ -12,15 +12,15 @@ public class GenericFactory implements InvocationHandler {
 
     /**
      * Creates a new Factory instance.
-     * @param _factory which factory
+     * @param _factoryClass which factory
      * @param _dataManagerClass with which dataManager
      * @return a new factory instance.
      */
-    public static <T> T newFactory(Class _factory, Class _dataManagerClass) {
+    public static <T> T newFactory(Class _factoryClass, Class _dataManagerClass) {
         return (T) Proxy.newProxyInstance(
-                        _factory.getClassLoader(),
-                        new Class<?>[]{_factory},
-                        new GenericFactory(_dataManagerClass));
+                _factoryClass.getClassLoader(),
+                new Class<?>[]{_factoryClass},
+                new GenericFactory(_dataManagerClass));
     }
 
     protected GenericFactory(Class _dataManagerClass) {
