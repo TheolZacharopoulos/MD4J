@@ -1,4 +1,4 @@
-package com.cwi.managed_data;
+package com.cwi.managed_data.cross_cutting_concerns;
 
 public class PointLogger {
     static public void log(String name, Object _value) {

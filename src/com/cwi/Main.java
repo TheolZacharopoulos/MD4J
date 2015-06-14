@@ -1,6 +1,6 @@
 package com.cwi;
 
-import com.cwi.managed_data.PointLogger;
+import com.cwi.managed_data.cross_cutting_concerns.PointLogger;
 import com.cwi.managed_data.data_managers.BasicRecord;
 import com.cwi.managed_data.data_managers.InitRecord;
 import com.cwi.managed_data.data_managers.ObserverRecord;
