@@ -1,10 +1,10 @@
-package com.cwi.managed_data.data_managers;
+package com.cwi.managed_data.managed_objects;
 
 import java.util.HashMap;
 
-public class InitRecord extends LockableRecord {
+public class InitManagedObject extends LockableManagedObject {
 
-    public InitRecord(Class _schema, HashMap<String, Object> _values) {
+    public InitManagedObject(Class _schema, HashMap<String, Object> _values) {
         super(_schema);
 
         // initialize

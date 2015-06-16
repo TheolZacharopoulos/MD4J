@@ -1,16 +1,17 @@
-package com.cwi.managed_data.data_managers;
+package com.cwi.managed_data.managed_objects;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BasicRecord implements DataManager {
+public class ManagedObject implements InvocationHandler {
 
     protected Map<String, Class> types = new HashMap<String, Class>();
     protected Map<String, Object> values = new HashMap<String, Object>();
     protected final Class schema;
 
-    public BasicRecord(Class _schema) {
+    public ManagedObject(Class _schema) {
         this.schema = _schema;
 
         for (Method field : _schema.getMethods()) {

@@ -1,6 +1,4 @@
-package com.cwi.managed_data.factories;
-
-import com.cwi.managed_data.schemas.Point;
+package com.cwi.managed_data.schemas.user_defined;
 
 public interface PointFactory {
     Point point();
