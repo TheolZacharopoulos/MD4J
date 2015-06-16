@@ -6,7 +6,7 @@ import com.cwi.managed_data.roles.Observe;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObservableManagedObject extends LockableManagedObject implements Observable {
+public class ObservableManagedObject extends ManagedObject implements Observable {
 
     private List<Observe> observers;
 
