@@ -47,7 +47,8 @@ public class Main {
         // Create a new observer-record managed object.
         Point observerPoint = observerPointFactory.point();
 
-//        observerPoint.observe((name, value) -> System.out.println("\t Updated " + name + " to " + value));
+        // TODO: cannot do this now because this is a point not an Observable object.
+        // observerPoint.observe((name, value) -> System.out.println("\t Updated " + name + " to " + value));
 
         observerPoint.x(1);
         observerPoint.y(6);
