@@ -23,24 +23,30 @@ public class Main {
         Point basicPoint = basicPointFactory.point();
         basicPoint.x(3);
         basicPoint.y(7);
-        System.out.print(basicPoint.x() + basicPoint.y());
+        System.out.println("\t " + (basicPoint.x() + basicPoint.y()));
 
         /**
          * Init Record
          */
-        System.out.println("\n\nInit Record Point: ");
+        System.out.println("\nInit Record Point: ");
 
         // Create a Point factory which creates points (managed objects) with InitRecord data manager.
         PointFactory initPointFactory = (PointFactory) InitializationFactory.make(PointFactory.class);
 
         // Create a new init-record managed object.
         Point initPoint = initPointFactory.point(10, 22);
-        System.out.println(initPoint.x() + initPoint.y());
+        System.out.println("\t " + (initPoint.x() + initPoint.y()));
+
+        try {
+            initPoint.x(44);
+        } catch (IllegalAccessError e) {
+            System.out.println("\t " + e.getMessage());
+        }
 
         /**
          * Observer Record
          */
-        System.out.println("\n\nObserver Record Point: ");
+        System.out.println("\nObserver Record Point: ");
 
         // Create a Point factory which creates points (manages objects) with ObserverRecord data manager.
         PointFactory observerPointFactory = (PointFactory) ObservableFactory.make(PointFactory.class);
