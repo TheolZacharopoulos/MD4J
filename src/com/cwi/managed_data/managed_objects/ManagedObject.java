@@ -51,6 +51,17 @@ public class ManagedObject implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable
     {
+
+        // in case there is already the method declared
+        // (in one of the sub-classes/sub managedObjects),
+        // then invoke it dynamically, and return.
+        for (Method method1 : this.getClass().getMethods()) {
+            if (method1.getName().equals(method.getName())) {
+                method.invoke(this, args);
+                return null;
+            }
+        }
+
         Object [] fieldArgs = (Object []) args[0]; // because is varargs
 
         String fieldName = method.getName();

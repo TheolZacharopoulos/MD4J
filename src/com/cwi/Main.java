@@ -3,7 +3,7 @@ package com.cwi;
 import com.cwi.managed_data.factories.Factory;
 import com.cwi.managed_data.factories.InitializationFactory;
 import com.cwi.managed_data.factories.ObservableFactory;
-import com.cwi.managed_data.managed_objects.ObservableManagedObject;
+import com.cwi.managed_data.roles.Observable;
 import com.cwi.managed_data.schemas.user_defined.PointFactory;
 import com.cwi.managed_data.schemas.user_defined.Point;
 
@@ -47,9 +47,9 @@ public class Main {
 
         // Create a new observer-record managed object.
         Point observerPoint = observerPointFactory.point();
-        
-        // TODO: cannot do this now because this is a point not an Observable object.
-        // obsPoint.observe((obj, name, value) -> System.out.println("\t Updated " + name + " to " + value));
+
+        ((Observable) observerPoint)
+                .observe((obj, name, value) -> System.out.println("\t Updated " + name + " to " + value));
 
         observerPoint.x(1);
         observerPoint.y(6);

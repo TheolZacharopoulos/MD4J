@@ -1,6 +1,7 @@
 package com.cwi.managed_data.factories;
 
 import com.cwi.managed_data.managed_objects.ObservableManagedObject;
+import com.cwi.managed_data.roles.Observable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -23,8 +24,8 @@ public class ObservableFactory extends Factory {
         // Create a new proxied object of the returned type,
         // with invocation handler the given dataManager
         return Proxy.newProxyInstance(
-                schema.getClassLoader(),
-                new Class<?>[]{schema},
+                ObservableManagedObject.class.getClassLoader(),
+                new Class<?>[]{schema, Observable.class},
                 new ObservableManagedObject(schema));
     }
 }
