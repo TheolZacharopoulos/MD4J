@@ -13,7 +13,7 @@ public class GenericFactory {
     public static <T> T make(Class _schemaFactoryClass) {
         return (T) Proxy.newProxyInstance(
                 _schemaFactoryClass.getClassLoader(),
-                new Class<?>[] { _schemaFactoryClass },
+                new Class<?>[]{_schemaFactoryClass},
 
                 // The invocation handler.
                 (Object proxy, Method method, Object[] args) -> {
@@ -25,13 +25,11 @@ public class GenericFactory {
                     // TODO: use the schema?
 
                     return Proxy.newProxyInstance(
-                        schemaClass.getClassLoader(),
-                        new Class<?>[]{schemaClass},
-                        new ManagedObj(schemaClass)
+                            schemaClass.getClassLoader(),
+                            new Class<?>[]{schemaClass},
+                            new ManagedObj(schemaClass)
                     );
                 }
         );
     }
-
-    public void createMethod()
 }
