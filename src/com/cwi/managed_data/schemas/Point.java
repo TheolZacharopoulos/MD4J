@@ -1,4 +1,4 @@
-package com.cwi.managed_data.schemas.user_defined;
+package com.cwi.managed_data.schemas;
 
 public interface Point {
     Integer x(Integer ...x);

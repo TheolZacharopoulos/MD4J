@@ -1,4 +1,4 @@
-package com.cwi.managed_data.schemas;
+package com.cwi.managed_data.klass_system;
 
 public interface Field {
     String name(String ...name);
