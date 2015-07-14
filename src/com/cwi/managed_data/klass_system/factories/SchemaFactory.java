@@ -18,8 +18,9 @@ public class SchemaFactory {
                 // The invocation handler.
                 (Object proxy, Method method, Object[] args) -> {
 
-                    if (method.getName().equals("types")) {
-                        System.out.println("(SchemaFactory) : " + method.getName());
+                    //TODO: ...
+                    for (Method declaredMethods : _schemaFactoryClass.getMethods()) {
+
                     }
 
                     return null;

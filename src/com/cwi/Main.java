@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) throws Throwable {
 
-        PointFactory factory = GenericFactory.make(PointFactory.class);
+        PointFactory factory = GenericFactory.newFactory(PointFactory.class);
         Point p = factory.point();
         p.x(3);
         p.y(7);

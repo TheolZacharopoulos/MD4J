@@ -1,10 +1,15 @@
 package com.cwi.managed_data.klass_system.factories;
 
+import com.cwi.managed_data.klass_system.Field;
 import com.cwi.managed_data.klass_system.Klass;
 import com.cwi.managed_data.klass_system.Schema;
+import com.cwi.managed_data.klass_system.Type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Converts an interface to a Managed Data Klass.
@@ -19,22 +24,45 @@ public class KlassFactory {
             // The invocation handler.
             (Object proxy, Method method, Object[] args) -> {
 
-                System.out.println("(KlassFactory) : " + method.getName());
+                String methodName = method.getName();
+                String klassName = _schemaClass.getSimpleName();
 
-                if (method.getName().equals("fields")) {
-
+                if (methodName.equals("name")) {
+                    return klassName;
                 }
 
-                if (method.getName().equals("supers")) {
+                if (methodName.equals("fields")) {
+                    Set<Field> fields = new HashSet<>();
 
+                    for (Method declaredMethod : _schemaClass.getMethods()) {
+                        Field field = FieldFactory.make(declaredMethod);
+                        fields.add(field);
+                    }
+                    return fields;
                 }
 
-                if (method.getName().equals("subs")) {
+                if (methodName.equals("supers")) {
+                    // TODO
+                }
 
+                if (methodName.equals("subs")) {
+                    // TODO
                 }
 
                 if (method.getName().equals("schema")) {
-                    Schema schema = SchemaFactory.make(_schemaClass);
+                   return SchemaFactory.make(_schemaClass);
+                }
+
+                /**
+                 * Implement for the Set
+                 */
+                if (methodName.equals("equals")) {
+                    String otherFieldName = (String) args[0];
+                    return otherFieldName.equals(klassName);
+                }
+
+                if (methodName.equals("hashCode")) {
+                    return klassName.hashCode();
                 }
 
                 return null;

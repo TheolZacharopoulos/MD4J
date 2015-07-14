@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class ManagedObject implements InvocationHandler {
 
     protected Map<String, Class> types = new HashMap<String, Class>();
@@ -51,21 +52,21 @@ public class ManagedObject implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable
     {
+        String fieldName = method.getName();
+        boolean isAssignment = false;
 
         // in case there is already the method declared
         // (in one of the sub-classes/sub managedObjects),
         // then invoke it dynamically, and return.
-        for (Method method1 : this.getClass().getMethods()) {
-            if (method1.getName().equals(method.getName())) {
+        // * Something like the: create_methods() in Enso-lang
+        for (Method declaredMethod : this.getClass().getMethods()) {
+            if (declaredMethod.getName().equals(fieldName)) {
                 method.invoke(this, args);
                 return null;
             }
         }
 
         Object [] fieldArgs = (Object []) args[0]; // because is varargs
-
-        String fieldName = method.getName();
-        boolean isAssignment = false;
 
         // TODO: Find a better strategy to decide if it is an assignment.
         // If there is an argument then is considered as assignment.

@@ -9,6 +9,9 @@ public interface Klass extends Type {
     @Inverse(other=Klass.class, field="supers")
     Set<Klass> subs(Klass ...sub);
 
+    /**
+     * The Schema of a Klass is the Schema it belongs to.
+     */
     @Inverse(other=Schema.class, field="classes")
     Schema schema(Schema ...schema);
 }
