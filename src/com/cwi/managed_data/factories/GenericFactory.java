@@ -26,14 +26,10 @@ public class GenericFactory {
                     // Get the type which the factory returns (the Schema Class)
                     Class schemaClass = method.getReturnType();
 
+                    // Create the schema Klass based on the schema.
                     Klass schemaKlass = KlassFactory.make(schemaClass);
 
-                    // TODO: Just testing.
-                    System.out.println(schemaKlass.name());
-                    schemaKlass.fields().forEach(field -> {
-                        System.out.println(field.name());
-                    });
-
+                    // Create a proxied managed object
                     return Proxy.newProxyInstance(
                             schemaClass.getClassLoader(),
                             new Class<?>[]{schemaClass},
