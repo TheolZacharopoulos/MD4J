@@ -1,11 +1,13 @@
 package com.cwi.managed_data.managed_objects;
 
-public class LockableManagedObject extends ManagedObject {
+import com.cwi.managed_data.klass_system.Klass;
+
+public class LockableManagedObject extends ManagedObjectBase {
 
     private boolean isLocked = false;
 
-    public LockableManagedObject(Class _schema) {
-        super(_schema);
+    public LockableManagedObject(Klass _schemaKlass) {
+        super(_schemaKlass);
     }
 
     protected void lock() {
@@ -15,7 +17,7 @@ public class LockableManagedObject extends ManagedObject {
     @Override
     protected void _set(String _name, Object _value) {
         if (isLocked) {
-            throw new IllegalAccessError("Cannot change " + _name + " of locked object");
+            throw new IllegalAccessError("Cannot change " + _name + " of locked object.");
         }
         super._set(_name, _value);
     }

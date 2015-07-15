@@ -2,7 +2,7 @@ package com.cwi.managed_data.factories;
 
 import com.cwi.managed_data.klass_system.Klass;
 import com.cwi.managed_data.klass_system.factories.KlassFactory;
-import com.cwi.managed_data.managed_objects.ManagedObj;
+import com.cwi.managed_data.managed_objects.ManagedObjectBase;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -33,7 +33,7 @@ public class GenericFactory {
                     return Proxy.newProxyInstance(
                             schemaClass.getClassLoader(),
                             new Class<?>[]{schemaClass},
-                            new ManagedObj(schemaKlass)
+                            new ManagedObjectBase(schemaKlass)
                     );
                 }
         );

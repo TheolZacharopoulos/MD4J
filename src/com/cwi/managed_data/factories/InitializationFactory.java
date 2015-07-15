@@ -1,18 +1,22 @@
 package com.cwi.managed_data.factories;
 
+import com.cwi.managed_data.klass_system.Klass;
+import com.cwi.managed_data.klass_system.factories.KlassFactory;
 import com.cwi.managed_data.managed_objects.InitManagedObject;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
-public class InitializationFactory extends Factory {
+@SuppressWarnings("unchecked")
+public class InitializationFactory extends GenericFactory implements InvocationHandler {
 
-    public static Object make(Class _schemaFactoryClass) {
-        return Proxy.newProxyInstance(
-                _schemaFactoryClass.getClassLoader(),
-                new Class<?>[]{_schemaFactoryClass},
-                new InitializationFactory());
+    public static <T> T newFactory(Class _schemaFactoryClass) {
+        return (T) Proxy.newProxyInstance(
+                    _schemaFactoryClass.getClassLoader(),
+                    new Class<?>[]{_schemaFactoryClass},
+                    new InitializationFactory());
     }
 
     private HashMap<String, Object> initializeValues(Class _schema, Object[] args) {
@@ -35,16 +39,19 @@ public class InitializationFactory extends Factory {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-        // Get the type which the factory returns (the schema)
-        Class schema = method.getReturnType();
+        // Get the type which the factory returns (the Schema Class)
+        Class schemaClass = method.getReturnType();
 
-        HashMap<String, Object> values = initializeValues(schema, args);
+        // Create the schema Klass based on the schema.
+        Klass schemaKlass = KlassFactory.make(schemaClass);
+
+        HashMap<String, Object> values = initializeValues(schemaClass, args);
 
         // Create a new proxied object of the returned type,
         // with invocation handler the given dataManager
         return Proxy.newProxyInstance(
-                schema.getClassLoader(),
-                new Class<?>[]{schema},
-                new InitManagedObject(schema, values));
+                schemaClass.getClassLoader(),
+                new Class<?>[]{schemaClass},
+                new InitManagedObject(schemaKlass, values));
     }
 }

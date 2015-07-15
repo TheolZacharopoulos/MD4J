@@ -2,13 +2,10 @@ package com.cwi.managed_data.klass_system.factories;
 
 import com.cwi.managed_data.klass_system.Field;
 import com.cwi.managed_data.klass_system.Klass;
-import com.cwi.managed_data.klass_system.Schema;
-import com.cwi.managed_data.klass_system.Type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**

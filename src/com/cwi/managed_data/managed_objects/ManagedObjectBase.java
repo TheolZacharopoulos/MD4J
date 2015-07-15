@@ -3,27 +3,24 @@ package com.cwi.managed_data.managed_objects;
 import com.cwi.managed_data.klass_system.Field;
 import com.cwi.managed_data.klass_system.Klass;
 import com.cwi.managed_data.klass_system.Type;
+import sun.jvm.hotspot.types.WrongTypeException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ManagedObj implements InvocationHandler {
+public class ManagedObjectBase implements InvocationHandler {
 
-    // TODO: Map<Field, Object>
     protected Map<String, Object> values;
     protected Klass schemaKlass;
 
-    public ManagedObj(Klass _schemaClass) {
-        this.schemaKlass = _schemaClass;
-        this.values = new HashMap<>();
+    public ManagedObjectBase(Klass _schemaClass) {
+        schemaKlass = _schemaClass;
+        values = new HashMap<>();
 
         schemaKlass.fields()
-            .forEach(
-                field -> {
-                    setFieldDefaultValue(field);
-                });
+            .forEach(field -> setFieldDefaultValue(field));
     }
 
     private void setFieldDefaultValue(Field _field) {
@@ -48,25 +45,30 @@ public class ManagedObj implements InvocationHandler {
     private Field getFieldByName(String _name) {
         return (schemaKlass.fields()
                 .stream()
-                .filter(field1 -> field1.name().equals(_name))
+                .filter(field -> field.name().equals(_name))
                 .findFirst()).get();
     }
 
     private void checkType(Type _fieldType, Object _fieldValue) {
-        // TODO:
+        // TODO
+    }
+
+    private void checkFieldByName(String _name) {
+        Field field = getFieldByName(_name);
+
+        if (field == null) {
+            throw new NoSuchFieldError("No field with the name " + _name);
+        }
     }
 
     protected Object _get(String _name) throws NoSuchFieldError {
-        Field field = getFieldByName(_name);
+        checkFieldByName(_name);
         return values.get(_name);
     }
 
-    protected void _set(String _name, Object _value) {
-
+    protected void _set(String _name, Object _value) throws NoSuchFieldError {
         Field field = getFieldByName(_name);
-
-        // TODO: Check
-
+        checkFieldByName(_name);
         checkType(field.type(), _value);
 
         values.put(_name, _value);
@@ -89,7 +91,8 @@ public class ManagedObj implements InvocationHandler {
             }
         }
 
-        Object [] fieldArgs = (Object []) args[0]; // because is varargs
+        // because is varargs
+        Object [] fieldArgs = (Object []) args[0];
 
         // TODO: Find a better strategy to decide if it is an assignment.
         // If there is an argument then is considered as assignment.
@@ -97,24 +100,18 @@ public class ManagedObj implements InvocationHandler {
             isAssignment = true;
         }
 
-        // If is assignment
+        checkFieldByName(fieldName);
+        Field field = getFieldByName(fieldName);
+
+        // If it is an assignment
         if (isAssignment) {
 
-            // TODO:
-//            // If there is no such filed.
-//            if (!types.containsKey(fieldName)) {
-//                throw new NoSuchFieldError();
-//            }
-
-            // TODO:
-//            // If the argument is of the right type.
-//            if (fieldArgs[0].getClass() != values.get(fieldName).getClass()) {
-//                throw new IllegalArgumentException();
-//            }
+            checkType(field.type(), values.get(fieldName).getClass());
 
             _set(fieldName, fieldArgs[0]);
 
-        } else { // If is not assignment, return the value.
+        // If is not assignment, return the value.
+        } else {
             return _get(fieldName);
         }
 

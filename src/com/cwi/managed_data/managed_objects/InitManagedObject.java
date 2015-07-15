@@ -1,11 +1,13 @@
 package com.cwi.managed_data.managed_objects;
 
+import com.cwi.managed_data.klass_system.Klass;
+
 import java.util.HashMap;
 
 public class InitManagedObject extends LockableManagedObject {
 
-    public InitManagedObject(Class _schema, HashMap<String, Object> _values) {
-        super(_schema);
+    public InitManagedObject(Klass _schemaKlass, HashMap<String, Object> _values) {
+        super(_schemaKlass);
 
         // initialize
         for (String initValueName : _values.keySet()) {
