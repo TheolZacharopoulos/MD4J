@@ -1,11 +1,14 @@
 package com.cwi;
 
-import com.cwi.managed_data.factories.GenericFactory;
-import com.cwi.managed_data.factories.InitializationFactory;
-import com.cwi.managed_data.factories.ObservableFactory;
+import com.cwi.managed_data.managed_objects.factories.GenericFactory;
+import com.cwi.managed_data.managed_objects.factories.InitializationFactory;
+import com.cwi.managed_data.managed_objects.factories.ObservableFactory;
 import com.cwi.managed_data.roles.Observable;
+import com.cwi.managed_data.schemas.Person;
+import com.cwi.managed_data.schemas.PersonFactory;
 import com.cwi.managed_data.schemas.PointFactory;
 import com.cwi.managed_data.schemas.Point;
+import sun.util.calendar.LocalGregorianCalendar;
 
 public class Main {
 
@@ -44,7 +47,7 @@ public class Main {
         }
 
         /**
-         * Observer Record
+         * Observer Record for Point
          */
         System.out.println("\nObserver Record Point: ");
 
@@ -55,10 +58,24 @@ public class Main {
         Point observerPoint = observerPointFactory.point();
 
         ((Observable) observerPoint)
-                .observe((obj, name, value) -> System.out.println("\t Updated " + name + " to " + value));
+                .observe((obj, field, value) -> System.out.println("\t Updated " + field + " to " + value));
 
         observerPoint.x(1);
         observerPoint.y(6);
         observerPoint.x(observerPoint.x() + observerPoint.y());
+
+        /**
+         * Observer Record for Person.
+         */
+        System.out.println("\nObserver Record Person: ");
+
+        PersonFactory observerPersonFactory = ObservableFactory.newFactory(PersonFactory.class);
+        Person observerPerson = observerPersonFactory.person();
+
+        ((Observable) observerPerson)
+                .observe((obj, field, value) -> System.out.println("\t Updated " + field + " to " + value));
+
+        observerPerson.name("Theologos");
+        observerPerson.age(25);
     }
 }
