@@ -2,7 +2,6 @@ package com.cwi.managed_data.klass_system.factories;
 
 import com.cwi.managed_data.klass_system.Field;
 import com.cwi.managed_data.klass_system.Klass;
-import com.cwi.managed_data.klass_system.Type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -32,15 +31,9 @@ public class KlassFactory {
                 if (methodName.equals("fields")) {
                     Set<Field> fields = new HashSet<>();
 
-                    for (Method declaredMethod : _schemaClass.getMethods()) {
-                        Class typeClass = declaredMethod.getReturnType();
-
-                        Type fieldType = TypeFactory.make(typeClass);
-
+                    for (Method declaredFieldMethod : _schemaClass.getMethods()) {
                         Field field = FieldFactory.make(
-                                        declaredMethod.getName(),
-                                        fieldType,
-                                        _schemaClass);
+                                declaredFieldMethod, _schemaClass);
 
                         fields.add(field);
                     }
@@ -48,26 +41,23 @@ public class KlassFactory {
                 }
 
                 if (methodName.equals("supers")) {
-                    // TODO
+                    Klass superKlass = KlassFactory.make(_schemaClass.getSuperclass());
+                    return new HashSet<>()
+                            .add(superKlass);
                 }
 
                 if (methodName.equals("subs")) {
-                    // TODO
+                    // TODO Should I check every Class in the classpath if it is subclass of this class and add them to a Set??
+                    return new HashSet<>();
                 }
 
                 if (method.getName().equals("schema")) {
-                   return SchemaFactory.make(_schemaClass);
+                    return SchemaFactory.make(_schemaClass);
                 }
 
                 /**
                  * Implement for the Set
                  */
-                if (methodName.equals("equals")) {
-                    // TODO: This does not work.
-                    String otherFieldName = (String) args[0];
-                    return otherFieldName.equals(klassName);
-                }
-
                 if (methodName.equals("hashCode")) {
                     return klassName.hashCode();
                 }

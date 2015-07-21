@@ -4,10 +4,10 @@ import com.cwi.managed_data.managed_objects.factories.GenericFactory;
 import com.cwi.managed_data.managed_objects.factories.InitializationFactory;
 import com.cwi.managed_data.managed_objects.factories.ObservableFactory;
 import com.cwi.managed_data.roles.Observable;
-import com.cwi.managed_data.schemas.Person;
-import com.cwi.managed_data.schemas.PersonFactory;
-import com.cwi.managed_data.schemas.PointFactory;
-import com.cwi.managed_data.schemas.Point;
+import com.cwi.managed_data.examples.schemas.Person;
+import com.cwi.managed_data.examples.schemas.PersonFactory;
+import com.cwi.managed_data.examples.schemas.PointFactory;
+import com.cwi.managed_data.examples.schemas.Point;
 
 import java.util.Date;
 

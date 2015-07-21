@@ -10,6 +10,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The Basic Managed Object, all managed objects should inherit from this one.
+ */
 public class ManagedObjectBase implements InvocationHandler {
 
     protected Map<String, Object> values;
@@ -28,14 +31,23 @@ public class ManagedObjectBase implements InvocationHandler {
         String typeName = _field.type().name();
 
         // TODO: Better way to do this???
-        if (typeName.equals("Integer")) {
+        if (typeName.equals(Integer.class.getSimpleName())) {
             values.put(fieldName, 0);
 
-        } else if (typeName.equals("String")) {
+        } else if (typeName.equals(String.class.getSimpleName())) {
             values.put(fieldName, "");
 
-        } else if (typeName.equals("Double")) {
+        } else if (typeName.equals(Double.class.getSimpleName())) {
             values.put(fieldName, 0.0);
+
+        } else if (typeName.equals(Float.class.getSimpleName())) {
+            values.put(fieldName, 0.0);
+
+        } else if (typeName.equals(Boolean.class.getSimpleName())) {
+            values.put(fieldName, false);
+
+        } else if (typeName.equals(Object.class.getSimpleName())) {
+            values.put(fieldName, null);
 
         } else {
             values.put(fieldName, null);
@@ -50,7 +62,9 @@ public class ManagedObjectBase implements InvocationHandler {
     }
 
     private void checkType(Type _fieldType, Object _fieldValue) {
-        // TODO
+        if (!_fieldType.name().equals(_fieldValue.getClass().getSimpleName())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private void checkFieldByName(String _name) {
@@ -94,7 +108,6 @@ public class ManagedObjectBase implements InvocationHandler {
         // because is varargs
         Object [] fieldArgs = (Object []) args[0];
 
-        // TODO: Find a better strategy to decide if it is an assignment.
         // If there is an argument then is considered as assignment.
         if (fieldArgs.length > 0) {
             isAssignment = true;

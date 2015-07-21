@@ -1,7 +1,6 @@
 package com.cwi.managed_data.klass_system.factories;
 
 import com.cwi.managed_data.klass_system.Field;
-import com.cwi.managed_data.klass_system.Type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -11,7 +10,8 @@ import java.lang.reflect.Proxy;
  */
 public class FieldFactory {
 
-    public static Field make(String _fieldName, Type _fieldType, Class _ownerClass) {
+    public static Field make(Method _declaredFieldMethod, Class _ownerClass)
+    {
         return (Field) Proxy.newProxyInstance(
                 Field.class.getClassLoader(),
                 new Class<?>[]{Field.class},
@@ -21,26 +21,28 @@ public class FieldFactory {
 
                     String methodName = method.getName();
 
+                    String fieldName = _declaredFieldMethod.getName();
+                    Class fieldTypeClass = _declaredFieldMethod.getReturnType();
+
                     if (methodName.equals("name")) {
-                        return _fieldName;
+                        return fieldName;
                     }
 
                     if (methodName.equals("type")) {
-                        return _fieldType;
+                        return TypeFactory.make(fieldTypeClass);
                     }
 
                     if (methodName.equals("many")) {
-                        // TODO:
-                        return false;
+                        return fieldTypeClass.isArray();
                     }
 
                     if (methodName.equals("optional")) {
-                        // TODO:
+                        // TODO: ?
                         return false;
                     }
 
                     if (methodName.equals("inverse")) {
-                        // TODO:
+                        // TODO: ?
                         return null;
                     }
 
@@ -51,14 +53,8 @@ public class FieldFactory {
                     /**
                      * Implement for the Set
                      */
-                    if (methodName.equals("equals")) {
-                        // TODO: This does not work.
-                        String otherFieldName = (String) args[0];
-                        return otherFieldName.equals(_fieldName);
-                    }
-
                     if (methodName.equals("hashCode")) {
-                        return _fieldName.hashCode();
+                        return fieldName.hashCode();
                     }
 
                     return null;
