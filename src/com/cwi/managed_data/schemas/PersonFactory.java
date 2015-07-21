@@ -1,6 +1,6 @@
 package com.cwi.managed_data.schemas;
 
-import sun.util.calendar.BaseCalendar.Date;
+import java.util.Date;
 
 public interface PersonFactory {
     Person person();

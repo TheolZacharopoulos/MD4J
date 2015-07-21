@@ -8,7 +8,6 @@ import com.cwi.managed_data.schemas.Person;
 import com.cwi.managed_data.schemas.PersonFactory;
 import com.cwi.managed_data.schemas.PointFactory;
 import com.cwi.managed_data.schemas.Point;
-import sun.util.calendar.LocalGregorianCalendar;
 
 public class Main {
 
