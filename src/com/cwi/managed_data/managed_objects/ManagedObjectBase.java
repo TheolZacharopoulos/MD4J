@@ -106,7 +106,7 @@ public class ManagedObjectBase implements InvocationHandler {
         // If it is an assignment
         if (isAssignment) {
 
-            checkType(field.type(), values.get(fieldName).getClass());
+            checkType(field.type(), fieldArgs[0]);
 
             _set(fieldName, fieldArgs[0]);
 

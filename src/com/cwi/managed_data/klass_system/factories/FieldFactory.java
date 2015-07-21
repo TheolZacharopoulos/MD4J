@@ -1,6 +1,7 @@
 package com.cwi.managed_data.klass_system.factories;
 
 import com.cwi.managed_data.klass_system.Field;
+import com.cwi.managed_data.klass_system.Type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -10,7 +11,7 @@ import java.lang.reflect.Proxy;
  */
 public class FieldFactory {
 
-    public static Field make(Method _fieldMethod) {
+    public static Field make(String _fieldName, Type _fieldType, Class _ownerClass) {
         return (Field) Proxy.newProxyInstance(
                 Field.class.getClassLoader(),
                 new Class<?>[]{Field.class},
@@ -19,14 +20,13 @@ public class FieldFactory {
                 (Object proxy, Method method, Object[] args) -> {
 
                     String methodName = method.getName();
-                    String fieldName = _fieldMethod.getName();
 
                     if (methodName.equals("name")) {
-                        return _fieldMethod.getName();
+                        return _fieldName;
                     }
 
                     if (methodName.equals("type")) {
-                        return KlassFactory.make(_fieldMethod.getReturnType()); // TODO: Type factory?;
+                        return _fieldType;
                     }
 
                     if (methodName.equals("many")) {
@@ -45,8 +45,7 @@ public class FieldFactory {
                     }
 
                     if (methodName.equals("owner")) {
-                        // TODO:
-                        return null;
+                        return KlassFactory.make(_ownerClass);
                     }
 
                     /**
@@ -55,11 +54,11 @@ public class FieldFactory {
                     if (methodName.equals("equals")) {
                         // TODO: This does not work.
                         String otherFieldName = (String) args[0];
-                        return otherFieldName.equals(fieldName);
+                        return otherFieldName.equals(_fieldName);
                     }
 
                     if (methodName.equals("hashCode")) {
-                        return fieldName.hashCode();
+                        return _fieldName.hashCode();
                     }
 
                     return null;

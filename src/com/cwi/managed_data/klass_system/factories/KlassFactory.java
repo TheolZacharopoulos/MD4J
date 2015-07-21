@@ -2,6 +2,7 @@ package com.cwi.managed_data.klass_system.factories;
 
 import com.cwi.managed_data.klass_system.Field;
 import com.cwi.managed_data.klass_system.Klass;
+import com.cwi.managed_data.klass_system.Type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -32,7 +33,15 @@ public class KlassFactory {
                     Set<Field> fields = new HashSet<>();
 
                     for (Method declaredMethod : _schemaClass.getMethods()) {
-                        Field field = FieldFactory.make(declaredMethod);
+                        Class typeClass = declaredMethod.getReturnType();
+
+                        Type fieldType = TypeFactory.make(typeClass);
+
+                        Field field = FieldFactory.make(
+                                        declaredMethod.getName(),
+                                        fieldType,
+                                        _schemaClass);
+
                         fields.add(field);
                     }
                     return fields;
@@ -54,6 +63,7 @@ public class KlassFactory {
                  * Implement for the Set
                  */
                 if (methodName.equals("equals")) {
+                    // TODO: This does not work.
                     String otherFieldName = (String) args[0];
                     return otherFieldName.equals(klassName);
                 }

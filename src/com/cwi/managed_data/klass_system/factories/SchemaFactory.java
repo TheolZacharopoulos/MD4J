@@ -31,16 +31,9 @@ public class SchemaFactory {
 
                         for (Method declaredMethods : _schemaFactoryClass.getMethods()) {
                             Class typeClass = declaredMethods.getReturnType();
+                            Type typeType = TypeFactory.make(typeClass);
 
-                            if (typeClass.isPrimitive()) {
-                                Primitive primitiveType = PrimitiveFactory.make(typeClass);
-                                types.add(primitiveType);
-
-                            } else {
-                                Klass klassType = KlassFactory.make(typeClass);
-                                types.add(klassType);
-
-                            }
+                            types.add(typeType);
                         }
 
                         return types;

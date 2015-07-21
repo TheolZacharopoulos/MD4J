@@ -9,6 +9,8 @@ import com.cwi.managed_data.schemas.PersonFactory;
 import com.cwi.managed_data.schemas.PointFactory;
 import com.cwi.managed_data.schemas.Point;
 
+import java.util.Date;
+
 public class Main {
 
     public static void main(String[] args) throws Throwable {
@@ -76,5 +78,6 @@ public class Main {
 
         observerPerson.name("Theologos");
         observerPerson.age(25);
+        observerPerson.birthday(new Date());
     }
 }
