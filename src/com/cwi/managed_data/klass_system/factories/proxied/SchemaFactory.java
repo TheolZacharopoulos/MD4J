@@ -1,4 +1,4 @@
-package com.cwi.managed_data.klass_system.factories;
+package com.cwi.managed_data.klass_system.factories.proxied;
 
 import com.cwi.managed_data.klass_system.Schema;
 import com.cwi.managed_data.klass_system.Type;
