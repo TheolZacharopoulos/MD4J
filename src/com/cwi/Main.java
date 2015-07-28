@@ -1,8 +1,8 @@
 package com.cwi;
 
+import com.cwi.managed_data.klass_system.helpers.SchemaManager;
 import com.cwi.managed_data.klass_system.models.Schema;
 import com.cwi.managed_data.klass_system.factories.Factory;
-import com.cwi.managed_data.klass_system.factories.proxied.SchemaFactory;
 import com.cwi.managed_data.managed_objects.factories.InitializationFactory;
 import com.cwi.managed_data.managed_objects.factories.ObservableFactory;
 import com.cwi.managed_data.roles.Observable;
@@ -12,10 +12,9 @@ public class Main {
 
     public static void main(String[] args) throws Throwable {
 
-//        Schema schemaSchema = SchemaManager.load(Schema.class, new BootstrapFactory());
-//        Schema pointSchema = SchemaManager.load(Point.class, new Factory(schemaSchema));
+        SchemaManager schemaManager = new SchemaManager();
 
-        Schema pointSchema = SchemaFactory.make(Point.class);
+        Schema pointSchema = schemaManager.make(Point.class);
 
         System.out.println("\nBasic Record Point: ");
         Factory pointFactory = new Factory(pointSchema);

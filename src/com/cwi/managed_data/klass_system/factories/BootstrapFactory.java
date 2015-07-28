@@ -1,5 +1,8 @@
 package com.cwi.managed_data.klass_system.factories;
 
+import com.cwi.managed_data.klass_system.factories.proxied.SchemaFactory;
+import com.cwi.managed_data.klass_system.models.Schema;
+
 /**
  * A factory that builds SchemaSchemas.
  * We don't use the Factory class because this will be circular:
@@ -12,7 +15,9 @@ package com.cwi.managed_data.klass_system.factories;
  * conforming to the Schema, Klass etc. interfaces (no need for proxies or anything).
  */
 public class BootstrapFactory extends Factory {
+
+    // TODO:
     public BootstrapFactory() {
-        super(null);
+        super(SchemaFactory.make(Schema.class));
     }
 }
