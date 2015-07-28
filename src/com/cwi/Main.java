@@ -1,44 +1,37 @@
 package com.cwi;
 
-import com.cwi.managed_data.managed_objects.factories.GenericFactory;
+import com.cwi.managed_data.klass_system.Schema;
+import com.cwi.managed_data.klass_system.SchemaManager;
+import com.cwi.managed_data.klass_system.factories.BootstrapFactory;
+import com.cwi.managed_data.klass_system.factories.Factory;
+import com.cwi.managed_data.klass_system.factories.proxied.SchemaFactory;
 import com.cwi.managed_data.managed_objects.factories.InitializationFactory;
 import com.cwi.managed_data.managed_objects.factories.ObservableFactory;
 import com.cwi.managed_data.roles.Observable;
-import com.cwi.managed_data.examples.schemas.Person;
-import com.cwi.managed_data.examples.schemas.PersonFactory;
-import com.cwi.managed_data.examples.schemas.PointFactory;
 import com.cwi.managed_data.examples.schemas.Point;
-
-import java.util.Date;
 
 public class Main {
 
     public static void main(String[] args) throws Throwable {
 
-        /**
-         * Basic Record
-         */
-        System.out.println("Basic Record Point: ");
+//        Schema schemaSchema = SchemaManager.load(Schema.class, new BootstrapFactory());
+//        Schema pointSchema = SchemaManager.load(Point.class, new Factory(schemaSchema));
 
-        // Create a Point factory which creates points (managed objects).
-        PointFactory basicPointFactory = GenericFactory.newFactory(PointFactory.class);
+        Schema pointSchema = SchemaFactory.make(Point.class);
 
-        // Create a new basic-record managed object.
-        Point basicPoint = basicPointFactory.point();
+        System.out.println("\nBasic Record Point: ");
+        Factory pointFactory = new Factory(pointSchema);
+        Point basicPoint = pointFactory.make();
         basicPoint.x(3);
         basicPoint.y(7);
         System.out.println("\t " + (basicPoint.x() + basicPoint.y()));
 
-        /**
-         * Init Record
-         */
+        // ================================================================================
+
         System.out.println("\nInit Record Point: ");
+        Factory initPointFactory = new InitializationFactory(pointSchema);
 
-        // Create a Point factory which creates points (managed objects) with InitRecord data manager.
-        PointFactory initPointFactory = InitializationFactory.newFactory(PointFactory.class);
-
-        // Create a new init-record managed object.
-        Point initPoint = initPointFactory.point(10, 22);
+        Point initPoint = initPointFactory.make(10, 22);
         System.out.println("\t " + (initPoint.x() + initPoint.y()));
 
         try {
@@ -47,37 +40,19 @@ public class Main {
             System.out.println("\t " + e.getMessage());
         }
 
-        /**
-         * Observer Record for Point
-         */
-        System.out.println("\nObserver Record Point: ");
+        // ==================================================================================
 
-        // Create a Point factory which creates points (manages objects) with ObserverRecord data manager.
-        PointFactory observerPointFactory = ObservableFactory.newFactory(PointFactory.class);
+        System.out.println("\nObserver Record Point: ");
+        Factory observerPointFactory = new ObservableFactory(pointSchema);
 
         // Create a new observer-record managed object.
-        Point observerPoint = observerPointFactory.point();
+        Point observerPoint = observerPointFactory.make();
 
         ((Observable) observerPoint)
-                .observe((obj, field, value) -> System.out.println("\t Updated " + field + " to " + value));
+            .observe((obj, field, value) -> System.out.println("\t Updated " + field + " to " + value));
 
         observerPoint.x(1);
         observerPoint.y(6);
         observerPoint.x(observerPoint.x() + observerPoint.y());
-
-        /**
-         * Observer Record for Person.
-         */
-        System.out.println("\nObserver Record Person: ");
-
-        PersonFactory observerPersonFactory = ObservableFactory.newFactory(PersonFactory.class);
-        Person observerPerson = observerPersonFactory.person();
-
-        ((Observable) observerPerson)
-                .observe((obj, field, value) -> System.out.println("\t Updated " + field + " to " + value));
-
-        observerPerson.name("Theologos");
-        observerPerson.age(25);
-        observerPerson.birthday(new Date());
     }
 }

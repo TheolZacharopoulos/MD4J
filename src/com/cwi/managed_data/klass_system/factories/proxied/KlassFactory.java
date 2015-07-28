@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class KlassFactory {
 
-    public static Klass make(Class _schemaClass) {
+    public static Klass make(Class _klassInterface) {
         return (Klass) Proxy.newProxyInstance(
             Klass.class.getClassLoader(),
             new Class<?>[]{Klass.class},
@@ -22,7 +22,7 @@ public class KlassFactory {
             (Object proxy, Method method, Object[] args) -> {
 
                 String methodName = method.getName();
-                String klassName = _schemaClass.getSimpleName();
+                String klassName = _klassInterface.getSimpleName();
 
                 if (methodName.equals("name")) {
                     return klassName;
@@ -31,9 +31,9 @@ public class KlassFactory {
                 if (methodName.equals("fields")) {
                     Set<Field> fields = new HashSet<>();
 
-                    for (Method declaredFieldMethod : _schemaClass.getMethods()) {
+                    for (Method declaredFieldMethod : _klassInterface.getMethods()) {
                         Field field = FieldFactory.make(
-                                declaredFieldMethod, _schemaClass);
+                                declaredFieldMethod, _klassInterface);
 
                         fields.add(field);
                     }
@@ -41,7 +41,7 @@ public class KlassFactory {
                 }
 
                 if (methodName.equals("supers")) {
-                    Klass superKlass = KlassFactory.make(_schemaClass.getSuperclass());
+                    Klass superKlass = KlassFactory.make(_klassInterface.getSuperclass());
                     return new HashSet<>()
                             .add(superKlass);
                 }
@@ -52,14 +52,18 @@ public class KlassFactory {
                 }
 
                 if (method.getName().equals("schema")) {
-                    return SchemaFactory.make(_schemaClass);
+                    return SchemaFactory.make(_klassInterface);
+                }
+
+                if (method.getName().equals("klassInterface")) {
+                    return _klassInterface;
                 }
 
                 /**
                  * Implement for the Set
                  */
                 if (methodName.equals("hashCode")) {
-                    return klassName.hashCode();
+                    return _klassInterface.hashCode();
                 }
 
                 return null;

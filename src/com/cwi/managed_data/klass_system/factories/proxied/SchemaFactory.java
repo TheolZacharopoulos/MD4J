@@ -1,5 +1,6 @@
 package com.cwi.managed_data.klass_system.factories.proxied;
 
+import com.cwi.managed_data.klass_system.Klass;
 import com.cwi.managed_data.klass_system.Schema;
 import com.cwi.managed_data.klass_system.Type;
 
@@ -13,7 +14,8 @@ import java.util.Set;
  */
 public class SchemaFactory {
 
-    public static Schema make(Class _schemaFactoryClass) {
+    public static Schema make(Class _schemaClass) {
+
         return (Schema) Proxy.newProxyInstance(
                 Schema.class.getClassLoader(),
                 new Class<?>[]{Schema.class},
@@ -27,7 +29,7 @@ public class SchemaFactory {
 
                         Set<Type> types = new HashSet<>();
 
-                        for (Method declaredMethods : _schemaFactoryClass.getMethods()) {
+                        for (Method declaredMethods : _schemaClass.getMethods()) {
                             Class typeClass = declaredMethods.getReturnType();
                             Type typeType = TypeFactory.make(typeClass);
 
@@ -35,6 +37,14 @@ public class SchemaFactory {
                         }
 
                         return types;
+                    }
+
+                    if (methodName.equals("classes")) {
+                        // TODO: Why is this a Set?
+                        Set<Klass> classes = new HashSet<>();
+                        Klass schemaKlass = KlassFactory.make(_schemaClass);
+                        classes.add(schemaKlass);
+                        return classes;
                     }
 
                     return null;

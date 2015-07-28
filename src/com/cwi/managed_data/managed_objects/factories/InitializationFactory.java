@@ -1,51 +1,42 @@
 package com.cwi.managed_data.managed_objects.factories;
 
-import com.cwi.managed_data.klass_system.Klass;
-import com.cwi.managed_data.klass_system.factories.proxied.KlassFactory;
+import com.cwi.managed_data.klass_system.Field;
+import com.cwi.managed_data.klass_system.Schema;
+import com.cwi.managed_data.klass_system.factories.Factory;
 import com.cwi.managed_data.managed_objects.InitManagedObject;
+import com.cwi.managed_data.managed_objects.ManagedObjectBase;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
+import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
-public class InitializationFactory extends GenericFactory {
+public class InitializationFactory extends Factory {
 
-    public static <T> T newFactory(Class _schemaFactoryClass) {
-        return (T) Proxy.newProxyInstance(
-                    _schemaFactoryClass.getClassLoader(),
-                    new Class<?>[]{_schemaFactoryClass},
+    public InitializationFactory(Schema _schema) {
+        super(_schema);
+    }
 
-                (Object proxy, Method method, Object[] args) -> {
+    @Override
+    protected ManagedObjectBase createManagedObject(Object ...inits) {
 
-                    // Get the type which the factory returns (the Schema Class)
-                    Class schemaClass = method.getReturnType();
+        // Initialize values from method arguments.
+        HashMap<String, Object> values = new HashMap<String, Object>();
 
-                    // Create the schema Klass based on the schema.
-                    Klass schemaKlass = KlassFactory.make(schemaClass);
+        Iterator<Field> fieldsIterator = this.schemaKlass.fields().iterator();
 
-                    // Initialize values from method arguments.
-                    HashMap<String, Object> values = new HashMap<String, Object>();
-                    for (int i = 0; i < args.length; i++) {
+        for (Object initValue : inits) {
 
-                        // Get the parameter name from the schema.
-                        String parameterName = schemaClass.getMethods()[i].getName();
+            if (!fieldsIterator.hasNext()) {
+                break;
+            }
 
-                        // Get the parameter value from the argument.
-                        Object parameterValue = args[i];
+            // Get the field's name
+            String parameterName = fieldsIterator.next().name();
 
-                        // Save the value.
-                        values.put(parameterName, parameterValue);
-                    }
+            // Save the value.
+            values.put(parameterName, initValue);
+        }
 
-                    // Create a new proxied object of the returned type,
-                    // with invocation handler the given dataManager
-                    return Proxy.newProxyInstance(
-                        schemaClass.getClassLoader(),
-                        new Class<?>[]{schemaClass},
-                        new InitManagedObject(schemaKlass, values)
-                    );
-
-                });
+        return new InitManagedObject(schemaKlass, values);
     }
 }
