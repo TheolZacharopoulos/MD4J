@@ -1,6 +1,6 @@
 package com.cwi.managed_data.managed_objects.factories;
 
-import com.cwi.managed_data.klass_system.Schema;
+import com.cwi.managed_data.klass_system.models.Schema;
 import com.cwi.managed_data.klass_system.factories.Factory;
 import com.cwi.managed_data.managed_objects.ManagedObjectBase;
 import com.cwi.managed_data.managed_objects.ObservableManagedObject;

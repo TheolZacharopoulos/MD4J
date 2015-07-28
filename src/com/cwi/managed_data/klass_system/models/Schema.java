@@ -1,4 +1,4 @@
-package com.cwi.managed_data.klass_system;
+package com.cwi.managed_data.klass_system.models;
 
 import java.util.HashSet;
 import java.util.Set;

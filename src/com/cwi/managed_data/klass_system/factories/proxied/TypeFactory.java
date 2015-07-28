@@ -1,6 +1,6 @@
 package com.cwi.managed_data.klass_system.factories.proxied;
 
-import com.cwi.managed_data.klass_system.Type;
+import com.cwi.managed_data.klass_system.models.Type;
 
 public class TypeFactory {
 

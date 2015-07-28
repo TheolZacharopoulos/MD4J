@@ -1,6 +1,6 @@
 package com.cwi.managed_data.klass_system.factories.proxied;
 
-import com.cwi.managed_data.klass_system.Primitive;
+import com.cwi.managed_data.klass_system.models.Primitive;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;

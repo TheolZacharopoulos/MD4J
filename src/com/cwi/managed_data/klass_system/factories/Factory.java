@@ -1,7 +1,7 @@
 package com.cwi.managed_data.klass_system.factories;
 
-import com.cwi.managed_data.klass_system.Klass;
-import com.cwi.managed_data.klass_system.Schema;
+import com.cwi.managed_data.klass_system.models.Klass;
+import com.cwi.managed_data.klass_system.models.Schema;
 import com.cwi.managed_data.managed_objects.ManagedObjectBase;
 
 import java.lang.reflect.Proxy;

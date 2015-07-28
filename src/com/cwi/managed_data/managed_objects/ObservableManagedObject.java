@@ -1,6 +1,6 @@
 package com.cwi.managed_data.managed_objects;
 
-import com.cwi.managed_data.klass_system.Klass;
+import com.cwi.managed_data.klass_system.models.Klass;
 import com.cwi.managed_data.roles.Observable;
 import com.cwi.managed_data.roles.Observe;
 

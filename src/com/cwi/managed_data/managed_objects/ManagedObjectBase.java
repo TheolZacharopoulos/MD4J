@@ -1,9 +1,8 @@
 package com.cwi.managed_data.managed_objects;
 
-import com.cwi.managed_data.klass_system.Field;
-import com.cwi.managed_data.klass_system.Klass;
-import com.cwi.managed_data.klass_system.Type;
-import sun.jvm.hotspot.types.WrongTypeException;
+import com.cwi.managed_data.klass_system.models.Field;
+import com.cwi.managed_data.klass_system.models.Klass;
+import com.cwi.managed_data.klass_system.models.Type;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
