@@ -1,4 +1,4 @@
-package com.cwi.managed_data.roles;
+package com.cwi.managed_data.roles.observer;
 
 @FunctionalInterface
 public interface Observe {

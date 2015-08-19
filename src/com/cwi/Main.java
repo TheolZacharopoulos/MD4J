@@ -1,12 +1,15 @@
 package com.cwi;
 
+import com.cwi.managed_data.examples.schemas.Point;
+import com.cwi.managed_data.klass_system.factories.Factory;
 import com.cwi.managed_data.klass_system.helpers.SchemaManager;
 import com.cwi.managed_data.klass_system.models.Schema;
-import com.cwi.managed_data.klass_system.factories.Factory;
+import com.cwi.managed_data.managed_objects.factories.ContractorFactory;
 import com.cwi.managed_data.managed_objects.factories.InitializationFactory;
 import com.cwi.managed_data.managed_objects.factories.ObservableFactory;
-import com.cwi.managed_data.roles.Observable;
-import com.cwi.managed_data.examples.schemas.Point;
+import com.cwi.managed_data.roles.contract.ContractBrokenException;
+import com.cwi.managed_data.roles.contract.Contractor;
+import com.cwi.managed_data.roles.observer.Observable;
 
 public class Main {
 
@@ -46,10 +49,31 @@ public class Main {
         Point observerPoint = observerPointFactory.make();
 
         ((Observable) observerPoint)
-            .observe((obj, field, value) -> System.out.println("\t Updated " + field + " to " + value));
+            .observe((thisObject, field, value) ->
+                    System.out.println("\t Updated " + field + " to " + value));
 
         observerPoint.x(1);
         observerPoint.y(6);
         observerPoint.x(observerPoint.x() + observerPoint.y());
+
+        // ==================================================================================
+
+        System.out.println("\nContractor Record Point: ");
+        Factory contractorPointFactory = new ContractorFactory(pointSchema);
+
+        // Create a new observer-record managed object.
+        Point contractorPoint = contractorPointFactory.make();
+
+        ((Contractor) contractorPoint)
+            .ensure((thisObject, field, value) -> {
+                if (((Integer) value) == -1) {
+                    throw new ContractBrokenException("postcondition violated");
+                }
+            });
+
+        contractorPoint.y(1);
+        System.out.println("\t" + contractorPoint.y());
+        contractorPoint.x(-1);
+        System.out.println("\t" + contractorPoint.x());
     }
 }

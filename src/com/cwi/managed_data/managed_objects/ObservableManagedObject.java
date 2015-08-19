@@ -1,8 +1,8 @@
 package com.cwi.managed_data.managed_objects;
 
 import com.cwi.managed_data.klass_system.models.Klass;
-import com.cwi.managed_data.roles.Observable;
-import com.cwi.managed_data.roles.Observe;
+import com.cwi.managed_data.roles.observer.Observable;
+import com.cwi.managed_data.roles.observer.Observe;
 
 import java.util.ArrayList;
 import java.util.List;
