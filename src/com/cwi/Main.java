@@ -64,6 +64,15 @@ public class Main {
         // Create a new observer-record managed object.
         Point contractorPoint = contractorPointFactory.make();
 
+        // Add precondition
+        ((Contractor) contractorPoint)
+            .require((thisObject, field, value) -> {
+                if (((Integer) value) == -1) {
+                    throw new ContractBrokenException("precondition violated");
+                }
+            });
+
+        // Add postcondition
         ((Contractor) contractorPoint)
             .ensure((thisObject, field, value) -> {
                 if (((Integer) value) == -1) {
