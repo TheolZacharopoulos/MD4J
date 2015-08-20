@@ -1,6 +1,6 @@
 package com.cwi.managed_data.roles.contract;
 
-public class ContractBrokenException extends Exception {
+public class ContractBrokenException extends Error {
 
     public ContractBrokenException(String message) {
         super(message);

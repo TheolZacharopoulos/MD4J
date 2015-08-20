@@ -67,22 +67,30 @@ public class Main {
         // Add precondition
         ((Contractor) contractorPoint)
             .require((thisObject, field, value) -> {
+                if (!field.equals("x")) return;
+
                 if (((Integer) value) == -1) {
-                    throw new ContractBrokenException("precondition violated");
+                    throw new ContractBrokenException("precondition violated in " + field);
                 }
             });
 
         // Add postcondition
         ((Contractor) contractorPoint)
             .ensure((thisObject, field, value) -> {
+                if (!field.equals("x")) return;
+
                 if (((Integer) value) == -1) {
-                    throw new ContractBrokenException("postcondition violated");
+                    throw new ContractBrokenException("postcondition violated in " + field);
                 }
             });
 
-        contractorPoint.y(1);
-        System.out.println("\t" + contractorPoint.y());
-        contractorPoint.x(-1);
-        System.out.println("\t" + contractorPoint.x());
+        try {
+            contractorPoint.y(1);
+            System.out.println("\t" + contractorPoint.y());
+            contractorPoint.x(-1);
+            System.out.println("\t" + contractorPoint.x());
+        } catch (ContractBrokenException e) {
+            System.out.println("\t " + e.getMessage());
+        }
     }
 }

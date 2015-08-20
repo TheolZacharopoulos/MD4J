@@ -28,27 +28,17 @@ public class ContractorManagedObject extends ManagedObjectBase implements Contra
         postconditions.add(_postcondition);
     }
 
-    private void ensurePostconditions(String _name, Object _value) {
-        postconditions.forEach(
-            (postcondition) -> {
-                try {
-                    postcondition.ensure(this, _name, _value);
-                } catch (Exception e) {
-                    System.out.println("\t " + e.getMessage());
-                }
-            });
+    private void ensurePostconditions(String _name, Object _value) throws ContractBrokenException {
+        for (Postcondition postcondition : postconditions) {
+            postcondition.ensure(this, _name, _value);
+        }
     }
 
-    private void requirePreconditions(String _name, Object _value) {
-        preconditions.forEach(
-            (precondition) -> {
-                try {
-                    precondition.require(this, _name, _value);
-                } catch (Exception e){
-                    System.out.println("\t " + e.getMessage());
-                }
-            });
-}
+    private void requirePreconditions(String _name, Object _value) throws ContractBrokenException {
+        for (Precondition precondition : preconditions) {
+            precondition.require(this, _name, _value);
+        }
+    }
 
     @Override
     protected void _set(String _name, Object _value) {
