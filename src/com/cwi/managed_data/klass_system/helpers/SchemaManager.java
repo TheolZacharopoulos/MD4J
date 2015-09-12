@@ -9,6 +9,10 @@ public class SchemaManager {
 
     private Schema schemaSchema;
 
+    private static final String SCHEMA_PATH = "./com/cwi/managed_data/klass_system/models/Schema.java";
+    private static final String KLASS_PATH = "./com/cwi/managed_data/klass_system/models/Klass.java";
+    private static final String FIELD_PATH = "./com/cwi/managed_data/klass_system/models/Field.java";
+
     public SchemaManager() {
         schemaSchema = load(Schema.class, new BootstrapFactory());
     }

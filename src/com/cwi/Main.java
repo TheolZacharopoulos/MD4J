@@ -17,6 +17,7 @@ public class Main {
 
         SchemaManager schemaManager = new SchemaManager();
 
+//        Schema pointSchema = schemaManager.make("./com/cwi/managed_data/examples/schemas/Point.java");
         Schema pointSchema = schemaManager.make(Point.class);
 
         System.out.println("\nBasic Record Point: ");
