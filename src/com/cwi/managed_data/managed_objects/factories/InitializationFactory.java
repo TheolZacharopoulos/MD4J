@@ -6,6 +6,7 @@ import com.cwi.managed_data.klass_system.factories.Factory;
 import com.cwi.managed_data.managed_objects.InitManagedObject;
 import com.cwi.managed_data.managed_objects.ManagedObjectBase;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -23,18 +24,13 @@ public class InitializationFactory extends Factory {
         HashMap<String, Object> values = new HashMap<String, Object>();
 
         Iterator<Field> fieldsIterator = this.schemaKlass.fields().iterator();
+        Iterator<Object> valuesIterator = Arrays.asList(_inits).iterator();
 
-        for (Object initValue : _inits) {
-
-            if (!fieldsIterator.hasNext()) {
-                break;
-            }
-
-            // Get the field's name
-            String parameterName = fieldsIterator.next().name();
-
-            // Save the value.
-            values.put(parameterName, initValue);
+        while (fieldsIterator.hasNext() && valuesIterator.hasNext()) {
+            values.put(
+                fieldsIterator.next().name(),
+                valuesIterator.next()
+            );
         }
 
         return new InitManagedObject(schemaKlass, values);
