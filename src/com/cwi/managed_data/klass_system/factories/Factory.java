@@ -6,9 +6,7 @@ import com.cwi.managed_data.managed_objects.ManagedObjectBase;
 
 import java.lang.reflect.Proxy;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * A factory should be instantiated with a schema in order to

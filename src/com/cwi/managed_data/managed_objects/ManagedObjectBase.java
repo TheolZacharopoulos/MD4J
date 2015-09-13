@@ -38,6 +38,7 @@ public class ManagedObjectBase implements InvocationHandler {
                 .findFirst()).get();
     }
 
+    // TODO: Should I check the types manually like this?
     private void checkType(Type _fieldType, Object _fieldValue) {
         if (!_fieldType.name().equals(_fieldValue.getClass().getSimpleName())) {
             throw new IllegalArgumentException();
@@ -71,10 +72,13 @@ public class ManagedObjectBase implements InvocationHandler {
         String fieldName = method.getName();
         boolean isAssignment = false;
 
-        // in case there is already the method declared
+        // TODO: Check this.
+        // This is a way to execute the "attached" methods of the derived Managed Objects,
+        // from the proxied objects. (e.g. point.observe()).
+        //
+        // In case there is already the method declared
         // (in one of the sub-classes/sub managedObjects),
         // then invoke it dynamically, and return.
-        // * Something like the: create_methods() in Enso-lang
         for (Method declaredMethod : this.getClass().getMethods()) {
             if (declaredMethod.getName().equals(fieldName)) {
                 method.invoke(this, args);
@@ -85,6 +89,7 @@ public class ManagedObjectBase implements InvocationHandler {
         // because is varargs
         Object [] fieldArgs = (Object []) args[0];
 
+        // TODO: Is this the right way to check assignment?
         // If there is an argument then is considered as assignment.
         if (fieldArgs.length > 0) {
             isAssignment = true;
