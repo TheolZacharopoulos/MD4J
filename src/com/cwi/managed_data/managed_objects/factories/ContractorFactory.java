@@ -17,7 +17,7 @@ public class ContractorFactory extends Factory {
     }
 
     @Override
-    protected ManagedObjectBase createManagedObject(Object ...inits) {
+    protected ManagedObjectBase createManagedObject(Object ..._inits) {
         return new ContractorManagedObject(schemaKlass);
     }
 }

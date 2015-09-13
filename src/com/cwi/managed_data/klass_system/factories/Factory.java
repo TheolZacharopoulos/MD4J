@@ -6,7 +6,9 @@ import com.cwi.managed_data.managed_objects.ManagedObjectBase;
 
 import java.lang.reflect.Proxy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A factory should be instantiated with a schema in order to
@@ -36,7 +38,7 @@ public class Factory {
      * Helper to add new proxied interfaces, this is needed in case we need a new interface
      * to be proxied on the Managed Object.
      *
-     * @param _newInterface the interface to be proxied.
+     * @param _newInterface the interface to be added in the proxied interfaces list.
      */
     protected void addProxiedInterface(Class<?> _newInterface) {
         Class<?>[] result = Arrays.copyOf(proxiedInterfaces, proxiedInterfaces.length + 1);
@@ -46,37 +48,38 @@ public class Factory {
 
     /**
      * Returns a proxied ManagedObject which is based on the schema klass.
-     * @param inits a list of initialized values for the object construction.
-     * @return a new managed object, (type erasure for readability)
+     * This method is used form the clients in order to get a managed object.
+     *
+     * @param _inits (Optional) a list of initialization values for the object construction.
+     * @return a new managed object, (type erasure with casting for readability)
      */
-    public <T> T make(Object ...inits) {
-        return (T) createProxiedManagedObject(inits);
+    public <T> T make(Object ..._inits) {
+        return (T) createProxiedManagedObject(_inits);
     }
 
     /**
-     * Proxies a managed object. The reason that I use Proxy here is in order
-     * to add methods on the returned object since Java does not support
-     * dynamic addition of methods.
+     * Proxies a managed object. The reason of using a proxy here is to add methods
+     * on the returned object since Java does not support dynamic method attachment.
      *
-     * @param inits a list of initialized values for the object construction.
+     * @param _inits a list of initialized values for the object construction.
      * @return a new Proxied ManagedObject.
      */
-    private Object createProxiedManagedObject(Object ...inits) {
+    private Object createProxiedManagedObject(Object ..._inits) {
         return Proxy.newProxyInstance(
                 klassInterface.getClassLoader(),
                 proxiedInterfaces,
-                createManagedObject(inits)
+                createManagedObject(_inits)
         );
     }
 
     /**
-     * This method can be overridden from the derived factories in order to
+     * This method can (and should) be overridden from the derived factories in order to
      * create specific Managed Objects.
      *
-     * @param inits a list of initialized values for the object construction.
+     * @param _inits a list of initialized values for the object construction.
      * @return a new ManagedObjectBase.
      */
-    protected ManagedObjectBase createManagedObject(Object ...inits) {
+    protected ManagedObjectBase createManagedObject(Object ..._inits) {
         return new ManagedObjectBase(schemaKlass);
     }
 }

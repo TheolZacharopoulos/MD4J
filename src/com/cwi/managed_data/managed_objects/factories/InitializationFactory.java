@@ -17,14 +17,14 @@ public class InitializationFactory extends Factory {
     }
 
     @Override
-    protected ManagedObjectBase createManagedObject(Object ...inits) {
+    protected ManagedObjectBase createManagedObject(Object ..._inits) {
 
         // Initialize values from method arguments.
         HashMap<String, Object> values = new HashMap<String, Object>();
 
         Iterator<Field> fieldsIterator = this.schemaKlass.fields().iterator();
 
-        for (Object initValue : inits) {
+        for (Object initValue : _inits) {
 
             if (!fieldsIterator.hasNext()) {
                 break;

@@ -29,7 +29,7 @@ public class Main {
 
         // ================================================================================
 
-        System.out.println("\nInit Record Point: ");
+        System.out.println("\nInitialized Record Point: ");
         Factory initPointFactory = new InitializationFactory(pointSchema);
 
         Point initPoint = initPointFactory.make(10, 22);
