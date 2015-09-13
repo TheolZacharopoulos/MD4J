@@ -21,38 +21,16 @@ public class ManagedObjectBase implements InvocationHandler {
         schemaKlass = _schemaClass;
         values = new HashMap<>();
 
+        // initialize fields to null.
         schemaKlass.fields()
-            .forEach(field -> setFieldDefaultValue(field));
+            .forEach(field -> values.put(field.name(), null));
     }
 
-    private void setFieldDefaultValue(Field _field) {
-        String fieldName = _field.name();
-        String typeName = _field.type().name();
-
-        // TODO: Better way to do this???
-        if (typeName.equals(Integer.class.getSimpleName())) {
-            values.put(fieldName, 0);
-
-        } else if (typeName.equals(String.class.getSimpleName())) {
-            values.put(fieldName, "");
-
-        } else if (typeName.equals(Double.class.getSimpleName())) {
-            values.put(fieldName, 0.0);
-
-        } else if (typeName.equals(Float.class.getSimpleName())) {
-            values.put(fieldName, 0.0);
-
-        } else if (typeName.equals(Boolean.class.getSimpleName())) {
-            values.put(fieldName, false);
-
-        } else if (typeName.equals(Object.class.getSimpleName())) {
-            values.put(fieldName, null);
-
-        } else {
-            values.put(fieldName, null);
-        }
-    }
-
+    /**
+     * Get a field from the schemaKlass by it's name.
+     * @param _name the name of the field.
+     * @return the field object.
+     */
     private Field getFieldByName(String _name) {
         return (schemaKlass.fields()
                 .stream()
