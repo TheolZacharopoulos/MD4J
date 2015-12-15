@@ -1,1 +1,2 @@
-# Managed Data in Java using dynamic proxies.
+# ManagedData4J
+Taming Aspects with Managed Data
