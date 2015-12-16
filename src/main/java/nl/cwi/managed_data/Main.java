@@ -1,6 +1,6 @@
-package nl.cwi;
+package nl.cwi.managed_data;
 
-import nl.cwi.managed_data.examples.schemas.Point;
+import nl.cwi.examples.schemas.Point;
 import nl.cwi.managed_data.klass_system.factories.Factory;
 import nl.cwi.managed_data.klass_system.helpers.SchemaManager;
 import nl.cwi.managed_data.klass_system.models.Schema;
@@ -9,10 +9,6 @@ import nl.cwi.managed_data.managed_objects.factories.InitializationFactory;
 import nl.cwi.managed_data.managed_objects.factories.ObservableFactory;
 import nl.cwi.managed_data.roles.contract.ContractBrokenException;
 import nl.cwi.managed_data.roles.contract.Contractor;
-import nl.cwi.managed_data.roles.observer.Observable;
-import nl.cwi.managed_data.examples.schemas.Point;
-import nl.cwi.managed_data.managed_objects.factories.InitializationFactory;
-import nl.cwi.managed_data.roles.contract.ContractBrokenException;
 import nl.cwi.managed_data.roles.observer.Observable;
 
 public class Main {

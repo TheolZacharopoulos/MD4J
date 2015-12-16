@@ -1,4 +1,4 @@
-package nl.cwi.managed_data.examples.schemas;
+package nl.cwi.examples.schemas;
 
 import java.util.Date;
 
