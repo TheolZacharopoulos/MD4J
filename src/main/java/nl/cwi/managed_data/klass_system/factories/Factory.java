@@ -73,7 +73,7 @@ public class Factory {
     }
 
     /**
-     * This method can (and should) be overridden from the derived factories in order to
+     * This method can (and should) be overridden from the derived data_managers in order to
      * create specific Managed Objects.
      *
      * @param _inits a list of initialized values for the object construction.
