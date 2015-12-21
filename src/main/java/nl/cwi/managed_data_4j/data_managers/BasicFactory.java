@@ -27,7 +27,8 @@ public class BasicFactory implements IFactory {
         this.initializationValues = _inits;
 
         // always add the schemaKlass Interface.
-        this.addProxiedInterface(schema.klassInterface());
+        schema.klassInterfaces()
+            .forEach(this::addProxiedInterface);
     }
 
     /**
@@ -70,12 +71,18 @@ public class BasicFactory implements IFactory {
 
         // FIXME: to be checked.
         Klass schemaKlass = schema.klasses().stream()
-            .filter(klass -> klass.name().equals(schema.klassInterface().getSimpleName()))
+            .filter(klass ->
+                schema.klassInterfaces().stream()
+                    .map(Class::getSimpleName)
+                    .anyMatch(klassInterfaceName -> klassInterfaceName.equals(klass.name()))
+            )
             .findFirst()
             .orElseThrow(RuntimeException::new);
 
+        // FIXME: hmmmmm
+        ClassLoader classLoader = schema.klassInterfaces().stream().findFirst().get().getClassLoader();
         return Proxy.newProxyInstance(
-                schema.klassInterface().getClassLoader(),
+                classLoader,
                 proxiedInterfaces,
                 createManagedObject(schemaKlass, _inits)
         );

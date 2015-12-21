@@ -9,11 +9,10 @@ import java.util.stream.Collectors;
  */
 public interface Schema {
 
-    // TODO: Is it inverse?
     /**
      * The Interface which describes this schema.
      */
-    Class klassInterface(Class... interfaces);
+    Set<Class> klassInterfaces(Class... interfaces);
 
     /**
      * A set of all the types in the schema.

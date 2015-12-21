@@ -49,10 +49,11 @@ public class ManagedObjectBase implements InvocationHandler {
      * @return the field object.
      */
     private Field getFieldByName(String _name) {
+        System.out.println(schemaKlass.name());
         return (schemaKlass.fields().stream()
             .filter(field -> field.name().equals(_name))
             .findFirst())
-            .get();
+            .orElseThrow(NoSuchFieldError::new);
     }
 
     // TODO: Should I check the types manually like this?
@@ -77,7 +78,6 @@ public class ManagedObjectBase implements InvocationHandler {
 
     protected void _set(String _name, Object _value) throws NoSuchFieldError {
         Field field = getFieldByName(_name);
-        checkFieldByName(_name);
         checkType(field.type(), _value);
 
         values.put(_name, _value);
