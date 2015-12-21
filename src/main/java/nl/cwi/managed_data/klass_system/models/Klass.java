@@ -10,13 +10,13 @@ public interface Klass extends Type {
     Set<Klass> subs(Klass ...sub);
 
     /**
-     * The Schema of a Klass is the Schema it belongs to.
+     * The Schema of a KlassImpl is the Schema it belongs to.
      */
     @Inverse(other=Schema.class, field="classes")
     Schema schema(Schema ...schema);
 
     /**
-     * The Interface of which this Klass is made from.
+     * The Interface of which this KlassImpl is made from.
      */
     Class klassInterface(Class ...interfaces);
 }

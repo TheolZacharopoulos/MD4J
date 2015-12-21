@@ -1,8 +1,9 @@
 package nl.cwi.managed_data_4j.managed_objects;
 
-import nl.cwi.managed_data_4j.klass_system.models.Field;
-import nl.cwi.managed_data_4j.klass_system.models.Klass;
-import nl.cwi.managed_data_4j.klass_system.models.Type;
+import nl.cwi.managed_data_4j.data_managers.IFactory;
+import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Field;
+import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Klass;
+import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Type;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -20,17 +21,25 @@ public class ManagedObjectBase implements InvocationHandler {
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;
 
+    protected IFactory factory;
+
     /**
      * ManagedObject is the “backing object”. It stores the data and schemaKlass pointer.
      * @param _schemaKlass the schemaKlass pointer
      */
-    public ManagedObjectBase(Klass _schemaKlass) {
+    public ManagedObjectBase(Klass _schemaKlass, IFactory _factory) {
         this.schemaKlass = _schemaKlass;
+        this.factory = _factory;
         this.values = new HashMap<>();
 
-        // initialize fields to null.
-        this.schemaKlass.fields()
-                .forEach(field -> values.put(field.name(), null));
+        // create the fields
+        this.schemaKlass.fields().stream()
+            .forEach(this::setupField);
+    }
+
+    private void setupField(Field field) {
+        // TODO
+        this.values.put(field.name(), null);
     }
 
     /**
@@ -40,10 +49,9 @@ public class ManagedObjectBase implements InvocationHandler {
      * @return the field object.
      */
     private Field getFieldByName(String _name) {
-        return
-            (schemaKlass.fields().stream()
-                .filter(field -> field.name().equals(_name))
-                .findFirst())
+        return (schemaKlass.fields().stream()
+            .filter(field -> field.name().equals(_name))
+            .findFirst())
             .get();
     }
 
@@ -81,7 +89,7 @@ public class ManagedObjectBase implements InvocationHandler {
         String fieldName = method.getName();
         boolean isAssignment = false;
 
-        // TODO: Check this.
+        // FIXME
         // This is a way to execute the "attached" methods of the derived Managed Objects,
         // from the proxied objects. (e.g. point.observe()).
         //
@@ -98,7 +106,7 @@ public class ManagedObjectBase implements InvocationHandler {
         // because is varargs
         Object [] fieldArgs = (Object []) args[0];
 
-        // TODO: Is this the right way to check assignment?
+        // FIXME: Is this the right way to check assignment?
         // If there is an argument then is considered as assignment.
         if (fieldArgs.length > 0) {
             isAssignment = true;
@@ -109,7 +117,6 @@ public class ManagedObjectBase implements InvocationHandler {
 
         // If it is an assignment
         if (isAssignment) {
-
             checkType(field.type(), fieldArgs[0]);
 
             _set(fieldName, fieldArgs[0]);

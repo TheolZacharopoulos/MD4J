@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.klass_system.models;
+package nl.cwi.managed_data_4j.klass_system.models.schema_schema;
 
 public interface Field {
 
@@ -16,6 +16,7 @@ public interface Field {
     /**
      * The inverse of a Field is a Field that it is inverse of.
      */
+    @Inverse(other=Field.class, field="inverse")
     Field inverse(Field... field);
 
     /**

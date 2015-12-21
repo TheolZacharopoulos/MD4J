@@ -1,10 +1,9 @@
 package nl.cwi.managed_data_4j.data_managers;
 
-import nl.cwi.managed_data_4j.klass_system.models.Klass;
+import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Klass;
+import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.managed_objects.ManagedObjectBase;
-import nl.cwi.managed_data_4j.klass_system.models.Schema;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
@@ -14,8 +13,7 @@ import java.util.Arrays;
  * query the schema to know what fields exist etc.
  * The data manager (factory) interprets the schema to managed data.
  */
-@SuppressWarnings("unchecked")
-public class BasicFactory implements InvocationHandler {
+public class BasicFactory implements IFactory {
 
     protected Class<?> managedObjectInstanceFactoryClass;
     protected Schema schema;
@@ -23,21 +21,13 @@ public class BasicFactory implements InvocationHandler {
 
     private Class<?>[] proxiedInterfaces = {};
 
-    // TODO: will change
-    protected Klass schemaKlass;
-    protected Class schemaKlassInterface;
-
     private BasicFactory(Class<?> _moInstanceFactoryClass, Schema _schema, Object... _inits) {
         this.managedObjectInstanceFactoryClass = _moInstanceFactoryClass;
         this.schema = _schema;
         this.initializationValues = _inits;
 
-        // TODO: will Change
-        this.schemaKlass = schema.klasses().stream().findFirst().get();
-        this.schemaKlassInterface = schemaKlass.klassInterface();
-
         // always add the schemaKlass Interface.
-        this.addProxiedInterface(schemaKlassInterface);
+        this.addProxiedInterface(schema.klassInterface());
     }
 
     /**
@@ -77,10 +67,17 @@ public class BasicFactory implements InvocationHandler {
      * @return a new Proxied ManagedObject.
      */
     private Object createProxiedManagedObject(Object... _inits) {
+
+        // FIXME: to be checked.
+        Klass schemaKlass = schema.klasses().stream()
+            .filter(klass -> klass.name().equals(schema.klassInterface().getSimpleName()))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+
         return Proxy.newProxyInstance(
-                schemaKlassInterface.getClassLoader(),
+                schema.klassInterface().getClassLoader(),
                 proxiedInterfaces,
-                createManagedObject(_inits)
+                createManagedObject(schemaKlass, _inits)
         );
     }
 
@@ -91,8 +88,8 @@ public class BasicFactory implements InvocationHandler {
      * @param _inits a list of initialized values for the object construction.
      * @return a new ManagedObjectBase.
      */
-    protected ManagedObjectBase createManagedObject(Object... _inits) {
-        return new ManagedObjectBase(schemaKlass);
+    protected ManagedObjectBase createManagedObject(Klass klass, Object... _inits) {
+        return new ManagedObjectBase(klass, this);
     }
 
     @Override
