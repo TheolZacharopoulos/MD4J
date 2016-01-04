@@ -73,7 +73,7 @@ public class BasicFactory implements InvocationHandler {
      * Proxies a managed object. The reason of using a proxy here is to add methods
      * on the returned object since Java does not support dynamic method attachment.
      *
-     * @param _inits a list of initialization values for the object construction.
+     * @param _inits a list of initialization props for the object construction.
      * @return a new Proxied ManagedObject.
      */
     private Object createProxiedManagedObject(Object... _inits) {
@@ -88,7 +88,7 @@ public class BasicFactory implements InvocationHandler {
      * This method can (and should) be overridden from the derived data_managers in order to
      * create specific Managed Objects.
      *
-     * @param _inits a list of initialized values for the object construction.
+     * @param _inits a list of initialized props for the object construction.
      * @return a new ManagedObjectBase.
      */
     protected ManagedObjectBase createManagedObject(Object... _inits) {

@@ -18,7 +18,7 @@ public class InitManagedObject extends LockableManagedObject {
             }
         }
 
-        // lock, not changes on the values allowed after that, Immutable.
+        // lock, not changes on the props allowed after that, Immutable.
         lock();
     }
 }

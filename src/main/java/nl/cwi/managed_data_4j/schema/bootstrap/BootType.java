@@ -1,7 +1,7 @@
-package nl.cwi.managed_data_4j.klass_system.models.bootstrap;
+package nl.cwi.managed_data_4j.schema.bootstrap;
 
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Schema;
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Type;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
 public class BootType implements Type {
 

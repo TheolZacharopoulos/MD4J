@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.klass_system.models.schema_schema;
+package nl.cwi.managed_data_4j.schema.models.schema_schema;
 
 /**
  * Represents a TypeImpl, can be PrimitiveImpl or a KlassImpl.

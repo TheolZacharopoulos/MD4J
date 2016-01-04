@@ -1,8 +1,8 @@
-package nl.cwi.managed_data_4j.klass_system.models.bootstrap;
+package nl.cwi.managed_data_4j.schema.bootstrap;
 
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Field;
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Klass;
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Schema;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 
 import java.util.Arrays;
 import java.util.HashSet;

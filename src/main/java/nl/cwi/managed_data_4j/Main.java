@@ -1,14 +1,14 @@
 package nl.cwi.managed_data_4j;
 
-import nl.cwi.examples.schemas.Line;
-import nl.cwi.examples.schemas.Point;
-import nl.cwi.examples.schemas.PointFactory;
+import nl.cwi.examples.geometry.Line;
+import nl.cwi.examples.geometry.Point;
+import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.managed_data_4j.data_managers.BasicFactory;
-import nl.cwi.managed_data_4j.klass_system.models.bootstrap.SchemaFactory;
-import nl.cwi.managed_data_4j.klass_system.helpers.SchemaManager;
+import nl.cwi.managed_data_4j.schema.bootstrap.SchemaFactory;
+import nl.cwi.managed_data_4j.schema.helpers.SchemaManager;
 
 // Import the SchemaSchema definition
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.*;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 public class Main {
 
@@ -29,9 +29,12 @@ public class Main {
 
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
-        // (points) to be created with starting values.
-//        Schema pointSchema = SchemaManager.load(schemaFactory, Point.class, Line.class);
-//        PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
-//        Point point = pointFactory.point(3, 2);
+        // (points) to be created with starting props.
+        Schema pointSchema = SchemaManager.load(schemaFactory, Point.class, Line.class);
+        PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
+        Point point = pointFactory.point(3, 2);
+        point.x(3);
+        point.y(2);
+        System.out.println(point.x());
     }
 }

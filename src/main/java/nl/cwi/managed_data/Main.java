@@ -1,8 +1,6 @@
 package nl.cwi.managed_data;
 
-import nl.cwi.examples.schemas.Point;
-import nl.cwi.examples.schemas.PointFactory;
-import nl.cwi.managed_data.klass_system.factories.BasicFactory;
+import nl.cwi.examples.geometry.Point;
 import nl.cwi.managed_data.klass_system.factories.Factory;
 import nl.cwi.managed_data.klass_system.helpers.SchemaManager;
 import nl.cwi.managed_data.klass_system.models.Schema;

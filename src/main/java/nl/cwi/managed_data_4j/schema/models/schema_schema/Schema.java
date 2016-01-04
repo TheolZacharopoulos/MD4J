@@ -1,10 +1,14 @@
-package nl.cwi.managed_data_4j.klass_system.models.schema_schema;
+package nl.cwi.managed_data_4j.schema.models.schema_schema;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * A self-described Schema,
+ * While there are many kinds of schemas and data managers
+ * there is one basic schema that is used in the implementation of itself.
+ * This schema is called the Schema Schema.
+ *
+ * This is a self-described Schema,
  * since every concept is used is included in its definition.
  */
 public interface Schema {
@@ -24,7 +28,8 @@ public interface Schema {
      */
     default Set<Klass> klasses() {
         return types().stream()
-            .filter(type -> type.name().equals("Klass"))
+//            .filter(type -> type.name().equals("Klass"))
+            .filter(Klass.class::isInstance)
             .map(Klass.class::cast)
             .collect(Collectors.toSet());
     }
@@ -34,7 +39,8 @@ public interface Schema {
      */
     default Set<Primitive> primitives() {
         return types().stream()
-            .filter(type -> type.name().equals("Primitive"))
+//            .filter(type -> type.name().equals("Primitive"))
+            .filter(Primitive.class::isInstance)
             .map(Primitive.class::cast)
             .collect(Collectors.toSet());
     }

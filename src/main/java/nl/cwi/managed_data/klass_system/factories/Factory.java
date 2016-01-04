@@ -50,7 +50,7 @@ public class Factory {
      * Returns a proxied ManagedObject which is based on the schema klass.
      * This method is used form the clients in order to get a managed object.
      *
-     * @param _inits (Optional) a list of initialization values for the object construction.
+     * @param _inits (Optional) a list of initialization props for the object construction.
      * @return a new managed object, (type erasure with casting for readability)
      */
     public <T> T make(Object ..._inits) {
@@ -61,7 +61,7 @@ public class Factory {
      * Proxies a managed object. The reason of using a proxy here is to add methods
      * on the returned object since Java does not support dynamic method attachment.
      *
-     * @param _inits a list of initialized values for the object construction.
+     * @param _inits a list of initialized props for the object construction.
      * @return a new Proxied ManagedObject.
      */
     private Object createProxiedManagedObject(Object ..._inits) {
@@ -76,7 +76,7 @@ public class Factory {
      * This method can (and should) be overridden from the derived data_managers in order to
      * create specific Managed Objects.
      *
-     * @param _inits a list of initialized values for the object construction.
+     * @param _inits a list of initialized props for the object construction.
      * @return a new ManagedObjectBase.
      */
     protected ManagedObjectBase createManagedObject(Object ..._inits) {

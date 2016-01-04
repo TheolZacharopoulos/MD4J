@@ -1,9 +1,9 @@
-package nl.cwi.managed_data_4j.managed_objects;
+package nl.cwi.managed_data_4j.managed_object;
 
 import nl.cwi.managed_data_4j.data_managers.IFactory;
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Field;
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Klass;
-import nl.cwi.managed_data_4j.klass_system.models.schema_schema.Type;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public class ManagedObjectBase implements InvocationHandler {
 
-    // Store values for the object: <Name, Value>
-    protected Map<String, Object> values;
+    // Store props for the object: <Name, Value>
+    protected Map<String, Object> props = new HashMap<>();
 
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;
@@ -30,7 +30,6 @@ public class ManagedObjectBase implements InvocationHandler {
     public ManagedObjectBase(Klass _schemaKlass, IFactory _factory) {
         this.schemaKlass = _schemaKlass;
         this.factory = _factory;
-        this.values = new HashMap<>();
 
         // create the fields
         this.schemaKlass.fields().stream()
@@ -39,7 +38,8 @@ public class ManagedObjectBase implements InvocationHandler {
 
     private void setupField(Field field) {
         // TODO
-        this.values.put(field.name(), null);
+        this.props.put(field.name(), null);
+
     }
 
     /**
@@ -49,7 +49,6 @@ public class ManagedObjectBase implements InvocationHandler {
      * @return the field object.
      */
     private Field getFieldByName(String _name) {
-        System.out.println(schemaKlass.name());
         return (schemaKlass.fields().stream()
             .filter(field -> field.name().equals(_name))
             .findFirst())
@@ -73,14 +72,14 @@ public class ManagedObjectBase implements InvocationHandler {
 
     protected Object _get(String _name) throws NoSuchFieldError {
         checkFieldByName(_name);
-        return values.get(_name);
+        return props.get(_name);
     }
 
     protected void _set(String _name, Object _value) throws NoSuchFieldError {
         Field field = getFieldByName(_name);
         checkType(field.type(), _value);
 
-        values.put(_name, _value);
+        props.put(_name, _value);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args)
