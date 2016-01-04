@@ -98,11 +98,11 @@ public class MObject implements InvocationHandler {
         return factory;
     }
 
-    protected MObjectField get(String _name) throws NoSuchFieldError {
+    protected MObjectField _get(String _name) throws NoSuchFieldError {
         return props.get(_name);
     }
 
-    protected void set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
+    protected void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
         MObjectField field = this.props.get(_name);
         if (field == null) {
             throw new NoSuchFieldError("No field with the name " + _name);
@@ -112,6 +112,26 @@ public class MObject implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
+        final String fieldName = method.getName();
+
+        boolean isAssignment = false;
+
+        // because is varargs
+        Object [] fieldArgs = (Object []) args[0];
+
+        // FIXME: Is this the right way to check assignment?
+        // If there is an argument then is considered as assignment.
+        if (fieldArgs.length > 0) {
+            isAssignment = true;
+        }
+
+        // If it is an assignment, set the value
+        if (isAssignment) {
+            _set(fieldName, fieldArgs[0]);
+            return null;
+        }
+
+        // If is not an assignment, get the value.
+        return _get(fieldName);
     }
 }
