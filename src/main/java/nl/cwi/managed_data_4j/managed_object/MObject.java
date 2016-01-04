@@ -28,16 +28,21 @@ public class MObject implements InvocationHandler {
         this.schemaKlass = schemaKlass;
         this.factory = factory;
 
-        this.schemaKlass.fields().stream()
-            .forEach(this::safeSetupField);
+        if (this.schemaKlass.fields() != null) {
 
-        this.safeInitializeProps(initializers);
+            // setup fields and properties / set default values.
+            this.schemaKlass.fields().stream()
+                    .forEach(this::safeSetupField);
+
+            // initialize fields with actual values.
+            this.safeInitializeProps(initializers);
+        }
     }
 
     /**
      * Wrapper to handle exceptions.
      */
-    protected void safeSetupField(Field _field) {
+    private void safeSetupField(Field _field) {
         try {
             this.setupField(_field);
         } catch (InvalidFieldValueException | UnknownPrimitiveTypeException e) {
@@ -64,7 +69,7 @@ public class MObject implements InvocationHandler {
     /**
      * Wrapper to handle exceptions.
      */
-    protected void safeInitializeProps(Object... initializers) {
+    private void safeInitializeProps(Object... initializers) {
         try {
             this.initializeProps(initializers);
         } catch (InvalidFieldValueException e) {
@@ -105,7 +110,7 @@ public class MObject implements InvocationHandler {
     protected void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
         MObjectField field = this.props.get(_name);
         if (field == null) {
-            throw new NoSuchFieldError("No field with the name " + _name);
+            throw new NoSuchFieldError("No field with the name " + _name + " in class " + schemaKlass.name());
         }
 
         field.init(_value);
@@ -113,6 +118,8 @@ public class MObject implements InvocationHandler {
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
+
+        if (args == null) return _get(fieldName);
 
         boolean isAssignment = false;
 

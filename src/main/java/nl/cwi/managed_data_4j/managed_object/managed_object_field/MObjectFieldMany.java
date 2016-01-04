@@ -15,9 +15,10 @@ public class MObjectFieldMany extends MObjectField {
         this.value = defaultValue();
     }
 
-    public void init(Collection<Object> values) {
+    @Override
+    public void init(Object value) throws InvalidFieldValueException {
         // make the value object a collections, and add the values on that.
-        values.forEach(val -> ((Collection<Object>) this.value).add(val));
+        ((Collection<Object>) value).forEach(val -> ((Collection<Object>) this.value).add(val));
     }
 
     @Override
