@@ -1,23 +1,19 @@
-package nl.cwi.managed_data_4j.schema.bootstrap;
+package nl.cwi.managed_data_4j.schema.boot.boot_primitives;
 
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Primitive;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
-public class BootType implements Type {
+public class BoolPrimitive implements Primitive {
 
     private Schema schema;
 
-    public BootType() {
-        this(null);
-    }
-
-    public BootType(Schema schema) {
+    public BoolPrimitive(Schema schema) {
         this.schema = schema;
     }
 
     @Override
-    public String name(String... name) {
-        return Type.class.getSimpleName();
+    public String name(String ...name) {
+        return "Boolean";
     }
 
     @Override

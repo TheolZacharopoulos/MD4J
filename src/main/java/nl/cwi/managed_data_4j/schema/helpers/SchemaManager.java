@@ -1,7 +1,7 @@
 package nl.cwi.managed_data_4j.schema.helpers;
 
-import nl.cwi.managed_data_4j.schema.bootstrap.BootSchema;
-import nl.cwi.managed_data_4j.schema.bootstrap.SchemaFactory;
+import nl.cwi.managed_data_4j.schema.boot.BootSchema;
+import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 import java.lang.reflect.Method;
@@ -12,13 +12,13 @@ public class SchemaManager {
 
     /**
      * Bootstraps the schema schema
-     * @param _schemaSchemaDefinitions a list of the schema definitions for schema. (SchemaSchema definitions)
      * @return The instance of SchemaSchema
      */
-    public static Schema bootLoad(Class<?>... _schemaSchemaDefinitions) {
+    public static Schema bootLoad() {
         return new BootSchema();
     }
 
+    // TODO:
     /**
      * Convert from a schema definitions (interface) to an instance of Schema.
      * @param _factory the factory which creates the schema
