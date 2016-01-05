@@ -62,9 +62,9 @@ public class ManagedObjectBase implements InvocationHandler {
         final String fieldTypeName = _fieldType.name();
         final String valueClassName = _fieldValue.getClass().getSimpleName();
 
-//        if (!fieldTypeName.equals(valueClassName)) {
-//            throw new IllegalArgumentException("Illegal type " + fieldTypeName + " with " + valueClassName);
-//        }
+        if (!fieldTypeName.equals(valueClassName)) {
+            throw new IllegalArgumentException("Illegal type " + fieldTypeName + " with " + valueClassName);
+        }
     }
 
     private void checkFieldByName(String _name) {
