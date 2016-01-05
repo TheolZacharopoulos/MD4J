@@ -1,19 +1,19 @@
 package nl.cwi.managed_data_4j.schema.boot.boot_fields;
 
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.ClassPrimitive;
+import nl.cwi.managed_data_4j.schema.boot.boot_klasses.TypeKlass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
-public class KlassInterfacesField implements Field {
+public class KlassesField implements Field {
 
-    public static final String NAME = "klassInterfaces";
+    public static final String NAME = "klasses";
 
     private Schema schema;
     private Klass owner;
 
-    public KlassInterfacesField(Schema schema, Klass owner) {
+    public KlassesField(Schema schema, Klass owner) {
         this.schema = schema;
         this.owner = owner;
     }
@@ -25,7 +25,7 @@ public class KlassInterfacesField implements Field {
 
     @Override
     public Type type(Type... type) {
-        return new ClassPrimitive(schema);
+        return new TypeKlass(schema);
     }
 
     @Override
