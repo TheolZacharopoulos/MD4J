@@ -21,15 +21,19 @@ public class ManagedObjectBase implements InvocationHandler {
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;
 
+    protected Object[] initializationValues;
+
+
     protected IFactory factory;
 
     /**
      * ManagedObject is the “backing object”. It stores the data and schemaKlass pointer.
      * @param _schemaKlass the schemaKlass pointer
      */
-    public ManagedObjectBase(Klass _schemaKlass, IFactory _factory) {
+    public ManagedObjectBase(Klass _schemaKlass, IFactory _factory, Object... _inits) {
         this.schemaKlass = _schemaKlass;
         this.factory = _factory;
+        this.initializationValues = _inits;
 
         // create the fields
         this.schemaKlass.fields().stream()
@@ -37,9 +41,7 @@ public class ManagedObjectBase implements InvocationHandler {
     }
 
     private void setupField(Field field) {
-        // TODO
         this.props.put(field.name(), null);
-
     }
 
     /**
@@ -52,21 +54,24 @@ public class ManagedObjectBase implements InvocationHandler {
         return (schemaKlass.fields().stream()
             .filter(field -> field.name().equals(_name))
             .findFirst())
-            .orElseThrow(NoSuchFieldError::new);
+            .orElseThrow(() -> new NoSuchFieldError("No such field named " + _name + " in " + schemaKlass.name()));
     }
 
     // TODO: Should I check the types manually like this?
     private void checkType(Type _fieldType, Object _fieldValue) {
-        if (!_fieldType.name().equals(_fieldValue.getClass().getSimpleName())) {
-            throw new IllegalArgumentException();
-        }
+        final String fieldTypeName = _fieldType.name();
+        final String valueClassName = _fieldValue.getClass().getSimpleName();
+
+//        if (!fieldTypeName.equals(valueClassName)) {
+//            throw new IllegalArgumentException("Illegal type " + fieldTypeName + " with " + valueClassName);
+//        }
     }
 
     private void checkFieldByName(String _name) {
         Field field = getFieldByName(_name);
 
         if (field == null) {
-            throw new NoSuchFieldError("No field with the name " + _name);
+            throw new NoSuchFieldError("No such field named " + _name + " in " + schemaKlass.name());
         }
     }
 
@@ -82,9 +87,7 @@ public class ManagedObjectBase implements InvocationHandler {
         props.put(_name, _value);
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args)
-            throws Throwable
-    {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String fieldName = method.getName();
         boolean isAssignment = false;
 
@@ -102,8 +105,11 @@ public class ManagedObjectBase implements InvocationHandler {
             }
         }
 
-        // because is varargs
-        Object [] fieldArgs = (Object []) args[0];
+        Object [] fieldArgs;
+        if (args == null)
+            fieldArgs = this.initializationValues;
+        else
+            fieldArgs = (Object []) args[0];
 
         // FIXME: Is this the right way to check assignment?
         // If there is an argument then is considered as assignment.
