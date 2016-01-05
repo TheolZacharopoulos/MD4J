@@ -11,6 +11,7 @@ import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +36,9 @@ public class SchemaManager {
         Set<Type> types = new HashSet<>();
         Set<Class> klassInterfaces = new HashSet<>(Arrays.asList(_schemaKlassesDef));
 
+        // create an empty schema, will wire it later
+        SchemaImpl schema = new SchemaImpl(klassInterfaces, types);
+
         // for each klass definition
         for (Class<?> schemaKlassDefinition : _schemaKlassesDef) {
             Set<Field> fields = new HashSet<>();
@@ -44,107 +48,30 @@ public class SchemaManager {
             for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
                 final String fieldName = schemaKlassField.getName();
                 final String fieldReturnType = schemaKlassField.getReturnType().getSimpleName();
+                final Type fieldType = TypeFactory.getTypeFromClassName(fieldReturnType);
 
-                fields.add(new Field() {
-
-                    @Override
-                    public String name(String... name) {
-                        return fieldName;
-                    }
-
-                    @Override
-                    public Type type(Type... type) {
-                        Type fieldType = null;
-
-                        switch (fieldReturnType) {
-                            case "String":
-                                fieldType = new StringPrimitive(null); // TODO
-                                break;
-
-                            case "Integer":
-                                fieldType = new IntegerPrimitive(null); // TODO
-                                break;
-
-                            case "Boolean":
-                                fieldType = new BoolPrimitive(null); // TODO
-                                break;
-
-                            case "Float":
-                                fieldType = new IntegerPrimitive(null); // TODO
-                                break;
-
-                            case "Double":
-                                fieldType = new IntegerPrimitive(null); // TODO
-                                break;
-
-                            case "Object":
-                                fieldType = new ObjectPrimitive(null); // TODO
-                                break;
-                        }
-
-                        return fieldType;
-                    }
-
-                    @Override
-                    public Boolean many(Boolean... many) {
-                        return false; // TODO
-                    }
-
-                    @Override
-                    public Boolean optional(Boolean... optional) {
-                        return false; // TODO
-                    }
-
-                    @Override
-                    public Field inverse(Field... field) {
-                        return null; // TODO
-                    }
-
-                    @Override
-                    public Klass owner(Klass... owner) {
-                        return null; // TODO
-                    }
-                });
+                // add it's fields
+                // TODO: complete this
+                fields.add(new FieldImpl(fieldName, schema, null, fieldType, false, false, null));
             }
 
-            types.add(new Klass() {
-                @Override
-                public Set<Field> fields(Field... field) {
-                    return fields;
-                }
+            // create a new klass
+            // TODO: complete this
+            Klass klass = new KlassImpl(klassName, schema, Collections.emptySet(), Collections.emptySet(), fields);
 
-                @Override
-                public Set<Klass> supers(Klass... supers) {
-                    return null; // TODO
-                }
+            // wire the owner in fields
+            fields.stream()
+                .map(FieldImpl.class::cast)
+                .forEach(field -> field.setOwner(klass));
 
-                @Override
-                public Set<Klass> subklasses(Klass... subklasses) {
-                    return null; // TODO
-                }
-
-                @Override
-                public Schema schema(Schema... schema) {
-                    return null; // TODO
-                }
-
-                @Override
-                public String name(String... name) {
-                    return klassName;
-                }
-            });
+            // add a new klass
+            // TODO: complete this
+            types.add(klass);
         }
 
-        return new Schema() {
-            @Override
-            public Set<Class> klassInterfaces(Class... interfaces) {
-                return klassInterfaces;
-            }
+        // wire the types on schema
+        schema.setTypes(types);
 
-            @Override
-            public Set<Type> types(Type... type) {
-                return types;
-            }
-        };
+        return schema;
     }
 }

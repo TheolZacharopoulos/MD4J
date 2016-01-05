@@ -16,9 +16,9 @@ public class FieldImpl implements Field {
     private Field inverse;
 
     public FieldImpl(
+        String name,
         Schema schema,
         Klass owner,
-        String name,
         Type type,
         Boolean many,
         Boolean optional,
