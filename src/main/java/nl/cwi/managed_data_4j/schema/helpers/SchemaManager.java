@@ -1,12 +1,7 @@
 package nl.cwi.managed_data_4j.schema.helpers;
 
-import nl.cwi.examples.geometry.Point;
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.BoolPrimitive;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.IntegerPrimitive;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.ObjectPrimitive;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.StringPrimitive;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 import java.lang.reflect.Method;

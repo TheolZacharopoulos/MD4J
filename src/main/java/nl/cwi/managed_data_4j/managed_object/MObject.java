@@ -35,7 +35,9 @@ public class MObject implements InvocationHandler {
                     .forEach(this::safeSetupField);
 
             // initialize fields with actual values.
-            this.safeInitializeProps(initializers);
+            if (initializers != null) {
+                this.safeInitializeProps(initializers);
+            }
         }
     }
 
