@@ -1,5 +1,8 @@
 package nl.cwi.managed_data_4j;
 
+import nl.cwi.examples.geometry.Line;
+import nl.cwi.examples.geometry.Point;
+import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.managed_data_4j.data_managers.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.helpers.SchemaManager;
@@ -17,6 +20,7 @@ public class Main {
         // It is also hardcoded.
         Schema bootstrapSchema = SchemaManager.bootLoad();
 
+        // Create a schema Factory which creates Schema instances.
         SchemaFactory schemaFactory = BasicFactory.make(SchemaFactory.class, bootstrapSchema);
 
         // The schemas are described by the SchemaSchema.
@@ -28,11 +32,11 @@ public class Main {
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
-//        Schema pointSchema = SchemaManager.load(schemaFactory, Point.class, Line.class);
-//        PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
-//        Point point = pointFactory.point(3, 2);
-//        point.x(3);
-//        point.y(2);
-//        System.out.println(point.x());
+        Schema pointSchema = SchemaManager.load(schemaFactory, Point.class, Line.class);
+        PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
+        Point point = pointFactory.point(3, 2);
+        point.x(3);
+        point.y(2);
+        System.out.println(point.x());
     }
 }

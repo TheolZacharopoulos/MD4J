@@ -1,9 +1,12 @@
 package nl.cwi.managed_data_4j.schema.boot.boot_klasses;
 
+import nl.cwi.managed_data_4j.schema.boot.boot_fields.KlassInterfacesField;
 import nl.cwi.managed_data_4j.schema.boot.boot_fields.TypesField;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class SchemaKlass implements Klass {
@@ -22,7 +25,12 @@ public class SchemaKlass implements Klass {
     @Override
     public Set<Field> fields(Field...field) {
         final Field typesField = new TypesField(schema, this);
-        return Collections.singleton(typesField);
+        final Field klassInterfacesField = new KlassInterfacesField(schema, this);
+
+        return new HashSet<>(Arrays.asList(
+            typesField,
+            klassInterfacesField
+        ));
     }
 
     @Override

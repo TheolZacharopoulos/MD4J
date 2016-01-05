@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This schema describes the schema of a schema.schema (self description / MetaSchema)
+ * This schema describes the schema of a schemaSchema (self description / MetaSchema)
  */
 public class BootSchema implements Schema {
 
