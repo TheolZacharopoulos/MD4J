@@ -24,9 +24,9 @@ public class Main {
 
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
-//        Schema realSchemaSchema =
-//                SchemaManager.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-//        assert (bootstrapSchema == realSchemaSchema);
+        Schema realSchemaSchema =
+                SchemaManager.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+        assert (bootstrapSchema == realSchemaSchema);
 
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
@@ -34,7 +34,11 @@ public class Main {
         Schema pointSchema = SchemaManager.load(schemaFactory, Point.class, Line.class);
         PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
         Point point = pointFactory.point(3, 2);
+        Line line = pointFactory.line(point, point);
+
         System.out.print(point.x() + " + " + point.y() + " = ");
-        System.out.println(point.x() + point.y());
+        System.out.print(point.x() + point.y());
+        System.out.print(" == ");
+        System.out.println(line.startPoint().x() + line.startPoint().y());
     }
 }
