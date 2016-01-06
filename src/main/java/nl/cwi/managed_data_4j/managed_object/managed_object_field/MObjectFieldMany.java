@@ -35,7 +35,7 @@ public class MObjectFieldMany extends MObjectField {
     }
 
     protected Object defaultValue() throws UnknownPrimitiveTypeException {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     public boolean isEmpty() {

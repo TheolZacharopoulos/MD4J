@@ -1,8 +1,8 @@
 package nl.cwi.managed_data_4j.data_managers;
 
+import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
-import nl.cwi.managed_data_4j.managed_object.ManagedObjectBase;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -93,9 +93,8 @@ public class BasicFactory implements IFactory {
      * @param _inits a list of initialized props for the object construction.
      * @return a new Managed Object.
      */
-    protected ManagedObjectBase createManagedObject(Klass klass, Object... _inits) {
-        // TODO: switch to MObject
-        return new ManagedObjectBase(klass, this, _inits);
+    protected MObject createManagedObject(Klass klass, Object... _inits) {
+        return new MObject(klass, this, _inits);
     }
 
     /**

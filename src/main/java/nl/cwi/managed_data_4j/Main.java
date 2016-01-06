@@ -24,9 +24,9 @@ public class Main {
 
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
-        Schema realSchemaSchema =
-                SchemaManager.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-        assert (bootstrapSchema == realSchemaSchema);
+//        Schema realSchemaSchema =
+//                SchemaManager.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+//        assert (bootstrapSchema == realSchemaSchema);
 
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects

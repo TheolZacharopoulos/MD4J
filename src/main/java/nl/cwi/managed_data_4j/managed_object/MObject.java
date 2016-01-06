@@ -9,6 +9,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Primitive;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -56,7 +57,7 @@ public class MObject implements InvocationHandler {
         MObjectField prop;
 
         if (!field.many()) {
-            if (field.type().name().equals("Primitive")) {
+            if (field.type() instanceof Primitive) {
                 prop = new MObjectFieldPrimitive(this, field);
             } else {
                 prop = new MObjectFieldRef(this, field);
@@ -86,36 +87,28 @@ public class MObject implements InvocationHandler {
         for (int i = 0; i < fieldList.size(); i++) {
             if (i < initializers.length) {
                 final Field fld = fieldList.get(i);
-                final MObjectField mObjectField = this.props.get(fieldList.get(i).name());
+                final MObjectField mObjectField = this.props.get(fld.name());
 
                 if (fld.many()) {
                     mObjectField.init(Arrays.asList(((Collection<Object>) initializers[i])));
                 } else {
-                    mObjectField.init(initializers[0]);
+                    mObjectField.init(initializers[i]);
                 }
             }
         }
     }
 
-    public Klass getSchemaKlass() {
-        return schemaKlass;
-    }
-
-    public IFactory getFactory() {
-        return factory;
-    }
-
     protected MObjectField _get(String _name) throws NoSuchFieldError {
-        return props.get(_name);
+        return this.props.get(_name);
     }
 
     protected void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
-        MObjectField field = this.props.get(_name);
-        if (field == null) {
+        MObjectField mObjectField = this.props.get(_name);
+        if (mObjectField == null) {
             throw new NoSuchFieldError("No field with the name " + _name + " in class " + schemaKlass.name());
         }
 
-        field.init(_value);
+        mObjectField.init(_value);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -141,6 +134,7 @@ public class MObject implements InvocationHandler {
         }
 
         // If is not an assignment, get the value.
-        return _get(fieldName);
+        MObjectField mObjectField = _get(fieldName);
+        return mObjectField.get(); // return the field's value
     }
 }

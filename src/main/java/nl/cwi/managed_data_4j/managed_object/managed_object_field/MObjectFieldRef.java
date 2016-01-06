@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 
+// TODO: Create this
 public class MObjectFieldRef extends MObjectFieldSingle {
 
     public MObjectFieldRef(MObject owner, Field field)
