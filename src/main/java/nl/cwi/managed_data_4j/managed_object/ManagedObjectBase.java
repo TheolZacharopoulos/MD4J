@@ -1,14 +1,15 @@
 package nl.cwi.managed_data_4j.managed_object;
 
 import nl.cwi.managed_data_4j.data_managers.IFactory;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The Basic Managed Object, all managed objects should inherit from this one.
@@ -21,27 +22,67 @@ public class ManagedObjectBase implements InvocationHandler {
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;
 
-    protected Object[] initializationValues;
-
-
     protected IFactory factory;
 
     /**
      * ManagedObject is the “backing object”. It stores the data and schemaKlass pointer.
      * @param _schemaKlass the schemaKlass pointer
      */
-    public ManagedObjectBase(Klass _schemaKlass, IFactory _factory, Object... _inits) {
+    public ManagedObjectBase(Klass _schemaKlass, IFactory _factory, Object... _initializers) {
         this.schemaKlass = _schemaKlass;
         this.factory = _factory;
-        this.initializationValues = _inits;
 
-        // create the fields
-        this.schemaKlass.fields().stream()
-            .forEach(this::setupField);
+        if (this.schemaKlass.fields() != null) {
+
+            // setup fields and properties / set default values.
+            this.schemaKlass.fields().stream()
+                .forEach(this::safeSetupField);
+
+            // initialize fields with actual values.
+            if (_initializers != null) {
+                this.safeInitializeProps(_initializers);
+            }
+        }
     }
 
-    private void setupField(Field field) {
+    /**
+     * Wrapper to handle exceptions.
+     */
+    private void safeSetupField(Field _field) {
+        try {
+            this.setupField(_field);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setupField(Field field) throws UnknownPrimitiveTypeException, InvalidFieldValueException {
         this.props.put(field.name(), null);
+    }
+
+    /**
+     * Wrapper to handle exceptions.
+     */
+    private void safeInitializeProps(Object... initializers) {
+        try {
+            this.initializeProps(initializers);
+        } catch (InvalidFieldValueException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void initializeProps(Object... initializers) throws InvalidFieldValueException {
+
+        // FIXME: ugly
+        int i = 0;
+        for (String fieldKey : this.props.keySet()) {
+            if (initializers[i] != null) {
+                this.props.put(fieldKey, initializers[i]);
+                i++;
+            } else {
+                break;
+            }
+        }
     }
 
     /**
@@ -105,11 +146,7 @@ public class ManagedObjectBase implements InvocationHandler {
             }
         }
 
-        Object [] fieldArgs;
-        if (args == null)
-            fieldArgs = this.initializationValues;
-        else
-            fieldArgs = (Object []) args[0];
+        Object [] fieldArgs = (Object []) args[0];
 
         // FIXME: Is this the right way to check assignment?
         // If there is an argument then is considered as assignment.

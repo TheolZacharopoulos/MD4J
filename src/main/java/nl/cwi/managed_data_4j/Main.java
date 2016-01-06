@@ -33,9 +33,7 @@ public class Main {
         // (points) to be created with starting props.
         Schema pointSchema = SchemaManager.load(schemaFactory, Point.class, Line.class);
         PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
-        Point point = pointFactory.point();
-        point.x(3);
-        point.y(2);
+        Point point = pointFactory.point(3, 2);
         System.out.print(point.x() + " + " + point.y() + " = ");
         System.out.println(point.x() + point.y());
     }
