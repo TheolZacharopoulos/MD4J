@@ -72,15 +72,13 @@ public class ManagedObjectBase implements InvocationHandler {
     }
 
     protected void initializeProps(Object... initializers) throws InvalidFieldValueException {
+        List<Field> fieldList = new ArrayList<>();
+        fieldList.addAll(this.schemaKlass.fields());
 
-        // FIXME: ugly
-        int i = 0;
-        for (String fieldKey : this.props.keySet()) {
-            if (initializers[i] != null) {
-                this.props.put(fieldKey, initializers[i]);
-                i++;
-            } else {
-                break;
+        for (int i = 0; i < fieldList.size(); i++) {
+            if (i < initializers.length) {
+                final Field fld = fieldList.get(i);
+                this.props.put(fld.name(), initializers[i]);
             }
         }
     }
