@@ -144,7 +144,6 @@ public class MObject implements InvocationHandler {
                 _set(fieldName, fieldArgs);
             }
 
-            _set(fieldName, fieldArgs);
             return null;
         }
 
