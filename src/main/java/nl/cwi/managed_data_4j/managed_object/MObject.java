@@ -129,12 +129,6 @@ public class MObject implements InvocationHandler {
         // because is varargs
         Object [] fieldArgs = (Object []) args[0];
 
-        // in case have 1 arg means that is a single field
-        if (fieldArgs.length == 1) {
-            fieldArgs = (Object[]) fieldArgs[0];
-        }
-
-        // FIXME: Is this the right way to check assignment?
         // If there is an argument then is considered as assignment.
         if (fieldArgs.length > 0) {
             isAssignment = true;
@@ -142,6 +136,14 @@ public class MObject implements InvocationHandler {
 
         // If it is an assignment, set the value
         if (isAssignment) {
+
+            // in case have 1 arg means that is a single field
+            if (fieldArgs.length == 1) {
+                _set(fieldName, fieldArgs[0]);
+            } else {
+                _set(fieldName, fieldArgs);
+            }
+
             _set(fieldName, fieldArgs);
             return null;
         }
