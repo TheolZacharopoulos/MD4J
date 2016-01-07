@@ -31,8 +31,8 @@ public class SchemaManager {
         Set<Type> types = new HashSet<>();
         Set<Class> klassInterfaces = new HashSet<>(Arrays.asList(_schemaKlassesDef));
 
-        // create an empty schema, will wire it later
-        SchemaImpl schema = new SchemaImpl(klassInterfaces, types);
+        // create an empty schema using the factory, will wire it later
+        Schema schema = _factory.schema();
 
         // for each klass definition
         for (Class<?> schemaKlassDefinition : _schemaKlassesDef) {
@@ -64,8 +64,11 @@ public class SchemaManager {
             types.add(klass);
         }
 
+        // wire the klassInterfaces on schema
+        schema.klassInterfaces(klassInterfaces.toArray(new Class[klassInterfaces.size()]));
+
         // wire the types on schema
-        schema.setTypes(types);
+        schema.types(types.toArray(new Type[types.size()]));
 
         return schema;
     }

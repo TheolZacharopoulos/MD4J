@@ -5,8 +5,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 public class MObjectFieldMany extends MObjectField {
 
@@ -17,13 +16,21 @@ public class MObjectFieldMany extends MObjectField {
 
     @Override
     public void init(Object value) throws InvalidFieldValueException {
-        // make the value object a collections, and add the values on that.
-        ((Collection<Object>) value).forEach(val -> ((Collection<Object>) this.value).add(val));
+        if (!value.getClass().isArray()) throw new InvalidFieldValueException("Non-array value passed to many-field");
+
+        // it's an array since it's many
+        Object[] inits = ((Object[]) value);
+
+        // transform to a collection
+        Collection<Object> valuesToSet = new HashSet<>(Arrays.asList(inits));
+
+        // make the value object a collection, and add the values to that.
+        (valuesToSet).forEach(val -> ((Collection<Object>) this.value).add(val));
     }
 
     @Override
     public void set(Object value) throws InvalidFieldValueException {
-        throw new InvalidFieldValueException("Cannot assign to many-valued field " + field.name());
+        throw new InvalidFieldValueException("Cannot assign to many-values field " + field.name());
     }
 
     @Override
@@ -35,7 +42,7 @@ public class MObjectFieldMany extends MObjectField {
     }
 
     protected Object defaultValue() throws UnknownPrimitiveTypeException {
-        return Collections.emptySet();
+        return new HashSet<>();
     }
 
     public boolean isEmpty() {

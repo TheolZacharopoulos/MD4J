@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>nl.cwi.managed_data</groupId>
+    <groupId>nl.cwi.managed_data_4j</groupId>
     <artifactId>ManagedData4J</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>

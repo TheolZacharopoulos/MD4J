@@ -10,6 +10,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Unknown
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Primitive;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -90,7 +91,9 @@ public class MObject implements InvocationHandler {
                 final MObjectField mObjectField = this.props.get(fld.name());
 
                 if (fld.many()) {
-                    mObjectField.init(Arrays.asList(((Collection<Object>) initializers[i])));
+                    // it's an array since it's many
+                    Object [] inits = ((Object[]) initializers[i]);
+                    mObjectField.init(inits);
                 } else {
                     mObjectField.init(initializers[i]);
                 }
@@ -114,12 +117,22 @@ public class MObject implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 
-        if (args == null) return _get(fieldName);
+        // if no args given, just return the field's value
+        if (args == null) {
+            // If is not an assignment, get the value.
+            MObjectField mObjectField = _get(fieldName);
+            return mObjectField.get(); // return the field's value
+        }
 
         boolean isAssignment = false;
 
         // because is varargs
         Object [] fieldArgs = (Object []) args[0];
+
+        // in case have 1 arg means that is a single field
+        if (fieldArgs.length == 1) {
+            fieldArgs = (Object[]) fieldArgs[0];
+        }
 
         // FIXME: Is this the right way to check assignment?
         // If there is an argument then is considered as assignment.
@@ -129,7 +142,7 @@ public class MObject implements InvocationHandler {
 
         // If it is an assignment, set the value
         if (isAssignment) {
-            _set(fieldName, fieldArgs[0]);
+            _set(fieldName, fieldArgs);
             return null;
         }
 
