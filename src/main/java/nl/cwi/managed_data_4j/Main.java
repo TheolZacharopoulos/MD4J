@@ -1,8 +1,11 @@
 package nl.cwi.managed_data_4j;
 
+import nl.cwi.examples.ccc.UpdateLogger;
 import nl.cwi.examples.geometry.Line;
 import nl.cwi.examples.geometry.Point;
 import nl.cwi.examples.geometry.PointFactory;
+import nl.cwi.examples.patterns.observer.Observable;
+import nl.cwi.examples.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.data_managers.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.helpers.SchemaManager;
@@ -40,5 +43,19 @@ public class Main {
         System.out.print(point.x() + point.y());
         System.out.print(" == ");
         System.out.println(line.startPoint().x() + line.startPoint().y());
+
+        // ================================ Observer ========================================
+        PointFactory observablePointFactory = ObservableFactory.make(PointFactory.class, pointSchema);
+
+        // Create a new observer-record managed object.
+        Point observerPoint = observablePointFactory.point();
+
+        // Add Logging concerns
+        ((Observable) observerPoint).observe(UpdateLogger::log);
+
+        observerPoint.x(1);
+        observerPoint.y(6);
+        observerPoint.x(observerPoint.x() + observerPoint.y());
+        System.out.println(observerPoint.x());
     }
 }

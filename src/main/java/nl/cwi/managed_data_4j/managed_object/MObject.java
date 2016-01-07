@@ -117,6 +117,20 @@ public class MObject implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 
+        // TODO: Check this.
+        // This is a way to execute the "attached" methods of the derived Managed Objects,
+        // from the proxied objects. (e.g. point.observe()).
+        //
+        // In case there is already the method declared
+        // (in one of the sub-classes/sub managedObjects),
+        // then invoke it dynamically, and return.
+        for (Method declaredMethod : this.getClass().getMethods()) {
+            if (declaredMethod.getName().equals(fieldName)) {
+                method.invoke(this, args);
+                return null;
+            }
+        }
+
         // if no args given, just return the field's value
         if (args == null) {
             // If is not an assignment, get the value.
@@ -126,11 +140,10 @@ public class MObject implements InvocationHandler {
 
         boolean isAssignment = false;
 
-        // because is varargs
-        Object [] fieldArgs = (Object []) args[0];
+        Object fieldArgs = args[0];
 
         // If there is an argument then is considered as assignment.
-        if (fieldArgs.length > 0) {
+        if (fieldArgs.getClass().isArray() && ((Object [])fieldArgs).length > 0) {
             isAssignment = true;
         }
 
@@ -138,8 +151,8 @@ public class MObject implements InvocationHandler {
         if (isAssignment) {
 
             // in case have 1 arg means that is a single field
-            if (fieldArgs.length == 1) {
-                _set(fieldName, fieldArgs[0]);
+            if (((Object [])fieldArgs).length == 1) {
+                _set(fieldName, ((Object [])fieldArgs)[0]);
             } else {
                 _set(fieldName, fieldArgs);
             }

@@ -3,7 +3,6 @@ package nl.cwi.managed_data_4j.data_managers;
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -80,7 +79,7 @@ public class BasicFactory implements IFactory {
         final Class<?> schemaFactoryCallingMethodClass = _schemaFactoryCallingMethod.getReturnType();
         final ClassLoader schemaFactoryCallingMethodClassLoader = schemaFactoryCallingMethodClass.getClassLoader();
 
-        // TODO: Fix the schema.klasses() default ans use it, doesn't work.
+        // TODO: Fix the schema.klasses() default and use it, doesn't work.
         // Find the schema klass
         Klass schemaKlass =
             schema.types().stream()
