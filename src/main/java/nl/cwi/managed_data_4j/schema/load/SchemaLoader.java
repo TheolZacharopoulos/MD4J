@@ -1,16 +1,20 @@
-package nl.cwi.managed_data_4j.schema.helpers;
+package nl.cwi.managed_data_4j.schema.load;
 
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
+import nl.cwi.managed_data_4j.schema.load.load_impl.FieldImpl;
+import nl.cwi.managed_data_4j.schema.load.load_impl.KlassImpl;
+import nl.cwi.managed_data_4j.schema.load.load_impl.TypeFactory;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SchemaManager {
+public class SchemaLoader {
 
     /**
      * Bootstraps the schema schema
@@ -20,7 +24,6 @@ public class SchemaManager {
         return new BootSchema();
     }
 
-    // TODO: Need to use the factory, Use the MObjectField???
     /**
      * Convert from a schema definitions (interface) to an instance of Schema.
      * @param _factory the factory which creates the schema
@@ -42,25 +45,25 @@ public class SchemaManager {
             // for each field definition
             for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
                 final String fieldName = schemaKlassField.getName();
-                final String fieldReturnType = schemaKlassField.getReturnType().getSimpleName();
-                final Type fieldType = TypeFactory.getTypeFromClassName(fieldReturnType);
+                final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
+                final String fieldReturnTypeName = fieldReturnClass.getSimpleName();
 
-                // add it's fields
-                // TODO: complete this
-                fields.add(new FieldImpl(fieldName, schema, null, fieldType, false, false, null));
+                final Type fieldType = TypeFactory.getTypeFromClassName(fieldReturnTypeName, schema);
+
+                // add its fields
+                // TODO: complete this (many, optional, inverse)
+                Field field = new FieldImpl(fieldName, schema, null, fieldType, false, false, null);
+                fields.add(field);
             }
 
             // create a new klass
-            // TODO: complete this
+            // TODO: complete this (supers, subs)
             Klass klass = new KlassImpl(klassName, schema, Collections.emptySet(), Collections.emptySet(), fields);
 
-            // wire the owner in fields
-            fields.stream()
-                .map(FieldImpl.class::cast)
-                .forEach(field -> field.setOwner(klass));
+            // wire the owner klass in fields
+            fields.forEach(field -> ((FieldImpl) field).setOwner(klass));
 
-            // add a new klass
-            // TODO: complete this
+            // add the a new klass
             types.add(klass);
         }
 

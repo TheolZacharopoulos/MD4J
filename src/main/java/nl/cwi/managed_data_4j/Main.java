@@ -8,7 +8,7 @@ import nl.cwi.examples.patterns.observer.Observable;
 import nl.cwi.examples.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.data_managers.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.helpers.SchemaManager;
+import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
@@ -16,11 +16,13 @@ public class Main {
 
     public static void main(String[] args) {
 
+        // ================================ Schema Schema ========================================
+
         // We bootstrap the SchemaSchema from the minimal BootstrapSchema that has only classes and fields.
         // This minimal bootstrap schema is necessarily self-describing as it must change itself and
         // it processes simplistic data managers that only allow updating.
         // It is also hardcoded.
-        Schema bootstrapSchema = SchemaManager.bootLoad();
+        Schema bootstrapSchema = SchemaLoader.bootLoad();
 
         // Create a schema Factory which creates Schema instances.
         SchemaFactory schemaFactory = BasicFactory.make(SchemaFactory.class, bootstrapSchema);
@@ -28,13 +30,15 @@ public class Main {
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         Schema realSchemaSchema =
-                SchemaManager.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+                SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
         assert (bootstrapSchema == realSchemaSchema);
+
+        // ================================ Data objects ========================================
 
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
-        Schema pointSchema = SchemaManager.load(schemaFactory, Point.class, Line.class);
+        Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Line.class);
         PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
         Point point = pointFactory.point(3, 2);
         Line line = pointFactory.line(point, point);
