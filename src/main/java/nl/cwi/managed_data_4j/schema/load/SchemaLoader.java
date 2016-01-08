@@ -7,12 +7,8 @@ import nl.cwi.managed_data_4j.schema.load.load_impl.KlassImpl;
 import nl.cwi.managed_data_4j.schema.load.load_impl.TypeFactory;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class SchemaLoader {
 
@@ -50,15 +46,24 @@ public class SchemaLoader {
 
                 final Type fieldType = TypeFactory.getTypeFromClassName(fieldReturnTypeName, schema);
 
+                // check for inverse
+                final Field inverse = buildInverse(schemaKlassField);
+
+                // check for many
+                final boolean many = buildMany(fieldReturnClass);
+
+                // check for optional
+                final boolean optional = buildMany(fieldReturnClass);
+
                 // add its fields
                 // TODO: complete this (many, optional, inverse)
-                Field field = new FieldImpl(fieldName, schema, null, fieldType, false, false, null);
+                final Field field = new FieldImpl(fieldName, schema, null, fieldType, many, optional, inverse);
                 fields.add(field);
             }
 
             // create a new klass
             // TODO: complete this (supers, subs)
-            Klass klass = new KlassImpl(klassName, schema, Collections.emptySet(), Collections.emptySet(), fields);
+            final Klass klass = new KlassImpl(klassName, schema, Collections.emptySet(), Collections.emptySet(), fields);
 
             // wire the owner klass in fields
             fields.forEach(field -> ((FieldImpl) field).setOwner(klass));
@@ -74,5 +79,28 @@ public class SchemaLoader {
         schema.types(types.toArray(new Type[types.size()]));
 
         return schema;
+    }
+
+    private static Field buildInverse(Method schemaKlassField) {
+        Field inverse = null;
+        if (schemaKlassField.isAnnotationPresent(Inverse.class)) {
+            final Inverse fieldInverse = schemaKlassField.getAnnotation(Inverse.class);
+            final String inverseOtherName = fieldInverse.other().getSimpleName();
+            final String inverseField = fieldInverse.field();
+            // TODO: set inverse
+        }
+        return inverse;
+    }
+
+    private static boolean buildMany(Class<?> fieldReturnClass) {
+        boolean many = false;
+        if (fieldReturnClass.isArray()) many = true;
+        if (fieldReturnClass.isAssignableFrom(Iterable.class)) many = true;
+        return many;
+    }
+
+    private static boolean buildOptional() {
+        // TODO
+        return false;
     }
 }
