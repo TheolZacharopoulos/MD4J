@@ -26,11 +26,11 @@ public class SchemaLoadingUtils {
             final Set<Klass> subs = buildSubs(schemaKlassDefinition);
 
             // create a new klass
-            final Klass klass = new KlassImpl(klassName, schema, supers, subs, fields);
+            final Klass klass = new LoadKlass(klassName, schema, supers, subs, fields);
             cache.addType(klass.name(), klass);
 
             // wire the owner klass in fields
-            fields.forEach(field -> ((FieldImpl) field).setOwner(klass));
+            fields.forEach(field -> ((LoadField) field).setOwner(klass));
 
             // add the a new klass
             types.add(klass);
@@ -44,7 +44,7 @@ public class SchemaLoadingUtils {
         Type fieldType = cache.getType(fieldReturnClass.getSimpleName());
 
         // if it's not in cache the build it by the class name.
-        if (fieldType == null || fieldType.name().equals(NullTypeImpl.NAME)) {
+        if (fieldType == null || fieldType.name().equals(LoadNullType.NAME)) {
 
             // if it's managed object should be in cache so no need to build it.
             // So this builds only Primitives.
@@ -75,7 +75,7 @@ public class SchemaLoadingUtils {
             final boolean optional = buildOptional(fieldReturnClass);
 
             // add its fields, the owner Klass will be added later
-            final Field field = new FieldImpl(fieldName, schema, new NullKlassImpl(), fieldType, many, optional, inverse);
+            final Field field = new LoadField(fieldName, schema, new LoadNullKlass(), fieldType, many, optional, inverse);
             cache.addField(field.name(), field);
 
             fields.add(field);
@@ -96,7 +96,7 @@ public class SchemaLoadingUtils {
             final Type inverseOtherKlass = cache.getType(inverseOtherName);
 
             // In this case the inverseOtherKlass is not in the cache yet
-            if (inverseOtherKlass == null || inverseOtherKlass.name().equals(NullKlassImpl.NAME)) {
+            if (inverseOtherKlass == null || inverseOtherKlass.name().equals(LoadNullKlass.NAME)) {
                 return null;
             }
 
@@ -107,10 +107,10 @@ public class SchemaLoadingUtils {
             return ((Klass)inverseOtherKlass).fields().stream()
                 .filter(field -> field.name().equals(inverseField))
                 .findFirst()
-                .orElse(new NullFieldImpl());
+                .orElse(new LoadNullField());
 
         } else {
-            return new NullFieldImpl();
+            return new LoadNullField();
         }
     }
 

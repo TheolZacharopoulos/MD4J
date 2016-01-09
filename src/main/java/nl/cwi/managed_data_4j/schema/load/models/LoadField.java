@@ -5,7 +5,7 @@ import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
-public class FieldImpl implements Field {
+public class LoadField implements Field {
 
     private Schema schema;
     private Klass owner;
@@ -15,7 +15,7 @@ public class FieldImpl implements Field {
     private Boolean optional;
     private Field inverse;
 
-    public FieldImpl(
+    public LoadField(
         String name,
         Schema schema,
         Klass owner,

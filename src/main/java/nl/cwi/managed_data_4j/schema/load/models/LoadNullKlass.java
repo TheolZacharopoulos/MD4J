@@ -4,19 +4,18 @@ import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public class NullKlassImpl extends NullTypeImpl implements Klass {
+public class LoadNullKlass extends LoadNullType implements Klass {
 
     public static final String NAME = "NULL";
 
-    public NullKlassImpl() {
+    public LoadNullKlass() {
         super(null);
     }
 
-    public NullKlassImpl(Schema schema) {
+    public LoadNullKlass(Schema schema) {
         super(schema);
     }
 

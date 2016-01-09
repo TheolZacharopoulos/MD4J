@@ -5,18 +5,18 @@ import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
-public class NullFieldImpl implements Field {
+public class LoadNullField implements Field {
 
     public static final String NAME = "NULL";
 
     private final Schema schema;
     private final Klass owner;
 
-    public NullFieldImpl() {
+    public LoadNullField() {
         this(null, null);
     }
 
-    public NullFieldImpl(Schema schema, Klass owner) {
+    public LoadNullField(Schema schema, Klass owner) {
         this.schema = schema;
         this.owner = owner;
     }

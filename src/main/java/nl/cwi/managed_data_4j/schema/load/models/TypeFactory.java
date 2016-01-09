@@ -35,6 +35,6 @@ public class TypeFactory {
                 return new ObjectPrimitive(schema);
         }
 
-        return new NullTypeImpl(schema);
+        return new LoadNullType(schema);
     }
 }

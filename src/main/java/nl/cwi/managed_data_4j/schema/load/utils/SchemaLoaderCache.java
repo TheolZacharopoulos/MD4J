@@ -1,7 +1,7 @@
 package nl.cwi.managed_data_4j.schema.load.utils;
 
-import nl.cwi.managed_data_4j.schema.load.models.NullFieldImpl;
-import nl.cwi.managed_data_4j.schema.load.models.NullTypeImpl;
+import nl.cwi.managed_data_4j.schema.load.models.LoadNullField;
+import nl.cwi.managed_data_4j.schema.load.models.LoadNullType;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
@@ -29,7 +29,7 @@ public class SchemaLoaderCache {
 
     public Type getType(String typeName) {
         if (!typesCache.containsKey(typeName)) {
-            return new NullTypeImpl();
+            return new LoadNullType();
         }
         return typesCache.get(typeName);
     }
@@ -40,7 +40,7 @@ public class SchemaLoaderCache {
 
     public Field getField(String fieldName) {
         if (!fieldsCache.containsKey(fieldName)) {
-            return new NullFieldImpl();
+            return new LoadNullField();
         }
         return fieldsCache.get(fieldName);
     }

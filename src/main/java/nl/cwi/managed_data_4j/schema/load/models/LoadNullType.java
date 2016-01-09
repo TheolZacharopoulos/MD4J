@@ -3,17 +3,17 @@ package nl.cwi.managed_data_4j.schema.load.models;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
-public class NullTypeImpl implements Type {
+public class LoadNullType implements Type {
 
     public static final String NAME = "NULL";
 
     protected final Schema schema;
 
-    public NullTypeImpl() {
+    public LoadNullType() {
         this(null);
     }
 
-    public NullTypeImpl(Schema schema) {
+    public LoadNullType(Schema schema) {
         this.schema = schema;
     }
 

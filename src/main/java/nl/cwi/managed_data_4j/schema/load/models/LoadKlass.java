@@ -6,7 +6,7 @@ import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 
 import java.util.Set;
 
-public class KlassImpl implements Klass {
+public class LoadKlass implements Klass {
 
     private Schema schema;
     private String name;
@@ -14,7 +14,7 @@ public class KlassImpl implements Klass {
     private Set<Klass> subklasses;
     private Set<Field> fields;
 
-    public KlassImpl(
+    public LoadKlass(
         String name,
         Schema schema,
         Set<Klass> supers,

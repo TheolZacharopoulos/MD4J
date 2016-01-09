@@ -5,12 +5,12 @@ import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
 import java.util.Set;
 
-public class SchemaImpl implements Schema {
+public class LoadSchema implements Schema {
 
     private Set<Class> klassInterfaces;
     private Set<Type> types;
 
-    public SchemaImpl(Set<Class> klassInterfaces, Set<Type> types) {
+    public LoadSchema(Set<Class> klassInterfaces, Set<Type> types) {
         this.klassInterfaces = klassInterfaces;
         this.types = types;
     }
