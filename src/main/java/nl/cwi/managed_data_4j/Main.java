@@ -7,6 +7,7 @@ import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.examples.patterns.observer.Observable;
 import nl.cwi.examples.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.data_managers.BasicFactory;
+import nl.cwi.managed_data_4j.data_managers.DataManagerFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 
@@ -25,7 +26,7 @@ public class Main {
         Schema bootstrapSchema = SchemaLoader.bootLoad();
 
         // Create a schema Factory which creates Schema instances.
-        SchemaFactory schemaFactory = BasicFactory.make(SchemaFactory.class, bootstrapSchema);
+        SchemaFactory schemaFactory = DataManagerFactory.make(new BasicFactory(), SchemaFactory.class, bootstrapSchema);;
 
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
@@ -39,7 +40,7 @@ public class Main {
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
         Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Line.class);
-        PointFactory pointFactory = BasicFactory.make(PointFactory.class, pointSchema);
+        PointFactory pointFactory = DataManagerFactory.make(new BasicFactory(), PointFactory.class, pointSchema);
         Point point = pointFactory.point(3, 2);
         Line line = pointFactory.line(point, point);
 
@@ -49,7 +50,7 @@ public class Main {
         System.out.println(line.startPoint().x() + line.startPoint().y());
 
         // ================================ Observer ========================================
-        PointFactory observablePointFactory = ObservableFactory.make(PointFactory.class, pointSchema);
+        PointFactory observablePointFactory = DataManagerFactory.make(new ObservableFactory(), PointFactory.class, pointSchema);
 
         // Create a new observer-record managed object.
         Point observerPoint = observablePointFactory.point();
