@@ -1,8 +1,6 @@
 package nl.cwi.managed_data_4j.schema.load.utils;
 
-import nl.cwi.managed_data_4j.schema.load.load_impl.FieldImpl;
-import nl.cwi.managed_data_4j.schema.load.load_impl.KlassImpl;
-import nl.cwi.managed_data_4j.schema.load.load_impl.TypeFactory;
+import nl.cwi.managed_data_4j.schema.load.models.*;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 import java.lang.reflect.Method;
@@ -12,6 +10,7 @@ import java.util.Set;
 
 public class SchemaLoadingUtils {
 
+    private final static SchemaLoaderCache cache = SchemaLoaderCache.getInstance();
 
     public static Set<Type> buildTypesFromSchemaKlassesDef(Schema schema, Class<?>... schemaKlassesDefinition) {
         Set<Type> types = new HashSet<>();
@@ -23,9 +22,12 @@ public class SchemaLoadingUtils {
             // build the fields from the class definition
             final Set<Field> fields = buildFieldsFromSchemaKlassDef(schema, schemaKlassDefinition);
 
+            final Set<Klass> supers = buildSupers(schemaKlassDefinition);
+            final Set<Klass> subs = buildSubs(schemaKlassDefinition);
+
             // create a new klass
-            // TODO: complete this (supers, subs)
-            final Klass klass = new KlassImpl(klassName, schema, Collections.emptySet(), Collections.emptySet(), fields);
+            final Klass klass = new KlassImpl(klassName, schema, supers, subs, fields);
+            cache.addType(klass.name(), klass);
 
             // wire the owner klass in fields
             fields.forEach(field -> ((FieldImpl) field).setOwner(klass));
@@ -36,7 +38,23 @@ public class SchemaLoadingUtils {
         return types;
     }
 
-    public static Set<Field> buildFieldsFromSchemaKlassDef(Schema schema, Class<?> schemaKlassDefinition) {
+    private static Type getFieldType(Class<?> fieldReturnClass, Schema schema) {
+
+        // First try to load the type from cache
+        Type fieldType = cache.getType(fieldReturnClass.getSimpleName());
+
+        // if it's not in cache the build it by the class name.
+        if (fieldType == null || fieldType.name().equals(NullTypeImpl.NAME)) {
+
+            // if it's managed object should be in cache so no need to build it.
+            // So this builds only Primitives.
+            fieldType = TypeFactory.getTypeFromClass(fieldReturnClass, schema);
+        }
+
+        return fieldType;
+    }
+
+    private static Set<Field> buildFieldsFromSchemaKlassDef(Schema schema, Class<?> schemaKlassDefinition) {
         Set<Field> fields = new HashSet<>();
 
         // for each field definition
@@ -44,8 +62,8 @@ public class SchemaLoadingUtils {
             final String fieldName = schemaKlassField.getName();
             final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 
-            // TODO: Do this recursively (with Primitives as base case)
-            final Type fieldType = TypeFactory.getTypeFromClass(fieldReturnClass, schema);
+            // TODO: Check this
+            final Type fieldType = getFieldType(fieldReturnClass, schema);
 
             // check for inverse
             final Field inverse = buildInverse(schemaKlassField);
@@ -56,33 +74,91 @@ public class SchemaLoadingUtils {
             // check for optional
             final boolean optional = buildOptional(fieldReturnClass);
 
-            // add its fields
-            // TODO: complete this (many, optional, inverse)
-            final Field field = new FieldImpl(fieldName, schema, null, fieldType, many, optional, inverse);
+            // add its fields, the owner Klass will be added later
+            final Field field = new FieldImpl(fieldName, schema, new NullKlassImpl(), fieldType, many, optional, inverse);
+            cache.addField(field.name(), field);
+
             fields.add(field);
         }
         return fields;
     }
 
-    public static Field buildInverse(Method schemaKlassField) {
-        Field inverse = null;
+    private static Field buildInverse(Method schemaKlassField) {
+        // TODO
+
+        // Check if the field has the Inverse annotation
         if (schemaKlassField.isAnnotationPresent(Inverse.class)) {
             final Inverse fieldInverse = schemaKlassField.getAnnotation(Inverse.class);
-            final String inverseOtherName = fieldInverse.other().getSimpleName();
+
+            // get the inverse-other klass
+            final Class<?> inverseOther = fieldInverse.other();
+            final String inverseOtherName = inverseOther.getSimpleName();
+            final Type inverseOtherKlass = cache.getType(inverseOtherName);
+
+            // In this case the inverseOtherKlass is not in the cache yet
+            if (inverseOtherKlass == null || inverseOtherKlass.name().equals(NullKlassImpl.NAME)) {
+                return null;
+            }
+
+            // get the inverse field
             final String inverseField = fieldInverse.field();
-            // TODO: set inverse
+
+            // extract the field of the inverse-other klass
+            return ((Klass)inverseOtherKlass).fields().stream()
+                .filter(field -> field.name().equals(inverseField))
+                .findFirst()
+                .orElse(new NullFieldImpl());
+
+        } else {
+            return new NullFieldImpl();
         }
-        return inverse;
     }
 
-    public static boolean buildMany(Class<?> fieldReturnClass) {
+    private static Set<Klass> buildSupers(Class<?> schemaKlassDefinition) {
+        // TODO
+        Set<Klass> supers = new HashSet<>();
+
+        // Add interfaces that implements
+        for (Class<?> interfaceImpl : schemaKlassDefinition.getInterfaces()) {
+            final Type superKlass = cache.getType(interfaceImpl.getSimpleName());
+            supers.add((Klass) superKlass);
+        }
+
+        // Add superclass if any.
+        if (schemaKlassDefinition.getSuperclass() != null) {
+            final Type superKlass = cache.getType(schemaKlassDefinition.getSuperclass().getSimpleName());
+            supers.add((Klass) superKlass);
+        }
+
+        return supers.isEmpty() ? Collections.emptySet() : supers;
+    }
+
+    private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition) {
+        // TODO
+        Set<Klass> subs = new HashSet<>();
+
+        cache.getAllTypes() .forEach(type -> {
+            if (!(type instanceof Klass)) return;
+
+            ((Klass)type).supers().forEach(superKlass -> {
+                if (superKlass.name().equals(schemaKlassDefinition.getSimpleName())) {
+                    subs.add(superKlass);
+                }
+            });
+        });
+
+        return subs.isEmpty() ? Collections.emptySet() : subs;
+    }
+
+    private static boolean buildMany(Class<?> fieldReturnClass) {
+        // TODO
         boolean many = false;
         if (fieldReturnClass.isArray()) many = true;
         if (fieldReturnClass.isAssignableFrom(Iterable.class)) many = true;
         return many;
     }
 
-    public static boolean buildOptional(Class<?> fieldReturnClass) {
+    private static boolean buildOptional(Class<?> fieldReturnClass) {
         // TODO
         return false;
     }

@@ -2,6 +2,7 @@ package nl.cwi.managed_data_4j.schema.load;
 
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
+import nl.cwi.managed_data_4j.schema.load.utils.SchemaLoaderCache;
 import nl.cwi.managed_data_4j.schema.load.utils.SchemaLoadingUtils;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
@@ -24,6 +25,10 @@ public class SchemaLoader {
      * @return the instance of Schema
      */
     public static Schema load(SchemaFactory factory, Class<?>... schemaKlassesDef) {
+
+        // init cache
+        SchemaLoaderCache.getInstance();
+
         Set<Class> klassInterfaces = new HashSet<>(Arrays.asList(schemaKlassesDef));
 
         // create an empty schema using the factory, will wire it later

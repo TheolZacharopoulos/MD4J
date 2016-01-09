@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.schema.load.load_impl;
+package nl.cwi.managed_data_4j.schema.load.models;
 
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
