@@ -14,8 +14,6 @@ import java.util.Set;
 
 public class KlassKlass extends TypeKlass {
 
-    private Schema schema;
-
     public KlassKlass(Schema schema) {
         super(schema);
     }
@@ -50,19 +48,5 @@ public class KlassKlass extends TypeKlass {
     @Override
     public Set<Klass> supers(Klass... supers) {
         return Collections.singleton(new TypeKlass(schema));
-    }
-
-    @Override
-    public Set<Klass> subklasses(Klass... subklasses) {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public Schema schema(Schema... schema) {
-        return this.schema;
-    }
-
-    public void setSchema(Schema schema) {
-        this.schema = schema;
     }
 }

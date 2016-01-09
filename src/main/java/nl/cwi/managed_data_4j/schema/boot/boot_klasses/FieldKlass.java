@@ -6,16 +6,13 @@ import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FieldKlass implements Klass {
-
-    private Schema schema;
+public class FieldKlass extends AbstractKlass {
 
     public FieldKlass(Schema schema) {
-        this.schema = schema;
+        super(schema);
     }
 
     @Override
@@ -43,24 +40,10 @@ public class FieldKlass implements Klass {
     }
 
     @Override
-    public Set<Klass> supers(Klass... supers) {
-        return Collections.emptySet();
-    }
-
-    @Override
     public Set<Klass> subklasses(Klass... subklasses) {
         return new HashSet<>(Arrays.asList(
                 new PrimitiveKlass(schema),
                 new KlassKlass(schema))
         );
-    }
-
-    @Override
-    public Schema schema(Schema... schema) {
-        return this.schema;
-    }
-
-    public void setSchema(Schema schema) {
-        this.schema = schema;
     }
 }

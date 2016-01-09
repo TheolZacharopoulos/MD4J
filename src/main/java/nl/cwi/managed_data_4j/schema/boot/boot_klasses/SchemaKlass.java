@@ -7,16 +7,13 @@ import nl.cwi.managed_data_4j.schema.boot.boot_fields.TypesField;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SchemaKlass implements Klass {
-
-    private Schema schema;
+public class SchemaKlass extends AbstractKlass {
 
     public SchemaKlass(Schema schema) {
-        this.schema = schema;
+        super(schema);
     }
 
     @Override
@@ -37,24 +34,5 @@ public class SchemaKlass implements Klass {
             primitivesField,
             klassesField
         ));
-    }
-
-    @Override
-    public Set<Klass> supers(Klass... supers) {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public Set<Klass> subklasses(Klass... subklasses) {
-        return Collections.emptySet();
-    }
-
-    @Override
-    public Schema schema(Schema... schema) {
-        return this.schema;
-    }
-
-    public void setSchema(Schema schema) {
-        this.schema = schema;
     }
 }
