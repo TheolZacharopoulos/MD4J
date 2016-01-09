@@ -40,7 +40,7 @@ public class KlassesField implements Field {
 
     @Override
     public Field inverse(Field... field) {
-        return null;
+        return new NullField();
     }
 
     @Override

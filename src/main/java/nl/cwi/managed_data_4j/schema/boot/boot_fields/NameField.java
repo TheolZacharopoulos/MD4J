@@ -40,7 +40,7 @@ public class NameField implements Field {
 
     @Override
     public Field inverse(Field... field) {
-        return null;
+        return new NullField();
     }
 
     @Override
