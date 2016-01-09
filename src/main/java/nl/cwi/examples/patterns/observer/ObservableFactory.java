@@ -49,14 +49,8 @@ public class ObservableFactory extends BasicFactory {
         addProxiedInterface(Observable.class);
     }
 
-    /**
-     * This method can (and should) be overridden from the derived data_managers in order to
-     * create specific Managed Objects.
-     *
-     * @param _inits a list of initialized props for the object construction.
-     * @return a new Managed Object.
-     */
-    protected MObject createManagedObject(Klass klass, Object... _inits) {
+    @Override
+    public MObject createManagedObject(Klass klass, Object... _inits) {
         return new ObservableMObject(klass, this, _inits);
     }
 }

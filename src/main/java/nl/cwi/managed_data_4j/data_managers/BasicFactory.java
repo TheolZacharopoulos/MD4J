@@ -11,7 +11,6 @@ import java.util.Arrays;
 /**
  * A factory should be instantiated with a schema in order to
  * query the schema to know what fields exist etc.
- * The data manager (factory) interprets the schema to managed data.
  */
 @SuppressWarnings("unchecked")
 public class BasicFactory implements IFactory {
@@ -31,34 +30,38 @@ public class BasicFactory implements IFactory {
      * @return a new factory which creates managed objects.
      */
     public static <T> T make(Class<?> _moInstanceFactoryClass, Schema _schema, Object... _inits) {
-        return (T) createProxiedManagedObjectInstanceFactory(_moInstanceFactoryClass, _schema, _inits);
+        return (T) Proxy.newProxyInstance(
+                _moInstanceFactoryClass.getClassLoader(),
+                new Class<?>[]{_moInstanceFactoryClass},
+                createProxiedManagedObjectInstanceFactory(_moInstanceFactoryClass, _schema, _inits));
     }
 
-    private static Object createProxiedManagedObjectInstanceFactory(
+    private static IFactory createProxiedManagedObjectInstanceFactory(
             Class<?> _moInstanceFactoryClass,
             Schema _schema,
             Object... _inits)
     {
-        return Proxy.newProxyInstance(
-            _moInstanceFactoryClass.getClassLoader(),
-            new Class<?>[]{_moInstanceFactoryClass},
-            new BasicFactory(_moInstanceFactoryClass, _schema, _inits));
+        return new BasicFactory(_moInstanceFactoryClass, _schema, _inits);
     }
 
-    // Invocation handler Definition.
-    protected Class<?> managedObjectInstanceFactoryClass;
+    protected Class<?> moSchemaFactoryClass;
     protected Schema schema;
+
+    // we need those in order to add the to the java Proxy.
     private Class<?>[] proxiedInterfaces = {};
 
-    protected BasicFactory(Class<?> _moInstanceFactoryClass, Schema _schema, Object... _inits) {
-        this.managedObjectInstanceFactoryClass = _moInstanceFactoryClass;
+    /**
+     * The data manager (factory) interprets the schema to managed data.
+     * @param _moSchemaFactoryClass the Class of the Schema-Factory.
+     * @param _schema the schema of the managed object which will be built.
+     * @param _inits (Optional) initializing values for the managed object.
+     */
+    protected BasicFactory(Class<?> _moSchemaFactoryClass, Schema _schema, Object... _inits) {
+        this.moSchemaFactoryClass = _moSchemaFactoryClass;
         this.schema = _schema;
 
-        // always add the schemaKlass Interface.
-        if (schema.klassInterfaces() != null) {
-            schema.klassInterfaces()
-                .forEach(this::addProxiedInterface);
-        }
+        // add the klass interfaces of the schema
+        schema.klassInterfaces().forEach(this::addProxiedInterface);
     }
 
     @Override
@@ -81,32 +84,25 @@ public class BasicFactory implements IFactory {
 
         // TODO: Fix the schema.klasses() default and use it, doesn't work.
         // Find the schema klass
-        Klass schemaKlass =
-            schema.types().stream()
+        Klass schemaKlass = schema.types().stream()
             .filter(klass -> klass.name().equals(schemaFactoryCallingMethodClass.getSimpleName()))
             .filter(Klass.class::isInstance)
             .map(Klass.class::cast)
             .findFirst()
             .orElseThrow(() -> new RuntimeException(
                 "Error on klass extraction of class (" + schemaFactoryCallingMethodClass.getSimpleName() + ") " +
-                "from factory (" + managedObjectInstanceFactoryClass.getSimpleName() + ")"));
+                "from factory (" + moSchemaFactoryClass.getSimpleName() + ")"));
 
         return Proxy.newProxyInstance(
-            schemaFactoryCallingMethodClassLoader, // the class loader of the return type of the called method of the schema factory.
-            proxiedInterfaces,
+            schemaFactoryCallingMethodClassLoader,   // the class loader of the return type of the called method of the schema factory.
+            proxiedInterfaces,                       // the interfaces that the Proxy will proxy.
             createManagedObject(schemaKlass, _inits) // proxy it to a new Managed Object
         );
     }
 
-    /**
-     * This method can (and should) be overridden from the derived data_managers in order to
-     * create specific Managed Objects.
-     *
-     * @param _inits a list of initialized props for the object construction.
-     * @return a new Managed Object.
-     */
-    protected MObject createManagedObject(Klass klass, Object... _inits) {
-        return new MObject(klass, this, _inits);
+    @Override
+    public MObject createManagedObject(Klass klass, Object... _inits) {
+        return new MObject(klass, this, _inits); // return a basic managed object
     }
 
     /**
