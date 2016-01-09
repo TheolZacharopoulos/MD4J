@@ -7,16 +7,24 @@ import nl.cwi.managed_data_4j.schema.boot.boot_primitives.StringPrimitive;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
+import java.util.Collections;
+
 public class TypeFactory {
-    public static Type getTypeFromClassName(String className, Schema schema) {
+    public static Type getTypeFromClass(Class<?> typeClass, Schema schema) {
+        final String className = typeClass.getSimpleName();
+
         switch (className) {
+
+            // Primitives
             case "String":
                 return new StringPrimitive(schema);
 
             case "Integer":
+            case "int":
                 return new IntegerPrimitive(schema);
 
             case "Boolean":
+            case "boolean":
                 return new BoolPrimitive(schema);
 
             case "Float":
@@ -28,7 +36,11 @@ public class TypeFactory {
             case "Object":
                 return new ObjectPrimitive(schema);
 
+            // TODO: complete this (supers, subs, fields)
+            // If it does not correspond to a primitive, Create new Klass
+            default: {
+                return new KlassImpl(className, schema, Collections.emptySet(), Collections.emptySet(), null);
+            }
         }
-        return null;
     }
 }

@@ -33,8 +33,7 @@ public class MObject implements InvocationHandler {
         if (this.schemaKlass.fields() != null) {
 
             // setup fields and properties / set default values.
-            this.schemaKlass.fields().stream()
-                    .forEach(this::safeSetupField);
+            this.schemaKlass.fields().stream().forEach(this::safeSetupField);
 
             // initialize fields with actual values.
             if (initializers != null) {
@@ -101,8 +100,9 @@ public class MObject implements InvocationHandler {
         }
     }
 
-    protected MObjectField _get(String _name) throws NoSuchFieldError {
-        return this.props.get(_name);
+    protected Object _get(String _name) throws NoSuchFieldError {
+        MObjectField mObjectField = this.props.get(_name);
+        return mObjectField.get(); // return the field's value
     }
 
     protected void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
@@ -134,8 +134,7 @@ public class MObject implements InvocationHandler {
         // if no args given, just return the field's value
         if (args == null) {
             // If is not an assignment, get the value.
-            MObjectField mObjectField = _get(fieldName);
-            return mObjectField.get(); // return the field's value
+            return _get(fieldName); // return the field's value
         }
 
         boolean isAssignment = false;
@@ -161,7 +160,10 @@ public class MObject implements InvocationHandler {
         }
 
         // If is not an assignment, get the value.
-        MObjectField mObjectField = _get(fieldName);
-        return mObjectField.get(); // return the field's value
+        return _get(fieldName); // return the field's value
+    }
+
+    public Klass getSchemaKlass() {
+        return schemaKlass;
     }
 }
