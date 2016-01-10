@@ -66,9 +66,9 @@ public abstract class AbstractFactory implements IFactory {
      * Helper to add new proxied interfaces, this is needed in case we need a new interface
      * to be proxied on the Managed Object.
      *
-     * @param _newInterface the interface to be added in the proxied interfaces list.
+     * @param newInterface the interface to be added in the proxied interfaces list.
      */
-    protected void addProxiedInterface(Class<?> _newInterface) {
-        proxiedInterfaces.add(_newInterface);
+    protected void addProxiedInterface(Class<?> newInterface) {
+        proxiedInterfaces.add(newInterface);
     }
 }

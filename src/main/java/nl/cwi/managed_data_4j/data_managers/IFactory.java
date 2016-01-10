@@ -27,10 +27,10 @@ public interface IFactory {
      * in order to create specific Managed Objects.
      *
      * @param klass the Managed Object schema Klass
-     * @param _inits a list of initialized props for the object construction.
+     * @param inits a list of initialized props for the object construction.
      * @return a new Managed Object.
      */
-    MObject createManagedObject(Klass klass, Object... _inits);
+    MObject createManagedObject(Klass klass, Object... inits);
 
     /**
      * Proxies a managed object. The reason of using a proxy here is to add methods

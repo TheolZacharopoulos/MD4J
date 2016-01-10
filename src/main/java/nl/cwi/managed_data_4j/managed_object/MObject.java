@@ -1,17 +1,12 @@
 package nl.cwi.managed_data_4j.managed_object;
 
 import nl.cwi.managed_data_4j.data_managers.IFactory;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectField;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectFieldMany;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectFieldPrimitive;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectFieldRef;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Primitive;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
+import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -24,8 +19,16 @@ public class MObject implements InvocationHandler {
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;
 
+    // The data manager that manages this managed object.
     protected IFactory factory;
 
+    /**
+     * A managed object.
+     *
+     * @param schemaKlass the schema klass in which managed object belongs to
+     * @param factory the data manager that manages this managed object.
+     * @param initializers initialization values for the object.
+     */
     public MObject(Klass schemaKlass, IFactory factory, Object... initializers) {
         this.schemaKlass = schemaKlass;
         this.factory = factory;
@@ -53,6 +56,12 @@ public class MObject implements InvocationHandler {
         }
     }
 
+    /**
+     * Create a MObjectField and put it in the object values, according to an input Field
+     * @param field the input field.
+     * @throws UnknownPrimitiveTypeException in case there is a weird primitive.
+     * @throws InvalidFieldValueException in case of wrong value assignment to the field.
+     */
     protected void setupField(Field field) throws UnknownPrimitiveTypeException, InvalidFieldValueException {
         MObjectField prop;
 
@@ -80,6 +89,11 @@ public class MObject implements InvocationHandler {
         }
     }
 
+    /**
+     * Initializes the object values.
+     * @param initializers the initialization values
+     * @throws InvalidFieldValueException in case of wrong type of the initialization value.
+     */
     protected void initializeProps(Object... initializers) throws InvalidFieldValueException {
         List<Field> fieldList = new ArrayList<>();
         fieldList.addAll(this.schemaKlass.fields());
@@ -100,18 +114,35 @@ public class MObject implements InvocationHandler {
         }
     }
 
-    protected Object _get(String _name) throws NoSuchFieldError {
-        MObjectField mObjectField = this.props.get(_name);
+    /**
+     * Extract the field and return its value
+     * @param name the field name
+     * @return the fields value.
+     * @throws NoSuchFieldError in case there no field with this name.
+     */
+    protected Object _get(String name) throws NoSuchFieldError {
+        MObjectField mObjectField = this.props.get(name);
         return mObjectField.get(); // return the field's value
     }
 
-    protected void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
-        MObjectField mObjectField = this.props.get(_name);
+    /**
+     * Sets the value of a existing field.
+     * @param name the name of the field
+     * @param value the value of the field
+     * @throws NoSuchFieldError in case there no field with this name.
+     * @throws InvalidFieldValueException in case the value is not the right type.
+     */
+    protected void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException {
+        // grab the field
+        MObjectField mObjectField = this.props.get(name);
+
+        // check if the field exists
         if (mObjectField == null) {
-            throw new NoSuchFieldError("No field with the name " + _name + " in class " + schemaKlass.name());
+            throw new NoSuchFieldError("No field with the name " + name + " in class " + schemaKlass.name());
         }
 
-        mObjectField.init(_value);
+        // set the fields value
+        mObjectField.init(value);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -141,7 +172,7 @@ public class MObject implements InvocationHandler {
 
         Object fieldArgs = args[0];
 
-        // If there is an argument then is considered as assignment.
+        // If there are arguments, then it is considered as assignment.
         if (fieldArgs.getClass().isArray() && ((Object [])fieldArgs).length > 0) {
             isAssignment = true;
         }

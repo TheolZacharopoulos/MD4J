@@ -19,15 +19,19 @@ public class MObjectFieldRef extends MObjectFieldSingle {
     @Override
     public void check(Object mObj) throws InvalidFieldValueException {
         // Since it's here (Ref) is a managed object (MObject).
+        if (!Proxy.isProxyClass(mObj.getClass())) {
+            throw new RuntimeException(mObj + " should be a managed object.");
+        }
+
         this.value = (MObject) Proxy.getInvocationHandler(mObj);
 
         final Klass valueSchemaKlass = ((MObject)this.value).getSchemaKlass();
         final Klass fieldType = (Klass) this.field.type();
 
         // TODO: Check also subclasses
-        boolean isSubKlass = true;
+        boolean isSubKlass = fieldType.subklasses().contains(fieldType);
 
-        if (!valueSchemaKlass.name().equals(fieldType.name()) || !isSubKlass) {
+        if (! (valueSchemaKlass.name().equals(fieldType.name()) || isSubKlass)) {
             throw new InvalidFieldValueException(
                 "Invalid value for " + this.field.owner().name() + " " +
                 this.field.name() + " " + field.type().name() + " found (" + valueSchemaKlass.name() + ")");

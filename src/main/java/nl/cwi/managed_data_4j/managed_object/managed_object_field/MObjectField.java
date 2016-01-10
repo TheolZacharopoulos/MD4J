@@ -12,6 +12,11 @@ public abstract class MObjectField {
     protected final Field inverse;
     protected Object value;
 
+    /**
+     * A field of the Managed Object
+     * @param owner the owner Klass of the field.
+     * @param field the field
+     */
     public MObjectField(MObject owner, Field field) {
         this.owner = owner;
         this.field = field;

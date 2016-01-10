@@ -5,7 +5,9 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class MObjectFieldMany extends MObjectField {
 
