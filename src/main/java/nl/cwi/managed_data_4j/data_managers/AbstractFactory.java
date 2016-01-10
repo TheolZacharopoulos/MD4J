@@ -44,12 +44,9 @@ public abstract class AbstractFactory implements IFactory {
         final Class<?> schemaFactoryCallingMethodClass = schemaFactoryCallingMethod.getReturnType();
         final ClassLoader schemaFactoryCallingMethodClassLoader = schemaFactoryCallingMethodClass.getClassLoader();
 
-        // TODO: Fix the schema.klasses() default and use it, doesn't work.
         // Find the schema klass
-        Klass schemaKlass = schema.types().stream()
+        Klass schemaKlass = schema.klasses().stream()
             .filter(klass -> klass.name().equals(schemaFactoryCallingMethodClass.getSimpleName()))
-            .filter(Klass.class::isInstance)
-            .map(Klass.class::cast)
             .findFirst()
             .orElseThrow(() -> new RuntimeException(
                 "Error on klass extraction of class (" + schemaFactoryCallingMethodClass.getSimpleName() + ") " +

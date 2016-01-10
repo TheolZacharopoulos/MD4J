@@ -7,6 +7,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Unknown
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -148,7 +149,33 @@ public class MObject implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 
-        // TODO: Check this.
+        // The default method are forwarded to the InvocationHandler.
+        // But we want to call the default implementation in case of existence.
+        //
+        // Check if the object has defined any default methods in its schema
+        // The default method has already been overridden by the proxy and it can't be invoked directly.
+        // In this case we invoke the default method with the given args.
+        if (method.isDefault()) {
+            final Class<?> declaringClass = method.getDeclaringClass();
+
+            // declare MethodHandles.Lookup constructor accessible
+            Constructor constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+            // use the constructor to create a lookup object with PRIVATE access
+            constructor.setAccessible(true);
+
+            // create a lookup for the default method
+            final MethodHandles.Lookup defaultMethodLookup =
+                    (MethodHandles.Lookup) constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
+
+            // create a method handle that won’t check for overridden method (unreflectSpecial)
+            // Since it is "special" it will skip the overriding done
+            // by the proxying and invoke the default implementation
+            return defaultMethodLookup
+                .unreflectSpecial(method, declaringClass)
+                .bindTo(proxy)
+                .invokeWithArguments();
+        }
+
         // This is a way to execute the "attached" methods of the derived Managed Objects,
         // from the proxied objects. (e.g. point.observe()).
         //
@@ -161,6 +188,9 @@ public class MObject implements InvocationHandler {
                 return null;
             }
         }
+
+        // ================
+        // Managed Object
 
         // if no args given, just return the field's value
         if (args == null) {
