@@ -8,6 +8,7 @@ import nl.cwi.managed_data_4j.schema.models.implementation.AbstractKlass;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class FieldKlass extends AbstractKlass {
@@ -30,7 +31,7 @@ public class FieldKlass extends AbstractKlass {
         final Field optionalField = new OptionalField(schema, this);
         final Field inverseField = new InverseField(schema, this);
 
-        return new HashSet<>(Arrays.asList(
+        return new LinkedHashSet<>(Arrays.asList(
                 nameField,
                 ownerField,
                 typeField,

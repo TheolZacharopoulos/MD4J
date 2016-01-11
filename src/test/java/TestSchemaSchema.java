@@ -51,10 +51,10 @@ public class TestSchemaSchema {
                 realSchemaSchemaKlass = (Klass) realSchemaSchemaType;
         }
 
-        assertThat(bootstrapSchemaKlass.name(), is(realSchemaSchemaKlass.name()));
-        assertThat(bootstrapSchemaKlass.supers(), is(realSchemaSchemaKlass.supers()));
-        assertThat(bootstrapSchemaKlass.subklasses(), is(realSchemaSchemaKlass.subklasses()));
-//        assertThat(bootstrapSchemaKlass.fields(), is(realSchemaSchemaKlass.fields()));
+        assertEquals(bootstrapSchemaKlass.name(), realSchemaSchemaKlass.name());
+        assertEquals(bootstrapSchemaKlass.supers(), realSchemaSchemaKlass.supers());
+        assertEquals(bootstrapSchemaKlass.subklasses(), realSchemaSchemaKlass.subklasses());
+//        assertEquals(bootstrapSchemaKlass.fields(), realSchemaSchemaKlass.fields());
 
     }
 }

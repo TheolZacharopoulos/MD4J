@@ -11,6 +11,7 @@ import nl.cwi.managed_data_4j.schema.models.implementation.AbstractKlass;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TypeKlass extends AbstractKlass {
@@ -29,7 +30,7 @@ public class TypeKlass extends AbstractKlass {
         final Field nameField = new NameField(schema, this);
         final Field schemaField = new SchemaField(schema, this, new TypesField(schema, this));
 
-        return new HashSet<>(Arrays.asList(
+        return new LinkedHashSet<>(Arrays.asList(
                 nameField,
                 schemaField)
         );

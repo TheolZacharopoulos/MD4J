@@ -71,7 +71,7 @@ public abstract class AbstractField implements Field {
     public int hashCode() {
         //TODO: Add schema
         int result = this.name() != null ? this.name().hashCode() : 0;
-        result = 31 * result + (this.owner != null ? this.owner.hashCode() : 0);
+//        result = 31 * result + (this.owner != null ? this.owner.hashCode() : 0);
         return result;
     }
 }

@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.*;
@@ -131,14 +132,13 @@ public class TestPointSchema {
         assertThat(startPointField.optional(), is(false));
         assertThat(startPointField.many(), is(false));
         assertThat(startPointField.owner(), is(lineType));
-        assertThat(startPointField.type().name(), is("Point"));
         assertThat(startPointField.type(), is(
                 new LoadKlass(
                     "Point",
                     pointSchema,
                     Collections.emptySet(),
                     Collections.emptySet(),
-                    new HashSet<>(Arrays.asList(startPointField, endPointField))))
+                    new LinkedHashSet<Field>(Arrays.asList(startPointField, endPointField))))
         );
 
         assertNotNull(endPointField);
@@ -146,14 +146,13 @@ public class TestPointSchema {
         assertThat(endPointField.optional(), is(false));
         assertThat(endPointField.many(), is(false));
         assertThat(endPointField.owner(), is(lineType));
-        assertThat(endPointField.type().name(), is("Point"));
         assertThat(endPointField.type(), is(
                 new LoadKlass(
                     "Point",
                     pointSchema,
                     Collections.emptySet(),
                     Collections.emptySet(),
-                    new HashSet<>(Arrays.asList(startPointField, endPointField))))
+                    new LinkedHashSet<>(Arrays.asList(startPointField, endPointField))))
         );
     }
 

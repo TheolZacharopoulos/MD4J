@@ -7,10 +7,7 @@ import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class KlassKlass extends TypeKlass {
 
@@ -31,7 +28,7 @@ public class KlassKlass extends TypeKlass {
         final Field fieldsField = new FieldsField(schema, this);
 
         // The fields of the klass klass
-        Set<Field> klassKlassFields = new HashSet<>(Arrays.asList(
+        Set<Field> klassKlassFields = new LinkedHashSet<>(Arrays.asList(
                 supersField,
                 subKlassesField,
                 fieldsField)

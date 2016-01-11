@@ -9,6 +9,7 @@ import nl.cwi.managed_data_4j.schema.models.implementation.AbstractKlass;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class SchemaKlass extends AbstractKlass {
@@ -29,7 +30,7 @@ public class SchemaKlass extends AbstractKlass {
         final Field primitivesField = new PrimitivesField(schema, this);
         final Field klassesField = new KlassesField(schema, this);
 
-        return new HashSet<>(Arrays.asList(
+        return new LinkedHashSet<>(Arrays.asList(
             typesField,
             klassInterfacesField,
             primitivesField,
