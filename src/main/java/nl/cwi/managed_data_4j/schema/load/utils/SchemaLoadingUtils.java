@@ -6,6 +6,7 @@ import nl.cwi.managed_data_4j.schema.models.definition.*;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class SchemaLoadingUtils {
@@ -13,7 +14,7 @@ public class SchemaLoadingUtils {
     private final static SchemaLoaderCache cache = SchemaLoaderCache.getInstance();
 
     public static Set<Type> buildTypesFromSchemaKlassesDef(Schema schema, Class<?>... schemaKlassesDefinition) {
-        Set<Type> types = new HashSet<>();
+        Set<Type> types = new LinkedHashSet<>();
 
         // for each klass definition
         for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
@@ -55,7 +56,7 @@ public class SchemaLoadingUtils {
     }
 
     private static Set<Field> buildFieldsFromSchemaKlassDef(Schema schema, Class<?> schemaKlassDefinition) {
-        Set<Field> fields = new HashSet<>();
+        Set<Field> fields = new LinkedHashSet<>();
 
         // for each field definition
         for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
