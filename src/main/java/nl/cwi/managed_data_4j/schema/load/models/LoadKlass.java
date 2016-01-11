@@ -1,18 +1,22 @@
 package nl.cwi.managed_data_4j.schema.load.models;
 
+import nl.cwi.managed_data_4j.schema.boot.boot_klasses.AbstractKlass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 
 import java.util.Set;
 
-public class LoadKlass implements Klass {
+public class LoadKlass extends AbstractKlass {
 
-    private Schema schema;
     private String name;
     private Set<Klass> supers;
     private Set<Klass> subklasses;
     private Set<Field> fields;
+
+    public LoadKlass(Schema schema) {
+        super(schema);
+    }
 
     public LoadKlass(
         String name,
@@ -21,7 +25,7 @@ public class LoadKlass implements Klass {
         Set<Klass> subklasses,
         Set<Field> fields)
     {
-        this.setSchema(schema);
+        super(schema);
         this.name = name;
         this.supers = supers;
         this.subklasses = subklasses;
@@ -46,15 +50,6 @@ public class LoadKlass implements Klass {
     @Override
     public Set<Klass> subklasses(Klass... subklasses) {
         return this.subklasses;
-    }
-
-    @Override
-    public Schema schema(Schema... schema) {
-        return this.schema;
-    }
-
-    public void setSchema(Schema schema) {
-        this.schema = schema;
     }
 
     public void setFields(Set<Field> fields) {

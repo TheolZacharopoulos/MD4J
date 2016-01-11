@@ -48,4 +48,23 @@ public abstract class AbstractField implements Field {
     public void setOwner(Klass owner) {
         this.owner = owner;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractField that = (AbstractField) o;
+
+        if (!this.name().equals(that.name())) return false;
+        if (!this.owner().equals(that.owner())) return false;
+        if (!this.optional().equals(that.optional())) return false;
+        if (!this.many().equals(that.many())) return false;
+        if (!this.inverse().equals(that.inverse())) return false;
+
+        if (this.schema.klassInterfaces() != that.schema.klassInterfaces()) return false;
+        if (this.schema.types() != that.schema.types()) return false;
+
+        return true;
+    }
 }

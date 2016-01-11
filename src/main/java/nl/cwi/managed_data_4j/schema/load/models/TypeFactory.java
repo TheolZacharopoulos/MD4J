@@ -1,9 +1,6 @@
 package nl.cwi.managed_data_4j.schema.load.models;
 
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.BoolPrimitive;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.IntegerPrimitive;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.ObjectPrimitive;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.StringPrimitive;
+import nl.cwi.managed_data_4j.schema.boot.boot_primitives.*;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
@@ -30,6 +27,9 @@ public class TypeFactory {
 
             case "Double":
                 return new IntegerPrimitive(schema);
+
+            case "Class":
+                return new ClassPrimitive(schema);
 
             case "Object":
                 return new ObjectPrimitive(schema);
