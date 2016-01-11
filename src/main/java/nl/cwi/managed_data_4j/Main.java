@@ -28,7 +28,7 @@ public class Main {
         final BasicFactory basicFactory = new BasicFactory();
 
         // Create a schema Factory which creates Schema instances.
-        SchemaFactory schemaFactory = DataManagerFactory.make(basicFactory, SchemaFactory.class, bootstrapSchema);;
+        SchemaFactory schemaFactory = DataManagerFactory.make(basicFactory, SchemaFactory.class, bootstrapSchema);
 
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
