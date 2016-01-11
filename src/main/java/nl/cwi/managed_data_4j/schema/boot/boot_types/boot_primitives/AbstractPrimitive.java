@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.schema.boot.boot_primitives;
+package nl.cwi.managed_data_4j.schema.boot.boot_types.boot_primitives;
 
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Primitive;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
@@ -25,6 +25,7 @@ public abstract class AbstractPrimitive implements Primitive {
 
     @Override
     public boolean equals(Object o) {
+        //TODO: Add schema
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -33,5 +34,11 @@ public abstract class AbstractPrimitive implements Primitive {
         if (!this.name().equals(that.name())) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        //TODO: Add schema
+        return this.name() != null ? this.name().hashCode() : 0;
     }
 }

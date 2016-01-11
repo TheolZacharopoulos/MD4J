@@ -51,6 +51,7 @@ public abstract class AbstractField implements Field {
 
     @Override
     public boolean equals(Object o) {
+        //TODO: Add schema
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -63,5 +64,13 @@ public abstract class AbstractField implements Field {
         if (!this.inverse().equals(that.inverse())) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        //TODO: Add schema
+        int result = this.name() != null ? this.name().hashCode() : 0;
+        result = 31 * result + (this.owner != null ? this.owner.hashCode() : 0);
+        return result;
     }
 }

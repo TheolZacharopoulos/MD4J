@@ -1,24 +1,21 @@
 package nl.cwi.managed_data_4j.schema.load.models;
 
+import nl.cwi.managed_data_4j.schema.boot.boot_fields.AbstractField;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
 
-public class LoadNullField implements Field {
+public class LoadNullField extends AbstractField {
 
     public static final String NAME = "NULL";
-
-    private final Schema schema;
-    private final Klass owner;
 
     public LoadNullField() {
         this(null, null);
     }
 
     public LoadNullField(Schema schema, Klass owner) {
-        this.schema = schema;
-        this.owner = owner;
+        super(schema, owner);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.data_managers;
+package nl.cwi.managed_data_4j.data_manager;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
@@ -23,7 +23,7 @@ public interface IFactory {
     void init(Class<?> moSchemaFactoryClass, Schema schema, Method schemaFactoryCallingMethod, Object... inits);
 
     /**
-     * This method and should be implemented from the derived data_managers
+     * This method and should be implemented from the derived data_manager
      * in order to create specific Managed Objects.
      *
      * @param klass the Managed Object schema Klass

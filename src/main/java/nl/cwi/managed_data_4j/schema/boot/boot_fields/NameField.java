@@ -1,6 +1,6 @@
 package nl.cwi.managed_data_4j.schema.boot.boot_fields;
 
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.StringPrimitive;
+import nl.cwi.managed_data_4j.schema.boot.boot_types.boot_primitives.StringPrimitive;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;

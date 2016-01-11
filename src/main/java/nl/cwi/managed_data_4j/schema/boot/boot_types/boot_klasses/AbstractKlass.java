@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.schema.boot.boot_klasses;
+package nl.cwi.managed_data_4j.schema.boot.boot_types.boot_klasses;
 
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
@@ -42,16 +42,23 @@ public abstract class AbstractKlass implements Klass {
 
     @Override
     public boolean equals(Object o) {
+        //TODO: Add schema, fix fields
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         AbstractKlass that = (AbstractKlass) o;
 
         if (!this.name().equals(that.name())) return false;
-        if (!this.supers().equals(that.supers())) return false;
-        if (!this.subklasses().equals(that.subklasses())) return false;
-        if (!this.fields().equals(that.fields())) return false;
+        if (!this.supers().containsAll(that.supers())) return false;
+        if (!this.subklasses().containsAll(that.subklasses())) return false;
+//        if (!this.fields().containsAll(that.fields())) return false;
 
         return true;
+    }
+
+    @Override
+    //TODO: Add schema
+    public int hashCode() {
+        return this.name() != null ? this.name().hashCode() : 0;
     }
 }

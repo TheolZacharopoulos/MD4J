@@ -1,6 +1,6 @@
 package nl.cwi.managed_data_4j.managed_object;
 
-import nl.cwi.managed_data_4j.data_managers.IFactory;
+import nl.cwi.managed_data_4j.data_manager.IFactory;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;

@@ -1,10 +1,10 @@
 import nl.cwi.examples.geometry.Line;
 import nl.cwi.examples.geometry.Point;
 import nl.cwi.examples.geometry.PointFactory;
-import nl.cwi.managed_data_4j.data_managers.BasicFactory;
-import nl.cwi.managed_data_4j.data_managers.DataManagerFactory;
+import nl.cwi.managed_data_4j.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.data_manager.DataManagerFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.IntegerPrimitive;
+import nl.cwi.managed_data_4j.schema.boot.boot_types.boot_primitives.IntegerPrimitive;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.load.models.LoadKlass;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
@@ -131,6 +131,7 @@ public class TestPointSchema {
         assertThat(startPointField.optional(), is(false));
         assertThat(startPointField.many(), is(false));
         assertThat(startPointField.owner(), is(lineType));
+        assertThat(startPointField.type().name(), is("Point"));
         assertThat(startPointField.type(), is(
                 new LoadKlass(
                     "Point",
@@ -145,6 +146,7 @@ public class TestPointSchema {
         assertThat(endPointField.optional(), is(false));
         assertThat(endPointField.many(), is(false));
         assertThat(endPointField.owner(), is(lineType));
+        assertThat(endPointField.type().name(), is("Point"));
         assertThat(endPointField.type(), is(
                 new LoadKlass(
                     "Point",
@@ -164,11 +166,11 @@ public class TestPointSchema {
 
     @Test
     public void testNonEmptyIntegerInitialization() {
-        Integer x = 1;
-        Integer y = 2;
+        final Integer x = 1;
+        final Integer y = 2;
 
         Point point = pointFactory.point(x, y);
-        assertThat(point.x(), is(x));
-        assertThat(point.y(), is(y));
+        assertEquals(point.x(), x);
+        assertEquals(point.y(), y);
     }
 }

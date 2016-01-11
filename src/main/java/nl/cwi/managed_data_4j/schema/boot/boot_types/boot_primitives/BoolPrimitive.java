@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.schema.boot.boot_primitives;
+package nl.cwi.managed_data_4j.schema.boot.boot_types.boot_primitives;
 
 import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
 

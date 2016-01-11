@@ -1,8 +1,6 @@
 package nl.cwi.managed_data_4j.schema.boot;
 
-import nl.cwi.managed_data_4j.schema.boot.boot_klasses.*;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.BoolPrimitive;
-import nl.cwi.managed_data_4j.schema.boot.boot_primitives.StringPrimitive;
+import nl.cwi.managed_data_4j.schema.boot.boot_types.boot_klasses.*;
 import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
 
 import java.util.Arrays;
@@ -12,11 +10,11 @@ import java.util.Set;
 /**
  * This schema describes the schema of a schemaSchema (self description / MetaSchema)
  */
-public class BootSchema implements Schema {
-
-    private Set<Type> types;
+public class BootSchema extends AbstractSchema {
 
     public BootSchema() {
+        this(null, null);
+
         final Schema schemaSchema = this;
 
         // Define the Schema Schema
@@ -26,18 +24,15 @@ public class BootSchema implements Schema {
         final Klass klassKlass = new KlassKlass(schemaSchema);
         final Klass fieldKlass = new FieldKlass(schemaSchema);
 
-        types = new HashSet<>(Arrays.asList(
-            schemaKlass,
-            typeKlass,
-            primitiveKlass,
-            klassKlass,
-            fieldKlass
+        this.types = new HashSet<>(Arrays.asList(
+                schemaKlass,
+                typeKlass,
+                primitiveKlass,
+                klassKlass,
+                fieldKlass
         ));
-    }
 
-    @Override
-    public Set<Class> klassInterfaces(Class... interfaces) {
-        return new HashSet<>(Arrays.asList(
+        this.klassInterfaces = new HashSet<>(Arrays.asList(
                 Schema.class,
                 Type.class,
                 Klass.class,
@@ -45,9 +40,7 @@ public class BootSchema implements Schema {
                 Field.class
         ));
     }
-
-    @Override
-    public Set<Type> types(Type... type) {
-        return this.types;
+    public BootSchema(Set<Type> types, Set<Class> klassInterfaces) {
+        super(types, klassInterfaces);
     }
 }

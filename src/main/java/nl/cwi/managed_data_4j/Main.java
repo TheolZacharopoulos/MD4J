@@ -6,8 +6,8 @@ import nl.cwi.examples.geometry.Point;
 import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.examples.patterns.observer.Observable;
 import nl.cwi.examples.patterns.observer.ObservableFactory;
-import nl.cwi.managed_data_4j.data_managers.BasicFactory;
-import nl.cwi.managed_data_4j.data_managers.DataManagerFactory;
+import nl.cwi.managed_data_4j.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.data_manager.DataManagerFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 

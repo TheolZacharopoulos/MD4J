@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.schema.boot.boot_klasses;
+package nl.cwi.managed_data_4j.schema.boot.boot_types.boot_klasses;
 
 import nl.cwi.managed_data_4j.schema.boot.boot_fields.FieldsField;
 import nl.cwi.managed_data_4j.schema.boot.boot_fields.SubKlassesField;
