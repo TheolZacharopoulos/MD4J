@@ -48,9 +48,9 @@ public abstract class AbstractKlass implements Klass {
         AbstractKlass that = (AbstractKlass) o;
 
         if (!this.name().equals(that.name())) return false;
-
-        if (this.schema.klassInterfaces() != that.schema.klassInterfaces()) return false;
-        if (this.schema.types() != that.schema.types()) return false;
+        if (!this.supers().equals(that.supers())) return false;
+        if (!this.subklasses().equals(that.subklasses())) return false;
+        if (!this.fields().equals(that.fields())) return false;
 
         return true;
     }

@@ -32,9 +32,6 @@ public abstract class AbstractPrimitive implements Primitive {
 
         if (!this.name().equals(that.name())) return false;
 
-        if (this.schema.klassInterfaces() != that.schema.klassInterfaces()) return false;
-        if (this.schema.types() != that.schema.types()) return false;
-
         return true;
     }
 }

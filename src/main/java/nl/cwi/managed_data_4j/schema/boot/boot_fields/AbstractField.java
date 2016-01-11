@@ -62,9 +62,6 @@ public abstract class AbstractField implements Field {
         if (!this.many().equals(that.many())) return false;
         if (!this.inverse().equals(that.inverse())) return false;
 
-        if (this.schema.klassInterfaces() != that.schema.klassInterfaces()) return false;
-        if (this.schema.types() != that.schema.types()) return false;
-
         return true;
     }
 }

@@ -25,17 +25,13 @@ public class BootSchema implements Schema {
         final Klass primitiveKlass = new PrimitiveKlass(schemaSchema);
         final Klass klassKlass = new KlassKlass(schemaSchema);
         final Klass fieldKlass = new FieldKlass(schemaSchema);
-        final Primitive stringPrimitive = new StringPrimitive(schemaSchema);
-        final Primitive boolPrimitive = new BoolPrimitive(schemaSchema);
 
         types = new HashSet<>(Arrays.asList(
             schemaKlass,
             typeKlass,
             primitiveKlass,
             klassKlass,
-            fieldKlass,
-            stringPrimitive,
-            boolPrimitive
+            fieldKlass
         ));
     }
 

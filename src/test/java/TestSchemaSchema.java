@@ -35,8 +35,26 @@ public class TestSchemaSchema {
 
         assertThat(bootstrapSchemaKlassInterfaces, is(realSchemaSchemaKlassInterfaces));
 
-        // TODO
         final Set<Type> bootstrapSchemaTypes = bootstrapSchema.types();
         final Set<Type> realSchemaSchemaTypes = realSchemaSchema.types();
+
+        // Schema Klass
+        Klass bootstrapSchemaKlass = null;
+        for (Type bootstrapSchemaType : bootstrapSchemaTypes) {
+            if (bootstrapSchemaType.name().equals("Schema"))
+                bootstrapSchemaKlass = (Klass) bootstrapSchemaType;
+        }
+
+        Klass realSchemaSchemaKlass = null;
+        for (Type realSchemaSchemaType : realSchemaSchemaTypes) {
+            if (realSchemaSchemaType.name().equals("Schema"))
+                realSchemaSchemaKlass = (Klass) realSchemaSchemaType;
+        }
+
+        assertThat(bootstrapSchemaKlass.name(), is(realSchemaSchemaKlass.name()));
+        assertThat(bootstrapSchemaKlass.supers(), is(realSchemaSchemaKlass.supers()));
+        assertThat(bootstrapSchemaKlass.subklasses(), is(realSchemaSchemaKlass.subklasses()));
+//        assertThat(bootstrapSchemaKlass.fields(), is(realSchemaSchemaKlass.fields()));
+
     }
 }
