@@ -4,7 +4,8 @@ import nl.cwi.managed_data_4j.schema.boot.boot_fields.KlassInterfacesField;
 import nl.cwi.managed_data_4j.schema.boot.boot_fields.KlassesField;
 import nl.cwi.managed_data_4j.schema.boot.boot_fields.PrimitivesField;
 import nl.cwi.managed_data_4j.schema.boot.boot_fields.TypesField;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
+import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.schema.models.implementation.AbstractKlass;
 
 import java.util.Arrays;
 import java.util.HashSet;

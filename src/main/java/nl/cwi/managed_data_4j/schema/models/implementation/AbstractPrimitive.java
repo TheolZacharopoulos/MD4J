@@ -1,7 +1,7 @@
-package nl.cwi.managed_data_4j.schema.boot.boot_types.boot_primitives;
+package nl.cwi.managed_data_4j.schema.models.implementation;
 
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Primitive;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
+import nl.cwi.managed_data_4j.schema.models.definition.Primitive;
+import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 
 public abstract class AbstractPrimitive implements Primitive {
 

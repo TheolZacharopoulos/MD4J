@@ -3,7 +3,7 @@ package nl.cwi.managed_data_4j.managed_object.managed_object_field;
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
+import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -1,8 +1,8 @@
 package nl.cwi.managed_data_4j.data_manager;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
+import nl.cwi.managed_data_4j.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 
 import java.lang.reflect.Method;
 

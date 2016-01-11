@@ -1,9 +1,10 @@
 package nl.cwi.managed_data_4j.schema.boot.boot_fields;
 
 import nl.cwi.managed_data_4j.schema.boot.boot_types.boot_klasses.TypeKlass;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
+import nl.cwi.managed_data_4j.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.schema.models.definition.Type;
+import nl.cwi.managed_data_4j.schema.models.implementation.AbstractField;
 
 public class KlassesField extends AbstractField {
 

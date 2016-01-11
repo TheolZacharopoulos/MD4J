@@ -1,6 +1,6 @@
 package nl.cwi.managed_data_4j.schema.boot.boot_types.boot_klasses;
 
-import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
+import nl.cwi.managed_data_4j.schema.models.definition.*;
 
 import java.util.Collections;
 import java.util.Set;

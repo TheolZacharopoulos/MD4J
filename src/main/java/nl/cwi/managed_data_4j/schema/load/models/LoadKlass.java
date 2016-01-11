@@ -1,9 +1,9 @@
 package nl.cwi.managed_data_4j.schema.load.models;
 
-import nl.cwi.managed_data_4j.schema.boot.boot_types.boot_klasses.AbstractKlass;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Klass;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
+import nl.cwi.managed_data_4j.schema.models.implementation.AbstractKlass;
+import nl.cwi.managed_data_4j.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 
 import java.util.Set;
 

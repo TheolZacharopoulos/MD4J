@@ -4,7 +4,7 @@ import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.utils.SchemaLoaderCache;
 import nl.cwi.managed_data_4j.schema.load.utils.SchemaLoadingUtils;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
+import nl.cwi.managed_data_4j.schema.models.definition.*;
 
 import java.util.*;
 

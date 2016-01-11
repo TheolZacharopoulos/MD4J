@@ -1,7 +1,7 @@
-package nl.cwi.managed_data_4j.schema.boot.boot_types;
+package nl.cwi.managed_data_4j.schema.models.implementation;
 
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Schema;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
+import nl.cwi.managed_data_4j.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
 public abstract class AbstractType implements Type {
 

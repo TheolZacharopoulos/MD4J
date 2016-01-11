@@ -2,8 +2,8 @@ package nl.cwi.managed_data_4j.schema.load.utils;
 
 import nl.cwi.managed_data_4j.schema.load.models.LoadNullField;
 import nl.cwi.managed_data_4j.schema.load.models.LoadNullType;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Field;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.Type;
+import nl.cwi.managed_data_4j.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
 import java.util.Collection;
 import java.util.HashMap;

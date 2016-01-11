@@ -1,5 +1,5 @@
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
+import nl.cwi.managed_data_4j.schema.models.definition.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

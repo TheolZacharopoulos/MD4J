@@ -1,7 +1,7 @@
 package nl.cwi.managed_data_4j.schema.load.utils;
 
 import nl.cwi.managed_data_4j.schema.load.models.*;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
+import nl.cwi.managed_data_4j.schema.models.definition.*;
 
 import java.lang.reflect.Method;
 import java.util.Collections;

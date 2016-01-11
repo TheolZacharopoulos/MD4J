@@ -1,7 +1,8 @@
 package nl.cwi.managed_data_4j.schema.boot;
 
 import nl.cwi.managed_data_4j.schema.boot.boot_types.boot_klasses.*;
-import nl.cwi.managed_data_4j.schema.models.schema_schema.*;
+import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.schema.models.implementation.AbstractSchema;
 
 import java.util.Arrays;
 import java.util.HashSet;
