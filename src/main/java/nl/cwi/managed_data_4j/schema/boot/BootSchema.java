@@ -63,6 +63,18 @@ public class BootSchema extends SchemaImpl {
 
         primitiveKlass.supers(typeKlass);
 
+        final Field primitiveKlassNameField = new FieldImpl("name", false, false);
+        // primitiveKlassNameField.key(true);
+        primitiveKlassNameField.owner(primitiveKlass);
+        primitiveKlassNameField.type(stringPrimitive);
+
+        final Field primitiveKlassSchemaField = new FieldImpl("schema", false, false);
+        primitiveKlassSchemaField.owner(primitiveKlass);
+        primitiveKlassSchemaField.type(schemaKlass);
+        primitiveKlassSchemaField.inverse(schemaKlassTypesField);
+
+        primitiveKlass.fields(primitiveKlassNameField, primitiveKlassSchemaField);
+
         // ========================
         // * Klass Klass
         final Klass klassKlass = new KlassImpl("Klass");
@@ -70,6 +82,11 @@ public class BootSchema extends SchemaImpl {
 
         klassKlass.supers(typeKlass);
         typeKlass.subklasses(primitiveKlass, klassKlass);
+
+        final Field klassKlassNameField = new FieldImpl("name", false, false);
+        // klassKlassNameField.key(true);
+        klassKlassNameField.owner(klassKlass);
+        klassKlassNameField.type(stringPrimitive);
 
         final Field klassKlassSupersField = new FieldImpl("supers", true, false);
         klassKlassSupersField.owner(klassKlass);
@@ -83,11 +100,24 @@ public class BootSchema extends SchemaImpl {
         final Field klassKlassFieldsField = new FieldImpl("fields", true, false);
         klassKlassFieldsField.owner(klassKlass);
 
-        klassKlass.fields(klassKlassSupersField, klassKlassSubsField, klassKlassFieldsField);
+        final Field klassKlassSchemaField = new FieldImpl("schema", false, false);
+        klassKlassSchemaField.owner(klassKlass);
+        klassKlassSchemaField.type(schemaKlass);
+        klassKlassSchemaField.inverse(schemaKlassTypesField);
+
+        // TODO: add classOf()
+
+        klassKlass.fields(
+            klassKlassNameField,
+            klassKlassSupersField,
+            klassKlassSubsField,
+            klassKlassFieldsField,
+            klassKlassSchemaField
+        );
 
         // ========================
         // * Field Klass
-        final Klass fieldKlass = new KlassImpl("Klass");
+        final Klass fieldKlass = new KlassImpl("Field");
         klassKlass.schema(schemaSchema);
 
         klassKlassFieldsField.type(fieldKlass);

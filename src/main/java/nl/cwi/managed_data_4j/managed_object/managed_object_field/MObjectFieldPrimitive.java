@@ -19,31 +19,31 @@ public class MObjectFieldPrimitive extends MObjectFieldSingle {
 
         switch (this.field.type().name()) {
             case "String":
-                if (this.value instanceof String) ok = true;
+                if (value instanceof String) ok = true;
                 break;
 
             case "Integer":
-                if (this.value instanceof Integer) ok = true;
+                if (value instanceof Integer) ok = true;
                 break;
 
             case "Boolean":
-                if (this.value instanceof Boolean) ok = true;
+                if (value instanceof Boolean) ok = true;
                 break;
 
             case "Float":
-                if (this.value instanceof Float) ok = true;
+                if (value instanceof Float) ok = true;
                 break;
 
             case "Double":
-                if (this.value instanceof Double) ok = true;
+                if (value instanceof Double) ok = true;
                 break;
 
             case "Object":
-                if (this.value instanceof String ||
-                    this.value instanceof Integer ||
-                    this.value instanceof Boolean ||
-                    this.value instanceof Float ||
-                    this.value instanceof Double)
+                if (value instanceof String ||
+                    value instanceof Integer ||
+                    value instanceof Boolean ||
+                    value instanceof Float ||
+                    value instanceof Double)
                 {
                     ok = true;
                 }

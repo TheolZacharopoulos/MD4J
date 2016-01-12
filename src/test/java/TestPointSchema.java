@@ -4,12 +4,12 @@ import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.data_manager.DataManagerFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.boot.boot_types.boot_primitives.IntegerPrimitive;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
-import nl.cwi.managed_data_4j.schema.load.models.LoadKlass;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.schema.models.implementation.KlassImpl;
+import nl.cwi.managed_data_4j.schema.models.implementation.PrimitiveImpl;
 import org.junit.Before;
 import org.junit.Test;
 import utils.TestHelper;
@@ -72,14 +72,14 @@ public class TestPointSchema {
         assertThat(xField.optional(), is(false));
         assertThat(xField.many(), is(false));
         assertThat(xField.owner(), is(pointType));
-        assertThat(xField.type(), is(new IntegerPrimitive(pointSchema)));
+        assertThat(xField.type(), is(new PrimitiveImpl("Integer", pointSchema)));
 
         assertNotNull(yField);
         assertThat(yField.name(), is("y"));
         assertThat(yField.optional(), is(false));
         assertThat(yField.many(), is(false));
         assertThat(yField.owner(), is(pointType));
-        assertThat(yField.type(), is(new IntegerPrimitive(pointSchema)));
+        assertThat(yField.type(), is(new PrimitiveImpl("Integer", pointSchema)));
     }
 
     @Test
@@ -100,12 +100,12 @@ public class TestPointSchema {
         assertThat(startPointField.many(), is(false));
         assertThat(startPointField.owner(), is(lineType));
         assertThat(startPointField.type(), is(
-                new LoadKlass(
+                new KlassImpl(
                     "Point",
                     pointSchema,
+                    new LinkedHashSet<>(Arrays.asList(xField, yField)),
                     Collections.emptySet(),
-                    Collections.emptySet(),
-                    new LinkedHashSet<>(Arrays.asList(xField, yField))))
+                    Collections.emptySet()))
         );
 
         assertNotNull(endPointField);
@@ -114,12 +114,12 @@ public class TestPointSchema {
         assertThat(endPointField.many(), is(false));
         assertThat(endPointField.owner(), is(lineType));
         assertThat(endPointField.type(), is(
-                new LoadKlass(
-                    "Point",
-                    pointSchema,
-                    Collections.emptySet(),
-                    Collections.emptySet(),
-                    new LinkedHashSet<>(Arrays.asList(xField, yField))))
+                new KlassImpl(
+                        "Point",
+                        pointSchema,
+                        new LinkedHashSet<>(Arrays.asList(xField, yField)),
+                        Collections.emptySet(),
+                        Collections.emptySet()))
         );
     }
 

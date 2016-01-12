@@ -5,6 +5,8 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
+import java.lang.reflect.Proxy;
+
 public abstract class MObjectFieldSingle extends MObjectField {
 
     public MObjectFieldSingle(MObject owner, Field field)
@@ -20,7 +22,14 @@ public abstract class MObjectFieldSingle extends MObjectField {
 
     @Override
     public void set(Object value) throws InvalidFieldValueException {
-        this.check(value);
+        if (value != null) {
+            if (Proxy.isProxyClass(value.getClass())) {
+                value = (MObject) Proxy.getInvocationHandler(value);
+            }
+
+            this.check(value);
+        }
+
         this.value = value;
     }
 

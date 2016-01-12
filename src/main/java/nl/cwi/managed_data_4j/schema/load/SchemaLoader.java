@@ -2,8 +2,6 @@ package nl.cwi.managed_data_4j.schema.load;
 
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.load.utils.SchemaLoaderCache;
-import nl.cwi.managed_data_4j.schema.load.utils.SchemaLoadingUtils;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
 
 import java.util.*;
@@ -35,13 +33,13 @@ public class SchemaLoader {
         Schema schema = factory.schema();
 
         // build the types from the schema klasses definition
-        Set<Type> types = SchemaLoadingUtils.buildTypesFromSchemaKlassesDef(factory, schema, schemaKlassesDef);
+        Map<String, Type> types = SchemaLoadingUtils.buildTypesFromSchemaKlassesDef(factory, schema, schemaKlassesDef);
 
         // wire the klassInterfaces on schema
         schema.klassInterfaces(klassInterfaces.toArray(new Class[klassInterfaces.size()]));
 
         // wire the types on schema
-        schema.types(types.toArray(new Type[types.size()]));
+        schema.types(types.values().toArray(new Type[types.size()]));
 
         return schema;
     }

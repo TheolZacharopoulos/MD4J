@@ -11,8 +11,6 @@ public interface Field {
     @Key
     String name(String... name);
 
-    Type type(Type... type);
-
     Boolean many(Boolean... many);
 
     Boolean optional(Boolean... optional);
@@ -20,6 +18,8 @@ public interface Field {
     // TODO:
 //    Boolean key(Boolean... key);
 //    Boolean content(Boolean... content);
+
+    Type type(Type... type);
 
     /**
      * The inverse of a Field is a Field that it is inverse of.

@@ -27,16 +27,17 @@ public class MObjectFieldRef extends MObjectFieldSingle {
             }
         }
 
-        // Since it's here (Ref) is a managed object (MObject).
-        if (!Proxy.isProxyClass(mObj.getClass())) {
-            throw new RuntimeException(mObj + " should be a managed object.");
-        }
-        this.value = (MObject) Proxy.getInvocationHandler(mObj);
-
-        final Klass valueSchemaKlass = ((MObject)this.value).getSchemaKlass();
+        final Klass valueSchemaKlass = ((MObject)mObj).getSchemaKlass();
         final Klass fieldType = (Klass) this.field.type();
 
-        boolean isSubKlass = fieldType.subklasses().contains(fieldType);
+        boolean isSubKlass = false;
+        if (fieldType.subklasses() != null) {
+            for (Klass superKlass : valueSchemaKlass.supers()) {
+                if (superKlass.name().equals(fieldType.name())) {
+                    isSubKlass = true;
+                }
+            }
+        }
 
         if (! (valueSchemaKlass.name().equals(fieldType.name()) || isSubKlass)) {
             throw new InvalidFieldValueException(

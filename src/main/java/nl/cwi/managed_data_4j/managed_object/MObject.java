@@ -224,6 +224,16 @@ public class MObject implements InvocationHandler {
         return _get(fieldName); // return the field's value
     }
 
+    @Override
+    public int hashCode() {
+        // TODO: Check for Key
+
+        if (this.props.containsKey("name")) {
+            return this._get("name").hashCode();
+        }
+        return super.hashCode();
+    }
+
     public Klass getSchemaKlass() {
         return schemaKlass;
     }

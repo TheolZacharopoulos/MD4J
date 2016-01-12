@@ -1,8 +1,8 @@
-package nl.cwi.managed_data_4j.schema.load.utils;
+package nl.cwi.managed_data_4j.schema.load;
 
 import com.sun.istack.internal.Nullable;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.load.models.*;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 
@@ -13,72 +13,79 @@ public class SchemaLoadingUtils {
 
     private final static SchemaLoaderCache cache = SchemaLoaderCache.getInstance();
 
-    public static Set<Type> buildTypesFromSchemaKlassesDef(
+    public static Map<String, Type> buildTypesFromSchemaKlassesDef(
             SchemaFactory factory,
             Schema schema,
             Class<?>... schemaKlassesDefinition)
     {
-        Set<Type> types = new LinkedHashSet<>();
+        Map<String, Type> types = new LinkedHashMap<>();
 
         // for each klass definition
         for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
             final String klassName = schemaKlassDefinition.getSimpleName();
 
             // build the fields from the class definition
-            final Set<Field> fields = buildFieldsFromSchemaKlassDef(schema, schemaKlassDefinition);
+            final Map<String, Field> fields = buildFieldsFromSchemaKlassDef(schema, schemaKlassDefinition, factory);
 
-            final Set<Klass> supers = buildSupers(schemaKlassDefinition);
-            final Set<Klass> subs = buildSubs(schemaKlassDefinition);
+            final Set<Klass> supers = Collections.emptySet(); //buildSupers(schemaKlassDefinition);
+            final Set<Klass> subs = Collections.emptySet(); //buildSubs(schemaKlassDefinition);
 
             // create a new klass
-            // TODO: REMOVE THIS
-            final Klass klass = new LoadKlass(klassName, schema, supers, subs, fields);
-//            final Klass klass = factory.klass(klassName, schema, supers, subs, fields);
-//            klass.schema(schema);
-//            schema.types(klass);
-//            klass.subklasses(subs);
+            final Klass klass = factory.klass(klassName);
+            klass.schema(schema);
+            klass.supers(supers.toArray(new Klass[supers.size()]));
+            klass.subklasses(subs.toArray(new Klass[subs.size()]));
+            klass.fields(fields.values().toArray(new Field[fields.size()]));
 
             cache.addType(klass.name(), klass);
 
             // wire the owner klass in fields
-            // TODO: LoadField NOPE
-            fields.forEach(field -> ((LoadField) field).setOwner(klass));
+            for (Field field : fields.values()) {
+                field.owner(klass);
+            }
 
             // add the a new klass
-            types.add(klass);
+            types.put(klassName, klass);
         }
         return types;
     }
 
-    private static Type getFieldType(Class<?> fieldReturnClass, Schema schema) {
+    private static Type getFieldType(Class<?> fieldReturnClass, Schema schema, SchemaFactory factory) {
 
         // First try to load the type from cache
         Type fieldType = cache.getType(fieldReturnClass.getSimpleName());
 
         // if it's not in cache the build it by the class name.
-        if (fieldType == null || fieldType.name().equals(LoadNullType.NAME)) {
+        if (fieldType == null) {
 
-            // if it's managed object should be in cache so no need to build it.
-            // So this builds only Primitives.
-            fieldType = TypeFactory.getTypeFromClass(fieldReturnClass, schema);
+            try {
+                // if it's managed object should be in cache so no need to build it.
+                // So this builds only Primitives.
+                fieldType = TypeFactory.getTypeFromClass(fieldReturnClass, schema, factory, cache);
+            } catch (UnknownPrimitiveTypeException e) {
+                throw new RuntimeException(e.getMessage());
+            }
         }
 
         return fieldType;
     }
 
-    private static Set<Field> buildFieldsFromSchemaKlassDef(Schema schema, Class<?> schemaKlassDefinition) {
-        Set<Field> fields = new LinkedHashSet<>();
+    private static Map<String, Field> buildFieldsFromSchemaKlassDef(
+            Schema schema,
+            Class<?> schemaKlassDefinition,
+            SchemaFactory factory)
+    {
+        Map<String, Field> fields = new LinkedHashMap<>();
 
         // for each field definition
         for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
             final String fieldName = schemaKlassField.getName();
             final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 
-            // TODO: Check this
-            final Type fieldType = getFieldType(fieldReturnClass, schema);
+            final Type fieldType = getFieldType(fieldReturnClass, schema, factory);
 
             // check for inverse
-            final Field inverse = buildInverse(schemaKlassField);
+            final Field inverse = null; //buildInverse(schemaKlassField);
 
             // check for many
             final boolean many = buildMany(fieldReturnClass);
@@ -87,10 +94,15 @@ public class SchemaLoadingUtils {
             final boolean optional = buildOptional(schemaKlassField);
 
             // add its fields, the owner Klass will be added later
-            final Field field = new LoadField(fieldName, schema, new LoadNullKlass(), fieldType, many, optional, inverse);
+            final Field field = factory.field(fieldName);
+            field.type(fieldType);
+            field.many(many);
+            field.optional(optional);
+            field.inverse(inverse);
+
             cache.addField(field.name(), field);
 
-            fields.add(field);
+            fields.put(fieldName, field);
         }
         return fields;
     }
@@ -108,7 +120,7 @@ public class SchemaLoadingUtils {
             final Type inverseOtherKlass = cache.getType(inverseOtherName);
 
             // In this case the inverseOtherKlass is not in the cache yet
-            if (inverseOtherKlass == null || inverseOtherKlass.name().equals(LoadNullKlass.NAME)) {
+            if (inverseOtherKlass == null) {
                 return null;
             }
 
@@ -119,10 +131,10 @@ public class SchemaLoadingUtils {
             return ((Klass)inverseOtherKlass).fields().stream()
                 .filter(field -> field.name().equals(inverseField))
                 .findFirst()
-                .orElse(new LoadNullField());
+                .orElse(null);
 
         } else {
-            return new LoadNullField();
+            return null;
         }
     }
 

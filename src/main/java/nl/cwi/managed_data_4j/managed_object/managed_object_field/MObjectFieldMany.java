@@ -5,9 +5,8 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
+import java.lang.reflect.Proxy;
+import java.util.*;
 
 public class MObjectFieldMany extends MObjectField {
 
@@ -24,10 +23,15 @@ public class MObjectFieldMany extends MObjectField {
         Object[] inits = ((Object[]) value);
 
         // transform to a collection
-        Collection<Object> valuesToSet = new HashSet<>(Arrays.asList(inits));
+        Collection<Object> values = Arrays.asList(inits);
 
         // make the value object a collection, and add the values to that.
-        (valuesToSet).forEach(val -> ((Collection<Object>) this.value).add(val));
+        (values).forEach(val -> {
+            if (Proxy.isProxyClass(val.getClass())) {
+                val = (MObject) Proxy.getInvocationHandler(val);
+            }
+            ((Set<Object>) this.value).add(val);
+        });
     }
 
     @Override
