@@ -15,6 +15,7 @@ public class TypesField extends AbstractField {
     }
 
     @Override
+    // TODO: Set it also, dont create class for every field (abstract).
     public String name(String... name) {
         return NAME;
     }

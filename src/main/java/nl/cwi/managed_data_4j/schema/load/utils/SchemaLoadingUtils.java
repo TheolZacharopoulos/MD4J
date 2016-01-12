@@ -1,19 +1,23 @@
 package nl.cwi.managed_data_4j.schema.load.utils;
 
+import com.sun.istack.internal.Nullable;
+import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.models.*;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 public class SchemaLoadingUtils {
 
     private final static SchemaLoaderCache cache = SchemaLoaderCache.getInstance();
 
-    public static Set<Type> buildTypesFromSchemaKlassesDef(Schema schema, Class<?>... schemaKlassesDefinition) {
+    public static Set<Type> buildTypesFromSchemaKlassesDef(
+            SchemaFactory factory,
+            Schema schema,
+            Class<?>... schemaKlassesDefinition)
+    {
         Set<Type> types = new LinkedHashSet<>();
 
         // for each klass definition
@@ -27,10 +31,17 @@ public class SchemaLoadingUtils {
             final Set<Klass> subs = buildSubs(schemaKlassDefinition);
 
             // create a new klass
+            // TODO: REMOVE THIS
             final Klass klass = new LoadKlass(klassName, schema, supers, subs, fields);
+//            final Klass klass = factory.klass(klassName, schema, supers, subs, fields);
+//            klass.schema(schema);
+//            schema.types(klass);
+//            klass.subklasses(subs);
+
             cache.addType(klass.name(), klass);
 
             // wire the owner klass in fields
+            // TODO: LoadField NOPE
             fields.forEach(field -> ((LoadField) field).setOwner(klass));
 
             // add the a new klass
@@ -73,7 +84,7 @@ public class SchemaLoadingUtils {
             final boolean many = buildMany(fieldReturnClass);
 
             // check for optional
-            final boolean optional = buildOptional(fieldReturnClass);
+            final boolean optional = buildOptional(schemaKlassField);
 
             // add its fields, the owner Klass will be added later
             final Field field = new LoadField(fieldName, schema, new LoadNullKlass(), fieldType, many, optional, inverse);
@@ -138,7 +149,7 @@ public class SchemaLoadingUtils {
         // TODO
         Set<Klass> subs = new HashSet<>();
 
-        cache.getAllTypes() .forEach(type -> {
+        cache.getAllTypes().forEach(type -> {
             if (!(type instanceof Klass)) return;
 
             ((Klass)type).supers().forEach(superKlass -> {
@@ -152,15 +163,15 @@ public class SchemaLoadingUtils {
     }
 
     private static boolean buildMany(Class<?> fieldReturnClass) {
-        // TODO
-        boolean many = false;
-        if (fieldReturnClass.isArray()) many = true;
-        if (fieldReturnClass.isAssignableFrom(Iterable.class)) many = true;
-        return many;
+        // support arrays, sets and lists
+        if (fieldReturnClass.isArray()) return true;
+        if (fieldReturnClass.isAssignableFrom(Set.class)) return true;
+        if (fieldReturnClass.isAssignableFrom(List.class)) return true;
+
+        return false;
     }
 
-    private static boolean buildOptional(Class<?> fieldReturnClass) {
-        // TODO
-        return false;
+    private static boolean buildOptional(Method schemaKlassField) {
+        return schemaKlassField.isAnnotationPresent(Nullable.class);
     }
 }

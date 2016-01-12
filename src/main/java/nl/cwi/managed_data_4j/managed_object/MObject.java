@@ -15,7 +15,7 @@ import java.util.*;
 public class MObject implements InvocationHandler {
 
     // Store props for the object: <Name, Field>
-    protected Map<String, MObjectField> props = new HashMap<>();
+    protected Map<String, MObjectField> props = new LinkedHashMap<>();
 
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;

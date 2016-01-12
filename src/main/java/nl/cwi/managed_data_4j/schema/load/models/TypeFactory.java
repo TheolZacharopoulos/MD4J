@@ -8,33 +8,34 @@ public class TypeFactory {
 
     public static Type getTypeFromClass(Class<?> typeClass, Schema schema) {
 
-        switch (typeClass.getSimpleName()) {
-
-            // Primitives
-            case "String":
-                return new StringPrimitive(schema);
-
-            case "Integer":
-            case "int":
-                return new IntegerPrimitive(schema);
-
-            case "Boolean":
-            case "boolean":
-                return new BoolPrimitive(schema);
-
-            case "Float":
-                return new IntegerPrimitive(schema);
-
-            case "Double":
-                return new IntegerPrimitive(schema);
-
-            case "Class":
-                return new ClassPrimitive(schema);
-
-            case "Object":
-                return new ObjectPrimitive(schema);
+        if (typeClass == String.class) {
+            // TODO: Use the factory
+            return new StringPrimitive(schema);
         }
 
+        if (typeClass == Integer.class || typeClass == int.class) {
+            // TODO: Use the factory
+            return new IntegerPrimitive(schema);
+        }
+
+        if (typeClass == Boolean.class || typeClass == boolean.class) {
+            // TODO: Use the factory
+            return new BoolPrimitive(schema);
+        }
+
+        if (typeClass == Float.class) {
+            // TODO: Use the factory
+            return new IntegerPrimitive(schema);
+        }
+
+        if (typeClass == Double.class) {
+            // TODO: Use the factory
+            return new IntegerPrimitive(schema);
+        }
+
+        // TODO: remove this
+        // TODO: default case load at the cache
+        // TODO: otherwise throw!
         return new LoadNullType(schema);
     }
 }

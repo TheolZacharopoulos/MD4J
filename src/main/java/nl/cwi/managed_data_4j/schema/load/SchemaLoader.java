@@ -35,7 +35,7 @@ public class SchemaLoader {
         Schema schema = factory.schema();
 
         // build the types from the schema klasses definition
-        Set<Type> types = SchemaLoadingUtils.buildTypesFromSchemaKlassesDef(schema, schemaKlassesDef);
+        Set<Type> types = SchemaLoadingUtils.buildTypesFromSchemaKlassesDef(factory, schema, schemaKlassesDef);
 
         // wire the klassInterfaces on schema
         schema.klassInterfaces(klassInterfaces.toArray(new Class[klassInterfaces.size()]));

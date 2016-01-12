@@ -13,6 +13,7 @@ public class ObservableFactory extends AbstractFactory {
     public void init(Class<?> moSchemaFactoryClass, Schema schema, Method schemaFactoryCallingMethod, Object... inits) {
         super.init(moSchemaFactoryClass, schema, schemaFactoryCallingMethod, inits);
 
+        // TODO: Remove the Add thingy
         // Add the observable class in order to use it in the managed object.
         addProxiedInterface(Observable.class);
     }

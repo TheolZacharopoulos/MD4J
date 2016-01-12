@@ -1,9 +1,13 @@
 package nl.cwi.managed_data_4j.schema.models.definition;
 
+import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
+import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
+
 import java.util.Set;
 
 public interface Klass extends Type {
 
+    @Contain
     Set<Field> fields(Field... field);
 
     /**
@@ -22,4 +26,7 @@ public interface Klass extends Type {
      */
     @Inverse(other=Schema.class, field="klasses")
     Schema schema(Schema... schema);
+
+    // TODO: add klassInterface here.
+//    Class<?> classOf(Class<?> ...classOf);
 }

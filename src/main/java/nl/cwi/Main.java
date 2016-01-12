@@ -26,14 +26,19 @@ public class Main {
 
         final BasicFactory basicFactory = new BasicFactory();
 
+        // TODO: Remove that, make it more explicit
         // Create a schema Factory which creates Schema instances.
         SchemaFactory schemaFactory = DataManagerFactory.make(basicFactory, SchemaFactory.class, bootstrapSchema);
+
 
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-        assert (bootstrapSchema == realSchemaSchema);
+        SchemaFactory schemaFactory2 = DataManagerFactory.make(basicFactory, SchemaFactory.class, realSchemaSchema);
+
+        Schema real2 =
+            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         // ================================ Data objects ========================================
 

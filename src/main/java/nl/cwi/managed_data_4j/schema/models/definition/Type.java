@@ -1,5 +1,7 @@
 package nl.cwi.managed_data_4j.schema.models.definition;
 
+import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
+
 /**
  * Represents a Type, can be Primitive or a Klass.
  */
