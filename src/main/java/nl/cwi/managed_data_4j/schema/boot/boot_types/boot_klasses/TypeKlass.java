@@ -30,17 +30,14 @@ public class TypeKlass extends AbstractKlass {
         final Field nameField = new NameField(schema, this);
         final Field schemaField = new SchemaField(schema, this, new TypesField(schema, this));
 
-        return new LinkedHashSet<>(Arrays.asList(
-                nameField,
-                schemaField)
-        );
+        return new LinkedHashSet<>(Arrays.asList(nameField, schemaField));
     }
 
     @Override
     public Set<Klass> subklasses(Klass... subklasses) {
         return new HashSet<>(Arrays.asList(
-                new PrimitiveKlass(schema),
-                new KlassKlass(schema))
+            new PrimitiveKlass(schema),
+            new KlassKlass(schema))
         );
     }
 }

@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j;
+package nl.cwi;
 
 import nl.cwi.examples.ccc.UpdateLogger;
 import nl.cwi.examples.geometry.Line;
@@ -10,7 +10,6 @@ import nl.cwi.managed_data_4j.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.data_manager.DataManagerFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
-
 import nl.cwi.managed_data_4j.schema.models.definition.*;
 
 public class Main {

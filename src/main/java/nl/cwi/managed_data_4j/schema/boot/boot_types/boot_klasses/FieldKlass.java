@@ -44,8 +44,8 @@ public class FieldKlass extends AbstractKlass {
     @Override
     public Set<Klass> subklasses(Klass... subklasses) {
         return new HashSet<>(Arrays.asList(
-                new PrimitiveKlass(schema),
-                new KlassKlass(schema))
+            new PrimitiveKlass(schema),
+            new KlassKlass(schema))
         );
     }
 }

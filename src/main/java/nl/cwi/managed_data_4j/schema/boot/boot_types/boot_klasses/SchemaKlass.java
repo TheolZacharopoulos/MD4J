@@ -8,7 +8,6 @@ import nl.cwi.managed_data_4j.schema.models.definition.*;
 import nl.cwi.managed_data_4j.schema.models.implementation.AbstractKlass;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 

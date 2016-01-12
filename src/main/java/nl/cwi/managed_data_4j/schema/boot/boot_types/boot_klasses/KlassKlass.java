@@ -41,7 +41,6 @@ public class KlassKlass extends TypeKlass {
         return klassKlassFields;
     }
 
-
     @Override
     public Set<Klass> supers(Klass... supers) {
         return Collections.singleton(new TypeKlass(schema));
