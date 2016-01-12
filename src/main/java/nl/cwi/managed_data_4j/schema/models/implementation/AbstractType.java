@@ -27,7 +27,6 @@ public abstract class AbstractType implements Type {
     public boolean equals(Object o) {
         //TODO: Add schema
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
         AbstractType that = (AbstractType) o;
 

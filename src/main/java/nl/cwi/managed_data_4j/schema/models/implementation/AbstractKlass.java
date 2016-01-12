@@ -44,7 +44,6 @@ public abstract class AbstractKlass implements Klass {
     public boolean equals(Object o) {
         //TODO: Add schema, fix fields
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
         AbstractKlass that = (AbstractKlass) o;
 

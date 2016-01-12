@@ -10,9 +10,9 @@ import nl.cwi.managed_data_4j.schema.load.models.LoadKlass;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
-import nl.cwi.managed_data_4j.schema.models.definition.Type;
 import org.junit.Before;
 import org.junit.Test;
+import utils.TestHelper;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,20 +50,11 @@ public class TestPointSchema {
         assertThat(pointSchema.types().size(), is(2));
         assertThat(pointSchema.klasses().size(), is(2));
 
-        Klass pointType = null;
-        Klass lineType = null;
-
-        for (Type type : pointSchema.types()) {
-            if (type.name().equals("Point"))
-                pointType = (Klass) type;
-
-            if (type.name().equals("Line"))
-                lineType = (Klass) type;
-        }
+        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point");
+        Klass lineType = TestHelper.getKlass(pointSchema.types(), "Line");
 
         assertNotNull(pointType);
         assertEquals(pointType.name(), "Point");
-
 
         assertNotNull(lineType);
         assertEquals(lineType.name(), "Line");
@@ -71,24 +62,10 @@ public class TestPointSchema {
 
     @Test
     public void testPointSchema() {
-        Klass pointType = null;
+        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point");
 
-        for (Type type : pointSchema.types()) {
-            if (type.name().equals("Point"))
-                pointType = (Klass) type;
-        }
-
-        assertNotNull(pointType);
-
-        Field xField = null;
-        Field yField = null;
-        for (Field field : pointType.fields()) {
-            if (field.name().equals("x"))
-               xField = field;
-
-            if (field.name().equals("y"))
-                yField = field;
-        }
+        Field xField = TestHelper.getField(pointType.fields(), "x");
+        Field yField = TestHelper.getField(pointType.fields(), "y");
 
         assertNotNull(xField);
         assertThat(xField.name(), is("x"));
@@ -107,40 +84,15 @@ public class TestPointSchema {
 
     @Test
     public void testLineSchema() {
-        Klass lineType = null;
+        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point");
+        Field xField = TestHelper.getField(pointType.fields(), "x");
+        Field yField = TestHelper.getField(pointType.fields(), "y");
 
-        for (Type type : pointSchema.types()) {
-            if (type.name().equals("Line"))
-                lineType = (Klass) type;
-        }
+        Klass lineType = TestHelper.getKlass(pointSchema.types(), "Line");
+        Field startPointField = TestHelper.getField(lineType.fields(), "startPoint");
+        Field endPointField = TestHelper.getField(lineType.fields(), "endPoint");
 
         assertNotNull(lineType);
-
-        Field startPointField = null;
-        Field endPointField = null;
-        for (Field field : lineType.fields()) {
-            if (field.name().equals("startPoint"))
-                startPointField = field;
-
-            if (field.name().equals("endPoint"))
-                endPointField = field;
-        }
-
-        Klass pointType = null;
-        for (Type type : pointSchema.types()) {
-            if (type.name().equals("Point"))
-                pointType = (Klass) type;
-        }
-
-        Field xField = null;
-        Field yField = null;
-        for (Field field : pointType.fields()) {
-            if (field.name().equals("x"))
-                xField = field;
-
-            if (field.name().equals("y"))
-                yField = field;
-        }
 
         assertNotNull(startPointField);
         assertThat(startPointField.name(), is("startPoint"));

@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
 import org.junit.Before;
 import org.junit.Test;
+import utils.TestHelper;
 
 
 import java.util.Set;
@@ -39,22 +40,63 @@ public class TestSchemaSchema {
         final Set<Type> realSchemaSchemaTypes = realSchemaSchema.types();
 
         // Schema Klass
-        Klass bootstrapSchemaKlass = null;
-        for (Type bootstrapSchemaType : bootstrapSchemaTypes) {
-            if (bootstrapSchemaType.name().equals("Schema"))
-                bootstrapSchemaKlass = (Klass) bootstrapSchemaType;
-        }
+        final Klass bootstrapSchemaKlass = TestHelper.getKlass(bootstrapSchemaTypes, "Schema");
+        final Klass realSchemaSchemaKlass = TestHelper.getKlass(realSchemaSchemaTypes, "Schema");
 
-        Klass realSchemaSchemaKlass = null;
-        for (Type realSchemaSchemaType : realSchemaSchemaTypes) {
-            if (realSchemaSchemaType.name().equals("Schema"))
-                realSchemaSchemaKlass = (Klass) realSchemaSchemaType;
-        }
+        assertNotNull(bootstrapSchemaKlass);
+        assertNotNull(realSchemaSchemaKlass);
 
         assertEquals(bootstrapSchemaKlass.name(), realSchemaSchemaKlass.name());
         assertEquals(bootstrapSchemaKlass.supers(), realSchemaSchemaKlass.supers());
         assertEquals(bootstrapSchemaKlass.subklasses(), realSchemaSchemaKlass.subklasses());
-//        assertEquals(bootstrapSchemaKlass.fields(), realSchemaSchemaKlass.fields());
+        assertEquals(bootstrapSchemaKlass.fields(), realSchemaSchemaKlass.fields());
 
+        // Type Klass
+        final Klass bootstrapTypeKlass = TestHelper.getKlass(bootstrapSchemaTypes, "Type");
+        final Klass realSchemaTypeKlass = TestHelper.getKlass(realSchemaSchemaTypes, "Type");
+
+        assertNotNull(bootstrapTypeKlass);
+        assertNotNull(realSchemaTypeKlass);
+
+        assertEquals(bootstrapTypeKlass.name(), realSchemaTypeKlass.name());
+        assertEquals(bootstrapTypeKlass.supers(), realSchemaTypeKlass.supers());
+//        assertEquals(bootstrapTypeKlass.subklasses(), realSchemaTypeKlass.subklasses());
+        assertEquals(bootstrapTypeKlass.fields(), realSchemaTypeKlass.fields());
+
+        // Primitive Klass
+        final Klass bootstrapPrimitiveKlass = TestHelper.getKlass(bootstrapSchemaTypes, "Primitive");
+        final Klass realSchemaPrimitiveKlass = TestHelper.getKlass(realSchemaSchemaTypes, "Primitive");
+
+        assertNotNull(bootstrapPrimitiveKlass);
+        assertNotNull(realSchemaPrimitiveKlass);
+
+        assertEquals(bootstrapPrimitiveKlass.name(), realSchemaPrimitiveKlass.name());
+//        assertEquals(bootstrapPrimitiveKlass.supers(), realSchemaPrimitiveKlass.supers());
+//        assertEquals(bootstrapPrimitiveKlass.subklasses(), realSchemaPrimitiveKlass.subklasses());
+        assertEquals(bootstrapPrimitiveKlass.fields(), realSchemaPrimitiveKlass.fields());
+
+        // Klass Klass
+        final Klass bootstrapKlassKlass = TestHelper.getKlass(bootstrapSchemaTypes, "Klass");
+        final Klass realSchemaKlassKlass = TestHelper.getKlass(realSchemaSchemaTypes, "Klass");
+
+        assertNotNull(bootstrapKlassKlass);
+        assertNotNull(realSchemaKlassKlass);
+
+        assertEquals(bootstrapKlassKlass.name(), realSchemaKlassKlass.name());
+//        assertEquals(bootstrapKlassKlass.supers(), realSchemaKlassKlass.supers());
+//        assertEquals(bootstrapKlassKlass.subklasses(), realSchemaKlassKlass.subklasses());
+        assertEquals(bootstrapKlassKlass.fields(), realSchemaKlassKlass.fields());
+
+        // Field Klass
+        final Klass bootstrapFieldKlass = TestHelper.getKlass(bootstrapSchemaTypes, "Field");
+        final Klass realSchemaFieldKlass = TestHelper.getKlass(realSchemaSchemaTypes, "Field");
+
+        assertNotNull(bootstrapFieldKlass);
+        assertNotNull(realSchemaFieldKlass);
+
+        assertEquals(bootstrapFieldKlass.name(), realSchemaFieldKlass.name());
+//        assertEquals(bootstrapFieldKlass.supers(), realSchemaFieldKlass.supers());
+//        assertEquals(bootstrapFieldKlass.subklasses(), realSchemaFieldKlass.subklasses());
+        assertEquals(bootstrapFieldKlass.fields(), realSchemaFieldKlass.fields());
     }
 }
