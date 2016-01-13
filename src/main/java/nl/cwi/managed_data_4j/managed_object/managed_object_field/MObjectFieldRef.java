@@ -17,6 +17,14 @@ public class MObjectFieldRef extends MObjectFieldSingle {
     }
 
     @Override
+    public void set(Object value) throws InvalidFieldValueException {
+        if (value != null) {
+            this.check(value);
+        }
+        this.value = value;
+    }
+
+    @Override
     public void check(Object mObj) throws InvalidFieldValueException {
 
         // Check for optional
@@ -27,7 +35,12 @@ public class MObjectFieldRef extends MObjectFieldSingle {
             }
         }
 
-        final Klass valueSchemaKlass = ((MObject)mObj).getSchemaKlass();
+        // TODO: REMOVE THIS (if it goes here it means it's a primitive
+        if (!Proxy.isProxyClass(mObj.getClass())) {
+            return;
+        }
+
+        final Klass valueSchemaKlass = ((MObject)Proxy.getInvocationHandler(mObj)).schemaKlass();
         final Klass fieldType = (Klass) this.field.type();
 
         boolean isSubKlass = false;

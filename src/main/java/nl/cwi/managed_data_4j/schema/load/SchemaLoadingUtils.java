@@ -11,6 +11,17 @@ import java.util.*;
 
 public class SchemaLoadingUtils {
 
+    private static class FieldWithMethod {
+
+        public Field field = null;
+        public Method method = null;
+
+        public FieldWithMethod(Field field, Method method) {
+            this.field = field;
+            this.method = method;
+        }
+    }
+
     private final static SchemaLoaderCache cache = SchemaLoaderCache.getInstance();
 
     public static Map<String, Type> buildTypesFromSchemaKlassesDef(
@@ -19,122 +30,139 @@ public class SchemaLoadingUtils {
             Class<?>... schemaKlassesDefinition)
     {
         Map<String, Type> types = new LinkedHashMap<>();
+        Map<Field, FieldWithMethod> allFieldsWithReturnType = new LinkedHashMap<>();
 
-        // for each klass definition
+        // =================
+        // Klasses
         for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
             final String klassName = schemaKlassDefinition.getSimpleName();
 
-            // build the fields from the class definition
-            final Map<String, Field> fields = buildFieldsFromSchemaKlassDef(schema, schemaKlassDefinition, factory);
+            // =================
+            // Fields
+            Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
+            for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
+                final String fieldName = schemaKlassField.getName();
+                final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 
-            final Set<Klass> supers = Collections.emptySet(); //buildSupers(schemaKlassDefinition);
-            final Set<Klass> subs = Collections.emptySet(); //buildSubs(schemaKlassDefinition);
+                // check for many
+                final boolean many = buildMany(fieldReturnClass);
+
+                // check for optional
+                final boolean optional = buildOptional(schemaKlassField);
+
+                // add its fields, the owner Klass will be added later
+                final Field field = factory.field(fieldName);
+                field.many(many);
+                field.optional(optional);
+
+                cache.addField(field.name(), field);
+
+                fieldsForKlass.put(fieldName, field);
+                allFieldsWithReturnType.put(field, new FieldWithMethod(field, schemaKlassField));
+            }
 
             // create a new klass
             final Klass klass = factory.klass(klassName);
             klass.schema(schema);
-            klass.supers(supers.toArray(new Klass[supers.size()]));
-            klass.subklasses(subs.toArray(new Klass[subs.size()]));
-            klass.fields(fields.values().toArray(new Field[fields.size()]));
+            klass.fields(fieldsForKlass.values().toArray(new Field[fieldsForKlass.values().size()]));
 
-            cache.addType(klass.name(), klass);
 
             // wire the owner klass in fields
-            for (Field field : fields.values()) {
+            for (Field field : fieldsForKlass.values()) {
                 field.owner(klass);
             }
+
+            cache.addType(klass.name(), klass);
 
             // add the a new klass
             types.put(klassName, klass);
         }
+
+        // Wire field types
+        for (Field field : allFieldsWithReturnType.keySet()) {
+            final Method method = allFieldsWithReturnType.get(field).method;
+            final Type fieldType = getFieldType(method.getReturnType(), schema, factory);
+            field.type(fieldType);
+        }
+
+        for (Field field : allFieldsWithReturnType.keySet()) {
+            final Method method = allFieldsWithReturnType.get(field).method;
+
+            // Check if the field has the Inverse annotation
+            if (method.isAnnotationPresent(Inverse.class)) {
+                final Inverse fieldInverse = method.getAnnotation(Inverse.class);
+
+                // get the inverse-other klass
+                final Class<?> inverseOther = fieldInverse.other();
+                final String inverseOtherName = inverseOther.getSimpleName();
+
+                // get the inverse-field
+                final String fieldInverseFieldName = fieldInverse.field();
+
+                // check field name and owner
+                Field fieldInverseField = null;
+                for (Field fieldForSearch : allFieldsWithReturnType.keySet()) {
+                    final String fieldForSearchName = fieldForSearch.name();
+                    final String fieldForSearchOwnerName = fieldForSearch.owner().name();
+
+                    if  (fieldForSearchName.equals(fieldInverseFieldName) &&
+                        fieldForSearchOwnerName.equals(inverseOtherName))
+                    {
+                        fieldInverseField = fieldForSearch;
+                    }
+                }
+
+                // set the inverse
+                if (fieldInverseField != null) {
+                    field.inverse(fieldInverseField);
+                }
+            }
+        }
+
+        // TODO: Klass supers
+        // TODO: Klass subs
+
+        cache.clean();
         return types;
     }
 
+    // TODO: Remove this For debugging purposes only
+    private static void debugTypes(Map<String, Type> types) {
+        for (Type type : types.values()) {
+            if (Klass.class.isAssignableFrom(type.getClass())) {
+                Klass klass = (Klass) type;
+                System.out.println("*" + klass.name());
+                for (Field field : klass.fields()) {
+                    System.out.println("\t" + field.name());
+
+                    // type
+                    if (field.type() == null) {
+                        System.out.println("\t\t- Type : <<NULL>>");
+                    } else {
+                        System.out.println("\t\t- Type : " + field.type().name());
+                    }
+
+                    // owner
+                    if (field.owner() == null) {
+                        System.out.println("\t\t- Owner : <<NULL>>");
+                    } else {
+                        System.out.println("\t\t- Owner : " + field.owner().name());
+                    }
+
+                    // inverse
+                    if (field.inverse() != null) {
+                        System.out.println("\t\t- Inverse : " + field.inverse().name());
+                    }
+                }
+            }
+        }
+    }
+
     private static Type getFieldType(Class<?> fieldReturnClass, Schema schema, SchemaFactory factory) {
-
-        // First try to load the type from cache
-        Type fieldType = cache.getType(fieldReturnClass.getSimpleName());
-
-        // if it's not in cache the build it by the class name.
-        if (fieldType == null) {
-
-            try {
-                // if it's managed object should be in cache so no need to build it.
-                // So this builds only Primitives.
-                fieldType = TypeFactory.getTypeFromClass(fieldReturnClass, schema, factory, cache);
-            } catch (UnknownPrimitiveTypeException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        }
-
-        return fieldType;
-    }
-
-    private static Map<String, Field> buildFieldsFromSchemaKlassDef(
-            Schema schema,
-            Class<?> schemaKlassDefinition,
-            SchemaFactory factory)
-    {
-        Map<String, Field> fields = new LinkedHashMap<>();
-
-        // for each field definition
-        for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
-            final String fieldName = schemaKlassField.getName();
-            final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
-
-            final Type fieldType = getFieldType(fieldReturnClass, schema, factory);
-
-            // check for inverse
-            final Field inverse = null; //buildInverse(schemaKlassField);
-
-            // check for many
-            final boolean many = buildMany(fieldReturnClass);
-
-            // check for optional
-            final boolean optional = buildOptional(schemaKlassField);
-
-            // add its fields, the owner Klass will be added later
-            final Field field = factory.field(fieldName);
-            field.type(fieldType);
-            field.many(many);
-            field.optional(optional);
-            field.inverse(inverse);
-
-            cache.addField(field.name(), field);
-
-            fields.put(fieldName, field);
-        }
-        return fields;
-    }
-
-    private static Field buildInverse(Method schemaKlassField) {
-        // TODO
-
-        // Check if the field has the Inverse annotation
-        if (schemaKlassField.isAnnotationPresent(Inverse.class)) {
-            final Inverse fieldInverse = schemaKlassField.getAnnotation(Inverse.class);
-
-            // get the inverse-other klass
-            final Class<?> inverseOther = fieldInverse.other();
-            final String inverseOtherName = inverseOther.getSimpleName();
-            final Type inverseOtherKlass = cache.getType(inverseOtherName);
-
-            // In this case the inverseOtherKlass is not in the cache yet
-            if (inverseOtherKlass == null) {
-                return null;
-            }
-
-            // get the inverse field
-            final String inverseField = fieldInverse.field();
-
-            // extract the field of the inverse-other klass
-            return ((Klass)inverseOtherKlass).fields().stream()
-                .filter(field -> field.name().equals(inverseField))
-                .findFirst()
-                .orElse(null);
-
-        } else {
-            return null;
+        try {
+            return TypeFactory.getTypeFromClass(fieldReturnClass, schema, factory, cache);
+        } catch (UnknownPrimitiveTypeException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 

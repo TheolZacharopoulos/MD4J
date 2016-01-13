@@ -34,39 +34,41 @@ public class Main {
         // This schemaSchema is also self-describing.
         Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+
+        // TODO: This Should work also.
 //        SchemaFactory schemaFactory2 = DataManagerFactory.make(basicFactory, SchemaFactory.class, realSchemaSchema);
 //
 //        Schema real2 =
 //            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 //
-//        // ================================ Data objects ========================================
-//
-//        // Data objects (like Point) are described by schemas (like the Point interface)
-//        // This schema is managed by a data manager capable of initialization allowing the objects
-//        // (points) to be created with starting props.
-//        Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Line.class);
-//        PointFactory pointFactory = DataManagerFactory.make(basicFactory, PointFactory.class, pointSchema);
-//        Point point = pointFactory.point(3, 2);
-//        Line line = pointFactory.line(point, point);
-//
-//        System.out.print(point.x() + " + " + point.y() + " = ");
-//        System.out.print(point.x() + point.y());
-//        System.out.print(" == ");
-//        System.out.println(line.startPoint().x() + line.startPoint().y());
-//
-//        // ================================ Observer ========================================
-//        final ObservableFactory observableFactory = new ObservableFactory();
-//        PointFactory observablePointFactory = DataManagerFactory.make(observableFactory, PointFactory.class, pointSchema);
-//
-//        // Create a new observer-record managed object.
-//        Point observerPoint = observablePointFactory.point();
-//
-//        // Add Logging concerns
-//        ((Observable) observerPoint).observe(UpdateLogger::log);
-//
-//        observerPoint.x(1);
-//        observerPoint.y(6);
-//        observerPoint.x(observerPoint.x() + observerPoint.y());
-//        System.out.println(observerPoint.x());
+        // ================================ Data objects ========================================
+
+        // Data objects (like Point) are described by schemas (like the Point interface)
+        // This schema is managed by a data manager capable of initialization allowing the objects
+        // (points) to be created with starting props.
+        Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Line.class);
+        PointFactory pointFactory = DataManagerFactory.make(basicFactory, PointFactory.class, pointSchema);
+        Point point = pointFactory.point(3, 2);
+        Line line = pointFactory.line(point, point);
+
+        System.out.print(point.x() + " + " + point.y() + " = ");
+        System.out.print(point.x() + point.y());
+        System.out.print(" == ");
+        System.out.println(line.startPoint().x() + line.startPoint().y());
+
+        // ================================ Observer ========================================
+        final ObservableFactory observableFactory = new ObservableFactory();
+        PointFactory observablePointFactory = DataManagerFactory.make(observableFactory, PointFactory.class, pointSchema);
+
+        // Create a new observer-record managed object.
+        Point observerPoint = observablePointFactory.point();
+
+        // Add Logging concerns
+        ((Observable) observerPoint).observe(UpdateLogger::log);
+
+        observerPoint.x(1);
+        observerPoint.y(6);
+        observerPoint.x(observerPoint.x() + observerPoint.y());
+        System.out.println(observerPoint.x());
     }
 }

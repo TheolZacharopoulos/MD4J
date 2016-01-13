@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -12,7 +13,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class MObject implements InvocationHandler {
+public class MObject implements InvocationHandler, M {
 
     // Store props for the object: <Name, Field>
     protected Map<String, MObjectField> props = new LinkedHashMap<>();
@@ -67,7 +68,7 @@ public class MObject implements InvocationHandler {
         MObjectField prop;
 
         if (!field.many()) {
-            if (field.type() instanceof Primitive) {
+            if (PrimitiveUtils.isPrimitive(field.type())) {
                 prop = new MObjectFieldPrimitive(this, field);
             } else {
                 prop = new MObjectFieldRef(this, field);
@@ -149,6 +150,11 @@ public class MObject implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 
+        // TODO: Remove from here.
+        if (fieldName.equals("hashCode")) {
+            return 43 * super.hashCode();
+        }
+
         // The default method are forwarded to the InvocationHandler.
         // But we want to call the default implementation in case of existence.
         //
@@ -225,16 +231,10 @@ public class MObject implements InvocationHandler {
     }
 
     @Override
-    public int hashCode() {
-        // TODO: Check for Key
-
-        if (this.props.containsKey("name")) {
-            return this._get("name").hashCode();
+    public Klass schemaKlass(Klass... schemaKlass) {
+        if (schemaKlass.length > 0) {
+            this.schemaKlass = schemaKlass[0];
         }
-        return super.hashCode();
-    }
-
-    public Klass getSchemaKlass() {
-        return schemaKlass;
+        return this.schemaKlass;
     }
 }
