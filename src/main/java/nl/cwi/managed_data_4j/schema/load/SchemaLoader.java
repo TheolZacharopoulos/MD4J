@@ -24,11 +24,6 @@ public class SchemaLoader {
      */
     public static Schema load(SchemaFactory factory, Class<?>... schemaKlassesDef) {
 
-        // init cache
-        SchemaLoaderCache.getInstance();
-
-        Set<Class> klassInterfaces = new HashSet<>(Arrays.asList(schemaKlassesDef));
-
         // create an empty schema using the factory, will wire it later
         Schema schema = factory.schema();
 
@@ -37,6 +32,8 @@ public class SchemaLoader {
 
         // wire the types on schema
         schema.types(types.toArray(new Type[types.size()]));
+        // TODO:
+        // schema.schemaKlass();
 
         return schema;
     }

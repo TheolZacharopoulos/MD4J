@@ -289,7 +289,10 @@ public class SchemaLoadingUtils {
                 Klass klass = (Klass) type;
                 for (Klass superKlass : klass.supers()) {
 
-                    if (superKlass.name().equals(schemaKlassDefinition.getSimpleName())) {
+                    if (superKlass != null &&
+                        superKlass.name() != null &&
+                        superKlass.name().equals(schemaKlassDefinition.getSimpleName()))
+                    {
                         subs.add(klass);
                     }
                 }

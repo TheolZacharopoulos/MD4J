@@ -1,5 +1,6 @@
 package nl.cwi.managed_data_4j.schema.models.implementation;
 
+import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
@@ -9,13 +10,15 @@ import java.util.Set;
 
 public class SchemaImpl implements Schema {
     protected Set<Type> types;
+    protected Klass schemaKlass;
 
     public SchemaImpl() {
-        this(null);
+        this(null, null);
     }
     
-    public SchemaImpl(Set<Type> types) {
+    public SchemaImpl(Set<Type> types, Klass schemaKlass) {
         this.types = types;
+        this.schemaKlass = schemaKlass;
     }
 
     @Override
@@ -31,5 +34,13 @@ public class SchemaImpl implements Schema {
             }
         }
         return this.types;
+    }
+
+    @Override
+    public Klass schemaKlass(Klass... schemaKlass) {
+        if (schemaKlass.length > 0) {
+            this.schemaKlass = schemaKlass[0];
+        }
+        return this.schemaKlass;
     }
 }
