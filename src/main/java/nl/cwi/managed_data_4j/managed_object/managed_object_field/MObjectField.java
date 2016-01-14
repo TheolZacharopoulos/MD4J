@@ -30,6 +30,10 @@ public abstract class MObjectField {
     public abstract Object get();
     public abstract void init(Object value) throws InvalidFieldValueException;
 
+    public Field getField() {
+        return this.field;
+    }
+
     @Override
     public String toString() {
         return this.field.name() + " = " + this.value;

@@ -5,12 +5,14 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.utils.ArrayUtils;
 import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.*;
 
 public class MObject implements InvocationHandler, M {
@@ -216,8 +218,12 @@ public class MObject implements InvocationHandler, M {
         // If it is an assignment, set the value
         if (isAssignment) {
 
+            final MObjectField mObjectField = this.props.get(fieldName);
+            final boolean isMany = mObjectField.getField().many();
+
             // in case have 1 arg means that is a single field
-            if (((Object [])fieldArgs).length == 1) {
+            // Check always if the field its many
+            if (((Object [])fieldArgs).length == 1 && !isMany) {
                 _set(fieldName, ((Object [])fieldArgs)[0]);
             } else {
                 _set(fieldName, fieldArgs);

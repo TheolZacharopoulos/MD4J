@@ -4,8 +4,8 @@ import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.utils.ArrayUtils;
 
-import java.lang.reflect.Proxy;
 import java.util.*;
 
 public class MObjectFieldMany extends MObjectField {
@@ -17,18 +17,16 @@ public class MObjectFieldMany extends MObjectField {
 
     @Override
     public void init(Object value) throws InvalidFieldValueException {
-        if (!value.getClass().isArray()) throw new InvalidFieldValueException("Non-array value passed to many-field");
+
+        if (!ArrayUtils.isArray(value.getClass())) {
+            throw new InvalidFieldValueException("Non-array value passed to many-field");
+        }
 
         // it's an array since it's many
         Object[] inits = ((Object[]) value);
 
-        // transform to a collection
-        Collection<Object> values = Arrays.asList(inits);
-
-        // make the value object a collection, and add the values to that.
-        (values).forEach(val -> {
-            ((Set<Object>) this.value).add(val);
-        });
+        // make the value object a collection, and add the init values to that.
+        Arrays.asList(inits).forEach(val -> ((Collection<Object>) this.value).add(val));
     }
 
     @Override

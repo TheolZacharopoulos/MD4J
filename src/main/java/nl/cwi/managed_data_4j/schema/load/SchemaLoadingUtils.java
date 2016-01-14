@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Unknown
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
+import nl.cwi.managed_data_4j.utils.ArrayUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -22,14 +23,25 @@ public class SchemaLoadingUtils {
         }
     }
 
+    private static class TypeWithClass {
+
+        public Type type = null;
+        public Class<?> clazz = null;
+
+        public TypeWithClass(Type type, Class<?> clazz) {
+            this.type = type;
+            this.clazz = clazz;
+        }
+    }
+
     private final static SchemaLoaderCache cache = SchemaLoaderCache.getInstance();
 
-    public static Map<String, Type> buildTypesFromSchemaKlassesDef(
+    public static Set<Type> buildTypesFromSchemaKlassesDef(
             SchemaFactory factory,
             Schema schema,
             Class<?>... schemaKlassesDefinition)
     {
-        Map<String, Type> types = new LinkedHashMap<>();
+        Map<Type, TypeWithClass> types = new LinkedHashMap<>();
         Map<Field, FieldWithMethod> allFieldsWithReturnType = new LinkedHashMap<>();
 
         // =================
@@ -75,7 +87,7 @@ public class SchemaLoadingUtils {
             cache.addType(klass.name(), klass);
 
             // add the a new klass
-            types.put(klassName, klass);
+            types.put(klass, new TypeWithClass(klass, schemaKlassDefinition));
         }
 
         // Wire field types
@@ -85,55 +97,99 @@ public class SchemaLoadingUtils {
             field.type(fieldType);
         }
 
+        // Wire inverse
         for (Field field : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(field).method;
 
-            // Check if the field has the Inverse annotation
-            if (method.isAnnotationPresent(Inverse.class)) {
-                final Inverse fieldInverse = method.getAnnotation(Inverse.class);
+            final Field fieldInverseField = buildInverse(method, allFieldsWithReturnType);
+            if (fieldInverseField != null) {
+                field.inverse(fieldInverseField);
+            }
+        }
 
-                // get the inverse-other klass
-                final Class<?> inverseOther = fieldInverse.other();
-                final String inverseOtherName = inverseOther.getSimpleName();
+        // Klass supers
+        for (Type type : types.keySet()) {
 
-                // get the inverse-field
-                final String fieldInverseFieldName = fieldInverse.field();
+            if (type instanceof Klass) {
+                Klass klass = (Klass) type;
+                final TypeWithClass typeWithClass = types.get(klass);
 
-                // check field name and owner
-                Field fieldInverseField = null;
-                for (Field fieldForSearch : allFieldsWithReturnType.keySet()) {
-                    final String fieldForSearchName = fieldForSearch.name();
-                    final String fieldForSearchOwnerName = fieldForSearch.owner().name();
-
-                    if  (fieldForSearchName.equals(fieldInverseFieldName) &&
-                        fieldForSearchOwnerName.equals(inverseOtherName))
-                    {
-                        fieldInverseField = fieldForSearch;
-                    }
-                }
-
-                // set the inverse
-                if (fieldInverseField != null) {
-                    field.inverse(fieldInverseField);
+                final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
+                if (superKlasses.size() > 0) {
+                    klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
                 }
             }
         }
 
-        // TODO: Klass supers
-        // TODO: Klass subs
+        // Klass subs
+        for (Type type : types.keySet()) {
+            if (type instanceof Klass) {
+                final TypeWithClass typeWithClass = types.get(type);
 
-//        debugTypes(types);
+                final Set<Klass> subKlasses = buildSubs(typeWithClass.clazz, cache);
+                if (subKlasses.size() > 0) {
+                    final Klass[] subsToArray = subKlasses.toArray(new Klass[subKlasses.size()]);
+                    ((Klass) type).subklasses(subsToArray);
+                }
+            }
+        }
+
+//        debugTypes(types.keySet());
 
         cache.clean();
-        return types;
+        return types.keySet();
+    }
+
+    private static Field buildInverse(Method method, Map<Field, FieldWithMethod> allFieldsWithReturnType) {
+        Field fieldInverseField = null;
+        if (method.isAnnotationPresent(Inverse.class)) {
+            final Inverse fieldInverse = method.getAnnotation(Inverse.class);
+
+            // get the inverse-other klass
+            final Class<?> inverseOther = fieldInverse.other();
+            final String inverseOtherName = inverseOther.getSimpleName();
+
+            // get the inverse-field
+            final String fieldInverseFieldName = fieldInverse.field();
+
+            // check field name and owner
+            for (Field fieldForSearch : allFieldsWithReturnType.keySet()) {
+                final String fieldForSearchName = fieldForSearch.name();
+                final String fieldForSearchOwnerName = fieldForSearch.owner().name();
+
+                if  (fieldForSearchName.equals(fieldInverseFieldName) &&
+                        fieldForSearchOwnerName.equals(inverseOtherName))
+                {
+                    fieldInverseField = fieldForSearch;
+                }
+            }
+        }
+        return fieldInverseField;
     }
 
     // TODO: Remove this For debugging purposes only
-    private static void debugTypes(Map<String, Type> types) {
-        for (Type type : types.values()) {
+    private static void debugTypes(Set<Type> types) {
+        for (Type type : types) {
+
             if (Klass.class.isAssignableFrom(type.getClass())) {
+
                 Klass klass = (Klass) type;
                 System.out.println("*" + klass.name());
+
+                // supers
+                if (klass.supers() != null) {
+                    for (Klass superKlass : klass.supers()) {
+                        System.out.println("  - Super: " + superKlass.name());
+                    }
+                }
+
+                // subs
+                if (klass.subklasses() != null) {
+                    for (Klass subKlass : klass.subklasses()) {
+                        System.out.println("  - Sub: " + subKlass.name());
+                    }
+                }
+
                 for (Field field : klass.fields()) {
                     System.out.println("\t" + field.name());
 
@@ -159,7 +215,7 @@ public class SchemaLoadingUtils {
                     // many
                     System.out.println("\t\t- Many : " + field.many());
 
-                    // many
+                    // optional
                     System.out.println("\t\t- Optional : " + field.optional());
                 }
             }
@@ -174,8 +230,7 @@ public class SchemaLoadingUtils {
         }
     }
 
-    private static Set<Klass> buildSupers(Class<?> schemaKlassDefinition) {
-        // TODO
+    private static Set<Klass> buildSupers(Class<?> schemaKlassDefinition, SchemaLoaderCache cache) {
         Set<Klass> supers = new HashSet<>();
 
         // Add interfaces that implements
@@ -193,30 +248,28 @@ public class SchemaLoadingUtils {
         return supers.isEmpty() ? Collections.emptySet() : supers;
     }
 
-    private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition) {
-        // TODO
+    private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition, SchemaLoaderCache cache) {
         Set<Klass> subs = new HashSet<>();
 
-        cache.getAllTypes().forEach(type -> {
-            if (!(type instanceof Klass)) return;
+        for (Type type : cache.getAllTypes()) {
+            if (type instanceof Klass) {
 
-            ((Klass)type).supers().forEach(superKlass -> {
-                if (superKlass.name().equals(schemaKlassDefinition.getSimpleName())) {
-                    subs.add(superKlass);
+                Klass klass = (Klass) type;
+                for (Klass superKlass : klass.supers()) {
+
+                    if (superKlass.name().equals(schemaKlassDefinition.getSimpleName())) {
+                        subs.add(klass);
+                    }
                 }
-            });
-        });
+
+            }
+        }
 
         return subs.isEmpty() ? Collections.emptySet() : subs;
     }
 
     private static boolean buildMany(Class<?> fieldReturnClass) {
-        // support arrays, sets and lists
-        if (fieldReturnClass.isArray()) return true;
-        if (fieldReturnClass.isAssignableFrom(Set.class)) return true;
-        if (fieldReturnClass.isAssignableFrom(List.class)) return true;
-
-        return false;
+        return ArrayUtils.isArray(fieldReturnClass);
     }
 
     private static boolean buildOptional(Method schemaKlassField) {
