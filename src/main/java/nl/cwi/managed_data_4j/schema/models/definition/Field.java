@@ -15,9 +15,9 @@ public interface Field {
 
     Boolean optional(Boolean... optional);
 
-    // TODO:
-//    Boolean key(Boolean... key);
-//    Boolean content(Boolean... content);
+    Boolean key(Boolean... key);
+
+    Boolean contain(Boolean... contain);
 
     Type type(Type... type);
 

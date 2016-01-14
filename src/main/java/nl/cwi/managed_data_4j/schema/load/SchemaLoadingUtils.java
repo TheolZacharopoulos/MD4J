@@ -4,7 +4,9 @@ import com.sun.istack.internal.Nullable;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
+import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.utils.ArrayUtils;
 
 import java.lang.reflect.Method;
@@ -62,10 +64,18 @@ public class SchemaLoadingUtils {
                 // check for optional
                 final boolean optional = buildOptional(schemaKlassField);
 
+                // check for key
+                final boolean key = buildKey(schemaKlassField);
+
+                // check for contain
+                final boolean contain = buildContain(schemaKlassField);
+
                 // add its fields, the owner Klass will be added later
                 final Field field = factory.field(fieldName);
                 field.many(many);
                 field.optional(optional);
+                field.key(key);
+                field.contain(contain);
 
                 cache.addField(field.name(), field);
 
@@ -217,6 +227,12 @@ public class SchemaLoadingUtils {
 
                     // optional
                     System.out.println("\t\t- Optional : " + field.optional());
+
+                    // key
+                    System.out.println("\t\t- Key : " + field.key());
+
+                    // contain
+                    System.out.println("\t\t- Contain : " + field.contain());
                 }
             }
         }
@@ -274,5 +290,13 @@ public class SchemaLoadingUtils {
 
     private static boolean buildOptional(Method schemaKlassField) {
         return schemaKlassField.isAnnotationPresent(Nullable.class);
+    }
+
+    private static boolean buildKey(Method schemaKlassField) {
+        return schemaKlassField.isAnnotationPresent(Key.class);
+    }
+
+    private static boolean buildContain(Method schemaKlassField) {
+        return schemaKlassField.isAnnotationPresent(Contain.class);
     }
 }

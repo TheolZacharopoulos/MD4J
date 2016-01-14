@@ -9,18 +9,22 @@ public class FieldImpl implements Field {
     protected String name = null;
     protected Boolean many = null;
     protected Boolean optional = null;
+    protected Boolean key = null;
+    protected Boolean contain = null;
     protected Type type = null;
     protected Field inverse = null;
     protected Klass owner = null;
 
-    public FieldImpl(String name, Boolean many, Boolean optional) {
-        this(name, many, optional, null, null, null);
+    public FieldImpl(String name, Boolean many, Boolean optional, Boolean key, Boolean contain) {
+        this(name, many, optional, key, contain, null, null, null);
     }
 
     public FieldImpl(
         String name,
         Boolean many,
         Boolean optional,
+        Boolean key,
+        Boolean contain,
         Type type,
         Field inverse,
         Klass owner)
@@ -28,6 +32,8 @@ public class FieldImpl implements Field {
         this.name = name;
         this.type = type;
         this.many = many;
+        this.key = key;
+        this.contain = contain;
         this.optional = optional;
         this.inverse = inverse;
         this.owner = owner;
@@ -63,6 +69,22 @@ public class FieldImpl implements Field {
             this.optional = optional[0];
         }
         return this.optional;
+    }
+
+    @Override
+    public Boolean key(Boolean... key) {
+        if (key.length > 0) {
+            this.key = key[0];
+        }
+        return this.key;
+    }
+
+    @Override
+    public Boolean contain(Boolean... contain) {
+        if (contain.length > 0) {
+            this.contain = contain[0];
+        }
+        return this.contain;
     }
 
     @Override
