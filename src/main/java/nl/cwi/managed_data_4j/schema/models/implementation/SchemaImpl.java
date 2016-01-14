@@ -9,15 +9,13 @@ import java.util.Set;
 
 public class SchemaImpl implements Schema {
     protected Set<Type> types;
-    protected Set<Class> klassInterfaces;
 
     public SchemaImpl() {
-        this(null, null);
+        this(null);
     }
     
-    public SchemaImpl(Set<Type> types, Set<Class> klassInterfaces) {
+    public SchemaImpl(Set<Type> types) {
         this.types = types;
-        this.klassInterfaces = klassInterfaces;
     }
 
     @Override
@@ -33,20 +31,5 @@ public class SchemaImpl implements Schema {
             }
         }
         return this.types;
-    }
-
-    @Override
-    public Set<Class> klassInterfaces(Class... interfaces) {
-        if (interfaces.length > 0) {
-            if (interfaces.length > 1) {
-                this.klassInterfaces = new LinkedHashSet<>();
-                for (Class<?> aClass : interfaces) {
-                    this.klassInterfaces.add(aClass);
-                }
-            } else {
-                this.klassInterfaces = Collections.singleton(interfaces[0]);
-            }
-        }
-        return this.klassInterfaces;
     }
 }

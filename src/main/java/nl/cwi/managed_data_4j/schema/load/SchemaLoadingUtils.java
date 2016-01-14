@@ -144,6 +144,17 @@ public class SchemaLoadingUtils {
             }
         }
 
+        // set classOf on klasses
+        for (Type type : types.keySet()) {
+            for (Class klassInterface : schemaKlassesDefinition) {
+                if (type instanceof Klass) {
+                    if (klassInterface.getSimpleName().equals(type.name())) {
+                        ((Klass) type).classOf(klassInterface);
+                    }
+                }
+            }
+        }
+
 //        debugTypes(types.keySet());
 
         cache.clean();
@@ -198,6 +209,11 @@ public class SchemaLoadingUtils {
                     for (Klass subKlass : klass.subklasses()) {
                         System.out.println("  - Sub: " + subKlass.name());
                     }
+                }
+
+                // classOf
+                if (klass.classOf() != null) {
+                    System.out.println("  - classOf: " + klass.classOf().getSimpleName());
                 }
 
                 for (Field field : klass.fields()) {

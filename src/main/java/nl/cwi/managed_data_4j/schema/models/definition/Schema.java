@@ -1,6 +1,5 @@
 package nl.cwi.managed_data_4j.schema.models.definition;
 
-import com.sun.istack.internal.Nullable;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
 
 import java.util.Set;
@@ -16,19 +15,9 @@ import java.util.stream.Collectors;
  */
 
 // TODO:
-//interface M {
-//    Klass schemaKlass();
-//}
-//
 //public interface Schema extends M {
 
 public interface Schema {
-
-    /**
-     * The Interface which describes this schema.
-     */
-    // TODO: Should leave
-    Set<Class> klassInterfaces(Class... interfaces);
 
     /**
      * A set of all the types in the schema.

@@ -47,6 +47,12 @@ public class TypeFactory {
             return primitive;
         }
 
+        if (typeClass == Class.class) {
+            Primitive primitive = factory.primitive("Class");
+            primitive.schema(schema);
+            return primitive;
+        }
+
         if (typeClass == Set.class) {
             Primitive primitive = factory.primitive("Set");
             primitive.schema(schema);

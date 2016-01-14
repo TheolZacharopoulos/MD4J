@@ -39,6 +39,10 @@ public class MObjectFieldPrimitive extends MObjectFieldSingle {
                 if (value instanceof Double) ok = true;
                 break;
 
+            case "Class":
+                if (value instanceof Class) ok = true;
+                break;
+
             case "Object":
                 if (value instanceof String ||
                     value instanceof Integer ||

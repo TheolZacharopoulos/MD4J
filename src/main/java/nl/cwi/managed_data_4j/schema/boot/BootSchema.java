@@ -26,26 +26,27 @@ public class BootSchema extends SchemaImpl {
         final Primitive booleanPrimitive = new PrimitiveImpl("Boolean", schemaSchema);
 
         // ========================
+        // * Class Primitive
+        final Primitive classPrimitive = new PrimitiveImpl("Class", schemaSchema);
+
+        // ========================
         // * Schema Klass
         final Klass schemaKlass = new KlassImpl("Schema");
+        schemaKlass.classOf(Schema.class);
         schemaKlass.schema(schemaSchema);
 
         final Field schemaKlassTypesField = new FieldImpl("types", true, false, true, true);
         schemaKlassTypesField.owner(schemaKlass);
 
-        // TODO: Remove this
-        final Field schemaKlassklassInterfacesField = new FieldImpl("klassInterfaces", true, false, false, false);
-        schemaKlassklassInterfacesField.owner(schemaKlass);
-
-        schemaKlass.fields(schemaKlassTypesField, schemaKlassklassInterfacesField);
+        schemaKlass.fields(schemaKlassTypesField);
 
         // ========================
         // * Type Klass
         final Klass typeKlass = new KlassImpl("Type");
+        typeKlass.classOf(Type.class);
         typeKlass.schema(schemaSchema);
 
         final Field typeKlassNameField = new FieldImpl("name", false, false, true, false);
-        // typeKlassNameField.key(true);
         typeKlassNameField.owner(typeKlass);
         typeKlassNameField.type(stringPrimitive);
 
@@ -59,12 +60,12 @@ public class BootSchema extends SchemaImpl {
         // ========================
         // * Primitive Klass
         final Klass primitiveKlass = new KlassImpl("Primitive");
+        primitiveKlass.classOf(Primitive.class);
         primitiveKlass.schema(schemaSchema);
 
         primitiveKlass.supers(typeKlass);
 
         final Field primitiveKlassNameField = new FieldImpl("name", false, false, true, false);
-        // primitiveKlassNameField.key(true);
         primitiveKlassNameField.owner(primitiveKlass);
         primitiveKlassNameField.type(stringPrimitive);
 
@@ -78,6 +79,7 @@ public class BootSchema extends SchemaImpl {
         // ========================
         // * Klass Klass
         final Klass klassKlass = new KlassImpl("Klass");
+        klassKlass.classOf(Klass.class);
         klassKlass.schema(schemaSchema);
 
         klassKlass.supers(typeKlass);
@@ -104,6 +106,10 @@ public class BootSchema extends SchemaImpl {
         klassKlassSchemaField.type(schemaKlass);
         klassKlassSchemaField.inverse(schemaKlassTypesField);
 
+        final Field klassKlassClassOfField = new FieldImpl("classOf", false, false, false, false);
+        klassKlassClassOfField.owner(klassKlass);
+        klassKlassClassOfField.type(classPrimitive);
+
         // TODO: add classOf()
 
         klassKlass.fields(
@@ -111,18 +117,19 @@ public class BootSchema extends SchemaImpl {
             klassKlassSupersField,
             klassKlassSubsField,
             klassKlassFieldsField,
-            klassKlassSchemaField
+            klassKlassSchemaField,
+            klassKlassClassOfField
         );
 
         // ========================
         // * Field Klass
         final Klass fieldKlass = new KlassImpl("Field");
+        fieldKlass.classOf(Field.class);
         klassKlass.schema(schemaSchema);
 
         klassKlassFieldsField.type(fieldKlass);
 
         final Field fieldKlassNameField = new FieldImpl("name", false, false, true, false);
-        // fieldKlassNameField.key(true);
         fieldKlassNameField.owner(fieldKlass);
         fieldKlassNameField.type(stringPrimitive);
 
@@ -174,14 +181,6 @@ public class BootSchema extends SchemaImpl {
                 primitiveKlass,
                 klassKlass,
                 fieldKlass
-        ));
-
-        this.klassInterfaces = new HashSet<>(Arrays.asList(
-                Schema.class,
-                Type.class,
-                Klass.class,
-                Primitive.class,
-                Field.class
         ));
     }
 }

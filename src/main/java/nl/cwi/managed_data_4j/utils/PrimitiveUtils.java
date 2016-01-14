@@ -24,6 +24,9 @@ public class PrimitiveUtils {
 
             case "Double":
                 return true;
+
+            case "Class":
+                return true;
         }
 
         return false;
@@ -45,6 +48,9 @@ public class PrimitiveUtils {
             case "Float":
             case "Double":
                 return 0.0;
+
+            case "Class":
+                return null;
 
             default:
                 throw new UnknownPrimitiveTypeException("Unknown primitive type: " + typeName);

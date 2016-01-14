@@ -30,7 +30,9 @@ public abstract class AbstractFactory implements IFactory {
         this.schema = schema;
 
         // add the klass interfaces of the schema
-        schema.klassInterfaces().forEach(this::addProxiedInterface);
+        this.schema.klasses().forEach(
+            klass -> this.addProxiedInterface(klass.classOf())
+        );
     }
 
     public abstract MObject createManagedObject(Klass klass, Object... inits);

@@ -27,6 +27,5 @@ public interface Klass extends Type {
     @Inverse(other=Schema.class, field="klasses")
     Schema schema(Schema... schema);
 
-    // TODO: add klassInterface here.
-//    Class<?> classOf(Class<?> ...classOf);
+    Class<?> classOf(Class<?> ...classOf);
 }

@@ -15,9 +15,10 @@ public class KlassImpl implements Klass {
     protected Set<Field> fields = Collections.emptySet();
     protected Set<Klass> supers = Collections.emptySet();
     protected Set<Klass> subklasses = Collections.emptySet();
+    protected Class<?> classOf = null;
 
     public KlassImpl(String name) {
-        this(name, null, null, null, null);
+        this(name, null, null, null, null, null);
     }
 
     public KlassImpl(
@@ -25,13 +26,15 @@ public class KlassImpl implements Klass {
             Schema schema,
             Set<Field> fields,
             Set<Klass> supers,
-            Set<Klass> subklasses)
+            Set<Klass> subklasses,
+            Class<?> classOf)
     {
         this.name = name;
         this.fields = fields;
         this.supers = supers;
         this.subklasses = subklasses;
         this.schema = schema;
+        this.classOf = classOf;
     }
 
     @Override
@@ -93,5 +96,13 @@ public class KlassImpl implements Klass {
             this.schema = schema[0];
         }
         return this.schema;
+    }
+
+    @Override
+    public Class<?> classOf(Class<?>... classOf) {
+        if (classOf.length > 0) {
+            this.classOf = classOf[0];
+        }
+        return this.classOf;
     }
 }
