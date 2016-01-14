@@ -35,11 +35,6 @@ public class MObjectFieldRef extends MObjectFieldSingle {
             }
         }
 
-        // TODO: REMOVE THIS (if it goes here it means it's a primitive
-        if (!Proxy.isProxyClass(mObj.getClass())) {
-            return;
-        }
-
         final Klass valueSchemaKlass = ((MObject)Proxy.getInvocationHandler(mObj)).schemaKlass();
         final Klass fieldType = (Klass) this.field.type();
 

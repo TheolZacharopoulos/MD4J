@@ -27,10 +27,6 @@ public class MObjectFieldMany extends MObjectField {
 
         // make the value object a collection, and add the values to that.
         (values).forEach(val -> {
-//            if (Proxy.isProxyClass(val.getClass())) {
-//                val = (MObject) Proxy.getInvocationHandler(val);
-//            }
-            // TODO: Here needs to implement hashCode
             ((Set<Object>) this.value).add(val);
         });
     }

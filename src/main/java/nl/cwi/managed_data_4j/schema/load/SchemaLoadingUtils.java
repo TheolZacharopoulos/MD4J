@@ -122,6 +122,8 @@ public class SchemaLoadingUtils {
         // TODO: Klass supers
         // TODO: Klass subs
 
+//        debugTypes(types);
+
         cache.clean();
         return types;
     }
@@ -153,6 +155,12 @@ public class SchemaLoadingUtils {
                     if (field.inverse() != null) {
                         System.out.println("\t\t- Inverse : " + field.inverse().name());
                     }
+
+                    // many
+                    System.out.println("\t\t- Many : " + field.many());
+
+                    // many
+                    System.out.println("\t\t- Optional : " + field.optional());
                 }
             }
         }

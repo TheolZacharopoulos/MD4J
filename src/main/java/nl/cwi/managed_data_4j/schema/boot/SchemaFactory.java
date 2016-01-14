@@ -7,6 +7,7 @@ public interface SchemaFactory {
     Schema schema(Class<?>[] klassInterfaces, Type[] types);
 
     Primitive primitive(String name);
+
     Klass klass(String name);
 
     Field field(String name);

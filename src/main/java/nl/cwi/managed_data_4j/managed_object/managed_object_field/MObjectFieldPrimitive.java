@@ -4,6 +4,7 @@ import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
 public class MObjectFieldPrimitive extends MObjectFieldSingle {
 
@@ -53,40 +54,12 @@ public class MObjectFieldPrimitive extends MObjectFieldSingle {
         if (!ok) {
             throw new InvalidFieldValueException(
                 "Invalid value for " + field.name() + " : " + field.type().name() +
-                    " = " + value + " " + value.getClass().getSimpleName());
+                " = " + value + " " + value.getClass().getSimpleName());
         }
     }
 
     @Override
     protected Object defaultValue() throws UnknownPrimitiveTypeException {
-        Object defaultValue = null;
-
-        switch (this.field.type().name()) {
-            case "String":
-                defaultValue = "";
-                break;
-
-            case "Integer":
-                defaultValue = 0;
-                break;
-
-            case "Boolean":
-                defaultValue = false;
-                break;
-
-            case "Float":
-            case "Double":
-                defaultValue = 0.0;
-                break;
-
-            case "Object":
-                defaultValue = null;
-                break;
-
-            default:
-                throw new UnknownPrimitiveTypeException("Unknown primitive type: " + field.type().name());
-        }
-
-        return defaultValue;
+        return PrimitiveUtils.primitiveDefault(this.field.type().name());
     }
 }
