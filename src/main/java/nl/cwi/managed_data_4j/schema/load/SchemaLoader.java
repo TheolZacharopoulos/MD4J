@@ -65,9 +65,6 @@ public class SchemaLoader {
         schema.types(types.toArray(new Type[types.size()]));
         debugTypes(types);
 
-        // TODO:
-        // schema.schemaKlass();
-
         return schema;
     }
 
@@ -286,6 +283,7 @@ public class SchemaLoader {
 
     // TODO: Remove this For debugging purposes only
     private static void debugTypes(Set<Type> types) {
+        System.out.println("=========================");
         for (Type type : types) {
 
             if (type instanceof Klass) {

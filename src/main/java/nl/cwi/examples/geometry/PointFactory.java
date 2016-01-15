@@ -6,8 +6,11 @@ package nl.cwi.examples.geometry;
  * This is used to create instances of Point, and Line objects.
  */
 public interface PointFactory {
-    Point point();
-    Point point(Integer x, Integer y);
+    Point2D point2D();
+    Point2D point2D(Integer x, Integer y);
+    Point3D point3D();
+    Point point3D(Integer x, Integer y, Integer z);
+
     Line line();
-    Line line(Point startPoint, Point endPoint);
+    Line line(Point2D startPoint, Point2D endPoint);
 }

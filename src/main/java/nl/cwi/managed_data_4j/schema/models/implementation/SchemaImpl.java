@@ -36,7 +36,7 @@ public class SchemaImpl implements Schema {
         return this.types;
     }
 
-    @Override
+//    @Override
     public Klass schemaKlass(Klass... schemaKlass) {
         if (schemaKlass.length > 0) {
             this.schemaKlass = schemaKlass[0];

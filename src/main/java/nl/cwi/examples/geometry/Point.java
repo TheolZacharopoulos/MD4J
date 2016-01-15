@@ -7,6 +7,5 @@ package nl.cwi.examples.geometry;
  * allowing the objects (points) to be created with starting props.
  */
 public interface Point {
-    Integer x(Integer ...x);
-    Integer y(Integer ...y);
+
 }

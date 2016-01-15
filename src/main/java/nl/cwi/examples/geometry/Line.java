@@ -7,6 +7,6 @@ package nl.cwi.examples.geometry;
  * allowing the objects (points) to be created with starting props.
  */
 public interface Line {
-    Point startPoint(Point ...p);
-    Point endPoint(Point ...p);
+    Point2D startPoint(Point2D ...p);
+    Point2D endPoint(Point2D ...p);
 }

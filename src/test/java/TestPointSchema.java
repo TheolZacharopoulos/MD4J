@@ -1,5 +1,6 @@
 import nl.cwi.examples.geometry.Line;
 import nl.cwi.examples.geometry.Point;
+import nl.cwi.examples.geometry.Point2D;
 import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
@@ -120,9 +121,9 @@ public class TestPointSchema {
 
     @Test
     public void testEmptyPointInitialization() {
-        Point point = pointFactory.point();
-        assertThat(point.x(), is(0));
-        assertThat(point.y(), is(0));
+        Point2D point2D = pointFactory.point2D();
+        assertThat(point2D.x(), is(0));
+        assertThat(point2D.y(), is(0));
     }
 
     @Test
@@ -130,9 +131,9 @@ public class TestPointSchema {
         final Integer x = 1;
         final Integer y = 2;
 
-        Point point = pointFactory.point(x, y);
-        assertEquals(point.x(), x);
-        assertEquals(point.y(), y);
+        Point2D point2D = pointFactory.point2D(x, y);
+        assertEquals(point2D.x(), x);
+        assertEquals(point2D.y(), y);
     }
 
     @Test
@@ -144,7 +145,7 @@ public class TestPointSchema {
 
     @Test(expected=RuntimeException.class)
     public void testNonEmptyLineInitialization_nonMObject() {
-        final Point startPoint = new Point() {
+        final Point2D startPoint2D = new Point2D() {
             @Override
             public Integer x(Integer... x) {
                 return 1;
@@ -156,7 +157,7 @@ public class TestPointSchema {
             }
         };
 
-        final Point endPoint = new Point() {
+        final Point2D endPoint2D = new Point2D() {
             @Override
             public Integer x(Integer... x) {
                 return 3;
@@ -168,7 +169,7 @@ public class TestPointSchema {
             }
         };
 
-        Line line = pointFactory.line(startPoint, endPoint);
+        Line line = pointFactory.line(startPoint2D, endPoint2D);
         assertEquals(line.startPoint().x(), new Integer(1));
         assertEquals(line.startPoint().y(), new Integer(2));
         assertEquals(line.endPoint().x(), new Integer(3));
@@ -177,11 +178,11 @@ public class TestPointSchema {
 
     @Test
     public void testNonEmptyLineInitialization() {
-        final Point startPoint = pointFactory.point(1, 2);
+        final Point2D startPoint2D = pointFactory.point2D(1, 2);
 
-        final Point endPoint = pointFactory.point(3, 4);
+        final Point2D endPoint2D = pointFactory.point2D(3, 4);
 
-        Line line = pointFactory.line(startPoint, endPoint);
+        Line line = pointFactory.line(startPoint2D, endPoint2D);
         assertEquals(line.startPoint().x(), new Integer(1));
         assertEquals(line.startPoint().y(), new Integer(2));
         assertEquals(line.endPoint().x(), new Integer(3));

@@ -253,7 +253,7 @@ public class MObject implements InvocationHandler, M {
         return _get(fieldName); // return the field's value
     }
 
-    @Override
+//    @Override
     public Klass schemaKlass(Klass... schemaKlass) {
         if (schemaKlass.length > 0) {
             this.schemaKlass = schemaKlass[0];

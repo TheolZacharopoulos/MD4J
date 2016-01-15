@@ -1,9 +1,7 @@
 package nl.cwi;
 
 import nl.cwi.examples.ccc.UpdateLogger;
-import nl.cwi.examples.geometry.Line;
-import nl.cwi.examples.geometry.Point;
-import nl.cwi.examples.geometry.PointFactory;
+import nl.cwi.examples.geometry.*;
 import nl.cwi.examples.patterns.observer.Observable;
 import nl.cwi.examples.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
@@ -34,9 +32,10 @@ public class Main {
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         // TODO: This Should work also.
-//        SchemaFactory schemaFactory2 = DataManagerFactory.make(basicFactory, SchemaFactory.class, realSchemaSchema);
+//        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
+//        SchemaFactory schemaFactory2 = basicFactory2.make();
 //
-//        Schema real2 =
+//        Schema realSchemaSchema2 =
 //            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 //
         // ================================ Data objects ========================================
@@ -44,10 +43,10 @@ public class Main {
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
-        Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Line.class);
+        Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
         BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
         PointFactory pointFactory = basicFactoryForPoints.make();
-        Point point = pointFactory.point(3, 2);
+        Point2D point = pointFactory.point2D(3, 2);
         Line line = pointFactory.line(point, point);
 
         System.out.print(point.x() + " + " + point.y() + " = ");
@@ -60,13 +59,14 @@ public class Main {
         PointFactory observablePointFactory = observableFactory.make();
 
         // Create a new observer-record managed object.
-        Point observerPoint = observablePointFactory.point();
+        Point3D observerPoint = observablePointFactory.point3D();
 
         // Add Logging concerns
         ((Observable) observerPoint).observe(UpdateLogger::log);
 
         observerPoint.x(1);
         observerPoint.y(6);
+        observerPoint.z(9);
         observerPoint.x(observerPoint.x() + observerPoint.y());
         System.out.println(observerPoint.x());
     }
