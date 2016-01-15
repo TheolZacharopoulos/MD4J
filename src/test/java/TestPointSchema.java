@@ -2,30 +2,24 @@ import nl.cwi.examples.geometry.Line;
 import nl.cwi.examples.geometry.Point;
 import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
-import nl.cwi.managed_data_4j.data_manager.DataManagerFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
-import nl.cwi.managed_data_4j.schema.models.implementation.KlassImpl;
 import nl.cwi.managed_data_4j.schema.models.implementation.PrimitiveImpl;
 import org.junit.Before;
 import org.junit.Test;
 import utils.TestHelper;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-
 import static org.junit.Assert.*;
-import static org.junit.matchers.JUnitMatchers.*;
 import static org.hamcrest.Matchers.is;
 
 public class TestPointSchema {
 
     Schema bootstrapSchema;
-    BasicFactory basicFactory;
+    BasicFactory basicFactorySchemaSchema;
+    BasicFactory basicFactoryPointSchema;
     SchemaFactory schemaFactory;
     Schema pointSchema;
     PointFactory pointFactory;
@@ -34,10 +28,11 @@ public class TestPointSchema {
     public void setup() {
         bootstrapSchema = SchemaLoader.bootLoad();
 
-        basicFactory = new BasicFactory();
-        schemaFactory = DataManagerFactory.make(basicFactory, SchemaFactory.class, bootstrapSchema);
+        basicFactorySchemaSchema = new BasicFactory(SchemaFactory.class, bootstrapSchema);
+        schemaFactory = basicFactorySchemaSchema.make();
+
         pointSchema = SchemaLoader.load(schemaFactory, Point.class, Line.class);
-        pointFactory = DataManagerFactory.make(basicFactory, PointFactory.class, pointSchema);
+        basicFactoryPointSchema = new BasicFactory(PointFactory.class, pointSchema);
     }
 
     @Test
