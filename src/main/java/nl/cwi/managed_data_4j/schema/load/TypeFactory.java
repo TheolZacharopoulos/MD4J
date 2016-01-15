@@ -5,8 +5,7 @@ import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.schema.models.definition.Type;
-import java.util.List;
-import java.util.Set;
+import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
 public class TypeFactory {
 
@@ -17,50 +16,8 @@ public class TypeFactory {
         SchemaLoaderCache cache) throws UnknownPrimitiveTypeException
     {
 
-        if (typeClass == String.class) {
-            Primitive primitive = factory.primitive("String");
-            primitive.schema(schema);
-            return primitive;
-        }
-
-        if (typeClass == Integer.class || typeClass == int.class) {
-            Primitive primitive = factory.primitive("Integer");
-            primitive.schema(schema);
-            return primitive;
-        }
-
-        if (typeClass == Boolean.class || typeClass == boolean.class) {
-            Primitive primitive = factory.primitive("Boolean");
-            primitive.schema(schema);
-            return primitive;
-        }
-
-        if (typeClass == Float.class) {
-            Primitive primitive = factory.primitive("Float");
-            primitive.schema(schema);
-            return primitive;
-        }
-
-        if (typeClass == Double.class) {
-            Primitive primitive = factory.primitive("Double");
-            primitive.schema(schema);
-            return primitive;
-        }
-
-        if (typeClass == Class.class) {
-            Primitive primitive = factory.primitive("Class");
-            primitive.schema(schema);
-            return primitive;
-        }
-
-        if (typeClass == Set.class) {
-            Primitive primitive = factory.primitive("Set");
-            primitive.schema(schema);
-            return primitive;
-        }
-
-        if (typeClass == List.class) {
-            Primitive primitive = factory.primitive("List");
+        if (PrimitiveUtils.isPrimitiveClass(typeClass)) {
+            Primitive primitive = factory.primitive(typeClass.getSimpleName());
             primitive.schema(schema);
             return primitive;
         }

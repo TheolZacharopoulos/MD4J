@@ -3,6 +3,9 @@ package nl.cwi.managed_data_4j.utils;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
+import java.util.List;
+import java.util.Set;
+
 public class PrimitiveUtils {
 
     public static boolean isPrimitiveValue(String typeName, Object value) {
@@ -48,6 +51,19 @@ public class PrimitiveUtils {
         }
 
        return ok;
+    }
+
+    public static boolean isPrimitiveClass(Class<?> typeClass) {
+        if (typeClass == String.class) return true;
+        if (typeClass == Integer.class || typeClass == int.class)return true;
+        if (typeClass == Boolean.class || typeClass == boolean.class) return true;
+        if (typeClass == Float.class) return true;
+        if (typeClass == Double.class) return true;
+        if (typeClass == Class.class) return true;
+        if (typeClass == Set.class) return true;
+        if (typeClass == List.class) return true;
+
+        return false;
     }
 
     public static boolean isPrimitive(Type type) {
