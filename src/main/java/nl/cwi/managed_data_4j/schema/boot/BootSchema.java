@@ -115,8 +115,6 @@ public class BootSchema extends SchemaImpl {
         klassKlassClassOfField.owner(klassKlass);
         klassKlassClassOfField.type(classPrimitive);
 
-        // TODO: add classOf()
-
         klassKlass.fields(
             klassKlassNameField,
             klassKlassSupersField,

@@ -16,44 +16,7 @@ public class MObjectFieldPrimitive extends MObjectFieldSingle {
 
     @Override
     public void check(Object value) throws InvalidFieldValueException {
-        boolean ok = false;
-
-        switch (this.field.type().name()) {
-            case "String":
-                if (value instanceof String) ok = true;
-                break;
-
-            case "Integer":
-                if (value instanceof Integer) ok = true;
-                break;
-
-            case "Boolean":
-                if (value instanceof Boolean) ok = true;
-                break;
-
-            case "Float":
-                if (value instanceof Float) ok = true;
-                break;
-
-            case "Double":
-                if (value instanceof Double) ok = true;
-                break;
-
-            case "Class":
-                if (value instanceof Class) ok = true;
-                break;
-
-            case "Object":
-                if (value instanceof String ||
-                    value instanceof Integer ||
-                    value instanceof Boolean ||
-                    value instanceof Float ||
-                    value instanceof Double)
-                {
-                    ok = true;
-                }
-                break;
-        }
+        boolean ok = PrimitiveUtils.isPrimitiveValue(this.field.type().name(), value);
 
         if (!ok) {
             throw new InvalidFieldValueException(

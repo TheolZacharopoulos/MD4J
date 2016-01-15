@@ -5,6 +5,51 @@ import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
 public class PrimitiveUtils {
 
+    public static boolean isPrimitiveValue(String typeName, Object value) {
+        boolean ok = false;
+
+        switch (typeName) {
+            case "String":
+                if (value instanceof String) ok = true;
+                break;
+
+            case "Integer":
+            case "int":
+                if (value instanceof Integer) ok = true;
+                break;
+
+            case "Boolean":
+            case "boolean":
+                if (value instanceof Boolean) ok = true;
+                break;
+
+            case "Float":
+                if (value instanceof Float) ok = true;
+                break;
+
+            case "Double":
+                if (value instanceof Double) ok = true;
+                break;
+
+            case "Class":
+                if (value instanceof Class) ok = true;
+                break;
+
+            case "Object":
+                if (value instanceof String ||
+                        value instanceof Integer ||
+                        value instanceof Boolean ||
+                        value instanceof Float ||
+                        value instanceof Double)
+                {
+                    ok = true;
+                }
+                break;
+        }
+
+       return ok;
+    }
+
     public static boolean isPrimitive(Type type) {
 
         switch (type.name()) {

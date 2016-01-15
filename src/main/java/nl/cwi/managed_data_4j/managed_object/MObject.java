@@ -147,12 +147,31 @@ public class MObject implements InvocationHandler, M {
         mObjectField.init(value);
     }
 
+    /**
+     * Searches for @key in the properties, if any found return the hashCode of the
+     * first one it finds. Otherwise returns Java default hasCode() implementation.
+     * @return a hashCode
+     */
+    private int getKeyHasCode() {
+        for (MObjectField mObjectField : this.props.values()) {
+            final Field field = mObjectField.getField();
+
+            // find the first key
+            if (field.key()) {
+                return mObjectField.hashCode();
+            }
+        }
+
+        // otherwise return Java hasCode implementation.
+        return super.hashCode();
+    }
+
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 
-        // TODO: Remove from here.
-        if (fieldName.equals("hashCode")) {
-            return 43 * super.hashCode();
+        // hashCode() method invocation of the proxied object
+        if (method.getName().equals("hashCode")) {
+            return this.getKeyHasCode();
         }
 
         // The default method are forwarded to the InvocationHandler.
