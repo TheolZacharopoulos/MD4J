@@ -8,6 +8,7 @@ import nl.cwi.managed_data_4j.schema.models.definition.*;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
+import nl.cwi.managed_data_4j.schema.models.definition.annotations.Order;
 import nl.cwi.managed_data_4j.utils.ArrayUtils;
 
 import java.lang.reflect.Method;
@@ -84,10 +85,27 @@ public class SchemaLoader {
             // Fields
             Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
 
-            // ** Problem **
+            // ** Issue #1 **
             // The elements in the array returned getMethods(), are not sorted and are not in any particular order.
             // Looks like it is not possible to get them in the definition order, by using reflection.
-            for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
+            // So for now, a new Annotation @Order added with a property (value) which is used as
+            // comparison criteria for sorting out the methods.
+            final Method[] fields = schemaKlassDefinition.getMethods();
+            Arrays.sort(fields, (o1, o2) -> {
+                Order or1 = o1.getAnnotation(Order.class);
+                Order or2 = o2.getAnnotation(Order.class);
+                // nulls last
+                if (or1 != null && or2 != null) {
+                    return or1.value() - or2.value();
+                } else if (or1 != null) {
+                    return -1;
+                } else if (or2 != null) {
+                    return 1;
+                }
+                return o1.getName().compareTo(o2.getName());
+            });
+
+            for (Method schemaKlassField : fields) {
                 final String fieldName = schemaKlassField.getName();
                 final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 

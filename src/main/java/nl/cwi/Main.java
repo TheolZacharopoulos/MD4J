@@ -31,13 +31,12 @@ public class Main {
         // This schemaSchema is also self-describing.
         Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-//        DebugUtils.debugTypes(realSchemaSchema.types());
 
-        // TODO: This Should work also.
-//        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
-//        SchemaFactory schemaFactory2 = basicFactory2.make();
-//        Schema realSchemaSchema2 =
-//            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
+        SchemaFactory schemaFactory2 = basicFactory2.make();
+        Schema realSchemaSchema2 =
+            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+        DebugUtils.debugTypes(realSchemaSchema2.types());
 
         // ================================ Data objects ========================================
 
