@@ -18,7 +18,7 @@ public class MObjectFieldMany extends MObjectField {
     @Override
     public void init(Object value) throws InvalidFieldValueException {
 
-        if (!ArrayUtils.isArray(value.getClass())) {
+        if (!ArrayUtils.isMany(value.getClass())) {
             throw new InvalidFieldValueException("Non-array value passed to many-field");
         }
 

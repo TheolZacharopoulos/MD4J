@@ -8,7 +8,6 @@ import nl.cwi.managed_data_4j.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
-import nl.cwi.managed_data_4j.utils.DebugUtils;
 
 public class Main {
 
@@ -36,7 +35,6 @@ public class Main {
         SchemaFactory schemaFactory2 = basicFactory2.make();
         Schema realSchemaSchema2 =
             SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-        DebugUtils.debugTypes(realSchemaSchema2.types());
 
         // ================================ Data objects ========================================
 
@@ -46,6 +44,7 @@ public class Main {
         Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
         BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
         PointFactory pointFactory = basicFactoryForPoints.make();
+
         Point2D point = pointFactory.point2D(3, 2);
         Line line = pointFactory.line(point, point);
 

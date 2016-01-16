@@ -8,8 +8,8 @@ import nl.cwi.managed_data_4j.schema.models.definition.*;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
-import nl.cwi.managed_data_4j.schema.models.definition.annotations.Order;
 import nl.cwi.managed_data_4j.utils.ArrayUtils;
+import nl.cwi.managed_data_4j.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -90,36 +90,24 @@ public class SchemaLoader {
             // Looks like it is not possible to get them in the definition order, by using reflection.
             // So for now, a new Annotation @Order added with a property (value) which is used as
             // comparison criteria for sorting out the methods.
-            final Method[] fields = schemaKlassDefinition.getMethods();
-            Arrays.sort(fields, (o1, o2) -> {
-                Order or1 = o1.getAnnotation(Order.class);
-                Order or2 = o2.getAnnotation(Order.class);
-                // nulls last
-                if (or1 != null && or2 != null) {
-                    return or1.value() - or2.value();
-                } else if (or1 != null) {
-                    return -1;
-                } else if (or2 != null) {
-                    return 1;
-                }
-                return o1.getName().compareTo(o2.getName());
-            });
+            final Method[] schemaKlassFields = schemaKlassDefinition.getMethods();
+            Arrays.sort(schemaKlassFields, ReflectionUtils.getMethodsSortingComparator());
 
-            for (Method schemaKlassField : fields) {
+            for (Method schemaKlassField : schemaKlassFields) {
                 final String fieldName = schemaKlassField.getName();
                 final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 
                 // check for many
-                final boolean many = buildMany(fieldReturnClass);
+                final boolean many = ArrayUtils.isMany(fieldReturnClass);;
 
                 // check for optional
-                final boolean optional = buildOptional(schemaKlassField);
+                final boolean optional = schemaKlassField.isAnnotationPresent(Nullable.class);
 
                 // check for key
-                final boolean key = buildKey(schemaKlassField);
+                final boolean key = schemaKlassField.isAnnotationPresent(Key.class);
 
                 // check for contain
-                final boolean contain = buildContain(schemaKlassField);
+                final boolean contain = schemaKlassField.isAnnotationPresent(Contain.class);
 
                 // add its fields, the owner Klass will be added later
                 final Field field = factory.field(fieldName);
@@ -283,21 +271,5 @@ public class SchemaLoader {
         }
 
         return subs.isEmpty() ? Collections.emptySet() : subs;
-    }
-
-    private static boolean buildMany(Class<?> fieldReturnClass) {
-        return ArrayUtils.isArray(fieldReturnClass);
-    }
-
-    private static boolean buildOptional(Method schemaKlassField) {
-        return schemaKlassField.isAnnotationPresent(Nullable.class);
-    }
-
-    private static boolean buildKey(Method schemaKlassField) {
-        return schemaKlassField.isAnnotationPresent(Key.class);
-    }
-
-    private static boolean buildContain(Method schemaKlassField) {
-        return schemaKlassField.isAnnotationPresent(Contain.class);
     }
 }

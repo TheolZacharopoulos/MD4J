@@ -48,7 +48,7 @@ public class MObjectFieldRef extends MObjectFieldSingle {
         boolean isSubKlass = false;
         if (fieldType.subklasses() != null) {
             for (Klass superKlass : valueSchemaKlass.supers()) {
-                if (superKlass != null && superKlass.name().equals(fieldType.name())) {
+                if (superKlass.name().equals(fieldType.name())) {
                     isSubKlass = true;
                 }
             }

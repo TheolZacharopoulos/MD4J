@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class ArrayUtils {
 
-    public static boolean isArray(Class<?> clazz) {
+    public static boolean isMany(Class<?> clazz) {
         if (clazz.isArray()) return true;
         if (clazz.isAssignableFrom(Set.class)) return true;
         if (clazz.isAssignableFrom(List.class)) return true;
