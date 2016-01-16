@@ -6,7 +6,7 @@ import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BasicFactory implements IFactory {
@@ -18,7 +18,7 @@ public class BasicFactory implements IFactory {
     protected final Schema schema;
 
     // we need those in order to add the to the java Proxy.
-    private Set<Class<?>> proxiedInterfaces = new HashSet<>();
+    private Set<Class<?>> proxiedInterfaces = new LinkedHashSet<>();
 
     /**
      * Constructor

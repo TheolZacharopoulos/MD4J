@@ -8,6 +8,7 @@ import nl.cwi.managed_data_4j.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.utils.DebugUtils;
 
 public class Main {
 
@@ -30,14 +31,14 @@ public class Main {
         // This schemaSchema is also self-describing.
         Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+//        DebugUtils.debugTypes(realSchemaSchema.types());
 
         // TODO: This Should work also.
 //        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
 //        SchemaFactory schemaFactory2 = basicFactory2.make();
-//
 //        Schema realSchemaSchema2 =
 //            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-//
+
         // ================================ Data objects ========================================
 
         // Data objects (like Point) are described by schemas (like the Point interface)
@@ -68,6 +69,6 @@ public class Main {
         observerPoint.y(6);
         observerPoint.z(9);
         observerPoint.x(observerPoint.x() + observerPoint.y());
-        System.out.println(observerPoint.x());
+        System.out.println(observerPoint.x() + observerPoint.y() + observerPoint.z());
     }
 }

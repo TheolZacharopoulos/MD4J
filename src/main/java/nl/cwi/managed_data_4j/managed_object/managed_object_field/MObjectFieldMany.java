@@ -43,7 +43,7 @@ public class MObjectFieldMany extends MObjectField {
     }
 
     protected Object defaultValue() throws UnknownPrimitiveTypeException {
-        return new HashSet<>();
+        return new LinkedHashSet<>();
     }
 
     public boolean isEmpty() {

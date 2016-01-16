@@ -31,8 +31,15 @@ public class MObjectFieldRef extends MObjectFieldSingle {
         if (!this.field.optional()) {
             if (mObj == null) {
                 throw new InvalidFieldValueException(
-                    "Cannot assign null to non-optional field " + field.owner().name() + " " + field.name());
+                    "Cannot assign null to non-optional field of klass '" +
+                    field.owner().name() + "' with name '" + field.name() + "'");
             }
+        }
+
+        if (!Proxy.isProxyClass(mObj.getClass())) {
+            throw new RuntimeException(
+                "The value '" + mObj + "' of type '" +
+                mObj.getClass() + "' should be proxied since its a Managed object.");
         }
 
         final Klass valueSchemaKlass = ((MObject)Proxy.getInvocationHandler(mObj)).schemaKlass();

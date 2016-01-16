@@ -1,7 +1,4 @@
-import nl.cwi.examples.geometry.Line;
-import nl.cwi.examples.geometry.Point;
-import nl.cwi.examples.geometry.Point2D;
-import nl.cwi.examples.geometry.PointFactory;
+import nl.cwi.examples.geometry.*;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
@@ -32,8 +29,9 @@ public class TestPointSchema {
         basicFactorySchemaSchema = new BasicFactory(SchemaFactory.class, bootstrapSchema);
         schemaFactory = basicFactorySchemaSchema.make();
 
-        pointSchema = SchemaLoader.load(schemaFactory, Point.class, Line.class);
+        pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
         basicFactoryPointSchema = new BasicFactory(PointFactory.class, pointSchema);
+        pointFactory = basicFactoryPointSchema.make();
     }
 
     @Test
@@ -43,14 +41,14 @@ public class TestPointSchema {
 //                Line.class
 //        ));
 
-        assertThat(pointSchema.types().size(), is(2));
-        assertThat(pointSchema.klasses().size(), is(2));
+        assertThat(pointSchema.types().size(), is(4));
+        assertThat(pointSchema.klasses().size(), is(4));
 
-        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point");
+        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point2D");
         Klass lineType = TestHelper.getKlass(pointSchema.types(), "Line");
 
         assertNotNull(pointType);
-        assertEquals(pointType.name(), "Point");
+        assertEquals(pointType.name(), "Point2D");
 
         assertNotNull(lineType);
         assertEquals(lineType.name(), "Line");
@@ -58,7 +56,7 @@ public class TestPointSchema {
 
     @Test
     public void testPointSchema() {
-        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point");
+        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point2D");
 
         Field xField = TestHelper.getField(pointType.fields(), "x");
         Field yField = TestHelper.getField(pointType.fields(), "y");
@@ -67,20 +65,20 @@ public class TestPointSchema {
         assertThat(xField.name(), is("x"));
         assertThat(xField.optional(), is(false));
         assertThat(xField.many(), is(false));
-        assertThat(xField.owner(), is(pointType));
-        assertThat(xField.type(), is(new PrimitiveImpl("Integer", pointSchema)));
+        assertThat(xField.owner().name(), is("Point2D"));
+        assertThat(xField.type().name(), is("Integer"));
 
         assertNotNull(yField);
         assertThat(yField.name(), is("y"));
         assertThat(yField.optional(), is(false));
         assertThat(yField.many(), is(false));
-        assertThat(yField.owner(), is(pointType));
-        assertThat(yField.type(), is(new PrimitiveImpl("Integer", pointSchema)));
+        assertThat(yField.owner().name(), is("Point2D"));
+        assertThat(yField.type().name(), is("Integer"));
     }
 
     @Test
     public void testLineSchema() {
-        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point");
+        Klass pointType = TestHelper.getKlass(pointSchema.types(), "Point2D");
         Field xField = TestHelper.getField(pointType.fields(), "x");
         Field yField = TestHelper.getField(pointType.fields(), "y");
 
@@ -94,10 +92,10 @@ public class TestPointSchema {
         assertThat(startPointField.name(), is("startPoint"));
         assertThat(startPointField.optional(), is(false));
         assertThat(startPointField.many(), is(false));
-        assertThat(startPointField.owner(), is(lineType));
+        assertThat(startPointField.owner().name(), is("Line"));
 //        assertThat(startPointField.type(), is(
 //                new KlassImpl(
-//                    "Point",
+//                    "Point2D",
 //                    pointSchema,
 //                    new LinkedHashSet<>(Arrays.asList(xField, yField)),
 //                    Collections.emptySet(),
@@ -108,10 +106,10 @@ public class TestPointSchema {
         assertThat(endPointField.name(), is("endPoint"));
         assertThat(endPointField.optional(), is(false));
         assertThat(endPointField.many(), is(false));
-        assertThat(endPointField.owner(), is(lineType));
+        assertThat(endPointField.owner().name(), is("Line"));
 //        assertThat(endPointField.type(), is(
 //                new KlassImpl(
-//                        "Point",
+//                        "Point2D",
 //                        pointSchema,
 //                        new LinkedHashSet<>(Arrays.asList(xField, yField)),
 //                        Collections.emptySet(),

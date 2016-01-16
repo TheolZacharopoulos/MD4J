@@ -20,8 +20,8 @@ public class MObjectFieldPrimitive extends MObjectFieldSingle {
 
         if (!ok) {
             throw new InvalidFieldValueException(
-                "Invalid value for " + field.name() + " : " + field.type().name() +
-                " = " + value + " " + value.getClass().getSimpleName());
+                "Invalid value '" + value + "', of type '" + value.getClass() +
+                "' for field '" + field.name() + "', of type '" + field.type().name());
         }
     }
 

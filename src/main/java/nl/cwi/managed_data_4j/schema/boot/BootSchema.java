@@ -30,18 +30,35 @@ public class BootSchema extends SchemaImpl {
         final Primitive classPrimitive = new PrimitiveImpl("Class", schemaSchema);
 
         // ========================
+        // * Set Primitive
+        final Primitive setPrimitive = new PrimitiveImpl("Set", schemaSchema);
+
+        // ========================
         // * Schema Klass
         final Klass schemaKlass = new KlassImpl("Schema");
         schemaKlass.classOf(Schema.class);
         schemaKlass.schema(schemaSchema);
 
-        final Field schemaKlassTypesField = new FieldImpl("types", true, false, true, true);
+        final Field schemaKlassTypesField = new FieldImpl("types", true, false, false, true);
         schemaKlassTypesField.owner(schemaKlass);
+        schemaKlassTypesField.type(setPrimitive);
+
+        final Field schemaKlassKlassesField = new FieldImpl("klasses", true, false, false, false);
+        schemaKlassKlassesField.owner(schemaKlass);
+        schemaKlassKlassesField.type(setPrimitive);
+
+        final Field schemaKlassPrimitivesField = new FieldImpl("primitives", true, false, false, false);
+        schemaKlassPrimitivesField.owner(schemaKlass);
+        schemaKlassPrimitivesField.type(setPrimitive);
 
 //        final Field schemaKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
 //        schemaKlassSchemaKlassField.owner(schemaKlass);
 
-        schemaKlass.fields(schemaKlassTypesField);
+        schemaKlass.fields(
+            schemaKlassTypesField,
+            schemaKlassKlassesField,
+            schemaKlassPrimitivesField
+        );
 
         // ========================
         // * Type Klass
@@ -178,7 +195,7 @@ public class BootSchema extends SchemaImpl {
 
         // ========================
         // * Bootstrap definition
-        this.types = new HashSet<>(Arrays.asList(
+        this.types = new LinkedHashSet<>(Arrays.asList(
                 schemaKlass,
                 typeKlass,
                 primitiveKlass,

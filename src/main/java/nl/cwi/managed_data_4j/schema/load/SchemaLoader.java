@@ -63,7 +63,6 @@ public class SchemaLoader {
 
         // wire the types on schema
         schema.types(types.toArray(new Type[types.size()]));
-        debugTypes(types);
 
         return schema;
     }
@@ -84,6 +83,10 @@ public class SchemaLoader {
             // =================
             // Fields
             Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
+
+            // ** Problem **
+            // The elements in the array returned getMethods(), are not sorted and are not in any particular order.
+            // Looks like it is not possible to get them in the definition order, by using reflection.
             for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
                 final String fieldName = schemaKlassField.getName();
                 final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
@@ -117,7 +120,6 @@ public class SchemaLoader {
             final Klass klass = factory.klass(klassName);
             klass.schema(schema);
             klass.fields(fieldsForKlass.values().toArray(new Field[fieldsForKlass.values().size()]));
-
 
             // wire the owner klass in fields
             for (Field field : fieldsForKlass.values()) {
@@ -225,7 +227,7 @@ public class SchemaLoader {
     }
 
     private static Set<Klass> buildSupers(Class<?> schemaKlassDefinition, SchemaLoaderCache cache) {
-        Set<Klass> supers = new HashSet<>();
+        Set<Klass> supers = new LinkedHashSet<>();
 
         // Add interfaces that implements
         for (Class<?> interfaceImpl : schemaKlassDefinition.getInterfaces()) {
@@ -243,7 +245,7 @@ public class SchemaLoader {
     }
 
     private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition, SchemaLoaderCache cache) {
-        Set<Klass> subs = new HashSet<>();
+        Set<Klass> subs = new LinkedHashSet<>();
 
         for (Type type : cache.getAllTypes()) {
             if (type instanceof Klass) {
@@ -279,74 +281,5 @@ public class SchemaLoader {
 
     private static boolean buildContain(Method schemaKlassField) {
         return schemaKlassField.isAnnotationPresent(Contain.class);
-    }
-
-    // TODO: Remove this For debugging purposes only
-    private static void debugTypes(Set<Type> types) {
-        System.out.println("=========================");
-        for (Type type : types) {
-
-            if (type instanceof Klass) {
-
-                Klass klass = (Klass) type;
-                System.out.println("*" + klass.name());
-
-                // supers
-                if (klass.supers() != null) {
-                    for (Klass superKlass : klass.supers()) {
-                        if (superKlass != null) {
-                            System.out.println("  - Super: " + superKlass.name());
-                        }
-                    }
-                }
-
-                // subs
-                if (klass.subklasses() != null) {
-                    for (Klass subKlass : klass.subklasses()) {
-                        System.out.println("  - Sub: " + subKlass.name());
-                    }
-                }
-
-                // classOf
-                if (klass.classOf() != null) {
-                    System.out.println("  - classOf: " + klass.classOf().getSimpleName());
-                }
-
-                for (Field field : klass.fields()) {
-                    System.out.println("\t" + field.name());
-
-                    // type
-                    if (field.type() == null) {
-                        System.out.println("\t\t- Type : <<NULL>>");
-                    } else {
-                        System.out.println("\t\t- Type : " + field.type().name());
-                    }
-
-                    // owner
-                    if (field.owner() == null) {
-                        System.out.println("\t\t- Owner : <<NULL>>");
-                    } else {
-                        System.out.println("\t\t- Owner : " + field.owner().name());
-                    }
-
-                    // inverse
-                    if (field.inverse() != null) {
-                        System.out.println("\t\t- Inverse : " + field.inverse().name());
-                    }
-
-                    // many
-                    System.out.println("\t\t- Many : " + field.many());
-
-                    // optional
-                    System.out.println("\t\t- Optional : " + field.optional());
-
-                    // key
-                    System.out.println("\t\t- Key : " + field.key());
-
-                    // contain
-                    System.out.println("\t\t- Contain : " + field.contain());
-                }
-            }
-        }
     }
 }

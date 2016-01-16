@@ -3,6 +3,7 @@ package nl.cwi.managed_data_4j.utils;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -88,6 +89,12 @@ public class PrimitiveUtils {
 
             case "Class":
                 return true;
+
+            case "Set":
+                return true;
+
+            case "List":
+                return true;
         }
 
         return false;
@@ -112,6 +119,12 @@ public class PrimitiveUtils {
 
             case "Class":
                 return null;
+
+            case "Set":
+                return Collections.emptySet();
+
+            case "List":
+                return Collections.emptyList();
 
             default:
                 throw new UnknownPrimitiveTypeException("Unknown primitive type: " + typeName);

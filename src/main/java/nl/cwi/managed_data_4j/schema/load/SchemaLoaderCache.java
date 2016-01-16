@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -15,8 +16,8 @@ public class SchemaLoaderCache {
 
     private static SchemaLoaderCache instance = null;
 
-    private Map<String, Type> typesCache = new HashMap<>();
-    private Map<String, Field> fieldsCache = new HashMap<>();
+    private Map<String, Type> typesCache = new LinkedHashMap<>();
+    private Map<String, Field> fieldsCache = new LinkedHashMap<>();
 
     public static SchemaLoaderCache getInstance() {
         if (instance == null) {

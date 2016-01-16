@@ -97,7 +97,7 @@ public class MObject implements InvocationHandler, M {
      * @throws InvalidFieldValueException in case of wrong type of the initialization value.
      */
     protected void initializeProps(Object... initializers) throws InvalidFieldValueException {
-        List<Field> fieldList = new ArrayList<>();
+        List<Field> fieldList = new LinkedList<>();
         fieldList.addAll(this.schemaKlass.fields());
 
         for (int i = 0; i < fieldList.size(); i++) {
