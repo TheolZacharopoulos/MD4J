@@ -198,7 +198,7 @@ public class MObject implements InvocationHandler, M {
             return defaultMethodLookup
                 .unreflectSpecial(method, declaringClass)
                 .bindTo(proxy)
-                .invokeWithArguments();
+                .invokeWithArguments(args);
         }
 
         // This is a way to execute the "attached" methods of the derived Managed Objects,
