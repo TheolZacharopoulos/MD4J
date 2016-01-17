@@ -17,7 +17,8 @@ public class TypeFactory {
     {
 
         if (PrimitiveUtils.isPrimitiveClass(typeClass)) {
-            Primitive primitive = factory.primitive(typeClass.getSimpleName());
+            Primitive primitive = factory.primitive();
+            primitive.name(typeClass.getSimpleName());
             primitive.schema(schema);
             return primitive;
         }

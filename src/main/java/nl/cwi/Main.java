@@ -19,7 +19,7 @@ public class Main {
         // This minimal bootstrap schema is necessarily self-describing as it must change itself and
         // it processes simplistic data managers that only allow updating.
         // It is also hardcoded.
-        Schema bootstrapSchema = SchemaLoader.bootLoad();
+        final Schema bootstrapSchema = SchemaLoader.bootLoad();
 
         final BasicFactory basicFactory = new BasicFactory(SchemaFactory.class, bootstrapSchema);
 
@@ -28,12 +28,12 @@ public class Main {
 
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
-        Schema realSchemaSchema =
+        final Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
-        SchemaFactory schemaFactory2 = basicFactory2.make();
-        Schema realSchemaSchema2 =
+        final SchemaFactory schemaFactory2 = basicFactory2.make();
+        final Schema realSchemaSchema2 =
             SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         // ================================ Data objects ========================================
@@ -41,12 +41,16 @@ public class Main {
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
-        Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
-        BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
-        PointFactory pointFactory = basicFactoryForPoints.make();
+        final Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
+        final BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
+        final PointFactory pointFactory = basicFactoryForPoints.make();
 
-        Point2D point = pointFactory.point2D(3, 2);
-        Line line = pointFactory.line(point, point);
+        final Point2D point = pointFactory.point2D();
+        point.x(3);
+        point.y(2);
+        final Line line = pointFactory.line();
+        line.startPoint(point);
+        line.endPoint(point);
 
         System.out.print(point.x() + " + " + point.y() + " = ");
         System.out.print(point.x() + point.y());
@@ -55,10 +59,10 @@ public class Main {
 
         // ================================ Observer ========================================
         final ObservableFactory observableFactory = new ObservableFactory(PointFactory.class, pointSchema);
-        PointFactory observablePointFactory = observableFactory.make();
+        final PointFactory observablePointFactory = observableFactory.make();
 
         // Create a new observer-record managed object.
-        Point3D observerPoint = observablePointFactory.point3D();
+        final Point3D observerPoint = observablePointFactory.point3D();
 
         // Add Logging concerns
         ((Observable) observerPoint).observe(UpdateLogger::log);

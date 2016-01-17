@@ -1,7 +1,6 @@
 package nl.cwi.managed_data_4j.schema.models.definition;
 
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
-import nl.cwi.managed_data_4j.schema.models.definition.annotations.Order;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,13 +20,11 @@ public interface Schema {
      * A set of all the types in the schema.
      */
     @Contain
-    @Order(value=1)
     Set<Type> types(Type... type);
 
     /**
      * A set of klasses types.
      */
-    @Order(value=2)
     default Set<Klass> klasses() {
         return types().stream()
             .filter(Klass.class::isInstance)
@@ -38,7 +35,6 @@ public interface Schema {
     /**
      * A set of primitive types.
      */
-    @Order(value=3)
     default Set<Primitive> primitives() {
         return types().stream()
             .filter(Primitive.class::isInstance)

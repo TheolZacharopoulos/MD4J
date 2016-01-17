@@ -7,11 +7,6 @@ package nl.cwi.examples.geometry;
  */
 public interface PointFactory {
     Point2D point2D();
-    Point2D point2D(Integer x, Integer y);
-
     Point3D point3D();
-    Point point3D(Integer x, Integer y, Integer z);
-
     Line line();
-    Line line(Point2D startPoint, Point2D endPoint);
 }

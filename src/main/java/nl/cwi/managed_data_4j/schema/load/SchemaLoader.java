@@ -9,7 +9,6 @@ import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.utils.ArrayUtils;
-import nl.cwi.managed_data_4j.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -81,49 +80,12 @@ public class SchemaLoader {
         for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
             final String klassName = schemaKlassDefinition.getSimpleName();
 
-            // =================
-            // Fields
-            Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
-
-            // ** Issue #1 **
-            // The elements in the array returned getMethods(), are not sorted and are not in any particular order.
-            // Looks like it is not possible to get them in the definition order, by using reflection.
-            // So for now, a new Annotation @Order added with a property (value) which is used as
-            // comparison criteria for sorting out the methods.
-            final Method[] schemaKlassFields = schemaKlassDefinition.getMethods();
-            Arrays.sort(schemaKlassFields, ReflectionUtils.getMethodsSortingComparator());
-
-            for (Method schemaKlassField : schemaKlassFields) {
-                final String fieldName = schemaKlassField.getName();
-                final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
-
-                // check for many
-                final boolean many = ArrayUtils.isMany(fieldReturnClass);;
-
-                // check for optional
-                final boolean optional = schemaKlassField.isAnnotationPresent(Nullable.class);
-
-                // check for key
-                final boolean key = schemaKlassField.isAnnotationPresent(Key.class);
-
-                // check for contain
-                final boolean contain = schemaKlassField.isAnnotationPresent(Contain.class);
-
-                // add its fields, the owner Klass will be added later
-                final Field field = factory.field(fieldName);
-                field.many(many);
-                field.optional(optional);
-                field.key(key);
-                field.contain(contain);
-
-                cache.addField(field.name(), field);
-
-                fieldsForKlass.put(fieldName, field);
-                allFieldsWithReturnType.put(field, new FieldWithMethod(field, schemaKlassField));
-            }
+            final Map<String, Field> fieldsForKlass =
+                buildFieldsFromSchemaKlassDef(factory, schemaKlassDefinition, allFieldsWithReturnType);
 
             // create a new klass
-            final Klass klass = factory.klass(klassName);
+            final Klass klass = factory.klass();
+            klass.name(klassName);
             klass.schema(schema);
             klass.fields(fieldsForKlass.values().toArray(new Field[fieldsForKlass.values().size()]));
 
@@ -195,6 +157,47 @@ public class SchemaLoader {
 
         cache.clean();
         return types.keySet();
+    }
+
+    public static Map<String, Field> buildFieldsFromSchemaKlassDef(
+            SchemaFactory factory,
+            Class<?> schemaKlassDefinition,
+            Map<Field, FieldWithMethod> allFieldsWithReturnType)
+    {
+        Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
+
+        final Method[] schemaKlassFields = schemaKlassDefinition.getMethods();
+
+        for (Method schemaKlassField : schemaKlassFields) {
+            final String fieldName = schemaKlassField.getName();
+            final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
+
+            // check for many
+            final boolean many = ArrayUtils.isMany(fieldReturnClass);;
+
+            // check for optional
+            final boolean optional = schemaKlassField.isAnnotationPresent(Nullable.class);
+
+            // check for key
+            final boolean key = schemaKlassField.isAnnotationPresent(Key.class);
+
+            // check for contain
+            final boolean contain = schemaKlassField.isAnnotationPresent(Contain.class);
+
+            // add its fields, the owner Klass will be added later
+            final Field field = factory.field();
+            field.name(fieldName);
+            field.many(many);
+            field.optional(optional);
+            field.key(key);
+            field.contain(contain);
+
+            cache.addField(field.name(), field);
+
+            fieldsForKlass.put(fieldName, field);
+            allFieldsWithReturnType.put(field, new FieldWithMethod(field, schemaKlassField));
+        }
+        return fieldsForKlass;
     }
 
     private static Field buildInverse(Method method, Map<Field, FieldWithMethod> allFieldsWithReturnType) {

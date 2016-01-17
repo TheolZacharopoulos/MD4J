@@ -5,10 +5,9 @@ import nl.cwi.managed_data_4j.schema.models.definition.*;
 public interface SchemaFactory {
     Schema schema();
 
-    Primitive primitive(String name);
+    Primitive primitive();
 
-    Klass klass(String name);
+    Klass klass();
 
-    Field field(String name);
-    Field field(String name, boolean many, boolean optional);
+    Field field();
 }
