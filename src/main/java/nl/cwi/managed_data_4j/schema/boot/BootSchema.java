@@ -55,9 +55,9 @@ public class BootSchema extends SchemaImpl {
 //        schemaKlassSchemaKlassField.owner(schemaKlass);
 
         schemaKlass.fields(
-            schemaKlassTypesField,
-            schemaKlassKlassesField,
-            schemaKlassPrimitivesField
+                schemaKlassKlassesField,
+                schemaKlassPrimitivesField,
+                schemaKlassTypesField
         );
 
         // ========================
@@ -75,7 +75,10 @@ public class BootSchema extends SchemaImpl {
         typeKlassSchemaField.type(schemaKlass);
         typeKlassSchemaField.inverse(schemaKlassTypesField);
 
-        typeKlass.fields(typeKlassNameField, typeKlassSchemaField);
+        typeKlass.fields(
+                typeKlassNameField,
+                typeKlassSchemaField
+        );
 
         // ========================
         // * Primitive Klass
@@ -94,7 +97,10 @@ public class BootSchema extends SchemaImpl {
         primitiveKlassSchemaField.type(schemaKlass);
         primitiveKlassSchemaField.inverse(schemaKlassTypesField);
 
-        primitiveKlass.fields(primitiveKlassNameField, primitiveKlassSchemaField);
+        primitiveKlass.fields(
+            primitiveKlassNameField,
+            primitiveKlassSchemaField
+        );
 
         // ========================
         // * Klass Klass
@@ -133,12 +139,12 @@ public class BootSchema extends SchemaImpl {
         klassKlassClassOfField.type(classPrimitive);
 
         klassKlass.fields(
-            klassKlassNameField,
-            klassKlassSupersField,
-            klassKlassSubsField,
-            klassKlassFieldsField,
-            klassKlassSchemaField,
-            klassKlassClassOfField
+                klassKlassClassOfField,
+                klassKlassNameField,
+                klassKlassFieldsField,
+                klassKlassSchemaField,
+                klassKlassSubsField,
+                klassKlassSupersField
         );
 
         // ========================
@@ -178,19 +184,19 @@ public class BootSchema extends SchemaImpl {
         fieldKlassKeyField.owner(fieldKlass);
         fieldKlassKeyField.type(booleanPrimitive);
 
-        final Field fieldKlassContentField = new FieldImpl("contain", false, false, false, false);
-        fieldKlassContentField.owner(fieldKlass);
-        fieldKlassContentField.type(booleanPrimitive);
+        final Field fieldKlassContainField = new FieldImpl("contain", false, false, false, false);
+        fieldKlassContainField.owner(fieldKlass);
+        fieldKlassContainField.type(booleanPrimitive);
 
         fieldKlass.fields(
-            fieldKlassNameField,
-            fieldKlassOwnerField,
-            fieldKlassTypeField,
-            fieldKlassManyField,
-            fieldKlassOptionalField,
-            fieldKlassKeyField,
-            fieldKlassContentField,
-            fieldKlassInverseField
+                fieldKlassContainField,
+                fieldKlassKeyField,
+                fieldKlassManyField,
+                fieldKlassNameField,
+                fieldKlassOptionalField,
+                fieldKlassInverseField,
+                fieldKlassOwnerField,
+                fieldKlassTypeField
         );
 
         // ========================

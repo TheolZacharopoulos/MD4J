@@ -67,9 +67,9 @@ public class PrimitiveUtils {
         return false;
     }
 
-    public static boolean isPrimitive(Type type) {
+    public static boolean isPrimitive(String typeName) {
 
-        switch (type.name()) {
+        switch (typeName) {
             case "String":
                 return true;
 

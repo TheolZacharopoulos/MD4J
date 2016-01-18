@@ -49,9 +49,7 @@ public class Main {
         final BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 
-        final Point2D point = pointFactory.point2D();
-        point.x(3);
-        point.y(2);
+        final Point2D point = pointFactory.point2D(3, 2);
         final Line line = pointFactory.line();
         line.startPoint(point);
         line.endPoint(point);

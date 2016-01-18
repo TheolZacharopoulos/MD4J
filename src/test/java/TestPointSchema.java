@@ -129,9 +129,7 @@ public class TestPointSchema {
         final Integer x = 1;
         final Integer y = 2;
 
-        Point2D point2D = pointFactory.point2D();
-        point2D.x(x);
-        point2D.y(y);
+        Point2D point2D = pointFactory.point2D(x, y);
         assertEquals(point2D.x(), x);
         assertEquals(point2D.y(), y);
     }
@@ -180,13 +178,9 @@ public class TestPointSchema {
 
     @Test
     public void testNonEmptyLineInitialization() {
-        final Point2D startPoint2D = pointFactory.point2D();
-        startPoint2D.x(1);
-        startPoint2D.y(2);
+        final Point2D startPoint2D = pointFactory.point2D(1, 2);
 
-        final Point2D endPoint2D = pointFactory.point2D();
-        endPoint2D.x(3);
-        endPoint2D.y(4);
+        final Point2D endPoint2D = pointFactory.point2D(3, 4);
 
         Line line = pointFactory.line();
         line.startPoint(startPoint2D);

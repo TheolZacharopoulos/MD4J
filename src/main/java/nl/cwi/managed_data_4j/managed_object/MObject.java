@@ -68,7 +68,7 @@ public class MObject implements InvocationHandler, M {
         MObjectField prop;
 
         if (!field.many()) {
-            if (PrimitiveUtils.isPrimitive(field.type())) {
+            if (PrimitiveUtils.isPrimitive(field.type().name())) {
                 prop = new MObjectFieldPrimitive(this, field);
             } else {
                 prop = new MObjectFieldRef(this, field);
@@ -83,7 +83,6 @@ public class MObject implements InvocationHandler, M {
     /**
      * Wrapper to handle exceptions.
      */
-    // TODO: REMOVE THIS, NOT NEEDED SINCE NO INITIALIZATION DURING CONSTRUCTION
     private void safeInitializeProps(Object... initializers) {
         try {
             this.initializeProps(initializers);
@@ -97,7 +96,6 @@ public class MObject implements InvocationHandler, M {
      * @param initializers the initialization values
      * @throws InvalidFieldValueException in case of wrong type of the initialization value.
      */
-    // TODO: REMOVE THIS, NOT NEEDED SINCE NO INITIALIZATION DURING CONSTRUCTION
     protected void initializeProps(Object... initializers) throws InvalidFieldValueException {
         List<Field> fieldList = new LinkedList<>();
         fieldList.addAll(this.schemaKlass.fields());

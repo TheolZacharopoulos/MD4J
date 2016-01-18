@@ -46,7 +46,7 @@ public class DebugUtils {
                         System.out.println("\t\t- Type : <<NULL>>");
                     } else {
                         System.out.println("\t\t- Type : " + field.type().name());
-                        System.out.println("\t\t\t isPrimitive : " + PrimitiveUtils.isPrimitive(field.type()));
+                        System.out.println("\t\t\t isPrimitive : " + PrimitiveUtils.isPrimitive(field.type().name()));
                     }
 
                     // owner
