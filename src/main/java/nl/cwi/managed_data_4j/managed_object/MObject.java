@@ -68,7 +68,7 @@ public class MObject implements InvocationHandler, M {
         MObjectField prop;
 
         if (!field.many()) {
-            if (PrimitiveUtils.isPrimitive(field.type().name())) {
+            if (field.type() != null && PrimitiveUtils.isPrimitive(field.type().name())) {
                 prop = new MObjectFieldPrimitive(this, field);
             } else {
                 prop = new MObjectFieldRef(this, field);
@@ -253,7 +253,7 @@ public class MObject implements InvocationHandler, M {
         return _get(fieldName); // return the field's value
     }
 
-//    @Override
+    @Override
     public Klass schemaKlass(Klass... schemaKlass) {
         if (schemaKlass.length > 0) {
             this.schemaKlass = schemaKlass[0];

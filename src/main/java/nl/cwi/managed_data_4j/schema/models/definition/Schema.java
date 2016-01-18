@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * since every concept is used is included in its definition.
  */
 
-public interface Schema {
+public interface Schema extends M {
 
     /**
      * A set of all the types in the schema.

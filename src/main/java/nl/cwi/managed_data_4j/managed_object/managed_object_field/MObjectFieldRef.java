@@ -42,13 +42,13 @@ public class MObjectFieldRef extends MObjectFieldSingle {
                 mObj.getClass() + "' should be proxied since its a Managed object.");
         }
 
-        final Klass valueSchemaKlass = ((MObject)Proxy.getInvocationHandler(mObj)).schemaKlass();
+        final Klass valueSchemaKlass = ((MObject) Proxy.getInvocationHandler(mObj)).schemaKlass();
         final Klass fieldType = (Klass) this.field.type();
 
         boolean isSubKlass = false;
         if (fieldType.subklasses() != null) {
             for (Klass superKlass : valueSchemaKlass.supers()) {
-                if (superKlass.name().equals(fieldType.name())) {
+                if (superKlass != null && superKlass.name().equals(fieldType.name())) {
                     isSubKlass = true;
                 }
             }

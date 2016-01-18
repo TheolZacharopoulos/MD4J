@@ -51,13 +51,14 @@ public class BootSchema extends SchemaImpl {
         schemaKlassPrimitivesField.owner(schemaKlass);
         schemaKlassPrimitivesField.type(setPrimitive);
 
-//        final Field schemaKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
-//        schemaKlassSchemaKlassField.owner(schemaKlass);
+        final Field schemaKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        schemaKlassSchemaKlassField.owner(schemaKlass);
 
         schemaKlass.fields(
                 schemaKlassKlassesField,
                 schemaKlassPrimitivesField,
-                schemaKlassTypesField
+                schemaKlassTypesField,
+                schemaKlassSchemaKlassField
         );
 
         // ========================
