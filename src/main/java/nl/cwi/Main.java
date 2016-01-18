@@ -2,6 +2,8 @@ package nl.cwi;
 
 import nl.cwi.examples.ccc.UpdateLogger;
 import nl.cwi.examples.geometry.*;
+import nl.cwi.examples.patterns.lockable.Lockable;
+import nl.cwi.examples.patterns.lockable.LockableFactory;
 import nl.cwi.examples.patterns.observer.Observable;
 import nl.cwi.examples.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
@@ -37,6 +39,8 @@ public class Main {
             SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         // ================================ Data objects ========================================
+        System.out.println("=============");
+        System.out.println("Data Objects: ");
 
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
@@ -58,6 +62,9 @@ public class Main {
         System.out.println(line.startPoint().x() + line.startPoint().y());
 
         // ================================ Observer ========================================
+        System.out.println("=============");
+        System.out.println("Observable Objects: ");
+
         final ObservableFactory observableFactory = new ObservableFactory(PointFactory.class, pointSchema);
         final PointFactory observablePointFactory = observableFactory.make();
 
@@ -72,5 +79,25 @@ public class Main {
         observerPoint.z(9);
         observerPoint.x(observerPoint.x() + observerPoint.y());
         System.out.println(observerPoint.x() + observerPoint.y() + observerPoint.z());
+
+        // ================================ Lockable ========================================
+        System.out.println("=============");
+        System.out.println("Lockable Objects: ");
+
+        final LockableFactory lockableFactory = new LockableFactory(PointFactory.class, pointSchema);
+        final PointFactory lockablePointFactory = lockableFactory.make();
+        final Point2D lockablePoint = lockablePointFactory.point2D();
+        lockablePoint.x(1);
+        lockablePoint.y(1);
+
+        // It was mutable until now, now it is locked (immutable).
+        ((Lockable)lockablePoint).lock();
+
+        try {
+            lockablePoint.x(2); // Should throw here since its immutable.
+        } catch (IllegalAccessError e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println(lockablePoint.x()); // 1
     }
 }
