@@ -20,7 +20,7 @@ public class LockableMObject extends MObject implements Lockable {
     @Override
     protected void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException {
         if (isLocked) {
-            throw new IllegalAccessError("Cannot change " + name + " of locked object.");
+            throw new IllegalAccessError("Cannot change " + name + " of locked object " + schemaKlass.name() + ".");
         }
         super._set(name, value);
     }
