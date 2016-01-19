@@ -10,15 +10,15 @@ import java.util.stream.Collectors;
 
 public class MObjectUtils {
 
+    // TODO: use checkedAlready, instead of check only @Contain.
     public static boolean isEqual(Object x, Object y) {
 
         if (!Proxy.isProxyClass(x.getClass()) || !Proxy.isProxyClass(x.getClass())) {
             throw new RuntimeException("Should check Managed Objects only.");
         }
 
-        // The algorithm creates a hash table used to record equivalence classes.
-        Map eqHashTable = new Hashtable<>();
-        return equal(eqHashTable, x, y);
+        Set<Object> checkedAlready = new LinkedHashSet<>();
+        return equal(checkedAlready, x, y);
     }
 
     /**
@@ -29,7 +29,7 @@ public class MObjectUtils {
      * and does not descend again into the sub graphs, thus assuring termination.
      * A recursive equality check.
      */
-    private static boolean equal(Map ht, Object obj1, Object obj2) {
+    private static boolean equal(Set<Object> checkedAlready, Object obj1, Object obj2) {
 
         // primitives, just compare values
         if (isPrimitiveAndNoArray(obj1) && isPrimitiveAndNoArray(obj2)) {
@@ -48,7 +48,7 @@ public class MObjectUtils {
             if (xLen != yLen) return false;
             if (xLen == 0) return true;
 
-            return areVectorsEqual(xVector, yVector, 0);
+            return areVectorsEqual(checkedAlready, xVector, yVector, 0);
         }
 
         // MObjects
@@ -70,19 +70,20 @@ public class MObjectUtils {
         if (xFields.size() != yFields.size()) return false;
         if (xFields.size() == 0) return true;
 
-        return areFieldsEqual(xFields, yFields, 0);
-
-        // last resort
-        // return equal(ht, x, y);
+        return areFieldsEqual(checkedAlready, xFields, yFields, 0);
     }
 
-    private static boolean areVectorsEqual(List<Object> xVector, List<Object> yVector, int n) {
+    private static boolean areVectorsEqual(
+        Set<Object> checkedAlready,
+        List<Object> xVector,
+        List<Object> yVector, int n)
+    {
         if (xVector.size() == n && xVector.size() == yVector.size()) {
             return true;
         } else {
             System.out.println("- Vector value: " + xVector.get(n));
             if (equal(null, xVector.get(n), yVector.get(n))) {
-                return areVectorsEqual(xVector, yVector, n + 1);
+                return areVectorsEqual(checkedAlready, xVector, yVector, n + 1);
             }
             else {
                 return false;
@@ -90,29 +91,33 @@ public class MObjectUtils {
         }
     }
 
-    private static boolean areFieldsEqual(List<MObjectField> xFields, List<MObjectField> yFields, int n) {
+    private static boolean areFieldsEqual(
+            Set<Object> checkedAlready,
+            List<MObjectField> xFields,
+            List<MObjectField> yFields,
+            int n)
+    {
         if (xFields.size() == n && xFields.size() == yFields.size()) {
             return true;
         } else {
-            System.out.println("- Field: " + xFields.get(n).getField().name());
-
             final MObjectField xField = xFields.get(n);
             final MObjectField yField = yFields.get(n);
+            System.out.println("- Field: " + xFields.get(n).getField().name());
 
             // TODO: Check this (Remove this and keep track on what is visited?)
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
             if (!(xField instanceof MObjectFieldPrimitive) && !xField.getField().contain()) {
-                return areFieldsEqual(xFields, yFields, n + 1);
+                return areFieldsEqual(checkedAlready, xFields, yFields, n + 1);
             }
 
             // If the fields are null just continue
             if (xField.get() == null && yField.get() == null) {
-                return areFieldsEqual(xFields, yFields, n + 1);
+                return areFieldsEqual(checkedAlready, xFields, yFields, n + 1);
             }
 
             if (equal(null, xField.get(), yField.get())) {
-                return areFieldsEqual(xFields, yFields, n + 1);
+                return areFieldsEqual(checkedAlready, xFields, yFields, n + 1);
             }
             else {
                 return false;
