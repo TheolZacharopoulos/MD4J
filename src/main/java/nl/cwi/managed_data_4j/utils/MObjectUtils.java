@@ -10,26 +10,17 @@ import java.util.stream.Collectors;
 
 public class MObjectUtils {
 
-    // TODO: use checkedAlready, instead of check only @Contain.
-    public static boolean isEqual(Object x, Object y) {
+    // TODO: use a checkedAlready hashTable, instead of check only @Contain.
+    public static boolean isEqual(Object obj1, Object obj2) {
 
-        if (!Proxy.isProxyClass(x.getClass()) || !Proxy.isProxyClass(x.getClass())) {
+        if (!Proxy.isProxyClass(obj1.getClass()) || !Proxy.isProxyClass(obj2.getClass())) {
             throw new RuntimeException("Should check Managed Objects only.");
         }
 
-        Set<Object> checkedAlready = new LinkedHashSet<>();
-        return equal(checkedAlready, x, y);
+        return equal(obj1, obj2);
     }
 
-    /**
-     * The algorithm traverses the nodes of the graph, marking equivalent any two nodes reached by the algorithm
-     * if they have the same surface structure, then recurring on the sub-graphs directly reachable from the two nodes.
-     * The equality check fails if two nodes reached during this process have different structure or if two leaves differ.
-     * If a cycle exists in an equal structure, the algorithm sees that they have already been marked equivalent
-     * and does not descend again into the sub graphs, thus assuring termination.
-     * A recursive equality check.
-     */
-    private static boolean equal(Set<Object> checkedAlready, Object obj1, Object obj2) {
+    private static boolean equal(Object obj1, Object obj2) {
 
         // primitives, just compare values
         if (isPrimitiveAndNoArray(obj1) && isPrimitiveAndNoArray(obj2)) {
@@ -45,10 +36,8 @@ public class MObjectUtils {
             final int xLen = xVector.size();
             final int yLen = yVector.size();
 
-            if (xLen != yLen) return false;
-            if (xLen == 0) return true;
-
-            return areVectorsEqual(checkedAlready, xVector, yVector, 0);
+            return xLen == yLen && // they should have the same size (structure)
+                (xLen == 0 || areVectorsEqual(xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
         }
 
         // MObjects
@@ -67,23 +56,17 @@ public class MObjectUtils {
         Collections.sort(xFields, (o1, o2) -> o1.getField().name().compareTo(o2.getField().name()));
         Collections.sort(yFields, (o1, o2) -> o1.getField().name().compareTo(o2.getField().name()));
 
-        if (xFields.size() != yFields.size()) return false;
-        if (xFields.size() == 0) return true;
-
-        return areFieldsEqual(checkedAlready, xFields, yFields, 0);
+        return xFields.size() == yFields.size() && // they should have the same size (structure)
+            (xFields.size() == 0 || areFieldsEqual(xFields, yFields, 0)); // if the len is 0 then true, otherwise compare
     }
 
-    private static boolean areVectorsEqual(
-        Set<Object> checkedAlready,
-        List<Object> xVector,
-        List<Object> yVector, int n)
-    {
+    private static boolean areVectorsEqual(List<Object> xVector, List<Object> yVector, int n) {
         if (xVector.size() == n && xVector.size() == yVector.size()) {
             return true;
         } else {
             System.out.println("- Vector value: " + xVector.get(n));
-            if (equal(null, xVector.get(n), yVector.get(n))) {
-                return areVectorsEqual(checkedAlready, xVector, yVector, n + 1);
+            if (equal(xVector.get(n), yVector.get(n))) {
+                return areVectorsEqual(xVector, yVector, n + 1);
             }
             else {
                 return false;
@@ -91,12 +74,7 @@ public class MObjectUtils {
         }
     }
 
-    private static boolean areFieldsEqual(
-            Set<Object> checkedAlready,
-            List<MObjectField> xFields,
-            List<MObjectField> yFields,
-            int n)
-    {
+    private static boolean areFieldsEqual(List<MObjectField> xFields, List<MObjectField> yFields, int n) {
         if (xFields.size() == n && xFields.size() == yFields.size()) {
             return true;
         } else {
@@ -108,16 +86,16 @@ public class MObjectUtils {
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
             if (!(xField instanceof MObjectFieldPrimitive) && !xField.getField().contain()) {
-                return areFieldsEqual(checkedAlready, xFields, yFields, n + 1);
+                return areFieldsEqual(xFields, yFields, n + 1);
             }
 
             // If the fields are null just continue
             if (xField.get() == null && yField.get() == null) {
-                return areFieldsEqual(checkedAlready, xFields, yFields, n + 1);
+                return areFieldsEqual(xFields, yFields, n + 1);
             }
 
-            if (equal(null, xField.get(), yField.get())) {
-                return areFieldsEqual(checkedAlready, xFields, yFields, n + 1);
+            if (equal(xField.get(), yField.get())) {
+                return areFieldsEqual(xFields, yFields, n + 1);
             }
             else {
                 return false;
