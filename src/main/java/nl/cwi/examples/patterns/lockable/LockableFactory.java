@@ -14,7 +14,7 @@ public class LockableFactory extends BasicFactory {
     }
 
     @Override
-    public MObject createManagedObject(Klass klass, Object... _inits) {
+    protected MObject createManagedObject(Klass klass, Object... _inits) {
         return new LockableMObject(klass, this, _inits);
     }
 }

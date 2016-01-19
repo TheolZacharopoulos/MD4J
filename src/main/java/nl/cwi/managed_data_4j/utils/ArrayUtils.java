@@ -7,8 +7,8 @@ public class ArrayUtils {
 
     public static boolean isMany(Class<?> clazz) {
         if (clazz.isArray()) return true;
-        if (clazz.isAssignableFrom(Set.class)) return true;
-        if (clazz.isAssignableFrom(List.class)) return true;
+        if (Set.class.isAssignableFrom(clazz)) return true;
+        if (List.class.isAssignableFrom(clazz)) return true;
 
         return false;
     }

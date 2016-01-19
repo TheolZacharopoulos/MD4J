@@ -7,9 +7,11 @@ import nl.cwi.examples.patterns.lockable.LockableFactory;
 import nl.cwi.examples.patterns.observer.Observable;
 import nl.cwi.examples.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.utils.MObjectUtils;
 
 public class Main {
 
@@ -33,10 +35,12 @@ public class Main {
         final Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
-        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
-        final SchemaFactory schemaFactory2 = basicFactory2.make();
-        final Schema realSchemaSchema2 =
-            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+//        // Test equality
+//        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
+//        final SchemaFactory schemaFactory2 = basicFactory2.make();
+//        final Schema realSchemaSchema2 =
+//            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+//        boolean equal = MObjectUtils.isEqual(realSchemaSchema, realSchemaSchema2);
 
         // ================================ Data objects ========================================
         System.out.println("=============");
@@ -50,9 +54,20 @@ public class Main {
         final PointFactory pointFactory = basicFactoryForPoints.make();
 
         final Point2D point = pointFactory.point2D(3, 2);
+
+//        // Test equality
+//        final Point2D point2 = pointFactory.point2D(3, 2);
+//        boolean equalPoints = MObjectUtils.isEqual(point, point2);
+
         final Line line = pointFactory.line();
         line.startPoint(point);
         line.endPoint(point);
+
+//        // Test equality
+//        final Line line2 = pointFactory.line();
+//        line2.startPoint(point2);
+//        line2.endPoint(point2);
+//        boolean equalLines = MObjectUtils.isEqual(line, line2);
 
         System.out.print(point.x() + " + " + point.y() + " = ");
         System.out.print(point.x() + point.y());
@@ -96,6 +111,6 @@ public class Main {
         } catch (IllegalAccessError e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(lockablePoint.x()); // 1
+        System.out.println(lockablePoint.x());
     }
 }

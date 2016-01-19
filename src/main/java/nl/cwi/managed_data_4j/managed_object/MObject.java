@@ -116,6 +116,10 @@ public class MObject implements InvocationHandler, M {
         }
     }
 
+    public MObjectField getMObjectField(String fieldName) {
+        return this.props.get(fieldName);
+    }
+
     /**
      * Extract the field and return its value
      * @param name the field name
