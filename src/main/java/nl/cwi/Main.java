@@ -7,7 +7,6 @@ import nl.cwi.examples.patterns.lockable.LockableFactory;
 import nl.cwi.examples.patterns.observer.Observable;
 import nl.cwi.examples.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.data_manager.BasicFactory;
-import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
@@ -35,12 +34,12 @@ public class Main {
         final Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
-        // Test equality
-        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
-        final SchemaFactory schemaFactory2 = basicFactory2.make();
-        final Schema realSchemaSchema2 =
-            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-        boolean equal = MObjectUtils.isEqual(realSchemaSchema, realSchemaSchema2);
+//        // Test equality
+//        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
+//        final SchemaFactory schemaFactory2 = basicFactory2.make();
+//        final Schema realSchemaSchema2 =
+//            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+//        boolean equal = MObjectUtils.isEqual(realSchemaSchema, realSchemaSchema2);
 
         // ================================ Data objects ========================================
         System.out.println("=============");
@@ -109,7 +108,7 @@ public class Main {
         try {
             lockablePoint.x(2); // Should throw here since its immutable.
         } catch (IllegalAccessError e) {
-            System.out.println(e.getMessage());
+            System.out.println("IllegalAccessError: " + e.getMessage());
         }
         System.out.println(lockablePoint.x());
     }

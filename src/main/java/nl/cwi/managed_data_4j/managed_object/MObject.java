@@ -170,6 +170,7 @@ public class MObject implements InvocationHandler, M {
         return super.hashCode();
     }
 
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 

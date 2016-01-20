@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 public class MObjectUtils {
 
-    // TODO: use a checkedAlready hashTable, instead of check only @Contain.
     public static boolean isEqual(Object obj1, Object obj2) {
 
         if (!Proxy.isProxyClass(obj1.getClass()) || !Proxy.isProxyClass(obj2.getClass())) {
