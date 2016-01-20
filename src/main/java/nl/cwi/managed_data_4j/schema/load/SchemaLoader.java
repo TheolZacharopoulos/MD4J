@@ -195,8 +195,6 @@ public class SchemaLoader {
             // add its fields, the owner Klass will be added later
             final Field field = factory.field(contain, key, many, fieldName, optional);
 
-            cache.addField(field.name(), field);
-
             fieldsForKlass.put(fieldName, field);
             allFieldsWithReturnType.put(field, new FieldWithMethod(field, schemaKlassField));
         }

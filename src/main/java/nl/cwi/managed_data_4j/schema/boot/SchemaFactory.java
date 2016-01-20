@@ -9,5 +9,6 @@ public interface SchemaFactory {
 
     Klass klass();
 
+    Field field();
     Field field(Boolean contain, Boolean key, Boolean many, String name, Boolean optional);
 }

@@ -109,7 +109,7 @@ public class BootSchema extends SchemaImpl {
         klassKlass.classOf(Klass.class);
         klassKlass.schema(schemaSchema);
 
-//        schemaKlassSchemaKlassField.type(klassKlass);
+        schemaKlassSchemaKlassField.type(klassKlass);
 
         klassKlass.supers(typeKlass);
         typeKlass.subklasses(primitiveKlass, klassKlass);
