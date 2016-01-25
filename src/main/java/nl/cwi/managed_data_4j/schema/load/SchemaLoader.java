@@ -1,7 +1,7 @@
 package nl.cwi.managed_data_4j.schema.load;
 
 import com.sun.istack.internal.Nullable;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
@@ -252,7 +252,7 @@ public class SchemaLoader {
     private static Type getFieldType(Class<?> fieldReturnClass, Schema schema, SchemaFactory factory) {
         try {
             return TypeFactory.getTypeFromClass(fieldReturnClass, schema, factory, typesCache);
-        } catch (UnknownPrimitiveTypeException e) {
+        } catch (UnknownTypeException e) {
             throw new RuntimeException(e.getMessage());
         }
     }

@@ -1,6 +1,6 @@
 package nl.cwi.managed_data_4j.utils;
 
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 
 import java.util.Collections;
 import java.util.List;
@@ -101,7 +101,7 @@ public class PrimitiveUtils {
         return false;
     }
 
-    public static Object primitiveDefault(String typeName) throws UnknownPrimitiveTypeException {
+    public static Object primitiveDefault(String typeName) throws UnknownTypeException {
         switch (typeName) {
             case "String":
                 return "";
@@ -128,7 +128,7 @@ public class PrimitiveUtils {
                 return Collections.emptyList();
 
             default:
-                throw new UnknownPrimitiveTypeException("Unknown primitive type: " + typeName);
+                throw new UnknownTypeException("Unknown primitive type: " + typeName);
         }
     }
 }

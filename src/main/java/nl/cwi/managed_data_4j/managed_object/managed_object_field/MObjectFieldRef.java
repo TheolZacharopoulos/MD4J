@@ -2,7 +2,7 @@ package nl.cwi.managed_data_4j.managed_object.managed_object_field;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 
@@ -11,7 +11,7 @@ import java.lang.reflect.Proxy;
 public class MObjectFieldRef extends MObjectFieldSingle {
 
     public MObjectFieldRef(MObject owner, Field field)
-            throws UnknownPrimitiveTypeException, InvalidFieldValueException
+            throws UnknownTypeException, InvalidFieldValueException
     {
         super(owner, field);
     }

@@ -3,7 +3,7 @@ package nl.cwi.managed_data_4j.managed_object;
 import nl.cwi.managed_data_4j.data_manager.IFactory;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
 import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
@@ -53,7 +53,7 @@ public class MObject implements InvocationHandler, M {
     private void safeSetupField(Field _field) {
         try {
             this.setupField(_field);
-        } catch (InvalidFieldValueException | UnknownPrimitiveTypeException e) {
+        } catch (InvalidFieldValueException | UnknownTypeException e) {
             e.printStackTrace();
         }
     }
@@ -61,10 +61,10 @@ public class MObject implements InvocationHandler, M {
     /**
      * Create a MObjectField and put it in the object values, according to an input Field
      * @param field the input field.
-     * @throws UnknownPrimitiveTypeException in case there is a weird primitive.
+     * @throws UnknownTypeException in case there is a weird primitive.
      * @throws InvalidFieldValueException in case of wrong value assignment to the field.
      */
-    protected void setupField(Field field) throws UnknownPrimitiveTypeException, InvalidFieldValueException {
+    protected void setupField(Field field) throws UnknownTypeException, InvalidFieldValueException {
         MObjectField prop;
 
         if (!field.many()) {
@@ -103,15 +103,7 @@ public class MObject implements InvocationHandler, M {
         for (int i = 0; i < fieldList.size(); i++) {
             if (i < initializers.length) {
                 final Field fld = fieldList.get(i);
-                final MObjectField mObjectField = this.props.get(fld.name());
-
-                if (fld.many()) {
-                    // it's an array since it's many
-                    Object [] inits = ((Object[]) initializers[i]);
-                    mObjectField.init(inits);
-                } else {
-                    mObjectField.init(initializers[i]);
-                }
+                this._set(fld.name(), initializers[i]);
             }
         }
     }
@@ -148,7 +140,14 @@ public class MObject implements InvocationHandler, M {
         }
 
         // set the fields value
-        mObjectField.init(value);
+        final Field fld = mObjectField.getField();
+        if (fld.many()) {
+            // it's an array since it's many
+            Object [] inits = ((Object[]) value);
+            mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
+        } else {
+            mObjectField.init(value);
+        }
     }
 
     /**

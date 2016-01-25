@@ -2,58 +2,55 @@ package nl.cwi.managed_data_4j.managed_object.managed_object_field;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.utils.ArrayUtils;
 
 import java.util.*;
 
-public class MObjectFieldMany extends MObjectField {
+public class MObjectFieldMany extends MObjectField<Collection<Object>> {
 
-    private Collection<Object> values;
-
-    public MObjectFieldMany(MObject owner, Field field) throws UnknownPrimitiveTypeException {
+    public MObjectFieldMany(MObject owner, Field field) throws UnknownTypeException {
         super(owner, field);
-        values = new LinkedHashSet<>();
+        this.value = new LinkedHashSet<>();
     }
 
     @Override
-    public void init(Object value) throws InvalidFieldValueException {
+    public void init(Collection<Object> values) throws InvalidFieldValueException {
 
-        if (!ArrayUtils.isMany(value.getClass())) {
+        if (!ArrayUtils.isMany(values.getClass())) {
             throw new InvalidFieldValueException("Non-array value passed to many-field");
         }
 
         // it's an array since it's many
-        this.values.addAll(Arrays.asList(((Object[]) value)));
+        this.value.addAll(values);
     }
 
     @Override
-    public void set(Object value) throws InvalidFieldValueException {
+    public void set(Collection<Object> value) throws InvalidFieldValueException {
         throw new InvalidFieldValueException("Cannot assign to many-values field " + field.name());
     }
 
     @Override
-    public Object get() {
-        return this.values;
+    public Collection<Object> get() {
+        return this.value;
     }
 
-    public void check(Object mobj) throws InvalidFieldValueException {
-    }
+    public void check(Collection<Object> mobj) throws InvalidFieldValueException {}
 
-    protected Object defaultValue() throws UnknownPrimitiveTypeException {
+    protected Collection<Object> defaultValue() throws UnknownTypeException {
         return new LinkedHashSet<>();
     }
 
     public boolean isEmpty() {
-        return this.values.size() == 0;
+        return this.value.size() == 0;
     }
 
     public int size() {
-        return this.values.size();
+        return this.value.size();
     }
 
     public void clear() {
-        this.values.clear();
+        this.value.clear();
     }
 }

@@ -2,15 +2,13 @@ package nl.cwi.managed_data_4j.managed_object.managed_object_field;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
-public abstract class MObjectFieldSingle extends MObjectField {
-
-    protected Object value;
+public abstract class MObjectFieldSingle extends MObjectField<Object> {
 
     public MObjectFieldSingle(MObject owner, Field field)
-            throws UnknownPrimitiveTypeException, InvalidFieldValueException
+            throws UnknownTypeException, InvalidFieldValueException
     {
         super(owner, field);
         this.value = defaultValue();
@@ -35,7 +33,7 @@ public abstract class MObjectFieldSingle extends MObjectField {
     }
 
     @Override
-    protected Object defaultValue() throws UnknownPrimitiveTypeException {
+    protected Object defaultValue() throws UnknownTypeException {
         return null;
     }
 }

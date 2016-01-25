@@ -1,6 +1,6 @@
 package nl.cwi.managed_data_4j.schema.load;
 
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownPrimitiveTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
@@ -15,7 +15,7 @@ public class TypeFactory {
         Class<?> typeClass,
         Schema schema,
         SchemaFactory factory,
-        Map<String, Type> cache) throws UnknownPrimitiveTypeException
+        Map<String, Type> cache) throws UnknownTypeException
     {
 
         if (PrimitiveUtils.isPrimitiveClass(typeClass)) {
@@ -28,6 +28,6 @@ public class TypeFactory {
             return cache.get(typeClass.getSimpleName());
         }
 
-        throw new UnknownPrimitiveTypeException("Unknown primitive type: " + typeClass.getSimpleName());
+        throw new UnknownTypeException("Unknown primitive type: " + typeClass.getSimpleName());
     }
 }
