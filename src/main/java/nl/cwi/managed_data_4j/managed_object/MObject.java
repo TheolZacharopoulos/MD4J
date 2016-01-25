@@ -4,7 +4,9 @@ import nl.cwi.managed_data_4j.data_manager.IFactory;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
-import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.schema.models.definition.M;
 import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
 import java.lang.invoke.MethodHandles;
@@ -74,7 +76,11 @@ public class MObject implements InvocationHandler, M {
                 prop = new MObjectFieldRef(this, field);
             }
         } else {
-            prop = new MObjectFieldMany(this, field);
+            if (field.type().key() != null) {
+                prop = new MObjectFieldManySet(this, field);
+            } else {
+                prop = new MObjectFieldManyList(this, field);
+            }
         }
 
         this.props.put(field.name(), prop);
@@ -140,11 +146,17 @@ public class MObject implements InvocationHandler, M {
         }
 
         // set the fields value
-        final Field fld = mObjectField.getField();
-        if (fld.many()) {
+        final Field field = mObjectField.getField();
+        if (field.many()) {
+
             // it's an array since it's many
             Object [] inits = ((Object[]) value);
-            mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
+
+            if (field.type().key() != null) {
+                mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
+            } else {
+                mObjectField.init(new LinkedList<>(Arrays.asList(inits)));
+            }
         } else {
             mObjectField.init(value);
         }

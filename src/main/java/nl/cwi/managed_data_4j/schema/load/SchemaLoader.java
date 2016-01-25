@@ -1,10 +1,12 @@
 package nl.cwi.managed_data_4j.schema.load;
 
-import com.sun.istack.internal.Nullable;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.schema.models.definition.Type;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
@@ -104,7 +106,7 @@ public class SchemaLoader {
         }
 
         wireFieldTypes(factory, schema, allFieldsWithReturnType);
-        wireFieldInverse(factory, schema, allFieldsWithReturnType);
+        wireFieldInverse(allFieldsWithReturnType);
 
         wireKlassSupers(types, typesCache);
         wireKlassSubs(types, typesCache);
@@ -126,11 +128,7 @@ public class SchemaLoader {
         }
     }
 
-    private static void wireFieldInverse(
-            SchemaFactory factory,
-            Schema schema,
-            Map<Field, FieldWithMethod> allFieldsWithReturnType)
-    {
+    private static void wireFieldInverse(Map<Field, FieldWithMethod> allFieldsWithReturnType) {
         for (Field field : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(field).method;
 
@@ -205,7 +203,7 @@ public class SchemaLoader {
             final boolean many = ArrayUtils.isMany(fieldReturnClass);;
 
             // check for optional
-            final boolean optional = schemaKlassField.isAnnotationPresent(Nullable.class);
+            final boolean optional = schemaKlassField.isAnnotationPresent(nl.cwi.managed_data_4j.schema.models.definition.annotations.Optional.class);
 
             // check for key
             final boolean key = schemaKlassField.isAnnotationPresent(Key.class);

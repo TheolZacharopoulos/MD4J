@@ -23,13 +23,7 @@ public abstract class MObjectFieldSingle extends MObjectField<Object> {
         if (value != null) {
             this.check(value);
         }
-
         this.value = value;
-    }
-
-    @Override
-    public Object get() {
-        return this.value;
     }
 
     @Override

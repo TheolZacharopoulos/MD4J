@@ -6,51 +6,34 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Unknown
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.utils.ArrayUtils;
 
-import java.util.*;
-
-public class MObjectFieldMany extends MObjectField<Collection<Object>> {
+public abstract class MObjectFieldMany<T> extends MObjectField<T> {
 
     public MObjectFieldMany(MObject owner, Field field) throws UnknownTypeException {
         super(owner, field);
-        this.value = new LinkedHashSet<>();
+        this.value = null;
     }
 
     @Override
-    public void init(Collection<Object> values) throws InvalidFieldValueException {
-
+    public void init(T values) throws InvalidFieldValueException {
         if (!ArrayUtils.isMany(values.getClass())) {
             throw new InvalidFieldValueException("Non-array value passed to many-field");
         }
-
-        // it's an array since it's many
-        this.value.addAll(values);
     }
 
     @Override
-    public void set(Collection<Object> value) throws InvalidFieldValueException {
+    public void set(T value) throws InvalidFieldValueException {
         throw new InvalidFieldValueException("Cannot assign to many-values field " + field.name());
     }
 
-    @Override
-    public Collection<Object> get() {
-        return this.value;
+    public void check(T mobj) throws InvalidFieldValueException {}
+
+    protected T defaultValue() throws UnknownTypeException {
+        return null;
     }
 
-    public void check(Collection<Object> mobj) throws InvalidFieldValueException {}
+    public abstract boolean isEmpty();
 
-    protected Collection<Object> defaultValue() throws UnknownTypeException {
-        return new LinkedHashSet<>();
-    }
+    public abstract int size();
 
-    public boolean isEmpty() {
-        return this.value.size() == 0;
-    }
-
-    public int size() {
-        return this.value.size();
-    }
-
-    public void clear() {
-        this.value.clear();
-    }
+    public abstract void clear();
 }

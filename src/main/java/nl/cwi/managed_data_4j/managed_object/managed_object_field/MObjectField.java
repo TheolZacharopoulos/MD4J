@@ -61,7 +61,9 @@ public abstract class MObjectField<T> {
      * Returns the value of the field
      * @return the fields value.
      */
-    public abstract T get();
+    public T get() {
+        return this.value;
+    }
 
     /**
      * Returns the Field object that is wrapped.

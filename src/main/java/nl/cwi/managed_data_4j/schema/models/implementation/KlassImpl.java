@@ -16,6 +16,7 @@ public class KlassImpl implements Klass {
     protected Set<Klass> supers = Collections.emptySet();
     protected Set<Klass> subklasses = Collections.emptySet();
     protected Class<?> classOf = null;
+    protected Field key = null;
 
     public KlassImpl(String name) {
         this(name, null, null, null, null, null);
@@ -104,5 +105,13 @@ public class KlassImpl implements Klass {
             this.classOf = classOf[0];
         }
         return this.classOf;
+    }
+
+    @Override
+    public Field key(Field... key) {
+        if (key.length > 0) {
+            this.key = key[0];
+        }
+        return this.key;
     }
 }

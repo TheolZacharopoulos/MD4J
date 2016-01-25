@@ -1,5 +1,6 @@
 package nl.cwi.managed_data_4j.schema.models.implementation;
 
+import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 
@@ -7,6 +8,7 @@ public class PrimitiveImpl implements Primitive {
 
     protected String name = null;
     protected Schema schema = null;
+    protected Field key = null;
 
     public PrimitiveImpl(String name) {
         this(name, null);
@@ -31,5 +33,13 @@ public class PrimitiveImpl implements Primitive {
             this.schema = schema[0];
         }
         return this.schema;
+    }
+
+    @Override
+    public Field key(Field... key) {
+        if (key.length > 0) {
+            this.key = key[0];
+        }
+        return this.key;
     }
 }

@@ -63,6 +63,13 @@ public class DebugUtils {
 
                     // many
                     System.out.println("\t\t- Many : " + field.many());
+                    if (field.many()) {
+                        if (field.type() != null) {
+                            System.out.println("\t\t\t Key : " + field.name());
+                        } else {
+                            System.out.println("\t\t\t Key : <<NULL>>");
+                        }
+                    }
 
                     // optional
                     System.out.println("\t\t- Optional : " + field.optional());

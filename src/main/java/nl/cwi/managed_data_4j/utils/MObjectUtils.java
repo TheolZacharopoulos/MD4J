@@ -5,7 +5,10 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectFieldPrimitive;
 
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MObjectUtils {
