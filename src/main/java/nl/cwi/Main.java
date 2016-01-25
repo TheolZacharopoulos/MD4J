@@ -10,7 +10,12 @@ import nl.cwi.managed_data_4j.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.utils.DebugUtils;
 import nl.cwi.managed_data_4j.utils.MObjectUtils;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class Main {
 
@@ -72,6 +77,19 @@ public class Main {
         System.out.print(point.x() + point.y());
         System.out.print(" == ");
         System.out.println(line.startPoint().x() + line.startPoint().y());
+
+        // Check multi points
+        Set<Point2D> points = new LinkedHashSet<>(Arrays.asList(
+           pointFactory.point2D(1, 2),
+           pointFactory.point2D(2, 3),
+           pointFactory.point2D(1, 4)
+        ));
+
+        System.out.println("============");
+        System.out.println("Set of 2D points: ");
+        for (Point2D point2D : points) {
+            System.out.println("x = " + point2D.x() + ", y = " + point2D.y());
+        }
 
         // ================================ Observer ========================================
         System.out.println("=============");

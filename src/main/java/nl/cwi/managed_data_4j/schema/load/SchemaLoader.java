@@ -38,7 +38,7 @@ public class SchemaLoader {
         }
     }
 
-    private final static SchemaLoaderCache cache = SchemaLoaderCache.getInstance();
+    private static Map<String, Type> typesCache = new LinkedHashMap<>();
 
     /**
      * Bootstraps the schema schema
@@ -64,6 +64,8 @@ public class SchemaLoader {
 
         // wire the types on schema
         schema.types(types.toArray(new Type[types.size()]));
+
+        // TODO: Add schema.schemaKlass
 
         return schema;
     }
@@ -95,20 +97,40 @@ public class SchemaLoader {
                 field.owner(klass);
             }
 
-            cache.addType(klass.name(), klass);
+            typesCache.put(klass.name(), klass);
 
             // add the a new klass
             types.put(klass, new TypeWithClass(klass, schemaKlassDefinition));
         }
 
-        // Wire field types
+        wireFieldTypes(factory, schema, allFieldsWithReturnType);
+        wireFieldInverse(factory, schema, allFieldsWithReturnType);
+
+        wireKlassSupers(types, typesCache);
+        wireKlassSubs(types, typesCache);
+        wireKlassClassOf(types, schemaKlassesDefinition);
+
+        typesCache.clear();
+        return types.keySet();
+    }
+
+    private static void wireFieldTypes(
+        SchemaFactory factory,
+        Schema schema,
+        Map<Field, FieldWithMethod> allFieldsWithReturnType)
+    {
         for (Field field : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(field).method;
             final Type fieldType = getFieldType(method.getReturnType(), schema, factory);
             field.type(fieldType);
         }
+    }
 
-        // Wire inverse
+    private static void wireFieldInverse(
+            SchemaFactory factory,
+            Schema schema,
+            Map<Field, FieldWithMethod> allFieldsWithReturnType)
+    {
         for (Field field : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(field).method;
 
@@ -117,22 +139,23 @@ public class SchemaLoader {
                 field.inverse(fieldInverseField);
             }
         }
+    }
 
-        // Klass supers
+    private static void wireKlassSupers(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
         for (Type type : types.keySet()) {
 
             if (type instanceof Klass) {
                 Klass klass = (Klass) type;
                 final TypeWithClass typeWithClass = types.get(klass);
-
                 final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
                 if (superKlasses.size() > 0) {
                     klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
                 }
             }
         }
+    }
 
-        // Klass subs
+    private static void wireKlassSubs(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
         for (Type type : types.keySet()) {
             if (type instanceof Klass) {
                 final TypeWithClass typeWithClass = types.get(type);
@@ -144,8 +167,9 @@ public class SchemaLoader {
                 }
             }
         }
+    }
 
-        // set classOf on klasses
+    public static void wireKlassClassOf(Map<Type, TypeWithClass> types, Class<?>[] schemaKlassesDefinition) {
         for (Type type : types.keySet()) {
             for (Class klassInterface : schemaKlassesDefinition) {
                 if (type instanceof Klass) {
@@ -155,9 +179,6 @@ public class SchemaLoader {
                 }
             }
         }
-
-        cache.clean();
-        return types.keySet();
     }
 
     public static Map<String, Field> buildFieldsFromSchemaKlassDef(
@@ -230,34 +251,34 @@ public class SchemaLoader {
 
     private static Type getFieldType(Class<?> fieldReturnClass, Schema schema, SchemaFactory factory) {
         try {
-            return TypeFactory.getTypeFromClass(fieldReturnClass, schema, factory, cache);
+            return TypeFactory.getTypeFromClass(fieldReturnClass, schema, factory, typesCache);
         } catch (UnknownPrimitiveTypeException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    private static Set<Klass> buildSupers(Class<?> schemaKlassDefinition, SchemaLoaderCache cache) {
+    private static Set<Klass> buildSupers(Class<?> schemaKlassDefinition, Map<String, Type> cache) {
         Set<Klass> supers = new LinkedHashSet<>();
 
         // Add interfaces that implements
         for (Class<?> interfaceImpl : schemaKlassDefinition.getInterfaces()) {
-            final Type superKlass = cache.getType(interfaceImpl.getSimpleName());
+            final Type superKlass = cache.get(interfaceImpl.getSimpleName());
             supers.add((Klass) superKlass);
         }
 
         // Add superclass if any.
         if (schemaKlassDefinition.getSuperclass() != null) {
-            final Type superKlass = cache.getType(schemaKlassDefinition.getSuperclass().getSimpleName());
+            final Type superKlass = cache.get(schemaKlassDefinition.getSuperclass().getSimpleName());
             supers.add((Klass) superKlass);
         }
 
         return supers.isEmpty() ? Collections.emptySet() : supers;
     }
 
-    private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition, SchemaLoaderCache cache) {
+    private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition, Map<String, Type> cache) {
         Set<Klass> subs = new LinkedHashSet<>();
 
-        for (Type type : cache.getAllTypes()) {
+        for (Type type : cache.values()) {
             if (type instanceof Klass) {
 
                 Klass klass = (Klass) type;

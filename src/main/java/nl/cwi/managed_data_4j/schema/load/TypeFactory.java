@@ -7,13 +7,15 @@ import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.schema.models.definition.Type;
 import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
+import java.util.Map;
+
 public class TypeFactory {
 
     public static Type getTypeFromClass(
         Class<?> typeClass,
         Schema schema,
         SchemaFactory factory,
-        SchemaLoaderCache cache) throws UnknownPrimitiveTypeException
+        Map<String, Type> cache) throws UnknownPrimitiveTypeException
     {
 
         if (PrimitiveUtils.isPrimitiveClass(typeClass)) {
@@ -22,8 +24,8 @@ public class TypeFactory {
             return primitive;
         }
 
-        if (cache.getType(typeClass.getSimpleName()) != null) {
-            return cache.getType(typeClass.getSimpleName());
+        if (cache.get(typeClass.getSimpleName()) != null) {
+            return cache.get(typeClass.getSimpleName());
         }
 
         throw new UnknownPrimitiveTypeException("Unknown primitive type: " + typeClass.getSimpleName());
