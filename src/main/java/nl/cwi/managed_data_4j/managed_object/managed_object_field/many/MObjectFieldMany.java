@@ -1,6 +1,7 @@
-package nl.cwi.managed_data_4j.managed_object.managed_object_field;
+package nl.cwi.managed_data_4j.managed_object.managed_object_field.many;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;

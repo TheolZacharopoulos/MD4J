@@ -2,7 +2,7 @@ package nl.cwi.managed_data_4j.utils;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectField;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectFieldPrimitive;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldPrimitive;
 
 import java.lang.reflect.Proxy;
 import java.util.Collection;

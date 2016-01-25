@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.managed_object.managed_object_field;
+package nl.cwi.managed_data_4j.managed_object.managed_object_field.single;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;

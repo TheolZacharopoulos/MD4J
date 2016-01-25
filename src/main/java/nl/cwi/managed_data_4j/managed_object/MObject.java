@@ -4,6 +4,10 @@ import nl.cwi.managed_data_4j.data_manager.IFactory;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManyList;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManySet;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldPrimitive;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldRef;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.M;
@@ -15,6 +19,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * The Managed Object
+ * @author Theologos Zacharopoulos
+ */
 public class MObject implements InvocationHandler, M {
 
     // Store props for the object: <Name, Field>
