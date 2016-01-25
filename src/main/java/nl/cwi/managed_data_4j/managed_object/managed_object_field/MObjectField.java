@@ -10,7 +10,6 @@ public abstract class MObjectField {
     protected final MObject owner;
     protected final Field field;
     protected final Field inverse;
-    protected Object value;
 
     /**
      * A field of the Managed Object
@@ -32,10 +31,5 @@ public abstract class MObjectField {
 
     public Field getField() {
         return this.field;
-    }
-
-    @Override
-    public String toString() {
-        return this.field.name() + " = " + this.value;
     }
 }

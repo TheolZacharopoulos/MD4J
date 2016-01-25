@@ -7,6 +7,8 @@ import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
 public abstract class MObjectFieldSingle extends MObjectField {
 
+    protected Object value;
+
     public MObjectFieldSingle(MObject owner, Field field)
             throws UnknownPrimitiveTypeException, InvalidFieldValueException
     {

@@ -10,9 +10,11 @@ import java.util.*;
 
 public class MObjectFieldMany extends MObjectField {
 
+    private Collection<Object> values;
+
     public MObjectFieldMany(MObject owner, Field field) throws UnknownPrimitiveTypeException {
         super(owner, field);
-        this.value = defaultValue();
+        values = new LinkedHashSet<>();
     }
 
     @Override
@@ -23,10 +25,7 @@ public class MObjectFieldMany extends MObjectField {
         }
 
         // it's an array since it's many
-        Object[] inits = ((Object[]) value);
-
-        // make the value object a collection, and add the init values to that.
-        Arrays.asList(inits).forEach(val -> ((Collection<Object>) this.value).add(val));
+        this.values.addAll(Arrays.asList(((Object[]) value)));
     }
 
     @Override
@@ -36,7 +35,7 @@ public class MObjectFieldMany extends MObjectField {
 
     @Override
     public Object get() {
-        return this.value;
+        return this.values;
     }
 
     public void check(Object mobj) throws InvalidFieldValueException {
@@ -47,14 +46,14 @@ public class MObjectFieldMany extends MObjectField {
     }
 
     public boolean isEmpty() {
-        return ((Collection<Object>) this.value).isEmpty();
+        return this.values.size() == 0;
     }
 
     public int size() {
-        return ((Collection<Object>) this.value).size();
+        return this.values.size();
     }
 
     public void clear() {
-        ((Collection<Object>) this.value).clear();
+        this.values.clear();
     }
 }
