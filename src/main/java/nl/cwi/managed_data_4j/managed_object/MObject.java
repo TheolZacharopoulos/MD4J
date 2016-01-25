@@ -179,9 +179,9 @@ public class MObject implements InvocationHandler, M {
         for (MObjectField mObjectField : this.props.values()) {
             final Field field = mObjectField.getField();
 
-            // find the first key
-            if (field.key()) {
-                return mObjectField.hashCode();
+            // if there is key at the owner klass, use this one
+            if (field.owner().key() != null) {
+                return field.owner().key().hashCode();
             }
         }
 
