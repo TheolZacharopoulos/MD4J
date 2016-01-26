@@ -78,11 +78,8 @@ public class MObject implements InvocationHandler, M {
      */
     protected void setupField(Field field) throws UnknownTypeException, InvalidFieldValueException {
 
-        // TODO: Check this
-        // If the type is null it means that the field has not been wired yet.
         if (field.type() == null) {
-            return;
-//            throw new UnknownTypeException("Type of field '" + field.name() + "' is NULL");
+            throw new UnknownTypeException("Type of field '" + field.name() + "' is NULL");
         }
 
         if (!field.many()) {
@@ -142,12 +139,10 @@ public class MObject implements InvocationHandler, M {
     protected Object _get(String name) throws NoSuchFieldError {
         final MObjectField mObjectField = this.props.get(name);
 
-        // TODO: Check this
         // check if the field exists
         if (mObjectField == null) {
-            return null;
-//            throw new NoSuchFieldError(
-//                "No field named'" + name + "' in class '" + schemaKlass.name() + "'");
+            throw new NoSuchFieldError(
+                "No field named '" + name + "' in class '" + schemaKlass.name() + "'");
         }
 
         return mObjectField.get(); // return the field's value

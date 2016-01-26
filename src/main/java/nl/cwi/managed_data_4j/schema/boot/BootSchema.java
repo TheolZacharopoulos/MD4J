@@ -15,18 +15,6 @@ import java.util.LinkedHashSet;
  */
 public class BootSchema extends SchemaImpl {
 
-    /**
-     * Just a helper methods which builds Set primitives with keys.
-     * @param schema the schema of the primitive type.
-     * @param key the key field of the set
-     * @return a new Set primitive
-     */
-    private Primitive buildSetPrimitive(Schema schema, Field key) {
-        Primitive setPrimitive = new PrimitiveImpl("Set", schema);
-        setPrimitive.key(key);
-        return setPrimitive;
-    }
-
     public BootSchema() {
         final Schema schemaSchema = this;
 
@@ -54,18 +42,12 @@ public class BootSchema extends SchemaImpl {
 
         final Field schemaKlassTypesField = new FieldImpl("types", true, false, false, true);
         schemaKlassTypesField.owner(schemaKlass);
-        schemaKlassTypesField.type(
-                buildSetPrimitive(schemaSchema, schemaKlassTypesField));
 
         final Field schemaKlassKlassesField = new FieldImpl("klasses", true, false, false, false);
         schemaKlassKlassesField.owner(schemaKlass);
-        schemaKlassKlassesField.type(
-                buildSetPrimitive(schemaSchema, schemaKlassKlassesField));
 
         final Field schemaKlassPrimitivesField = new FieldImpl("primitives", true, false, false, false);
         schemaKlassPrimitivesField.owner(schemaKlass);
-        schemaKlassPrimitivesField.type(
-                buildSetPrimitive(schemaSchema, schemaKlassKlassesField));
 
         final Field schemaKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
         schemaKlassSchemaKlassField.owner(schemaKlass);
@@ -86,6 +68,10 @@ public class BootSchema extends SchemaImpl {
         final Field typeKlassNameField = new FieldImpl("name", false, false, true, false);
         typeKlassNameField.owner(typeKlass);
         typeKlassNameField.type(stringPrimitive);
+
+        // wiring
+        typeKlass.key(typeKlassNameField);
+        schemaKlassTypesField.type(typeKlass);
 
         final Field typeKlassSchemaField = new FieldImpl("schema", false, false, false, false);
         typeKlassSchemaField.owner(typeKlass);
@@ -113,6 +99,10 @@ public class BootSchema extends SchemaImpl {
         primitiveKlassNameField.owner(primitiveKlass);
         primitiveKlassNameField.type(stringPrimitive);
 
+        // wiring
+        primitiveKlass.key(primitiveKlassNameField);
+        schemaKlassPrimitivesField.type(primitiveKlass);
+
         final Field primitiveKlassSchemaField = new FieldImpl("schema", false, false, false, false);
         primitiveKlassSchemaField.owner(primitiveKlass);
         primitiveKlassSchemaField.type(schemaKlass);
@@ -133,6 +123,7 @@ public class BootSchema extends SchemaImpl {
         klassKlass.classOf(Klass.class);
         klassKlass.schema(schemaSchema);
 
+        // wiring
         schemaKlassSchemaKlassField.type(klassKlass);
 
         klassKlass.supers(typeKlass);
@@ -142,21 +133,22 @@ public class BootSchema extends SchemaImpl {
         klassKlassNameField.owner(klassKlass);
         klassKlassNameField.type(stringPrimitive);
 
+        // wiring
+        klassKlass.key(klassKlassNameField);
+        schemaKlassKlassesField.type(klassKlass);
+
         final Field klassKlassSupersField = new FieldImpl("supers", true, false, false, false);
         klassKlassSupersField.owner(klassKlass);
-        klassKlassSupersField.type(
-                buildSetPrimitive(schemaSchema, klassKlassSupersField));
+        klassKlassSupersField.type(klassKlass);
 
         final Field klassKlassSubsField = new FieldImpl("subklasses", true, false, false, false);
         klassKlassSubsField.owner(klassKlass);
-        klassKlassSubsField.type(
-                buildSetPrimitive(schemaSchema, klassKlassSubsField));
+        klassKlassSubsField.type(klassKlass);
+
         klassKlassSubsField.inverse(klassKlassSupersField);
 
         final Field klassKlassFieldsField = new FieldImpl("fields", true, false, false, true);
         klassKlassFieldsField.owner(klassKlass);
-        klassKlassFieldsField.type(
-                buildSetPrimitive(schemaSchema, klassKlassFieldsField));
 
         final Field klassKlassSchemaField = new FieldImpl("schema", false, false, false, false);
         klassKlassSchemaField.owner(klassKlass);
@@ -192,6 +184,14 @@ public class BootSchema extends SchemaImpl {
         final Field fieldKlassNameField = new FieldImpl("name", false, false, true, false);
         fieldKlassNameField.owner(fieldKlass);
         fieldKlassNameField.type(stringPrimitive);
+
+        fieldKlass.key(fieldKlassNameField);
+
+        // wiring
+        klassKlassFieldsField.type(fieldKlass);
+        klassKlassKeyField.type(fieldKlass);
+        primitiveKlassKeyField.type(fieldKlass);
+        typeKlassKeyField.type(fieldKlass);
 
         final Field fieldKlassOwnerField = new FieldImpl("owner", false, false, false, false);
         fieldKlassOwnerField.owner(fieldKlass);

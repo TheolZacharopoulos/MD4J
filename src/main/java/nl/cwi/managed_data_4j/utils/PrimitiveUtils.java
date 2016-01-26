@@ -2,10 +2,6 @@ package nl.cwi.managed_data_4j.utils;
 
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 public class PrimitiveUtils {
 
     public static boolean isPrimitiveValue(String typeName, Object value) {
@@ -62,8 +58,6 @@ public class PrimitiveUtils {
         if (Float.class.isAssignableFrom(typeClass)) return true;
         if (Double.class.isAssignableFrom(typeClass)) return true;
         if (Class.class.isAssignableFrom(typeClass)) return true;
-        if (Set.class.isAssignableFrom(typeClass)) return true;
-        if (List.class.isAssignableFrom(typeClass)) return true;
 
         return false;
     }
@@ -90,12 +84,6 @@ public class PrimitiveUtils {
 
             case "Class":
                 return true;
-
-            case "Set":
-                return true;
-
-            case "List":
-                return true;
         }
 
         return false;
@@ -120,12 +108,6 @@ public class PrimitiveUtils {
 
             case "Class":
                 return null;
-
-            case "Set":
-                return Collections.emptySet();
-
-            case "List":
-                return Collections.emptyList();
 
             default:
                 throw new UnknownTypeException("Unknown primitive type: " + typeName);

@@ -3,10 +3,7 @@ package nl.cwi.managed_data_4j.schema.load;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.models.definition.Field;
-import nl.cwi.managed_data_4j.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.schema.models.definition.Schema;
-import nl.cwi.managed_data_4j.schema.models.definition.Type;
+import nl.cwi.managed_data_4j.schema.models.definition.*;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
@@ -14,6 +11,7 @@ import nl.cwi.managed_data_4j.utils.ArrayUtils;
 import nl.cwi.managed_data_4j.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 /**
@@ -121,6 +119,7 @@ public class SchemaLoader {
         }
 
         wireFieldTypes(factory, schema, allFieldsWithReturnType);
+        wireFieldTypeKeys(allFieldsWithReturnType);
         wireFieldInverse(allFieldsWithReturnType);
 
         wireKlassSupers(types, typesCache);
@@ -131,6 +130,27 @@ public class SchemaLoader {
         return types.keySet();
     }
 
+    private static void wireFieldTypeKeys(Map<Field, FieldWithMethod> allFieldsWithReturnType) {
+        for (Field field : allFieldsWithReturnType.keySet()) {
+
+            if (field.many()) {
+                final Type fieldType = field.type();
+
+                if (fieldType instanceof Klass) {
+                    final Klass fieldTypeKlass = (Klass) fieldType;
+
+                    final Field key = fieldTypeKlass.fields().stream()
+                            .filter(Field::key)
+                            .findAny()
+                            .orElse(null);
+
+                    fieldType.key(key);
+                }
+
+            }
+        }
+    }
+
     private static void wireFieldTypes(
         SchemaFactory factory,
         Schema schema,
@@ -138,14 +158,22 @@ public class SchemaLoader {
     {
         for (Field field : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(field).method;
-            final Type fieldType = getFieldType(method.getReturnType(), schema, factory);
 
-            // TODO: Check this.
-            if (fieldType.name().equals("Set")) {
-                fieldType.key(field);
+            // In case the field is multi value, that means that the real type is
+            // not given in the method.getReturnType() because this will give Set ot List,
+            // BUT the real type is in method.getGenericReturnType().
+            if (field.many()) {
+                final ParameterizedType fieldManyType = (ParameterizedType) method.getGenericReturnType();
+                final Class<?> fieldManyTypeClass = (Class<?>) fieldManyType.getActualTypeArguments()[0];
+
+                final Type fieldType = getFieldType(fieldManyTypeClass, schema, factory);
+                field.type(fieldType);
+
+            } else {
+                final Class<?> fieldSingleTypeClass = method.getReturnType();
+                final Type fieldType = getFieldType(fieldSingleTypeClass, schema, factory);
+                field.type(fieldType);
             }
-
-            field.type(fieldType);
         }
     }
 
@@ -221,7 +249,7 @@ public class SchemaLoader {
             final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 
             // check for many
-            final boolean many = ArrayUtils.isMany(fieldReturnClass);;
+            final boolean many = ArrayUtils.isMany(fieldReturnClass);
 
             // check for optional
             final boolean optional = schemaKlassField.isAnnotationPresent(nl.cwi.managed_data_4j.schema.models.definition.annotations.Optional.class);
