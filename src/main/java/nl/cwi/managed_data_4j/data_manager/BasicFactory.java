@@ -9,6 +9,10 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Represents the basic data manager.
+ * @author Theologos Zacharopoulos
+ */
 public class BasicFactory implements IFactory {
 
     // the Class of the Schema-Factory.

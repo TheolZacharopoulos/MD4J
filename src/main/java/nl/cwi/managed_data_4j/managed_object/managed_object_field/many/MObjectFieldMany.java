@@ -7,6 +7,10 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Unknown
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.utils.ArrayUtils;
 
+/**
+ * Represents a multi value field.
+ * @author Theologos Zacharopoulos
+ */
 public abstract class MObjectFieldMany<T> extends MObjectField<T> {
 
     public MObjectFieldMany(MObject owner, Field field) throws UnknownTypeException {
@@ -31,10 +35,4 @@ public abstract class MObjectFieldMany<T> extends MObjectField<T> {
     protected T defaultValue() throws UnknownTypeException {
         return null;
     }
-
-    public abstract boolean isEmpty();
-
-    public abstract int size();
-
-    public abstract void clear();
 }

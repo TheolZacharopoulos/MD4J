@@ -8,6 +8,10 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Represents an implementation of a Klass Schema definition.
+ * @author Theologos Zacharopoulos
+ */
 public class KlassImpl implements Klass {
 
     protected String name = null;

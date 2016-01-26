@@ -11,9 +11,16 @@ import java.util.LinkedHashSet;
 
 /**
  * This schema describes the schema of a schemaSchema (self description / MetaSchema)
+ * @author Theologos Zacharopoulos
  */
 public class BootSchema extends SchemaImpl {
 
+    /**
+     * Just a helper methods which builds Set primitives with keys.
+     * @param schema the schema of the primitive type.
+     * @param key the key field of the set
+     * @return a new Set primitive
+     */
     private Primitive buildSetPrimitive(Schema schema, Field key) {
         Primitive setPrimitive = new PrimitiveImpl("Set", schema);
         setPrimitive.key(key);

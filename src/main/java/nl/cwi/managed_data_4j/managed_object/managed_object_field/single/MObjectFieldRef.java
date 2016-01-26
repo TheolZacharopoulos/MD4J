@@ -8,6 +8,10 @@ import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 
 import java.lang.reflect.Proxy;
 
+/**
+ * Represents a single value field which is a Managed Object.
+ * @author Theologos Zacharopoulos
+ */
 public class MObjectFieldRef extends MObjectFieldSingle {
 
     public MObjectFieldRef(MObject owner, Field field)

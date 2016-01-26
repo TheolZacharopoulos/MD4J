@@ -8,6 +8,10 @@ import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Represents a multi value field which is a Set.
+ * @author Theologos Zacharopoulos
+ */
 public class MObjectFieldManySet extends MObjectFieldMany<Set<Object>> {
 
     public MObjectFieldManySet(MObject owner, Field field) throws UnknownTypeException {
@@ -25,17 +29,5 @@ public class MObjectFieldManySet extends MObjectFieldMany<Set<Object>> {
 
     protected Set<Object> defaultValue() throws UnknownTypeException {
         return new LinkedHashSet<>();
-    }
-
-    public boolean isEmpty() {
-        return this.value.size() == 0;
-    }
-
-    public int size() {
-        return this.value.size();
-    }
-
-    public void clear() {
-        this.value.clear();
     }
 }

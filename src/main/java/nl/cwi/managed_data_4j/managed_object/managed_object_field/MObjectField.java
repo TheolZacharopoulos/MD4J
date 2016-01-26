@@ -11,10 +11,16 @@ import nl.cwi.managed_data_4j.schema.models.definition.Field;
  */
 public abstract class MObjectField<T> {
 
+    // the owner of the field as an Managed Object.
     protected final MObject owner;
+
+    // the Field.
     protected final Field field;
+
+    // the Inverse of the field.
     protected final Field inverse;
 
+    // The value of the field.
     protected T value;
 
     /**

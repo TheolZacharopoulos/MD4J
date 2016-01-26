@@ -6,6 +6,10 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
+/**
+ * Represents a single value field
+ * @author Theologos Zacharopoulos
+ */
 public abstract class MObjectFieldSingle extends MObjectField<Object> {
 
     public MObjectFieldSingle(MObject owner, Field field)

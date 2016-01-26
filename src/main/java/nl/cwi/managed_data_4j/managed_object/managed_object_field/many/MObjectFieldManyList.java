@@ -8,6 +8,10 @@ import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Represents a multi value field which is a List.
+ * @author Theologos Zacharopoulos
+ */
 public class MObjectFieldManyList extends MObjectFieldMany<List<Object>> {
 
     public MObjectFieldManyList(MObject owner, Field field) throws UnknownTypeException {
@@ -25,17 +29,5 @@ public class MObjectFieldManyList extends MObjectFieldMany<List<Object>> {
 
     protected List<Object> defaultValue() throws UnknownTypeException {
         return new LinkedList<>();
-    }
-
-    public boolean isEmpty() {
-        return this.value.size() == 0;
-    }
-
-    public int size() {
-        return this.value.size();
-    }
-
-    public void clear() {
-        this.value.clear();
     }
 }

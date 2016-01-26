@@ -8,6 +8,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFi
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManySet;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldPrimitive;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldRef;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldSingle;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.M;
@@ -161,12 +162,12 @@ public class MObject implements InvocationHandler, M {
             Object [] inits = ((Object[]) value);
 
             if (field.type().key() != null) {
-                mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
+                ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
             } else {
-                mObjectField.init(new LinkedList<>(Arrays.asList(inits)));
+                ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
             }
         } else {
-            mObjectField.init(value);
+            ((MObjectFieldSingle) mObjectField).init(value);
         }
     }
 

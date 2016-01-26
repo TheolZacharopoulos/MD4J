@@ -8,6 +8,10 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Represents an implementation of a Schema Schema definition.
+ * @author Theologos Zacharopoulos
+ */
 public class SchemaImpl implements Schema {
     protected Set<Type> types;
     protected Klass schemaKlass;

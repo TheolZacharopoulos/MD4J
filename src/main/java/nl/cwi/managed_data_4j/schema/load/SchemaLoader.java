@@ -16,8 +16,19 @@ import nl.cwi.managed_data_4j.utils.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * Dynamically loads schemas.
+ * This is where the whole loading process is done,
+ * given Schema definition (interface), this class provides an instance
+ * of this schema.
+ *
+ * @author Theologos Zacharopoulos
+ */
 public class SchemaLoader {
 
+    /**
+     * Helper private class to keep Fields with their Method which define them.
+     */
     private static class FieldWithMethod {
 
         public Field field = null;
@@ -29,6 +40,9 @@ public class SchemaLoader {
         }
     }
 
+    /**
+     * Helper private class to keep Types with their Classes which define them.
+     */
     private static class TypeWithClass {
 
         public Type type = null;
@@ -40,6 +54,7 @@ public class SchemaLoader {
         }
     }
 
+    // helper cache for the loading process.
     private static Map<String, Type> typesCache = new LinkedHashMap<>();
 
     /**

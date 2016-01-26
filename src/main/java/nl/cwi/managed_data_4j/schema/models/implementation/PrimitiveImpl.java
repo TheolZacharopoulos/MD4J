@@ -4,6 +4,10 @@ import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.schema.models.definition.Schema;
 
+/**
+ * Represents an implementation of a Primitive Schema definition.
+ * @author Theologos Zacharopoulos
+ */
 public class PrimitiveImpl implements Primitive {
 
     protected String name = null;

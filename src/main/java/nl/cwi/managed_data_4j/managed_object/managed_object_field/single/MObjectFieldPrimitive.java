@@ -6,6 +6,10 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Unknown
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.utils.PrimitiveUtils;
 
+/**
+ * Represents a single value field which is a Primitive.
+ * @author Theologos Zacharopoulos
+ */
 public class MObjectFieldPrimitive extends MObjectFieldSingle {
 
     public MObjectFieldPrimitive(MObject owner, Field field)

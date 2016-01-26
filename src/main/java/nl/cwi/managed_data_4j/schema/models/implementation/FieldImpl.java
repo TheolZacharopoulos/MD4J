@@ -4,6 +4,10 @@ import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.Type;
 
+/**
+ * Represents an implementation of a Field Schema definition.
+ * @author Theologos Zacharopoulos
+ */
 public class FieldImpl implements Field {
 
     protected String name = null;
