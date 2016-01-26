@@ -193,7 +193,7 @@ public class MObject implements InvocationHandler, M {
             // TODO: Change this
             // if there is key at the fields type klass, use this one
             if (field.type().key() != null) {
-                MObjectField key = this.props.get(field.type().key().name());
+                final MObjectField key = this.props.get(field.type().key().name());
                 return key.hashCode();
             }
         }

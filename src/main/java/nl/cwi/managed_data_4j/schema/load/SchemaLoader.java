@@ -141,7 +141,7 @@ public class SchemaLoader {
 
                     final Field key = fieldTypeKlass.fields().stream()
                             .filter(Field::key)
-                            .findAny()
+                            .findFirst()
                             .orElse(null);
 
                     fieldType.key(key);
