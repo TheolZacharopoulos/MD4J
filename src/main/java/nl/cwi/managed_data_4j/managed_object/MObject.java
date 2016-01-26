@@ -66,6 +66,7 @@ public class MObject implements InvocationHandler, M {
             this.setupField(_field);
         } catch (InvalidFieldValueException | UnknownTypeException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error on field setup");
         }
     }
 
@@ -76,23 +77,27 @@ public class MObject implements InvocationHandler, M {
      * @throws InvalidFieldValueException in case of wrong value assignment to the field.
      */
     protected void setupField(Field field) throws UnknownTypeException, InvalidFieldValueException {
-        MObjectField prop;
+
+        // TODO: Check this
+        // If the type is null it means that the field has not been wired yet.
+        if (field.type() == null) {
+            return;
+//            throw new UnknownTypeException("Type of field '" + field.name() + "' is NULL");
+        }
 
         if (!field.many()) {
-            if (field.type() != null && PrimitiveUtils.isPrimitive(field.type().name())) {
-                prop = new MObjectFieldPrimitive(this, field);
+            if (PrimitiveUtils.isPrimitive(field.type().name())) {
+                this.props.put(field.name(), new MObjectFieldPrimitive(this, field));
             } else {
-                prop = new MObjectFieldRef(this, field);
+                this.props.put(field.name(), new MObjectFieldRef(this, field));
             }
         } else {
             if (field.type().key() != null) {
-                prop = new MObjectFieldManySet(this, field);
+                this.props.put(field.name(), new MObjectFieldManySet(this, field));
             } else {
-                prop = new MObjectFieldManyList(this, field);
+                this.props.put(field.name(), new MObjectFieldManyList(this, field));
             }
         }
-
-        this.props.put(field.name(), prop);
     }
 
     /**
@@ -103,6 +108,7 @@ public class MObject implements InvocationHandler, M {
             this.initializeProps(initializers);
         } catch (InvalidFieldValueException e) {
             e.printStackTrace();
+            throw new RuntimeException("Error on field initialization");
         }
     }
 
@@ -134,7 +140,16 @@ public class MObject implements InvocationHandler, M {
      * @throws NoSuchFieldError in case there no field with this name.
      */
     protected Object _get(String name) throws NoSuchFieldError {
-        MObjectField mObjectField = this.props.get(name);
+        final MObjectField mObjectField = this.props.get(name);
+
+        // TODO: Check this
+        // check if the field exists
+        if (mObjectField == null) {
+            return null;
+//            throw new NoSuchFieldError(
+//                "No field named'" + name + "' in class '" + schemaKlass.name() + "'");
+        }
+
         return mObjectField.get(); // return the field's value
     }
 
@@ -146,12 +161,12 @@ public class MObject implements InvocationHandler, M {
      * @throws InvalidFieldValueException in case the value is not the right type.
      */
     protected void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException {
-        // grab the field
-        MObjectField mObjectField = this.props.get(name);
+        final MObjectField mObjectField = this.props.get(name);
 
         // check if the field exists
         if (mObjectField == null) {
-            throw new NoSuchFieldError("No field with the name " + name + " in class " + schemaKlass.name());
+            throw new NoSuchFieldError(
+                "No field named'" + name + "' in class '" + schemaKlass.name() + "'");
         }
 
         // set the fields value
@@ -180,9 +195,11 @@ public class MObject implements InvocationHandler, M {
         for (MObjectField mObjectField : this.props.values()) {
             final Field field = mObjectField.getField();
 
-            // if there is key at the owner klass, use this one
-            if (field.owner().key() != null) {
-                return field.owner().key().hashCode();
+            // TODO: Change this
+            // if there is key at the fields type klass, use this one
+            if (field.type().key() != null) {
+                MObjectField key = this.props.get(field.type().key().name());
+                return key.hashCode();
             }
         }
 

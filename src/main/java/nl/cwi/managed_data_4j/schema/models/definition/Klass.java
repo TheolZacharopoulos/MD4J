@@ -37,10 +37,5 @@ public interface Klass extends Type {
      * The field which may represent the key for this Klass.
      */
     @Optional
-    default Field key(Field... key) {
-        return fields().stream()
-            .filter(Field::key)
-            .findAny()
-            .orElse(null);
-    }
+    Field key(Field... key);
 }

@@ -139,6 +139,12 @@ public class SchemaLoader {
         for (Field field : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(field).method;
             final Type fieldType = getFieldType(method.getReturnType(), schema, factory);
+
+            // TODO: Check this.
+            if (fieldType.name().equals("Set")) {
+                fieldType.key(field);
+            }
+
             field.type(fieldType);
         }
     }

@@ -39,13 +39,13 @@ public class Main {
         final Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
-        DebugUtils.debugTypes(realSchemaSchema.types());
+//        DebugUtils.debugTypes(realSchemaSchema.types());
 
 //        // Test equality
-//        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
-//        final SchemaFactory schemaFactory2 = basicFactory2.make();
-//        final Schema realSchemaSchema2 =
-//            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
+        final SchemaFactory schemaFactory2 = basicFactory2.make();
+        final Schema realSchemaSchema2 =
+            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 //        boolean equal = MObjectUtils.isEqual(realSchemaSchema, realSchemaSchema2);
 
         // ================================ Data objects ========================================
