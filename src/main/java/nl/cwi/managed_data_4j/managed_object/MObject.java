@@ -190,15 +190,20 @@ public class MObject implements InvocationHandler, M {
         for (MObjectField mObjectField : this.props.values()) {
             final Field field = mObjectField.getField();
 
-            // TODO: Change this
+            // TODO: Compute the right hashCode
             // if there is key at the fields type klass, use this one
             if (field.type().key() != null) {
-                final MObjectField key = this.props.get(field.type().key().name());
-                return key.hashCode();
+                final MObjectField keyField = this.props.get(field.type().key().name());
+                final String theKey = (String) keyField.get();
+
+                final int keyHashCode = theKey.hashCode();
+
+                System.out.println(super.hashCode() * keyHashCode);
+                return super.hashCode() * keyHashCode;
             }
         }
 
-        // otherwise return Java hasCode implementation.
+        // otherwise return Java hashCode implementation.
         return super.hashCode();
     }
 

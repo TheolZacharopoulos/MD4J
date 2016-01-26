@@ -160,7 +160,7 @@ public class BootSchema extends SchemaImpl {
         klassKlassClassOfField.type(classPrimitive);
 
         final Field klassKlassKeyField = new FieldImpl("key", false, true, false, false);
-        klassKlassKeyField.owner(primitiveKlass);
+        klassKlassKeyField.owner(klassKlass);
 
         klassKlass.fields(
                 klassKlassClassOfField,
