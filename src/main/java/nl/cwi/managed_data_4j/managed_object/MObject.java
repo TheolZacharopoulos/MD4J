@@ -198,7 +198,6 @@ public class MObject implements InvocationHandler, M {
 
                 final int keyHashCode = theKey.hashCode();
 
-                System.out.println(super.hashCode() * keyHashCode);
                 return super.hashCode() * keyHashCode;
             }
         }
