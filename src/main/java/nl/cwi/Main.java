@@ -47,7 +47,9 @@ public class Main {
         final SchemaFactory schemaFactory2 = basicFactory2.make();
         final Schema realSchemaSchema2 =
             SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+
 //        boolean equal = MObjectUtils.isEqual(realSchemaSchema, realSchemaSchema2);
+//        DebugUtils.debugTypes(realSchemaSchema2.types());
 
         // ================================ Data objects ========================================
         System.out.println("=============");

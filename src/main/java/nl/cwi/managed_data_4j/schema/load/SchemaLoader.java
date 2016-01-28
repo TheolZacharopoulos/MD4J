@@ -13,6 +13,7 @@ import nl.cwi.managed_data_4j.utils.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Dynamically loads schemas.
@@ -131,24 +132,18 @@ public class SchemaLoader {
     }
 
     private static void wireFieldTypeKeys(Map<Field, FieldWithMethod> allFieldsWithReturnType) {
-        for (Field field : allFieldsWithReturnType.keySet()) {
-
-            if (field.many()) {
-                final Type fieldType = field.type();
-
-                if (fieldType instanceof Klass) {
-                    final Klass fieldTypeKlass = (Klass) fieldType;
-
-                    final Field key = fieldTypeKlass.fields().stream()
-                            .filter(Field::key)
-                            .findFirst()
-                            .orElse(null);
-
-                    fieldType.key(key);
-                }
-
-            }
-        }
+        allFieldsWithReturnType.keySet().stream()
+            .filter(Field::many)
+            .map(Field::type)
+            .filter(Klass.class::isInstance)
+            .map(Klass.class::cast)
+            .forEach(fieldTypeKlass ->
+                fieldTypeKlass.key(
+                    fieldTypeKlass.fields().stream()
+                        .filter(Field::key)
+                        .findFirst()
+                        .orElse(null))
+        );
     }
 
     private static void wireFieldTypes(
@@ -189,31 +184,30 @@ public class SchemaLoader {
     }
 
     private static void wireKlassSupers(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
-        for (Type type : types.keySet()) {
-
-            if (type instanceof Klass) {
-                Klass klass = (Klass) type;
+        types.keySet().stream()
+            .filter(Klass.class::isInstance)
+            .map(Klass.class::cast)
+            .forEach(klass -> {
                 final TypeWithClass typeWithClass = types.get(klass);
                 final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
                 if (superKlasses.size() > 0) {
                     klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
                 }
-            }
-        }
+            });
     }
 
     private static void wireKlassSubs(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
-        for (Type type : types.keySet()) {
-            if (type instanceof Klass) {
-                final TypeWithClass typeWithClass = types.get(type);
-
+        types.keySet().stream()
+            .filter(Klass.class::isInstance)
+            .map(Klass.class::cast)
+            .forEach(klass -> {
+                final TypeWithClass typeWithClass = types.get(klass);
                 final Set<Klass> subKlasses = buildSubs(typeWithClass.clazz, cache);
                 if (subKlasses.size() > 0) {
                     final Klass[] subsToArray = subKlasses.toArray(new Klass[subKlasses.size()]);
-                    ((Klass) type).subklasses(subsToArray);
+                    klass.subklasses(subsToArray);
                 }
-            }
-        }
+            });
     }
 
     public static void wireKlassClassOf(Map<Type, TypeWithClass> types, Class<?>[] schemaKlassesDefinition) {
@@ -287,7 +281,7 @@ public class SchemaLoader {
                 final String fieldForSearchOwnerName = fieldForSearch.owner().name();
 
                 if  (fieldForSearchName.equals(fieldInverseFieldName) &&
-                        fieldForSearchOwnerName.equals(inverseOtherName))
+                     fieldForSearchOwnerName.equals(inverseOtherName))
                 {
                     fieldInverseField = fieldForSearch;
                 }
@@ -323,24 +317,14 @@ public class SchemaLoader {
     }
 
     private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition, Map<String, Type> cache) {
-        Set<Klass> subs = new LinkedHashSet<>();
-
-        for (Type type : cache.values()) {
-            if (type instanceof Klass) {
-
-                Klass klass = (Klass) type;
-                for (Klass superKlass : klass.supers()) {
-
-                    if (superKlass != null &&
-                            superKlass.name() != null &&
-                            superKlass.name().equals(schemaKlassDefinition.getSimpleName()))
-                    {
-                        subs.add(klass);
-                    }
-                }
-
-            }
-        }
+        Set<Klass> subs = cache.values().stream()
+            .filter(Klass.class::isInstance)
+            .map(Klass.class::cast)
+            .flatMap(klass -> klass.supers().stream())
+            .filter(Objects::nonNull)
+            .filter(superKlass -> superKlass.name() != null)
+            .filter(superKlass -> superKlass.name().equals(schemaKlassDefinition.getSimpleName()))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
 
         return subs.isEmpty() ? Collections.emptySet() : subs;
     }
