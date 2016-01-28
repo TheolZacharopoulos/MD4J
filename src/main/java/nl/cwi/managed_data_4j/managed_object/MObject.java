@@ -4,7 +4,6 @@ import nl.cwi.managed_data_4j.data_manager.IFactory;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManyList;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManySet;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldPrimitive;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldRef;
@@ -89,11 +88,7 @@ public class MObject implements InvocationHandler, M {
                 this.props.put(field.name(), new MObjectFieldRef(this, field));
             }
         } else {
-            if (field.type().key() != null) {
-                this.props.put(field.name(), new MObjectFieldManySet(this, field));
-            } else {
-                this.props.put(field.name(), new MObjectFieldManyList(this, field));
-            }
+            this.props.put(field.name(), new MObjectFieldManySet(this, field));
         }
     }
 
@@ -174,7 +169,7 @@ public class MObject implements InvocationHandler, M {
             if (field.type().key() != null) {
                 ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
             } else {
-                ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
+                ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
             }
         } else {
             ((MObjectFieldSingle) mObjectField).init(value);

@@ -13,6 +13,7 @@ import java.util.List;
  * Represents a multi value field which is a List.
  * @author Theologos Zacharopoulos
  */
+@Deprecated
 public class MObjectFieldManyList extends MObjectFieldMany<List<Object>> {
 
     public MObjectFieldManyList(MObject owner, Field field) throws UnknownTypeException {
