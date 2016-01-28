@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,5 +30,10 @@ public class MObjectFieldManyList extends MObjectFieldMany<List<Object>> {
 
     protected List<Object> defaultValue() throws UnknownTypeException {
         return new LinkedList<>();
+    }
+
+    @Override
+    public Iterator iterator() {
+        return this.value.iterator();
     }
 }

@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Invalid
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -29,5 +30,11 @@ public class MObjectFieldManySet extends MObjectFieldMany<Set<Object>> {
 
     protected Set<Object> defaultValue() throws UnknownTypeException {
         return new LinkedHashSet<>();
+    }
+
+
+    @Override
+    public Iterator iterator() {
+        return this.value.iterator();
     }
 }

@@ -2,7 +2,11 @@ package nl.cwi.managed_data_4j.utils;
 
 import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectField;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldMany;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldPrimitive;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldSingle;
+import nl.cwi.managed_data_4j.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 
 import java.lang.reflect.Proxy;
 import java.util.Collection;
@@ -12,6 +16,63 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MObjectUtils {
+
+    public static String ToString(Object mObj) {
+        if (!Proxy.isProxyClass(mObj.getClass())) {
+            throw new RuntimeException("Should check Managed Objects only.");
+        }
+
+        String mObjectToString = "";
+        final MObject mObject = (MObject) Proxy.getInvocationHandler(mObj);
+        final Klass schemaKlass = mObject.schemaKlass();
+
+        mObjectToString += klassToString(mObject, schemaKlass);
+
+        return mObjectToString;
+    }
+
+    private static String klassToString(MObject mObject, Klass klass) {
+        String klassToString = "";
+        klassToString += klass.name() + "\n";
+        for (Field field : klass.fields()) {
+            klassToString += fieldToString(mObject, field);
+        }
+        return klassToString;
+    }
+
+    private static String fieldToString(MObject mObject, Field field) {
+        String fieldName = field.name();
+        String fieldToString = "";
+        fieldToString += "-" + fieldName;
+
+        if (field.many()) {
+            fieldToString += "[\n";
+            final MObjectFieldMany values = (MObjectFieldMany) mObject.getMObjectField(fieldName);
+
+            for (Object value : values) {
+
+                if (value != null && Proxy.isProxyClass(value.getClass())) {
+                    final MObject mValue = (MObject) Proxy.getInvocationHandler(value);
+
+                    fieldToString += "\t" + mValue.getMObjectField("name").get() + "\n";
+                } else {
+                    fieldToString += value + "\n";
+                }
+            }
+            fieldToString += "]\n";
+        } else {
+            final MObjectFieldSingle value = (MObjectFieldSingle) mObject.getMObjectField(fieldName);
+
+            if (value != null && Proxy.isProxyClass(value.getClass())) {
+                MObject mValue = (MObject) Proxy.getInvocationHandler(value);
+                fieldToString += mValue.getMObjectField("name").get() + "\n";
+            } else {
+                fieldToString += value + "\n";
+            }
+        }
+
+        return fieldToString;
+    }
 
     public static boolean isEqual(Object obj1, Object obj2) {
 

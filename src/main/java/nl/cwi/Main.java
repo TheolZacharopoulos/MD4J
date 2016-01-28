@@ -39,7 +39,8 @@ public class Main {
         final Schema realSchemaSchema =
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
-        DebugUtils.debugTypes(realSchemaSchema.types());
+//        DebugUtils.debugTypes(realSchemaSchema.types());
+        System.out.println(MObjectUtils.ToString(realSchemaSchema));
 
 //        // Test equality
         final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);

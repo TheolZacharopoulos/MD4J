@@ -11,7 +11,7 @@ import nl.cwi.managed_data_4j.utils.ArrayUtils;
  * Represents a multi value field.
  * @author Theologos Zacharopoulos
  */
-public abstract class MObjectFieldMany<T> extends MObjectField<T> {
+public abstract class MObjectFieldMany<T> extends MObjectField<T> implements Iterable {
 
     public MObjectFieldMany(MObject owner, Field field) throws UnknownTypeException {
         super(owner, field);
