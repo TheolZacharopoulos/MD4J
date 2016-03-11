@@ -74,6 +74,7 @@ public class MObjectUtils {
         return fieldToString;
     }
 
+    // TODO: You need to check the cross references as well, but only *traverse* the contains references.
     public static boolean isEqual(Object obj1, Object obj2) {
 
         if (!Proxy.isProxyClass(obj1.getClass()) || !Proxy.isProxyClass(obj2.getClass())) {
@@ -86,7 +87,9 @@ public class MObjectUtils {
     private static boolean equal(Object obj1, Object obj2) {
 
         // primitives, just compare values
-        if (isPrimitiveAndNoArray(obj1) && isPrimitiveAndNoArray(obj2)) {
+        if (PrimitiveUtils.isPrimitiveClass(obj1.getClass()) &&
+            PrimitiveUtils.isPrimitiveClass(obj2.getClass()))
+        {
             System.out.println(" *** Primitives: obj1 = " + obj1 + ", obj2 = " + obj2);
             return obj1.equals(obj2);
         }
@@ -128,12 +131,9 @@ public class MObjectUtils {
             return true;
         } else {
             System.out.println("- Vector value: " + xVector.get(n));
-            if (equal(xVector.get(n), yVector.get(n))) {
-                return areVectorsEqual(xVector, yVector, n + 1);
-            }
-            else {
-                return false;
-            }
+            return
+                equal(xVector.get(n), yVector.get(n)) &&
+                areVectorsEqual(xVector, yVector, n + 1);
         }
     }
 
@@ -157,17 +157,15 @@ public class MObjectUtils {
                 return areFieldsEqual(xFields, yFields, n + 1);
             }
 
-            if (equal(xField.get(), yField.get())) {
-                return areFieldsEqual(xFields, yFields, n + 1);
-            }
-            else {
-                return false;
-            }
+            return
+                equal(xField.get(), yField.get()) &&
+                areFieldsEqual(xFields, yFields, n + 1);
         }
     }
 
     /**
      * Extracts the fields from an input Managed Object and returns a map of them.
+     *
      * @param mObject the Managed Object
      * @return the fields
      */
@@ -175,10 +173,5 @@ public class MObjectUtils {
         return mObject.schemaKlass().fields().stream()
             .map(field -> mObject.getMObjectField(field.name()))
             .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    private static boolean isPrimitiveAndNoArray(Object object) {
-        return (PrimitiveUtils.isPrimitiveClass(object.getClass()) &&
-            !ArrayUtils.isMany(object.getClass()));
     }
 }
