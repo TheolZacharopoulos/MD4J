@@ -3,6 +3,23 @@
 \input{program-listings}
 \newcommand{\cmd}[1]{\texttt{$\backslash$#1}}
 
+\usepackage[toc,acronym,nogroupskip]{glossaries}
+\usepackage{url}
+
+\usepackage{graphicx}
+\graphicspath{ {figures/} }
+
+%%Glossaries setup
+\makeglossaries
+\newcommand{\ac}[1]{\gls{#1}}
+\newcommand{\acs}[1]{\acrshort{#1}}
+\newcommand{\acp}[1]{\glspl{#1}}
+
+\input{acronyms}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{Taming Aspects with Managed Data }
 % \coverpic[100pt]{figures/terminal.png}
 % \subtitle{A Thesis Template Leading by Example}
@@ -13,36 +30,36 @@
 \supervisor{Tijs van der Storm}
 \host{Centrum Wiskunde \& Informatica, \url{http://www.cwi.nl}}
 
+\begin{document}
+
 \abstract{
-  bla
 }
 
-\begin{document}
 \maketitle
 
-\include{Introduction}
-\include{Background}
-\include{ReflectionAndProxies}
-\include{ManagedData}
-\include{Implementation}
-\include{JHotDraw}
-\include{Evaluation}
-\include{Conclusion}
-\include{Further}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{./chapters/Introduction}
+\include{./chapters/Background}
+\include{./chapters/Implementation}
+\include{./chapters/Evaluation}
+\include{./chapters/Conclusion}
+\include{./chapters/Further}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter*{Acknowledgments}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{appendix}
-\include{TheFramework}
-\include{Example}
-\include{Undo}
+\include{./appendices/HowToUse}
+\include{./appendices/Example}
+\include{./appendices/Undo}
 \end{appendix}
 
 {%\tiny
-\bibliographystyle{alphaurl}
-\bibliography{thesis}
+  \bibliographystyle{alphaurl}
+  \bibliography{thesis}
 }
 
 \end{document}
