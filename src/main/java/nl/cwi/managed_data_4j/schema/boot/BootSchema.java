@@ -53,11 +53,10 @@ public class BootSchema extends SchemaImpl {
         schemaKlassSchemaKlassField.owner(schemaKlass);
 
         schemaKlass.fields(
-                schemaKlassKlassesField,
-                schemaKlassPrimitivesField,
-                schemaKlassTypesField,
-                schemaKlassSchemaKlassField
-        );
+            schemaKlassKlassesField,
+            schemaKlassPrimitivesField,
+            schemaKlassTypesField,
+            schemaKlassSchemaKlassField);
 
         // ========================
         // * Type Klass
@@ -163,14 +162,13 @@ public class BootSchema extends SchemaImpl {
         klassKlassKeyField.owner(klassKlass);
 
         klassKlass.fields(
-                klassKlassClassOfField,
-                klassKlassNameField,
-                klassKlassFieldsField,
-                klassKlassSchemaField,
-                klassKlassSubsField,
-                klassKlassSupersField,
-                klassKlassKeyField
-        );
+            klassKlassClassOfField,
+            klassKlassNameField,
+            klassKlassFieldsField,
+            klassKlassSchemaField,
+            klassKlassSubsField,
+            klassKlassSupersField,
+            klassKlassKeyField);
 
         // ========================
         // * Field Klass
@@ -220,15 +218,14 @@ public class BootSchema extends SchemaImpl {
         fieldKlassContainField.type(booleanPrimitive);
 
         fieldKlass.fields(
-                fieldKlassContainField,
-                fieldKlassKeyField,
-                fieldKlassManyField,
-                fieldKlassNameField,
-                fieldKlassOptionalField,
-                fieldKlassInverseField,
-                fieldKlassOwnerField,
-                fieldKlassTypeField
-        );
+            fieldKlassContainField,
+            fieldKlassKeyField,
+            fieldKlassManyField,
+            fieldKlassNameField,
+            fieldKlassOptionalField,
+            fieldKlassInverseField,
+            fieldKlassOwnerField,
+            fieldKlassTypeField);
 
         // ========================
         // * Bootstrap definition

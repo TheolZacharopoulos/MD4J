@@ -48,7 +48,7 @@ public class Main {
         final Schema realSchemaSchema2 =
             SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
-//        boolean equal = MObjectUtils.isEqual(realSchemaSchema, realSchemaSchema2);
+        boolean equal = MObjectUtils.equals(realSchemaSchema, realSchemaSchema2);
 //        DebugUtils.debugTypes(realSchemaSchema2.types());
 
         // ================================ Data objects ========================================
@@ -64,19 +64,9 @@ public class Main {
 
         final Point2D point = pointFactory.point2D(3, 2);
 
-//        // Test equality
-//        final Point2D point2 = pointFactory.point2D(3, 2);
-//        boolean equalPoints = MObjectUtils.isEqual(point, point2);
-
         final Line line = pointFactory.line();
         line.startPoint(point);
         line.endPoint(point);
-
-//        // Test equality
-//        final Line line2 = pointFactory.line();
-//        line2.startPoint(point2);
-//        line2.endPoint(point2);
-//        boolean equalLines = MObjectUtils.isEqual(line, line2);
 
         System.out.print(point.x() + " + " + point.y() + " = ");
         System.out.print(point.x() + point.y());

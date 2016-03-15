@@ -181,7 +181,7 @@ public class MObject implements InvocationHandler, M {
      * first one it finds. Otherwise returns Java default hasCode() implementation.
      * @return a hashCode
      */
-    private int getKeyHasCode() {
+    private int getKeyHashCode() {
         for (MObjectField mObjectField : this.props.values()) {
             final Field field = mObjectField.getField();
 
@@ -207,7 +207,7 @@ public class MObject implements InvocationHandler, M {
 
         // hashCode() method invocation of the proxied object
         if (method.getName().equals("hashCode")) {
-            return this.getKeyHasCode();
+            return this.getKeyHashCode();
         }
 
         // The default method are forwarded to the InvocationHandler.
