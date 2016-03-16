@@ -189,7 +189,7 @@ public class MObject implements InvocationHandler, M {
             // if there is key at the fields type klass, use this one
             if (field.type().key() != null) {
                 final MObjectField keyField = this.props.get(field.type().key().name());
-                final String theKey = (String) keyField.get();
+                final Object theKey = keyField.get();
 
                 final int keyHashCode = theKey.hashCode();
 
