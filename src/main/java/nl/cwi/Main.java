@@ -40,8 +40,8 @@ public class Main {
                 SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
 //        DebugUtils.debugTypes(realSchemaSchema.types());
-//        System.out.println(MObjectUtils.ToString(realSchemaSchema));
 
+        // =======================
         // Test equality
         final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
         final SchemaFactory schemaFactory2 = basicFactory2.make();
@@ -49,7 +49,12 @@ public class Main {
             SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         boolean equal = MObjectUtils.equals(realSchemaSchema, realSchemaSchema2);
-//        DebugUtils.debugTypes(realSchemaSchema2.types());
+        if (equal) {
+            System.out.println("* EQUAL *");
+        } else {
+            System.out.println("Should be equal");
+            System.exit(-1);
+        }
 
         // ================================ Data objects ========================================
         System.out.println("=============");
@@ -58,7 +63,8 @@ public class Main {
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
-        final Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
+        // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
+        final Schema pointSchema = SchemaLoader.load(schemaFactory2, Point.class, Point2D.class, Point3D.class, Line.class);
         final BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 
@@ -124,5 +130,7 @@ public class Main {
             System.out.println("IllegalAccessError: " + e.getMessage());
         }
         System.out.println(lockablePoint.x());
+
+        System.exit(0);
     }
 }

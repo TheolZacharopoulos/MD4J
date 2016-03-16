@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class MObjectUtils {
 
-    public static String ToString(Object mObj) {
+    public static String toString(Object mObj) {
         if (!Proxy.isProxyClass(mObj.getClass())) {
             throw new RuntimeException("Should check Managed Objects only.");
         }

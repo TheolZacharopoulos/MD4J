@@ -1,5 +1,6 @@
 package nl.cwi.managed_data_4j.schema.load;
 
+import nl.cwi.managed_data_4j.managed_object.MObject;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
@@ -12,6 +13,7 @@ import nl.cwi.managed_data_4j.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,7 +83,16 @@ public class SchemaLoader {
         // wire the types on schema
         schema.types(types.toArray(new Type[types.size()]));
 
-        // TODO: Add schema.schemaKlass
+        // Get the invocation handler of the Managed Object,
+        // in order to get the schemaKlass from it.
+        // Since it has been already set from the factory.
+        final MObject schemaManagedObject = (MObject) Proxy.getInvocationHandler(schema);
+
+        // get the schema klass
+        final Klass schemaKlass = schemaManagedObject.schemaKlass();
+
+        // set the schema klass
+        schema.schemaKlass(schemaKlass);
 
         return schema;
     }
