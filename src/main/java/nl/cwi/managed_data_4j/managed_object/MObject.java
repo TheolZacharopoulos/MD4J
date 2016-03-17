@@ -48,7 +48,7 @@ public class MObject implements InvocationHandler, M {
         if (this.schemaKlass.fields() != null) {
 
             // setup fields and properties / set default values.
-            this.schemaKlass.fields().stream().forEach(this::safeSetupField);
+            this.schemaKlass.fields().forEach(this::safeSetupField);
 
             // initialize fields with actual values.
             if (initializers != null) {

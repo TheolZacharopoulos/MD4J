@@ -6,6 +6,10 @@ import nl.cwi.managed_data_4j.schema.models.definition.annotations.Optional;
 
 import java.util.Set;
 
+/**
+ * Klass definition
+ * @author Theologos Zacharopoulos
+ */
 public interface Klass extends Type {
 
     @Contain

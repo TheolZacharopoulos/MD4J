@@ -3,6 +3,10 @@ package nl.cwi.managed_data_4j.schema.models.definition;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
 
+/**
+ * Field definition
+ * @author Theologos Zacharopoulos
+ */
 public interface Field {
 
     /**

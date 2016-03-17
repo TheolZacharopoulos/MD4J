@@ -5,7 +5,9 @@ import nl.cwi.managed_data_4j.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.schema.models.definition.annotations.Optional;
 
 /**
- * Represents a Type, can be Primitive or a Klass.
+ * Type definitions.
+ * Can be Primitive or a Klass.
+ * @author Theologos Zacharopoulos
  */
 public interface Type {
 

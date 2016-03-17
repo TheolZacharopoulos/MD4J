@@ -6,14 +6,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * Schema definition.
+ *
  * While there are many kinds of schemas and data managers
  * there is one basic schema that is used in the implementation of itself.
  * This schema is called the Schema Schema.
- *
  * This is a self-described Schema,
  * since every concept is used is included in its definition.
+ *
+ * @author Theologos Zacharopoulos
  */
-
 public interface Schema extends M {
 
     /**

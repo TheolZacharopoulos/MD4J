@@ -139,19 +139,14 @@ public class MObjectUtils {
             final MObjectField yField = yFields.get(n);
             System.out.print(" - Field name: " + xFields.get(n).getField().name());
 
-            // if it is not primitive and it is cross reference
-            if (!(xField instanceof MObjectFieldPrimitive) && !xField.getField().contain()) {
-                System.out.print(" [Cross-Reference] \n"); // Cross reference
-            } else {
-                System.out.print("\n"); // Spine
-            }
-
             // FIXME: Union find
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
             if (!(xField instanceof MObjectFieldPrimitive) && !xField.getField().contain()) {
+                System.out.print(" [Cross-Reference] \n"); // Cross reference
                 return areFieldsEqual(ht, xFields, yFields, n + 1);
             }
+            System.out.print("\n"); // Spine
 
             return e(ht, xField.get(), yField.get()) && areFieldsEqual(ht, xFields, yFields, n + 1);
         }
