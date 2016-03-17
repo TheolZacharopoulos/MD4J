@@ -166,11 +166,11 @@ public class MObject implements InvocationHandler, M {
             // it's an array since it's many
             Object [] inits = ((Object[]) value);
 
-            if (field.type().key() != null) {
-                ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
-            } else {
-                ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
-            }
+            // The key will always be null because we do not support initialization
+            // and at this phase the key have not been initialized
+            // Therefore it is always a Set
+            ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
+
         } else {
             ((MObjectFieldSingle) mObjectField).init(value);
         }
