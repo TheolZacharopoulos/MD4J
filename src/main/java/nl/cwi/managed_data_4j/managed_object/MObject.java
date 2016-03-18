@@ -7,7 +7,6 @@ import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.Unknown
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManySet;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldPrimitive;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldRef;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldSingle;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.M;
@@ -172,7 +171,7 @@ public class MObject implements InvocationHandler, M {
             ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
 
         } else {
-            ((MObjectFieldSingle) mObjectField).init(value);
+            mObjectField.init(value);
         }
     }
 

@@ -75,10 +75,10 @@ public class SchemaLoader {
     public static Schema load(SchemaFactory factory, Class<?>... schemaKlassesDef) {
 
         // create an empty schema using the factory, will wire it later
-        Schema schema = factory.schema();
+        final Schema schema = factory.schema();
 
         // build the types from the schema klasses definition
-        Set<Type> types = buildTypesFromSchemaKlassesDef(factory, schema, schemaKlassesDef);
+        final Set<Type> types = buildTypesFromSchemaKlassesDef(factory, schema, schemaKlassesDef);
 
         // wire the types on schema
         schema.types(types.toArray(new Type[types.size()]));
