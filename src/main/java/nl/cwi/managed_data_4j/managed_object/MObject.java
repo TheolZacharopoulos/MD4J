@@ -1,7 +1,7 @@
 package nl.cwi.managed_data_4j.managed_object;
 
 import nl.cwi.managed_data_4j.data_manager.IFactory;
-import nl.cwi.managed_data_4j.managed_object.managed_object_field.*;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManySet;
@@ -200,6 +200,36 @@ public class MObject implements InvocationHandler, M {
         return super.hashCode();
     }
 
+    /**
+     * The default method are forwarded to the InvocationHandler.
+     * But we want to call the default implementation in case of existence.
+     *
+     * Check if the object has defined any default methods in its schema
+     * The default method has already been overridden by the proxy and it can't be invoked directly.
+     * In this case we invoke the default method with the given args.
+     */
+    private Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
+        final Class<?> declaringClass = method.getDeclaringClass();
+
+        // declare MethodHandles.Lookup constructor accessible
+        Constructor constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+
+        // use the constructor to create a lookup object with PRIVATE access
+        constructor.setAccessible(true);
+
+        // create a lookup for the default method
+        final MethodHandles.Lookup defaultMethodLookup =
+                (MethodHandles.Lookup) constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
+
+        // create a method handle that won’t check for overridden method (unreflectSpecial)
+        // Since it is "special" it will skip the overriding done
+        // by the proxying and invoke the default implementation
+        return defaultMethodLookup
+            .unreflectSpecial(method, declaringClass)
+            .bindTo(proxy)
+            .invokeWithArguments(args);
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
@@ -209,31 +239,9 @@ public class MObject implements InvocationHandler, M {
             return this.getKeyHashCode();
         }
 
-        // The default method are forwarded to the InvocationHandler.
-        // But we want to call the default implementation in case of existence.
-        //
-        // Check if the object has defined any default methods in its schema
-        // The default method has already been overridden by the proxy and it can't be invoked directly.
-        // In this case we invoke the default method with the given args.
+        // if the method is default, invoke this one
         if (method.isDefault()) {
-            final Class<?> declaringClass = method.getDeclaringClass();
-
-            // declare MethodHandles.Lookup constructor accessible
-            Constructor constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
-            // use the constructor to create a lookup object with PRIVATE access
-            constructor.setAccessible(true);
-
-            // create a lookup for the default method
-            final MethodHandles.Lookup defaultMethodLookup =
-                    (MethodHandles.Lookup) constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
-
-            // create a method handle that won’t check for overridden method (unreflectSpecial)
-            // Since it is "special" it will skip the overriding done
-            // by the proxying and invoke the default implementation
-            return defaultMethodLookup
-                .unreflectSpecial(method, declaringClass)
-                .bindTo(proxy)
-                .invokeWithArguments(args);
+            return invokeDefaultMethod(proxy, method, args);
         }
 
         // This is a way to execute the "attached" methods of the derived Managed Objects,
