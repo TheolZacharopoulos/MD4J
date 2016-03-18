@@ -4,9 +4,11 @@ import nl.cwi.managed_data_4j.data_manager.IFactory;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManyList;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.many.MObjectFieldManySet;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldPrimitive;
 import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldRef;
+import nl.cwi.managed_data_4j.managed_object.managed_object_field.single.MObjectFieldSingle;
 import nl.cwi.managed_data_4j.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.schema.models.definition.M;
@@ -87,7 +89,12 @@ public class MObject implements InvocationHandler, M {
                 this.props.put(field.name(), new MObjectFieldRef(this, field));
             }
         } else {
-            this.props.put(field.name(), new MObjectFieldManySet(this, field));
+
+            if (field.key() != null) {
+                this.props.put(field.name(), new MObjectFieldManySet(this, field));
+            } else {
+                this.props.put(field.name(), new MObjectFieldManyList(this, field));
+            }
         }
     }
 
@@ -165,13 +172,14 @@ public class MObject implements InvocationHandler, M {
             // it's an array since it's many
             Object [] inits = ((Object[]) value);
 
-            // The key will always be null because we do not support initialization
-            // and at this phase the key have not been initialized
-            // Therefore it is always a Set
-            ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
+            if (field.key() != null) {
+                ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
+            } else {
+                ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
+            }
 
         } else {
-            mObjectField.init(value);
+            ((MObjectFieldSingle) mObjectField).init(value);
         }
     }
 
