@@ -1,11 +1,14 @@
-import nl.cwi.examples.geometry.*;
-import nl.cwi.managed_data_4j.data_manager.BasicFactory;
-import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
-import nl.cwi.managed_data_4j.schema.models.definition.Field;
-import nl.cwi.managed_data_4j.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.schema.models.definition.Schema;
-import nl.cwi.managed_data_4j.schema.models.implementation.PrimitiveImpl;
+import nl.cwi.examples.geometry.data_managers.PointFactory;
+import nl.cwi.examples.geometry.schemas.Line;
+import nl.cwi.examples.geometry.schemas.Point;
+import nl.cwi.examples.geometry.schemas.Point2D;
+import nl.cwi.examples.geometry.schemas.Point3D;
+import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
+import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import org.junit.Before;
 import org.junit.Test;
 import utils.TestHelper;
@@ -36,11 +39,6 @@ public class TestPointSchema {
 
     @Test
     public void testSchema() {
-//        assertThat(pointSchema.klassInterfaces(), hasItems(
-//                Point.class,
-//                Line.class
-//        ));
-
         assertThat(pointSchema.types().size(), is(4));
         assertThat(pointSchema.klasses().size(), is(4));
 
@@ -93,28 +91,13 @@ public class TestPointSchema {
         assertThat(startPointField.optional(), is(false));
         assertThat(startPointField.many(), is(false));
         assertThat(startPointField.owner().name(), is("Line"));
-//        assertThat(startPointField.type(), is(
-//                new KlassImpl(
-//                    "Point2D",
-//                    pointSchema,
-//                    new LinkedHashSet<>(Arrays.asList(xField, yField)),
-//                    Collections.emptySet(),
-//                    Collections.emptySet()))
-//        );
+
 
         assertNotNull(endPointField);
         assertThat(endPointField.name(), is("endPoint"));
         assertThat(endPointField.optional(), is(false));
         assertThat(endPointField.many(), is(false));
         assertThat(endPointField.owner().name(), is("Line"));
-//        assertThat(endPointField.type(), is(
-//                new KlassImpl(
-//                        "Point2D",
-//                        pointSchema,
-//                        new LinkedHashSet<>(Arrays.asList(xField, yField)),
-//                        Collections.emptySet(),
-//                        Collections.emptySet()))
-//        );
     }
 
     @Test

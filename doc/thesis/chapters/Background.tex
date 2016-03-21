@@ -37,6 +37,16 @@
 \subsection{Data Managers}\label{Data Managers}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section: Internal DSLs 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Internal DSLs}\label{Internal DSLs}
+% We eliminate the symbolic barrier with our base language. We also have the full power of our base language available to us at all times, together with all the tooling that exists in our base language. Lisp and adaptive object models are examples of internal DSLs.
+% Internal DSLs are limited by the syntax and structure of your base language. More dynamic languages suffer less of a limitation. They have a minimally intrusive syntax
+% Annotations (attributes in C#) are a good example of this kind of language feature which could be quite useful for this kind of purpose.
+%  However one of the strengths of a DSL is that it allows people to program in it without knowing the full base language - which makes it simpler for lay programmers to enter domain specific information directly into the system. An internal DSL can make it hard to do this because there are many places where a user can get confused if they aren't familiar with the full base language.
+% One way of thinking about this is that a general purpose programming language gives you lots of tools - but your DSL uses only a few of these tools. Having more tools than you need often makes things harder - because you have to learn what all these tools are before you can figure out the few you use.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Reflection
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Java Reflection and Proxies}\label{Java Reflection and Proxies}

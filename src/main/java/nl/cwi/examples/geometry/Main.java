@@ -1,4 +1,4 @@
-package nl.cwi;
+package nl.cwi.examples.geometry;
 
 import nl.cwi.examples.geometry.data_managers.PointFactory;
 import nl.cwi.examples.geometry.schemas.Line;
@@ -10,11 +10,11 @@ import nl.cwi.managed_data_4j.ccconcerns.patterns.lockable.Lockable;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.lockable.LockableFactory;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.Observable;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableFactory;
+import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
-import nl.cwi.managed_data_4j.language.schema.models.definition.*;
-import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -24,50 +24,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // ================================ Schema Schema ========================================
-
-        // We bootstrap the SchemaSchema from the minimal BootstrapSchema that has only classes and fields.
-        // This minimal bootstrap schema is necessarily self-describing as it must change itself and
-        // it processes simplistic data managers that only allow updating.
-        // It is also hardcoded.
-        final Schema bootstrapSchema = SchemaLoader.bootLoad();
-
-        final BasicFactory basicFactory = new BasicFactory(SchemaFactory.class, bootstrapSchema);
-
-        // Create a schema Factory which creates Schema instances.
-        final SchemaFactory schemaFactory = basicFactory.make();
-
-        // The schemas are described by the SchemaSchema.
-        // This schemaSchema is also self-describing.
-        final Schema realSchemaSchema =
-                SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-
-//        DebugUtils.debugTypes(realSchemaSchema.types());
-
-        // =======================
-        // Test equality
-        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
-        final SchemaFactory schemaFactory2 = basicFactory2.make();
-        final Schema realSchemaSchema2 =
-            SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-
-        boolean equal = MObjectUtils.equals(realSchemaSchema, realSchemaSchema2);
-        if (equal) {
-            System.out.println("* EQUAL *");
-        } else {
-            System.out.println("Should be equal");
-            System.exit(-1);
-        }
-
-        // ================================ Data objects ========================================
-        System.out.println("=============");
-        System.out.println("Data Objects: ");
+        final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
-        final Schema pointSchema = SchemaLoader.load(schemaFactory2, Point.class, Point2D.class, Point3D.class, Line.class);
+        final Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
         final BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 
@@ -84,10 +47,9 @@ public class Main {
 
         // Check multi points
         Set<Point2D> points = new LinkedHashSet<>(Arrays.asList(
-           pointFactory.point2D(1, 2),
-           pointFactory.point2D(2, 3),
-           pointFactory.point2D(1, 4)
-        ));
+            pointFactory.point2D(1, 2),
+            pointFactory.point2D(2, 3),
+            pointFactory.point2D(1, 4)));
 
         System.out.println("============");
         System.out.println("Set of 2D points: ");

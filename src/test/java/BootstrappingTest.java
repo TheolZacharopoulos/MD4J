@@ -1,7 +1,7 @@
-import nl.cwi.managed_data_4j.data_manager.BasicFactory;
-import nl.cwi.managed_data_4j.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.schema.load.SchemaLoader;
-import nl.cwi.managed_data_4j.schema.models.definition.*;
+import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
+import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
+import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import org.junit.Before;
 import org.junit.Test;
 import utils.TestHelper;
