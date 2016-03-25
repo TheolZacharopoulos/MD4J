@@ -10,6 +10,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inve
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.language.utils.ArrayUtils;
 import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
+import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
  * @author Theologos Zacharopoulos
  */
 public class SchemaLoader {
+
+    private static final org.apache.log4j.Logger logger = LogManager.getLogger(SchemaLoader.class.getName());
 
     /**
      * Helper private class to keep Fields with their Method which define them.
@@ -74,11 +77,13 @@ public class SchemaLoader {
      */
     public static Schema load(SchemaFactory factory, Class<?>... schemaKlassesDef) {
 
+        logger.debug("Make schema form SchemaFactory");
+
         // create an empty schema using the factory, will wire it later
         final Schema schema = factory.schema();
 
         // build the types from the schema klasses definition
-        final Set<Type> types = buildTypesFromSchemaKlassesDef(factory, schema, schemaKlassesDef);
+        final Set<Type> types = buildTypesFromClasses(factory, schema, schemaKlassesDef);
 
         // wire the types on schema
         schema.types(types.toArray(new Type[types.size()]));
@@ -97,7 +102,7 @@ public class SchemaLoader {
         return schema;
     }
 
-    public static Set<Type> buildTypesFromSchemaKlassesDef(
+    public static Set<Type> buildTypesFromClasses(
             SchemaFactory factory,
             Schema schema,
             Class<?>... schemaKlassesDefinition)
@@ -110,8 +115,10 @@ public class SchemaLoader {
         for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
             final String klassName = schemaKlassDefinition.getSimpleName();
 
+            logger.debug("*Build: " + klassName + " klass");
+
             final Map<String, Field> fieldsForKlass =
-                buildFieldsFromSchemaKlassDef(factory, schemaKlassDefinition, allFieldsWithReturnType);
+                buildFieldsFromMethods(factory, schemaKlassDefinition, allFieldsWithReturnType);
 
             // create a new klass
             final Klass klass = factory.klass();
@@ -233,7 +240,7 @@ public class SchemaLoader {
         }
     }
 
-    public static Map<String, Field> buildFieldsFromSchemaKlassDef(
+    public static Map<String, Field> buildFieldsFromMethods(
             SchemaFactory factory,
             Class<?> schemaKlassDefinition,
             Map<Field, FieldWithMethod> allFieldsWithReturnType)
@@ -252,6 +259,8 @@ public class SchemaLoader {
         for (Method schemaKlassField : fields) {
             final String fieldName = schemaKlassField.getName();
             final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
+
+            logger.debug(" - Build: " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">" + " field");
 
             // check for many
             final boolean many = ArrayUtils.isMany(fieldReturnClass);

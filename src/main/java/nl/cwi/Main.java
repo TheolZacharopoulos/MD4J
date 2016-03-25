@@ -15,6 +15,7 @@ import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -23,6 +24,7 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
+        PropertyConfigurator.configure("src/main/resources/logger.properties");
 
         // ================================ Schema Schema ========================================
 
@@ -51,13 +53,13 @@ public class Main {
         final Schema realSchemaSchema2 =
             SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
-        boolean equal = MObjectUtils.equals(realSchemaSchema, realSchemaSchema2);
-        if (equal) {
-            System.out.println("* EQUAL *");
-        } else {
-            System.out.println("Should be equal");
-            System.exit(-1);
-        }
+//        boolean equal = MObjectUtils.equals(realSchemaSchema, realSchemaSchema2);
+//        if (equal) {
+//            System.out.println("* EQUAL *");
+//        } else {
+//            System.out.println("Should be equal");
+//            System.exit(-1);
+//        }
 
         // ================================ Data objects ========================================
         System.out.println("=============");
