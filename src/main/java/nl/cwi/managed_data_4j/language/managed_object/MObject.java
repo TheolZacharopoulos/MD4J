@@ -195,6 +195,20 @@ public class MObject implements InvocationHandler, M {
     }
 
     /**
+     * Searches for @key in the properties
+     * @return returns true if key found, otherwise false
+     */
+    private boolean fieldHasKey() {
+        for (MObjectField mObjectField : this.props.values()) {
+            final Field field = mObjectField.getField();
+            if (field.type().key() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Searches for @key in the properties, if any found return the hashCode of the
      * first one it finds. Otherwise returns Java default hasCode() implementation.
      * @return a hashCode
@@ -203,15 +217,12 @@ public class MObject implements InvocationHandler, M {
         for (MObjectField mObjectField : this.props.values()) {
             final Field field = mObjectField.getField();
 
-            // TODO: Compute the right hashCode
             // if there is key at the fields type klass, use this one
             if (field.type().key() != null) {
                 final MObjectField keyField = this.props.get(field.type().key().name());
                 final Object theKey = keyField.get();
 
-                final int keyHashCode = theKey.hashCode();
-
-                return super.hashCode() * keyHashCode;
+                return theKey.hashCode();
             }
         }
 

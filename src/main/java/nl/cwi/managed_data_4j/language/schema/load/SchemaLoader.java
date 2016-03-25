@@ -12,6 +12,7 @@ import nl.cwi.managed_data_4j.language.utils.ArrayUtils;
 import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
 import org.apache.log4j.LogManager;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
@@ -107,8 +108,14 @@ public class SchemaLoader {
             Schema schema,
             Class<?>... schemaKlassesDefinition)
     {
-        Map<Type, TypeWithClass> types = new LinkedHashMap<>();
-        Map<Field, FieldWithMethod> allFieldsWithReturnType = new LinkedHashMap<>();
+        final Map<Type, TypeWithClass> types = new LinkedHashMap<>();
+
+        // <classNameFieldNameCombo, FieldWithMethod>
+        // since the klass of the field has not been wired we need another way to
+        // use as key the all the fields in the map.
+        // hashcode can not use yet the klass of the field (not has been set)
+        // however, we can use klass name for that.
+        final Map<String, FieldWithMethod> allFieldsWithReturnType = new LinkedHashMap<>();
 
         // =================
         // Klasses
@@ -118,7 +125,7 @@ public class SchemaLoader {
             logger.debug("*Build: " + klassName + " klass");
 
             final Map<String, Field> fieldsForKlass =
-                buildFieldsFromMethods(factory, schemaKlassDefinition, allFieldsWithReturnType);
+                buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
 
             // create a new klass
             final Klass klass = factory.klass();
@@ -149,8 +156,9 @@ public class SchemaLoader {
         return types.keySet();
     }
 
-    private static void wireFieldTypeKeys(Map<Field, FieldWithMethod> allFieldsWithReturnType) {
+    private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
         allFieldsWithReturnType.keySet().stream()
+            .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
             .filter(Field::many)
             .map(Field::type)
             .filter(Klass.class::isInstance)
@@ -167,10 +175,11 @@ public class SchemaLoader {
     private static void wireFieldTypes(
         SchemaFactory factory,
         Schema schema,
-        Map<Field, FieldWithMethod> allFieldsWithReturnType)
+        Map<String, FieldWithMethod> allFieldsWithReturnType)
     {
-        for (Field field : allFieldsWithReturnType.keySet()) {
-            final Method method = allFieldsWithReturnType.get(field).method;
+        for (String klassNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
+            final Method method = allFieldsWithReturnType.get(klassNameFieldNameCombo).method;
+            final Field field = allFieldsWithReturnType.get(klassNameFieldNameCombo).field;
 
             // In case the field is multi value, that means that the real type is
             // not given in the method.getReturnType() because this will give Set ot List,
@@ -190,9 +199,10 @@ public class SchemaLoader {
         }
     }
 
-    private static void wireFieldInverse(Map<Field, FieldWithMethod> allFieldsWithReturnType) {
-        for (Field field : allFieldsWithReturnType.keySet()) {
-            final Method method = allFieldsWithReturnType.get(field).method;
+    private static void wireFieldInverse(Map<String, FieldWithMethod> allFieldsWithReturnType) {
+        for (String classNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
+            final Method method = allFieldsWithReturnType.get(classNameFieldNameCombo).method;
+            final Field field = allFieldsWithReturnType.get(classNameFieldNameCombo).field;
 
             final Field fieldInverseField = buildInverse(method, allFieldsWithReturnType);
             if (fieldInverseField != null) {
@@ -241,11 +251,12 @@ public class SchemaLoader {
     }
 
     public static Map<String, Field> buildFieldsFromMethods(
+            String klassName,
             SchemaFactory factory,
             Class<?> schemaKlassDefinition,
-            Map<Field, FieldWithMethod> allFieldsWithReturnType)
+            Map<String, FieldWithMethod> allFieldsWithReturnType)
     {
-        Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
+        final Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
 
         // ** Issue #1 **
         // The elements in the array returned getMethods(), are not sorted and are not in any particular order.
@@ -278,12 +289,14 @@ public class SchemaLoader {
             final Field field = factory.field(contain, key, many, fieldName, optional);
 
             fieldsForKlass.put(fieldName, field);
-            allFieldsWithReturnType.put(field, new FieldWithMethod(field, schemaKlassField));
+
+            // use klassName and fieldName combo here, because the real hashCode can not be calculated yet.
+            allFieldsWithReturnType.put(klassName + fieldName, new FieldWithMethod(field, schemaKlassField));
         }
         return fieldsForKlass;
     }
 
-    private static Field buildInverse(Method method, Map<Field, FieldWithMethod> allFieldsWithReturnType) {
+    private static Field buildInverse(Method method, Map<String, FieldWithMethod> allFieldsWithReturnType) {
         Field fieldInverseField = null;
         if (method.isAnnotationPresent(Inverse.class)) {
             final Inverse fieldInverse = method.getAnnotation(Inverse.class);
@@ -296,7 +309,9 @@ public class SchemaLoader {
             final String fieldInverseFieldName = fieldInverse.field();
 
             // check field name and owner
-            for (Field fieldForSearch : allFieldsWithReturnType.keySet()) {
+            for (String classNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
+                final Field fieldForSearch = allFieldsWithReturnType.get(classNameFieldNameCombo).field;
+
                 final String fieldForSearchName = fieldForSearch.name();
                 final String fieldForSearchOwnerName = fieldForSearch.owner().name();
 
