@@ -7,12 +7,14 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.singl
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSingle;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class MObjectUtils {
+    private static final org.apache.log4j.Logger logger = LogManager.getLogger(MObjectUtils.class.getName());
 
     public static String toString(Object mObj) {
         if (!Proxy.isProxyClass(mObj.getClass())) {
@@ -83,13 +85,13 @@ public class MObjectUtils {
                 PrimitiveUtils.isPrimitiveClass(y.getClass()) &&
                 x.getClass().equals(y.getClass()))
         {
-            System.out.println(" << Primitive >> : (x = " + x + " | y = " + y + ")");
+            logger.debug(" << Primitive >> : (x = " + x + " | y = " + y + ")");
             return x.equals(y);
         }
 
         // vector leaf
         if (ArrayUtils.isMany(x.getClass()) && ArrayUtils.isMany(y.getClass())) {
-            System.out.println(" << Vector >> ");
+            logger.debug(" << Vector >> ");
             final List<Object> xVector = new LinkedList<>((Collection<Object>) x);
             final List<Object> yVector = new LinkedList<>((Collection<Object>) y);
             final int xLen = xVector.size();
@@ -109,7 +111,7 @@ public class MObjectUtils {
             mObjectX = ((MObject) x);
             mObjectY = ((MObject) y);
         }
-        System.out.println(" <<MObject>> : " + mObjectX.schemaKlass().name());
+        logger.debug(" <<MObject>> : " + mObjectX.schemaKlass().name());
         List<MObjectField> xFields = extractFields(mObjectX);
         List<MObjectField> yFields = extractFields(mObjectY);
 
