@@ -37,4 +37,18 @@ public class SchemaFactoryProvider {
         return schemaFactory;
     }
 
+    public static Schema getSchema(Class<?>... classes) {
+        final SchemaFactory schemaFactory = getSchemaFactory();
+        return SchemaLoader.load(schemaFactory, classes);
+    }
+
+    public static <T> T getFactory(Schema schema, Class<T> factory) {
+        final BasicFactory basicFactory = new BasicFactory(factory, schema);
+        return basicFactory.make();
+    }
+
+    public static <T> T getFactory(Class<T> factory, Class<?>... classes) {
+        final Schema schema = getSchema(classes);
+        return getFactory(schema, factory);
+    }
 }
