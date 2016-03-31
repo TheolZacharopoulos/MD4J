@@ -194,20 +194,7 @@ public class MObject implements InvocationHandler, M {
         }
     }
 
-    /**
-     * Searches for @key in the properties
-     * @return returns true if key found, otherwise false
-     */
-    private boolean fieldHasKey() {
-        for (MObjectField mObjectField : this.props.values()) {
-            final Field field = mObjectField.getField();
-            if (field.type().key() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    // TODO: Needs to be changed???
     /**
      * Searches for @key in the properties, if any found return the hashCode of the
      * first one it finds. Otherwise returns Java default hasCode() implementation.
