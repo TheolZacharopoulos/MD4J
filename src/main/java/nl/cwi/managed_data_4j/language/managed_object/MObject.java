@@ -60,6 +60,7 @@ public class MObject implements InvocationHandler, M {
 
     /**
      * Wrapper to handle exceptions.
+     * @param _field the input field.
      */
     private void safeSetupField(Field _field) {
         try {
@@ -103,6 +104,7 @@ public class MObject implements InvocationHandler, M {
 
     /**
      * Wrapper to handle exceptions.
+     * @param initializers the initialization values
      */
     private void safeInitializeProps(Object... initializers) {
         try {
@@ -224,6 +226,11 @@ public class MObject implements InvocationHandler, M {
      * Check if the object has defined any default methods in its schema
      * The default method has already been overridden by the proxy and it can't be invoked directly.
      * In this case we invoke the default method with the given args.
+     * @param proxy the proxy instance
+     * @param method the method that has been called
+     * @param args any arguments of the method
+     * @return any return values of the method, null if none
+     * @throws Throwable in case of error during invocation
      */
     private Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
         final Class<?> declaringClass = method.getDeclaringClass();
@@ -238,7 +245,7 @@ public class MObject implements InvocationHandler, M {
         final MethodHandles.Lookup defaultMethodLookup =
                 (MethodHandles.Lookup) constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
 
-        // create a method handle that won’t check for overridden method (unreflectSpecial)
+        // create a method handle that will not check for overridden method (unreflectSpecial)
         // Since it is "special" it will skip the overriding done
         // by the proxying and invoke the default implementation
         return defaultMethodLookup
