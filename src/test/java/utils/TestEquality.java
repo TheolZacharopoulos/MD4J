@@ -78,7 +78,7 @@ public class TestEquality {
     }
 
     @Test
-    public void primitives_only_equality__real_object_Test_fail() {
+    public void primitives_only_equality_real_object_Test_fail() {
         Person person1 = personFactory.person(25, "Alex");
         Person person2 = new Person() {
             @Override
@@ -88,6 +88,45 @@ public class TestEquality {
             @Override
             public Address address(Address... address) { return null; }
         };
+
+        assertFalse(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void contain_equality_real_object_Test_1() {
+        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.person(24, "Alex");
+        person1.address(addressPerson1);
+
+        Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.person(24, "Alex");
+        person2.address(addressPerson2);
+
+        assertTrue(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void contain_equality_real_object_Test_1_fail() {
+        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.person(24, "Alex");
+        person1.address(addressPerson1);
+
+        Address addressPerson2 = personFactory.address("Amsterdam", 666, "Science Park");
+        Person person2 = personFactory.person(24, "Alex");
+        person2.address(addressPerson2);
+
+        assertFalse(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void contain_equality_real_object_Test_1_fail_1() {
+        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.person(24, "Alex");
+        person1.address(addressPerson1);
+
+        Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.person(25, "Alex");
+        person2.address(addressPerson2);
 
         assertFalse(MObjectUtils.equals(person1, person2));
     }
