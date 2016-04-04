@@ -157,22 +157,45 @@ public class SchemaLoader {
         return types.keySet();
     }
 
+    /**
+     * From all the created fields, get their klasses and set as key the first field found as KEY.
+     * @param allFieldsWithReturnType all the created fields
+     */
     private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
+
+        // from all the fields created
         allFieldsWithReturnType.keySet().stream()
-            .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
-            .filter(Field::many)
-            .map(Field::type)
-            .filter(Klass.class::isInstance)
-            .map(Klass.class::cast)
-            .forEach(fieldTypeKlass ->
-                fieldTypeKlass.key(
-                    fieldTypeKlass.fields().stream()
-                        .filter(Field::key)
-                        .findFirst()
-                        .orElse(null))
+        .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
+
+        // get only the many
+        .filter(Field::many)
+
+        // get their type
+        .map(Field::type)
+
+        // get only those of type klass
+        .filter(Klass.class::isInstance)
+        .map(Klass.class::cast)
+
+        // for each klass, set key as the first field that is a Key otherwise null
+        .forEach(fieldTypeKlass ->
+            fieldTypeKlass.key(
+                fieldTypeKlass.fields().stream()
+                    .filter(Field::key)
+                    .findFirst()
+                    .orElse(null))
         );
     }
 
+    /**
+     * For all the fields created, set the real types of the field.
+     * The trick here is that in case of multi value (many), the type is not the collection but
+     * but the Generic Return Type which we can take via reflection.
+     *
+     * @param factory the schema factory
+     * @param schema the schema
+     * @param allFieldsWithReturnType all the created fields
+     */
     private static void wireFieldTypes(
         SchemaFactory factory,
         Schema schema,
@@ -182,7 +205,7 @@ public class SchemaLoader {
             final Method method = allFieldsWithReturnType.get(klassNameFieldNameCombo).method;
             final Field field = allFieldsWithReturnType.get(klassNameFieldNameCombo).field;
 
-            // In case the field is multi value, that means that the real type is
+            // In case the field is multi value (many), that means that the real type is
             // not given in the method.getReturnType() because this will give Set ot List,
             // BUT the real type is in method.getGenericReturnType().
             if (field.many()) {
@@ -200,6 +223,10 @@ public class SchemaLoader {
         }
     }
 
+    /**
+     * Wire the inverse fields.
+     * @param allFieldsWithReturnType all the created fields
+     */
     private static void wireFieldInverse(Map<String, FieldWithMethod> allFieldsWithReturnType) {
         for (String classNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(classNameFieldNameCombo).method;
@@ -212,6 +239,11 @@ public class SchemaLoader {
         }
     }
 
+    /**
+     * Wire all the super klasses
+     * @param types all the types
+     * @param cache a type cache
+     */
     private static void wireKlassSupers(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
         types.keySet().stream()
             .filter(Klass.class::isInstance)
@@ -225,6 +257,11 @@ public class SchemaLoader {
             });
     }
 
+    /**
+     * Wire all the sub klasses
+     * @param types all the types
+     * @param cache a type cache
+     */
     private static void wireKlassSubs(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
         types.keySet().stream()
             .filter(Klass.class::isInstance)
@@ -239,6 +276,11 @@ public class SchemaLoader {
             });
     }
 
+    /**
+     * Wire all the classOf
+     * @param types all the types
+     * @param schemaKlassesDefinition the class Of the Klass
+     */
     public static void wireKlassClassOf(Map<Type, TypeWithClass> types, Class<?>[] schemaKlassesDefinition) {
         for (Type type : types.keySet()) {
             for (Class klassInterface : schemaKlassesDefinition) {
@@ -251,6 +293,14 @@ public class SchemaLoader {
         }
     }
 
+    /**
+     * Build fields from given methods
+     * @param klassName the name of the klass that the fields are belong to
+     * @param factory the schema factory
+     * @param schemaKlassDefinition the Class of the klass
+     * @param allFieldsWithReturnType all created fields
+     * @return all the fields of a klass.
+     */
     public static Map<String, Field> buildFieldsFromMethods(
             String klassName,
             SchemaFactory factory,
@@ -301,8 +351,16 @@ public class SchemaLoader {
         return fieldsForKlass;
     }
 
+    /**
+     * Builds an inverse field from a given method.
+     * @param method the method
+     * @param allFieldsWithReturnType all the created fields
+     * @return the inverse field
+     */
     private static Field buildInverse(Method method, Map<String, FieldWithMethod> allFieldsWithReturnType) {
         Field fieldInverseField = null;
+
+        // check if there is Inverse annotation in place
         if (method.isAnnotationPresent(Inverse.class)) {
             final Inverse fieldInverse = method.getAnnotation(Inverse.class);
 
@@ -330,6 +388,13 @@ public class SchemaLoader {
         return fieldInverseField;
     }
 
+    /**
+     * Build type for a field, from a type factory
+     * @param fieldReturnClass the type of the field
+     * @param schema the schema
+     * @param factory the schema factory
+     * @return type for a field
+     */
     private static Type getFieldType(Class<?> fieldReturnClass, Schema schema, SchemaFactory factory) {
         try {
             return TypeFactory.getTypeFromClass(fieldReturnClass, schema, factory, typesCache);
@@ -338,6 +403,12 @@ public class SchemaLoader {
         }
     }
 
+    /**
+     * Builds the superKlasses of a klass
+     * @param schemaKlassDefinition the class of the Klass
+     * @param cache a type cache
+     * @return a set of super klasses
+     */
     private static Set<Klass> buildSupers(Class<?> schemaKlassDefinition, Map<String, Type> cache) {
         Set<Klass> supers = new LinkedHashSet<>();
 
@@ -356,6 +427,12 @@ public class SchemaLoader {
         return supers.isEmpty() ? Collections.emptySet() : supers;
     }
 
+    /**
+     * Builds the subKlasses of a klass
+     * @param schemaKlassDefinition the class of the Klass
+     * @param cache a type cache
+     * @return a set of sub klasses
+     */
     private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition, Map<String, Type> cache) {
         Set<Klass> subs = cache.values().stream()
             .filter(Klass.class::isInstance)
