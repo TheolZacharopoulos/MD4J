@@ -4,7 +4,7 @@ import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
-import nl.cwi.managed_data_4j.language.utils.MObjectUtilsOLD;
+import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 
 public class SchemaSchemaExample {
 
@@ -35,7 +35,7 @@ public class SchemaSchemaExample {
         final Schema realSchemaSchema2 =
                 SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
-        boolean equal = MObjectUtilsOLD.equals(realSchemaSchema, realSchemaSchema2);
+        boolean equal = MObjectUtils.equals(realSchemaSchema, realSchemaSchema2);
         if (equal) {
             System.out.println("* EQUAL *");
         } else {
