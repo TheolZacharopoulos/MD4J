@@ -26,6 +26,14 @@ import java.util.*;
  */
 public class MObject implements InvocationHandler, M {
 
+    @Override
+    public Klass schemaKlass(Klass... schemaKlass) {
+        if (schemaKlass.length > 0) {
+            this.schemaKlass = schemaKlass[0];
+        }
+        return this.schemaKlass;
+    }
+
     // Store props for the object: <Name, Field>
     protected Map<String, MObjectField> props = new LinkedHashMap<>();
 
@@ -318,13 +326,5 @@ public class MObject implements InvocationHandler, M {
 
         // If it is not an assignment, then just return the field's value.
         return _get(fieldName);
-    }
-
-    @Override
-    public Klass schemaKlass(Klass... schemaKlass) {
-        if (schemaKlass.length > 0) {
-            this.schemaKlass = schemaKlass[0];
-        }
-        return this.schemaKlass;
     }
 }
