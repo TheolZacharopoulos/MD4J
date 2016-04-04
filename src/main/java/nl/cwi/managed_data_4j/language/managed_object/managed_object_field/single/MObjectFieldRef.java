@@ -50,7 +50,7 @@ public class MObjectFieldRef extends MObjectFieldSingle {
         final Klass fieldType = (Klass) this.field.type();
 
         boolean isSubKlass = false;
-        if (fieldType.subklasses() != null) {
+        if (fieldType.subKlasses() != null) {
             for (Klass superKlass : valueSchemaKlass.supers()) {
                 if (superKlass != null && superKlass.name().equals(fieldType.name())) {
                     isSubKlass = true;

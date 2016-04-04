@@ -6,7 +6,7 @@ import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 
-public class Main {
+public class SchemaSchemaExample {
 
     public static void main(String[] args) {
 

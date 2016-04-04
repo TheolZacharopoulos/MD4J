@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class Main {
+public class GeometryExample {
 
     public static void main(String[] args) {
 

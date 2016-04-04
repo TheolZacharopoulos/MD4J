@@ -99,7 +99,7 @@ public class BasicFactory implements IFactory {
     }
 
     /**
-     * This method and should be implemented from the derived data_manager
+     * This method should be implemented from the derived data manager
      * in order to create specific Managed Objects.
      *
      * @param klass the Managed Object schema Klass

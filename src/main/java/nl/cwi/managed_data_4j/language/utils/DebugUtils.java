@@ -28,8 +28,8 @@ public class DebugUtils {
                 }
 
                 // subs
-                if (klass.subklasses() != null) {
-                    for (Klass subKlass : klass.subklasses()) {
+                if (klass.subKlasses() != null) {
+                    for (Klass subKlass : klass.subKlasses()) {
                         System.out.println("  - Sub: " + subKlass.name());
                     }
                 }

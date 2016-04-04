@@ -24,7 +24,7 @@ public interface Klass extends Type {
      * The subclasses, in order to keep type hierarchy
      */
     @Inverse(other=Klass.class, field="supers")
-    Set<Klass> subklasses(Klass... subklasses);
+    Set<Klass> subKlasses(Klass... subKlasses);
 
     /**
      * The Schema of a Klass is the Schema it belongs to.

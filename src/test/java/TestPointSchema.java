@@ -13,8 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import utils.TestHelper;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 public class TestPointSchema {
 

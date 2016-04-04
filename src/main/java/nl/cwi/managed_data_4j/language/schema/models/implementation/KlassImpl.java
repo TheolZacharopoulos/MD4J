@@ -18,7 +18,7 @@ public class KlassImpl implements Klass {
     protected Schema schema = null;
     protected Set<Field> fields = Collections.emptySet();
     protected Set<Klass> supers = Collections.emptySet();
-    protected Set<Klass> subklasses = Collections.emptySet();
+    protected Set<Klass> subKlasses = Collections.emptySet();
     protected Class<?> classOf = null;
     protected Field key = null;
 
@@ -31,13 +31,13 @@ public class KlassImpl implements Klass {
             Schema schema,
             Set<Field> fields,
             Set<Klass> supers,
-            Set<Klass> subklasses,
+            Set<Klass> subKlasses,
             Class<?> classOf)
     {
         this.name = name;
         this.fields = fields;
         this.supers = supers;
-        this.subklasses = subklasses;
+        this.subKlasses = subKlasses;
         this.schema = schema;
         this.classOf = classOf;
     }
@@ -73,18 +73,18 @@ public class KlassImpl implements Klass {
     }
 
     @Override
-    public Set<Klass> subklasses(Klass... subklasses) {
-        if (subklasses.length > 0) {
-            if (subklasses.length > 1) {
-                this.subklasses = new LinkedHashSet<>();
-                for (Klass aSuper : subklasses) {
-                    this.subklasses.add(aSuper);
+    public Set<Klass> subKlasses(Klass... subKlasses) {
+        if (subKlasses.length > 0) {
+            if (subKlasses.length > 1) {
+                this.subKlasses = new LinkedHashSet<>();
+                for (Klass aSuper : subKlasses) {
+                    this.subKlasses.add(aSuper);
                 }
             } else {
-                this.subklasses = Collections.singleton(subklasses[0]);
+                this.subKlasses = Collections.singleton(subKlasses[0]);
             }
         }
-        return this.subklasses;
+        return this.subKlasses;
     }
 
     @Override

@@ -4,7 +4,10 @@ import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.language.schema.models.definition.*;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
@@ -12,7 +15,6 @@ import nl.cwi.managed_data_4j.language.utils.ArrayUtils;
 import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
 import org.apache.log4j.LogManager;
 
-import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
@@ -78,7 +80,7 @@ public class SchemaLoader {
      */
     public static Schema load(SchemaFactory factory, Class<?>... schemaKlassesDef) {
 
-        logger.debug("Make schema form SchemaFactory");
+        logger.debug("SchemaFactory: create schema");
 
         // create an empty schema using the factory, will wire it later
         final Schema schema = factory.schema();
@@ -122,8 +124,7 @@ public class SchemaLoader {
         for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
             final String klassName = schemaKlassDefinition.getSimpleName();
 
-            logger.debug("*Build: " + klassName + " klass");
-
+            logger.debug("> SchemaFactory: create klass " + klassName);
             final Map<String, Field> fieldsForKlass =
                 buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
 
@@ -233,7 +234,7 @@ public class SchemaLoader {
                 final Set<Klass> subKlasses = buildSubs(typeWithClass.clazz, cache);
                 if (subKlasses.size() > 0) {
                     final Klass[] subsToArray = subKlasses.toArray(new Klass[subKlasses.size()]);
-                    klass.subklasses(subsToArray);
+                    klass.subKlasses(subsToArray);
                 }
             });
     }
@@ -271,19 +272,23 @@ public class SchemaLoader {
             final String fieldName = schemaKlassField.getName();
             final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 
-            logger.debug(" - Build: " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">" + " field");
+            logger.debug("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
 
             // check for many
             final boolean many = ArrayUtils.isMany(fieldReturnClass);
+            logger.debug("    > isMany: " + many);
 
             // check for optional
             final boolean optional = schemaKlassField.isAnnotationPresent(nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional.class);
+            logger.debug("    > isOptional: " + optional);
 
             // check for key
             final boolean key = schemaKlassField.isAnnotationPresent(Key.class);
+            logger.debug("    > isKey: " + key);
 
             // check for contain
             final boolean contain = schemaKlassField.isAnnotationPresent(Contain.class);
+            logger.debug("    > isContain: " + contain);
 
             // add its fields, the owner Klass will be added later
             final Field field = factory.field(contain, key, many, fieldName, optional);

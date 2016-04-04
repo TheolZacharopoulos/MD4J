@@ -14,7 +14,6 @@ import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
-import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.util.Arrays;
