@@ -2,9 +2,37 @@
 % Chapter: Introduction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}\label{Introduction}
+\ac{ccc} is a problem for which the classic programming techniques can not tackle with sufficiently. 
+This results in scattered and tangled code, which affects the system's modularity and it's ease of maintenance and evolution. 
+Since \ac{oop} and \ac{pp} techniques can not solve this problem, \ac{aop} presented \cite{kiczales1997aspect} in order to
+provide a solution by introducing the notion of \textit{aspects}.
+
+\ac{aop} results in a modular and \textit{single-responsibility} design whose properties must be implemented as \textit{components} (cleanly encapsulated procedure) and \textit{aspects} (not clearly encapsulated procedure), both separate concepts that are combined for the result through a process called \textit{weaving}. 
+However, relying on \ac{aop}, paradoxically, does not improve the evolution of a project even with the modularity that it provides 
+since it introduces tight coupling between the aspects and the application. 
+As a result the way to tackle with this problem we need a more sophisticated and expressing crosscut language.
+Consequently, \ac{ccc} could be handled in a higher level of the language such as the data structuring and management mechanisms.
+
+Managed data \cite{loh2012managed} allows programmers to take control of important aspects of data as reusable modules. 
+Using managed data a developer can build \textit{data managers} that handle the fundamental data manipulation primitives 
+that are usually hard-coded in the programming language, by introducing custom data manipulation mechanisms. 
+Managed data have been researched and implemented under the Enso project\footnote{\label{note1}\url{http://enso-lang.org/}}, which is developed in Ruby\footnote{\label{note2}\url{https://www.ruby-lang.org/en/}} (a dynamic programming language) using Ruby’s reflection capabilities. 
+Furthermore, managed data are considered less able to be supported in static languages directly which makes it more challenging for 
+this thesis since it is going to be implemented in Java.
+In this thesis I am going to use the Java reflection capabilities to implement managed data and focus on specific aspects and design patterns implementations using the data managers concept of managed data. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Initial Study}\label{Initial Study}
+In their study on managed data, A Loh et al. \cite{loh2012managed} present an implementation of managed data
+in Ruby and they use as a case study a web development framework from the Enso project to reuse database management and 
+access control mechanisms across different data definitions.
+
+% TODO: add more details here
+
+This thesis is support and an extension of their work; we implement managed data in Java (a static programming language) using the Java reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} and dynamic proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}}. 
+Although proxies in static programming languages can not implement the full range of managed data \cite{loh2012managed}. 
+Java provides a strong implementation of the meta-object protocol \cite{kiczales1991art}, which can be used though the Java Reflection API \cite{forman2004java}. 
+Additionally, this project will focus on aspects and will provide a solution to the \ac{ccc} problem by using managed data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem statement}\label{Problem statement}
