@@ -23,24 +23,43 @@ In this thesis I am going to use the Java reflection capabilities to implement m
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Initial Study}\label{Initial Study}
-In their study on managed data, A Loh et al. \cite{loh2012managed} present an implementation of managed data
+% TODO: more
+In their study on managed data, Loh et al. \cite{loh2012managed} present an implementation of managed data
 in Ruby and they use as a case study a web development framework from the Enso project to reuse database management and 
 access control mechanisms across different data definitions.
 
-% TODO: add more details here
-
-This thesis is support and an extension of their work; we implement managed data in Java (a static programming language) using the Java reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} and dynamic proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}}. 
+This thesis is an extension of their work; we implement managed data in Java (a static programming language) using the Java reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} and dynamic proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}}. 
 Although proxies in static programming languages can not implement the full range of managed data \cite{loh2012managed}. 
 Java provides a strong implementation of the meta-object protocol \cite{kiczales1991art}, which can be used though the Java Reflection API \cite{forman2004java}. 
 Additionally, this project will focus on aspects and will provide a solution to the \ac{ccc} problem by using managed data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem statement}\label{Problem statement}
-% Cross cutting concerns
-% AOP problems
+The problem we study regards the \ac{ccc} that are scattered around the application, resulting to a hard to maintain system 
+by tangling implementation logic and concerns code together.
+Even though, \ac{aop} provides new modularization mechanisms, which should result in easier evolving software, 
+it delivers solutions that are as hard and sometimes even harder to evolve than before \cite{tourwe2003existence}. 
+The problem lays on the aspects, which have to include a crosscut description of all places in the application where this code yields an influence. 
+Thus, the aspects are tightly coupled to the application and this greatly affects the evolvability of the overall system. 
+
+Additionally, Friedrich Steimann \cite{steimann2005domain} argues that modeling languages are not aspect ready. 
+The problem that arises is located at the level of software modeling. 
+More specifically, in \textit{roles modeling}, whereas in \ac{oop} roles are tied to the collaborations,
+collaborations rely on interactions of objects, and aspects on the other hand are typically defined independently of one another. 
+
+Furthermore, in terms of order, it has been observed that aspects are not elements of the domain, they describe the order rather than the domain. 
+Finally, aspects invariably express non-functional requirements, but if the non-functional requirements are not elements of domain models then neither are aspects.
+
+In order to solve the aforementioned problems, we implement manage data, lifting the data management up to the application.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Questions}\label{Research Questions}
+Managed data has not been practically implemented in a static language before, therefore my first research questions states 
+``Can managed Data be implemented in a static language like Java?''. 
+Based in the previous argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \ac{ccc}, my second research question is ``Can managed data solve \ac{ccc} and to what extend does it improve the software evolution problems that \ac{aop} introduces in a modular solution?''. 
+Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
+I am going to evaluate the implementation of managed data on an inventory of aspects and design patterns. 
+As a result the third research question states ``To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, in contrast with the original and the AOP implementation.''
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Solutions Outline}\label{Solutions Outline}
