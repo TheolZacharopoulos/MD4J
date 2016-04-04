@@ -105,7 +105,6 @@ public class MObjectUtils {
 
         // Objects leaf
         List<Method> xFields = null;
-        List<Method> yFields = null;
         if (Proxy.isProxyClass(x.getClass())) {
             MObject mObjectX = (MObject) Proxy.getInvocationHandler(x);
             logger.debug(" <<MObject>> (x) : " + mObjectX.schemaKlass().name());
@@ -122,6 +121,7 @@ public class MObjectUtils {
             .collect(Collectors.toList());
         }
 
+        List<Method> yFields = null;
         if (Proxy.isProxyClass(y.getClass())) {
             MObject mObjectY = (MObject) Proxy.getInvocationHandler(y);
             logger.debug(" <<MObject>> (y) : " + mObjectY.schemaKlass().name());

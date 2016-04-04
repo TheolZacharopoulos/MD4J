@@ -62,13 +62,56 @@ I am going to evaluate the implementation of managed data on an inventory of asp
 As a result the third research question states ``To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, in contrast with the original and the AOP implementation.''
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Solutions Outline}\label{Solutions Outline}
+\subsection{Solution Outline}\label{Solution Outline}
+Our solution is consisted of an implementation of managed data in Java. 
+This framework can be used by applications in order to deal with \ac{ccc}.
+
+To validate our hypotheses we are going to implement managed data in Java using the Java Reflection API and Dynamic Proxies. 
+More specifically we are going to use Java interfaces for \textit{schemas} and dynamic proxies for \textit{data managers}. 
+Furthermore, we are going to provide as a proof of concept the examples given in \cite{loh2012managed} but this time developed in Java. As mentioned in \cite{loh2012managed} to stack data managers I am going to use the Decorator Pattern \cite{gamma1995design}. 
+
+In order to prove that managed data solves the problems that \ac{aop} introduces, we are going to implement an inventory of the following aspects and design patterns from JHotDraw using data managers:
+\begin{description}
+  \item[The Observer Pattern], which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters pattern code through the classes. 
+  This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
+
+  \item[The Singleton Pattern], which as presented \cite{hannemann2005role} \cite{hannemann2002design}, it can easily be abstracted as an aspect and replace the \ac{oop} usage in JHotDraw. 
+
+  \item[The Template Method], which as presented \cite{hannemann2005role} \cite{hannemann2002design}, it scatters code by introducing roles such as those of \textit{AbstractClass} and \textit{ConcreteClass}.
+
+  \item[The Undo aspect], which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
+  More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
+\end{description}
+
+This inventory is implemented using data managers that have modularity as a main characteristic and is been evaluated in a new JHotDraw implementation. 
+We compare those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
+Since our solution is a refactoring of the JHotDraw framework we need a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. 
+However, JHotDraw comes with no tests. 
+Thus, we use the TestJHotDraw, which is a subproject of the AJHotDraw development team, and it is developed in order to contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications and allow for a better assessment of aspect orientation.
+Since we use our JHotDraw implementation for the functional evaluation of our solution, we can use the presented criteria \cite{hannemann2002design}, which are \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Method}\label{Research Method}
+The answers for the research questions will be extracted from the background material, the managed data implementation and the comparison of metrics gathered by the evaluation of the implementation. 
+% TODO 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Contributions}\label{Contributions}
+
+\begin{description}
+  \item[Contribution 1: Managed data implementation in Java]
+
+  \item[Contribution 2: Managed data Java framework]
+  The final deliverable is a Java library with which the developer can define and implement aspects as reusable modules
+and integrate them with an application without mixing the business logic with concern logic.
+More specifically, the schemas and the data managers have to be defined by the developer, as well as any additional
+functionality that may needed to be integrated to the patterns or roles of the application.
+
+  \item[Contribution 3: Managed data Evaluation in JHotDraw]
+
+  \item[Contribution 4: JHotDraw implementation results assessment and comparison with AJHotDraw]
+
+\end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Related Work}\label{Related Work}
