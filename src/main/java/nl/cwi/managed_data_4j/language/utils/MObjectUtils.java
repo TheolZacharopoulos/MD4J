@@ -82,11 +82,23 @@ public class MObjectUtils {
 
     public static boolean e(Map<Object, Object> ht, Object x, Object y) {
 
+        // check for null first
+        if (x == null && y == null) {
+            logger.debug(" x and y are NULL");
+            return true;
+        } else if ((x == null && y != null) || (x != null && y == null)) {
+            logger.debug(" one of x and y is NULL");
+            return false;
+        }
+
+        // extract class
+        final Class<?> xFieldClass = getRealFieldClass(x);
+        final Class<?> yFieldClass = getRealFieldClass(y);
+
         // primitive leaf, just compare values
-        if (PrimitiveUtils.isPrimitiveClass(x.getClass()) &&
-                PrimitiveUtils.isPrimitiveClass(y.getClass()) &&
-                x.getClass().equals(y.getClass()))
-        {
+        final boolean xClassIsPrimitive = PrimitiveUtils.isPrimitiveClass(xFieldClass);
+        final boolean yClassIsPrimitive = PrimitiveUtils.isPrimitiveClass(xFieldClass);
+        if (xClassIsPrimitive && yClassIsPrimitive && xFieldClass.equals(yFieldClass)) {
             logger.debug(" << Primitive >> : (x = " + x + " | y = " + y + ")");
             return x.equals(y);
         }
@@ -104,33 +116,21 @@ public class MObjectUtils {
         }
 
         // Objects leaf
-        List<Method> xFields = null;
-        if (Proxy.isProxyClass(x.getClass())) {
-            MObject mObjectX = (MObject) Proxy.getInvocationHandler(x);
-            logger.debug(" <<MObject>> (x) : " + mObjectX.schemaKlass().name());
-
-            final Class<?> fieldClass = mObjectX.schemaKlass().classOf();
-            xFields = Arrays.asList(fieldClass.getMethods());
-        } else {
-            logger.debug(" <<Object>> (x) : " + x.getClass().getSimpleName());
-            final List<Method> xAllFields = Arrays.asList(x.getClass().getMethods());
+        List<Method> xFields = Arrays.asList(xFieldClass.getMethods());;
+        logger.debug(" <<MObject>> (x) : " + xFieldClass.getSimpleName());
+        if (!Proxy.isProxyClass(xFieldClass)) {
+            final List<Method> xAllFields = Arrays.asList(xFieldClass.getMethods());
 
             // remove native methods
             xFields = xAllFields.stream()
-            .filter(method -> !method.getDeclaringClass().getName().startsWith("java."))
-            .collect(Collectors.toList());
+                .filter(method -> !method.getDeclaringClass().getName().startsWith("java."))
+                .collect(Collectors.toList());
         }
 
-        List<Method> yFields = null;
-        if (Proxy.isProxyClass(y.getClass())) {
-            MObject mObjectY = (MObject) Proxy.getInvocationHandler(y);
-            logger.debug(" <<MObject>> (y) : " + mObjectY.schemaKlass().name());
-
-            final Class<?> fieldClass = mObjectY.schemaKlass().classOf();
-            yFields = Arrays.asList(fieldClass.getMethods());
-        } else {
-            logger.debug(" <<Object>> (y) : " + y.getClass().getSimpleName());
-            final List<Method> yAllFields = Arrays.asList(y.getClass().getMethods());
+        List<Method> yFields = Arrays.asList(yFieldClass.getMethods());;
+        logger.debug(" <<Object>> (y) : " + yFieldClass.getSimpleName());
+        if (!Proxy.isProxyClass(yFieldClass)) {
+            final List<Method> yAllFields = Arrays.asList(yFieldClass.getMethods());
 
             // remove native methods
             yFields = yAllFields.stream()
@@ -153,10 +153,8 @@ public class MObjectUtils {
 
     private static boolean areFieldsEqual(
             Map<Object, Object> ht,
-            Object x,
-            List<Method> xFields,
-            Object y,
-            List<Method> yFields,
+            Object x, List<Method> xFields,
+            Object y, List<Method> yFields,
             int n)
     {
         if (xFields.size() == n && xFields.size() == yFields.size()) {
@@ -172,11 +170,10 @@ public class MObjectUtils {
             final Object xFieldValue = getValueFromMethod(x, xFieldMethod);
             final Object yFieldValue = getValueFromMethod(y, yFieldMethod);
 
-            final boolean isFieldContain =
-                xFieldMethod.isAnnotationPresent(Contain.class) || yFieldMethod.isAnnotationPresent(Contain.class);
+            final boolean isFieldContain = xFieldMethod.isAnnotationPresent(Contain.class);
 
-            final boolean isPrimitive =
-                PrimitiveUtils.isPrimitive(x.getClass().getSimpleName()) && PrimitiveUtils.isPrimitive(y.getClass().getSimpleName());
+            final Class<?> xClass = xFieldMethod.getReturnType();
+            final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xClass);
 
             // FIXME: Union find
             // Check Contain only for non primitives
@@ -191,8 +188,19 @@ public class MObjectUtils {
         }
     }
 
+    private static Class<?> getRealFieldClass(Object instance) {
+        if (Proxy.isProxyClass(instance.getClass())) {
+            return ((MObject) Proxy.getInvocationHandler(instance)).schemaKlass().classOf();
+        }
+        return instance.getClass();
+    }
+
     private static Object getValueFromMethod(Object instance, Method method) {
         try {
+
+            // needs to be accessible in order to invoke it
+            method.setAccessible(true);
+
             // in case the method needs parameters, we need to construct the parameter type
             if (method.getParameters().length > 0) {
 
