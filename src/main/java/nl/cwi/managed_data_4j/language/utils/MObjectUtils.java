@@ -1,14 +1,16 @@
 package nl.cwi.managed_data_4j.language.utils;
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldMany;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldPrimitive;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSingle;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import org.apache.log4j.LogManager;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -98,29 +100,50 @@ public class MObjectUtils {
             final int yLen = yVector.size();
 
             return xLen == yLen && // they should have the same size (structure)
-                    (xLen == 0 || areVectorsEqual(ht, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
+                (xLen == 0 || areVectorsEqual(ht, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
         }
 
-        // MObjects leaf
-        MObject mObjectX = null;
-        MObject mObjectY = null;
-        if (Proxy.isProxyClass(x.getClass()) && Proxy.isProxyClass(y.getClass())) {
-            mObjectX = (MObject) Proxy.getInvocationHandler(x);
-            mObjectY = (MObject) Proxy.getInvocationHandler(y);
+        // Objects leaf
+        List<Method> xFields = null;
+        List<Method> yFields = null;
+        if (Proxy.isProxyClass(x.getClass())) {
+            MObject mObjectX = (MObject) Proxy.getInvocationHandler(x);
+            logger.debug(" <<MObject>> (x) : " + mObjectX.schemaKlass().name());
+
+            final Class<?> fieldClass = mObjectX.schemaKlass().classOf();
+            xFields = Arrays.asList(fieldClass.getMethods());
         } else {
-            mObjectX = ((MObject) x);
-            mObjectY = ((MObject) y);
+            logger.debug(" <<Object>> (x) : " + x.getClass().getSimpleName());
+            final List<Method> xAllFields = Arrays.asList(x.getClass().getMethods());
+
+            // remove native methods
+            xFields = xAllFields.stream()
+            .filter(method -> !method.getDeclaringClass().getName().startsWith("java."))
+            .collect(Collectors.toList());
         }
-        logger.debug(" <<MObject>> : " + mObjectX.schemaKlass().name());
-        List<MObjectField> xFields = extractFields(mObjectX);
-        List<MObjectField> yFields = extractFields(mObjectY);
+
+        if (Proxy.isProxyClass(y.getClass())) {
+            MObject mObjectY = (MObject) Proxy.getInvocationHandler(y);
+            logger.debug(" <<MObject>> (y) : " + mObjectY.schemaKlass().name());
+
+            final Class<?> fieldClass = mObjectY.schemaKlass().classOf();
+            yFields = Arrays.asList(fieldClass.getMethods());
+        } else {
+            logger.debug(" <<Object>> (y) : " + y.getClass().getSimpleName());
+            final List<Method> yAllFields = Arrays.asList(y.getClass().getMethods());
+
+            // remove native methods
+            yFields = yAllFields.stream()
+                .filter(method -> !method.getDeclaringClass().getName().startsWith("java."))
+                .collect(Collectors.toList());
+        }
 
         // sort fields by name
-        Collections.sort(xFields, (o1, o2) -> o1.getField().name().compareTo(o2.getField().name()));
-        Collections.sort(yFields, (o1, o2) -> o1.getField().name().compareTo(o2.getField().name()));
+        Collections.sort(xFields, (o1, o2) -> o1.getName().compareTo(o2.getName()));
+        Collections.sort(yFields, (o1, o2) -> o1.getName().compareTo(o2.getName()));
 
         return xFields.size() == yFields.size() && // they should have the same size (branch number)
-                (xFields.size() == 0 || areFieldsEqual(ht, xFields, yFields, 0)); // if the len is 0 then true, otherwise compare
+            (xFields.size() == 0 || areFieldsEqual(ht, x, xFields, y, yFields, 0)); // if the len is 0 then true, otherwise compare
     }
 
     private static boolean areVectorsEqual(Map<Object, Object> ht, List<Object> xVector, List<Object> yVector, int n) {
@@ -130,39 +153,71 @@ public class MObjectUtils {
 
     private static boolean areFieldsEqual(
             Map<Object, Object> ht,
-            List<MObjectField> xFields,
-            List<MObjectField> yFields,
+            Object x,
+            List<Method> xFields,
+            Object y,
+            List<Method> yFields,
             int n)
     {
         if (xFields.size() == n && xFields.size() == yFields.size()) {
             return true;
         } else {
-            final MObjectField xField = xFields.get(n);
-            final MObjectField yField = yFields.get(n);
-            System.out.print(" - Field name: " + xFields.get(n).getField().name());
+
+            final Method xFieldMethod = xFields.get(n);
+            final Method yFieldMethod = yFields.get(n);
+
+            logger.debug("\t(x) Field name: " + xFieldMethod.getName());
+            logger.debug("\t(y) Field name: " + yFieldMethod.getName());
+
+            final Object xFieldValue = getValueFromMethod(x, xFieldMethod);
+            final Object yFieldValue = getValueFromMethod(y, yFieldMethod);
+
+            final boolean isFieldContain =
+                xFieldMethod.isAnnotationPresent(Contain.class) || yFieldMethod.isAnnotationPresent(Contain.class);
+
+            final boolean isPrimitive =
+                PrimitiveUtils.isPrimitive(x.getClass().getSimpleName()) && PrimitiveUtils.isPrimitive(y.getClass().getSimpleName());
 
             // FIXME: Union find
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
-            if (!(xField instanceof MObjectFieldPrimitive) && !xField.getField().contain()) {
-                System.out.print(" [Cross-Reference] \n"); // Cross reference
-                return areFieldsEqual(ht, xFields, yFields, n + 1);
+            if (!isPrimitive && !isFieldContain) {
+                logger.debug(" [Cross-Reference] "); // Cross reference
+                return areFieldsEqual(ht, x, xFields, y, yFields, n + 1);
             }
-            System.out.print("\n"); // Spine
+            logger.debug(" [Contain] "); // Spine
 
-            return e(ht, xField.get(), yField.get()) && areFieldsEqual(ht, xFields, yFields, n + 1);
+            return e(ht, xFieldValue, yFieldValue) && areFieldsEqual(ht, x, xFields, y, yFields, n + 1);
         }
     }
 
-    /**
-     * Extracts the fields from an input Managed Object and returns a map of them.
-     *
-     * @param mObject the Managed Object
-     * @return the fields
-     */
-    private static List<MObjectField> extractFields(MObject mObject) {
-        return mObject.schemaKlass().fields().stream()
-            .map(field -> mObject.getMObjectField(field.name()))
-            .collect(Collectors.toCollection(LinkedList::new));
+    private static Object getValueFromMethod(Object instance, Method method) {
+        try {
+            // in case the method needs parameters, we need to construct the parameter type
+            if (method.getParameters().length > 0) {
+
+                // We need the following in order to invoke the method with this kind of parameter
+                // Get the parameter type, and get the first one
+                final Class<?>[] parameterTypes = method.getParameterTypes();
+                final Class<?> firstParameterType = parameterTypes[0];
+
+                // In case of vargs, make it from array to single type
+                // after, create an empty array of that type, this way we can invoke methods that need
+                // empty vargs as parameters.
+                Object emptyArrayOfFirstParameterType;
+                if (firstParameterType.isArray()) {
+                    emptyArrayOfFirstParameterType = Array.newInstance(firstParameterType.getComponentType(), 0);
+                } else {
+                    emptyArrayOfFirstParameterType = Array.newInstance(firstParameterType, 0);
+                }
+
+                return method.invoke(instance, emptyArrayOfFirstParameterType);
+            } else {
+                return method.invoke(instance);
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
