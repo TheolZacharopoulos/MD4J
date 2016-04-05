@@ -1,7 +1,6 @@
 package nl.cwi.managed_data_4j.language.utils;
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
-import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import org.apache.log4j.LogManager;
 
@@ -17,7 +16,7 @@ public class MObjectUtils {
 
     public static boolean equals(Object x, Object y) {
         final Map<Object, Object> equalityMap = new HashMap<>();
-        final Map<Object, Object> crossReferences = new HashMap<>();
+        final Map<Object, List<Object>> crossReferences = new HashMap<>();
 
         // Check first only the spine tree
         boolean isEqualWithoutCrossRefCheck = e(equalityMap, crossReferences, x, y);
@@ -34,12 +33,18 @@ public class MObjectUtils {
                 if (crossReferenceObject == equalityCheckedObject) {
                     // then check their equivalence
                     final Object equalityValue = equalityMap.get(equalityCheckedObject);
-                    final Object crossRefValue = crossReferences.get(crossReferenceObject);
+                    final List<Object> crossRefValues = crossReferences.get(crossReferenceObject);
 
-                    if (equalityValue != crossRefValue) {
+                    boolean crossRefValueFound = false;
+                    for (Object crossRefValue : crossRefValues) {
+                        if (equalityValue == crossRefValue) {
+                            crossRefValueFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!crossRefValueFound) {
                         isEqualCrossRefCheck = false;
-                        logger.debug(" Cross-reference " + ((M)crossRefValue).schemaKlass().name() +
-                        " is not equal to " + ((M)crossRefValue).schemaKlass().name());
                     }
                 }
             }
@@ -48,9 +53,9 @@ public class MObjectUtils {
         return isEqualCrossRefCheck;
     }
 
-    public static boolean e(Map<Object, Object> equalityMap, Map<Object, Object> crossReferences, Object x, Object y) {
+    public static boolean e(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences, Object x, Object y) {
 
-        // TODO: get schemaKlass and check
+        // TODO: get schemaKlass and check, HOW?! We need the MObject if we want this
 
         // check for null first
         if (x == null && y == null) {
@@ -123,7 +128,7 @@ public class MObjectUtils {
     }
 
     private static boolean areVectorsEqual(
-        Map<Object, Object> equalityMap, Map<Object, Object> crossReferences,
+        Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences,
         List<Object> xVector, List<Object> yVector, int n) {
         return ((xVector.size() == yVector.size()) && xVector.size() == n) ||
                 e(equalityMap, crossReferences, xVector.get(n), yVector.get(n))
@@ -132,7 +137,7 @@ public class MObjectUtils {
 
     private static boolean areFieldsEqual(
             Map<Object, Object> equalityMap,
-            Map<Object, Object> crossReferences,
+            Map<Object, List<Object>> crossReferences,
             Object x, List<Method> xFields,
             Object y, List<Method> yFields,
             int n)
@@ -160,10 +165,11 @@ public class MObjectUtils {
             if (!isPrimitive && !isFieldContain) {
                 logger.debug(" [Cross-Reference] <" + xFieldMethod.getName() + ">"); // Cross reference
 
-                // Dont include schemaKlass at the cross references
-                if (!xFieldMethod.getName().equals("schemaKlass")) {
-                    crossReferences.put(xFieldValue, yFieldValue);
+                // support multiple values, add value to cross references
+                if (!crossReferences.containsKey(xFieldValue)) {
+                    crossReferences.put(xFieldValue, new LinkedList<>());
                 }
+                crossReferences.get(xFieldValue).add(yFieldValue);
 
                 return areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, n + 1);
             }
