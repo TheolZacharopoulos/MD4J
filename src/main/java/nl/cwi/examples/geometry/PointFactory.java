@@ -1,4 +1,4 @@
-package nl.cwi.examples.geometry.data_managers;
+package nl.cwi.examples.geometry;
 
 import nl.cwi.examples.geometry.schemas.Line;
 import nl.cwi.examples.geometry.schemas.Point2D;
@@ -10,11 +10,11 @@ import nl.cwi.examples.geometry.schemas.Point3D;
  * This is used to create instances of Point, and Line objects.
  */
 public interface PointFactory {
-    Point2D point2D();
-    Point2D point2D(Integer x, Integer y);
+    Point2D Point2D();
+    Point2D Point2D(Integer x, Integer y);
 
-    Point3D point3D();
-    Point3D point3D(Integer x, Integer y, Integer z);
+    Point3D Point3D();
+    Point3D Point3D(Integer x, Integer y, Integer z);
 
-    Line line();
+    Line Line();
 }

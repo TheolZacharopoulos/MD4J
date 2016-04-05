@@ -14,27 +14,27 @@ public interface SchemaFactory {
     /**
      * Builds a new empty Schema
      */
-    Schema schema();
+    Schema Schema();
 
     /**
      * Builds a new Primitive with its type name
      */
-    Primitive primitive(String name);
+    Primitive Primitive(String name);
 
     /**
      * Builds a new empty Klass
      */
-    Klass klass();
+    Klass Klass();
 
     /**
      * Builds a new empty Field
      */
-    Field field();
+    Field Field();
 
     /**
      * Builds a new Field with given the following arguments.
      * Consider that those arguments are given with alphabetical order which is
      * used as the default order standard for initialization in this framework.
      */
-    Field field(Boolean contain, Boolean key, Boolean many, String name, Boolean optional);
+    Field Field(Boolean contain, Boolean key, Boolean many, String name, Boolean optional);
 }

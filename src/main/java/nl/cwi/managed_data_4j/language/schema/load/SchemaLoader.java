@@ -121,7 +121,7 @@ public class SchemaLoader {
         setupCacheForSchemaKlass(schemaSchema, schemaKlassesDef);
 
         // create an empty schema using the factory, will wire it later
-        final Schema schema = factory.schema();
+        final Schema schema = factory.Schema();
 
         // build the types from the schema klasses definition
         final Set<Type> types = buildTypesFromClasses(factory, schema, schemaKlassesDef);
@@ -196,7 +196,7 @@ public class SchemaLoader {
                 buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
 
             // create a new klass
-            final Klass klass = factory.klass();
+            final Klass klass = factory.Klass();
             klass.name(klassName);
             klass.schema(schema);
             klass.fields(fieldsForKlass.values().toArray(new Field[fieldsForKlass.values().size()]));
@@ -375,7 +375,7 @@ public class SchemaLoader {
             logger.debug("    > isContain: " + contain);
 
             // add its fields, the owner Klass will be added later
-            final Field field = factory.field(contain, key, many, fieldName, optional);
+            final Field field = factory.Field(contain, key, many, fieldName, optional);
 
             fieldsForKlass.put(fieldName, field);
 

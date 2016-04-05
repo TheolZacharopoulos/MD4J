@@ -4,9 +4,9 @@ import test_definition.schemas.Address;
 import test_definition.schemas.Person;
 
 public interface PersonFactory {
-    Person person();
-    Person person(Integer age, String name);
+    Person Person();
+    Person Person(Integer age, String name);
 
-    Address address();
-    Address address(String city, Integer number, String street);
+    Address Address();
+    Address Address(String city, Integer number, String street);
 }

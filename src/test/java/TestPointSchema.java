@@ -1,4 +1,4 @@
-//import nl.cwi.examples.geometry.data_managers.PointFactory;
+//import nl.cwi.examples.geometry.PointFactory;
 //import nl.cwi.examples.geometry.schemas.Line;
 //import nl.cwi.examples.geometry.schemas.Point;
 //import nl.cwi.examples.geometry.schemas.Point2D;

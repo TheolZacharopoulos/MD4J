@@ -1,6 +1,5 @@
 package nl.cwi.examples.geometry;
 
-import nl.cwi.examples.geometry.data_managers.PointFactory;
 import nl.cwi.examples.geometry.schemas.Line;
 import nl.cwi.examples.geometry.schemas.Point;
 import nl.cwi.examples.geometry.schemas.Point2D;
@@ -36,9 +35,9 @@ public class GeometryExample {
         final BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 
-        final Point2D point = pointFactory.point2D(3, 2);
+        final Point2D point = pointFactory.Point2D(3, 2);
 
-        final Line line = pointFactory.line();
+        final Line line = pointFactory.Line();
         line.startPoint(point);
         line.endPoint(point);
 
@@ -49,9 +48,9 @@ public class GeometryExample {
 
         // Check multi points
         Set<Point2D> points = new LinkedHashSet<>(Arrays.asList(
-            pointFactory.point2D(1, 2),
-            pointFactory.point2D(2, 3),
-            pointFactory.point2D(1, 4)));
+            pointFactory.Point2D(1, 2),
+            pointFactory.Point2D(2, 3),
+            pointFactory.Point2D(1, 4)));
 
         System.out.println("============");
         System.out.println("Set of 2D points: ");
@@ -67,7 +66,7 @@ public class GeometryExample {
         final PointFactory observablePointFactory = observableFactory.make();
 
         // Create a new observer-record managed object.
-        final Point3D observerPoint = observablePointFactory.point3D();
+        final Point3D observerPoint = observablePointFactory.Point3D();
 
         // Add Logging concerns
         ((Observable) observerPoint).observe(UpdateLogger::log);
@@ -84,7 +83,7 @@ public class GeometryExample {
 
         final LockableFactory lockableFactory = new LockableFactory(PointFactory.class, pointSchema);
         final PointFactory lockablePointFactory = lockableFactory.make();
-        final Point2D lockablePoint = lockablePointFactory.point2D();
+        final Point2D lockablePoint = lockablePointFactory.Point2D();
         lockablePoint.x(1);
         lockablePoint.y(1);
 

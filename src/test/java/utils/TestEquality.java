@@ -33,44 +33,44 @@ public class TestEquality {
 
     @Test
     public void null_values_equality_Test() {
-        Person person1 = personFactory.person();
-        Person person2 = personFactory.person();
+        Person person1 = personFactory.Person();
+        Person person2 = personFactory.Person();
 
         assertTrue(MObjectUtils.equals(person1, person2));
     }
 
     @Test
     public void primitives_only_equality_Test() {
-        Person person1 = personFactory.person(25, "Alex");
-        Person person2 = personFactory.person(25, "Alex");
+        Person person1 = personFactory.Person(25, "Alex");
+        Person person2 = personFactory.Person(25, "Alex");
 
         assertTrue(MObjectUtils.equals(person1, person2));
     }
 
     @Test
     public void primitives_only_equality_Test_fail() {
-        Person person1 = personFactory.person(25, "Alex1");
-        Person person2 = personFactory.person(25, "Alex");
+        Person person1 = personFactory.Person(25, "Alex1");
+        Person person2 = personFactory.Person(25, "Alex");
 
         assertFalse(MObjectUtils.equals(person1, person2));
     }
 
     @Test
     public void primitives_only_equality_Test_fail2() {
-        Person person1 = personFactory.person(25, "Alex");
-        Person person2 = personFactory.person(24, "Alex");
+        Person person1 = personFactory.Person(25, "Alex");
+        Person person2 = personFactory.Person(24, "Alex");
 
         assertFalse(MObjectUtils.equals(person1, person2));
     }
 
     @Test
     public void contain_equality_Test() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
 
-        Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person2 = personFactory.person(24, "Alex");
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
 
         assertTrue(MObjectUtils.equals(person1, person2));
@@ -78,12 +78,12 @@ public class TestEquality {
 
     @Test
     public void contain_equality_Test_1_fail_1() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
 
-        Address addressPerson2 = personFactory.address("Amsterdam", 666, "Science Park");
-        Person person2 = personFactory.person(24, "Alex");
+        Address addressPerson2 = personFactory.Address("Amsterdam", 666, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
 
         assertFalse(MObjectUtils.equals(person1, person2));
@@ -91,12 +91,12 @@ public class TestEquality {
 
     @Test
     public void contain_equality_Test_1_fail_2() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
 
-        Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person2 = personFactory.person(25, "Alex");
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(25, "Alex");
         person2.address(addressPerson2);
 
         assertFalse(MObjectUtils.equals(person1, person2));
@@ -104,13 +104,13 @@ public class TestEquality {
 
     @Test
     public void cross_reference_equality_Test() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
         addressPerson1.person(person1);
 
-        Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person2 = personFactory.person(24, "Alex");
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
         addressPerson2.person(person2);
 
@@ -119,14 +119,14 @@ public class TestEquality {
 
     @Test
     public void cross_reference_equality_Test_fail() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
 
         person1.address(addressPerson1);
         addressPerson1.person(person1);
 
-        Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person2 = personFactory.person(24, "Alex");
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
 
         person2.address(addressPerson2);
         addressPerson2.person(person1); // wrong person reference
