@@ -1,13 +1,9 @@
 package nl.cwi.managed_data_4j.language.schema.load;
 
-import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
+import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
@@ -17,7 +13,6 @@ import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,21 +86,50 @@ public class SchemaLoader {
         // wire the types on schema
         schema.types(types.toArray(new Type[types.size()]));
 
-        // Get the invocation handler of the Managed Object,
-        // in order to get the schemaKlass from it.
-        // Since it has been already set from the factory.
-        final MObject schemaManagedObject = (MObject) Proxy.getInvocationHandler(schema);
+        // get the schema's schemaKlass
+        final Klass schemaSchemaKlass = schema.klasses().stream()
+            .filter((Klass x) -> x.name().equals("Schema"))
+            .findFirst().get();
 
-        // get the schema klass
-        final Klass schemaKlass = schemaManagedObject.schemaKlass();
+        // wire the schema's schemaKlass
+        schema.schemaKlass(schemaSchemaKlass);
 
-        // set the schema klass
-        schema.schemaKlass(schemaKlass);
+        // get the klass's schemaKlass
+        final Klass klassSchemaKlass = schema.klasses().stream()
+                .filter((Klass x) -> x.name().equals("Klass"))
+                .findFirst().get();
+
+        // wire the klasses's schemaKlass
+        for (Klass klass : schema.klasses()) {
+            klass.schemaKlass(klassSchemaKlass);
+        }
+
+        // get the primitive's schemaKlass
+        final Klass primitiveSchemaKlass = schema.klasses().stream()
+                .filter((Klass x) -> x.name().equals("Primitive"))
+                .findFirst().get();
+
+        // wire the primitive's schemaKlass
+        for (Primitive primitive : schema.primitives()) {
+            primitive.schemaKlass(primitiveSchemaKlass);
+        }
+
+        // get the field's schemaKlass
+        final Klass fieldSchemaKlass = schema.klasses().stream()
+                .filter((Klass x) -> x.name().equals("Field"))
+                .findFirst().get();
+
+        // wire the field's schemaKlass
+        for (Klass klass : schema.klasses()) {
+            for (Field field : klass.fields()) {
+                field.schemaKlass(fieldSchemaKlass);
+            }
+        }
 
         return schema;
     }
 
-    public static Set<Type> buildTypesFromClasses(
+    private static Set<Type> buildTypesFromClasses(
             SchemaFactory factory,
             Schema schema,
             Class<?>... schemaKlassesDefinition)

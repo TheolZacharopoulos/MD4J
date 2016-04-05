@@ -9,7 +9,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Opti
  * Can be Primitive or a Klass.
  * @author Theologos Zacharopoulos
  */
-public interface Type {
+public interface Type extends M {
 
     /**
      * A name fields that is used as a unique key
@@ -20,7 +20,7 @@ public interface Type {
     @Inverse(other=Type.class, field="types")
     Schema schema(Schema... schema);
 
-    @Optional
+    @Optional // TODO: remove this???
     default Field key(Field... key) {
         return null;
     }

@@ -7,7 +7,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
  * Field definition
  * @author Theologos Zacharopoulos
  */
-public interface Field {
+public interface Field extends M {
 
     /**
      * A name fields that is used as a unique key

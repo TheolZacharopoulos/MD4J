@@ -18,6 +18,7 @@ public class FieldImpl implements Field {
     protected Type type = null;
     protected Field inverse = null;
     protected Klass owner = null;
+    protected Klass schemaKlass = null;
 
     public FieldImpl(String name, Boolean many, Boolean optional, Boolean key, Boolean contain) {
         this(name, many, optional, key, contain, null, null, null);
@@ -105,5 +106,13 @@ public class FieldImpl implements Field {
             this.owner = owner[0];
         }
         return this.owner;
+    }
+
+    @Override
+    public Klass schemaKlass(Klass... schemaKlass) {
+        if (schemaKlass.length > 0) {
+            this.schemaKlass = schemaKlass[0];
+        }
+        return this.schemaKlass;
     }
 }

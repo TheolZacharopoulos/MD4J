@@ -21,6 +21,7 @@ public class KlassImpl implements Klass {
     protected Set<Klass> subKlasses = Collections.emptySet();
     protected Class<?> classOf = null;
     protected Field key = null;
+    protected Klass schemaKlass = null;
 
     public KlassImpl(String name) {
         this(name, null, null, null, null, null);
@@ -117,5 +118,13 @@ public class KlassImpl implements Klass {
             this.key = key[0];
         }
         return this.key;
+    }
+
+    @Override
+    public Klass schemaKlass(Klass... schemaKlass) {
+        if (schemaKlass.length > 0) {
+            this.schemaKlass = schemaKlass[0];
+        }
+        return this.schemaKlass;
     }
 }
