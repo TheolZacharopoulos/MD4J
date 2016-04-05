@@ -18,14 +18,13 @@ public class MObjectUtils {
         final Map<Object, Object> equalityMap = new HashMap<>();
         final Map<Object, List<Object>> crossReferences = new HashMap<>();
 
-        // Check first only the spine tree
-        boolean isEqualWithoutCrossRefCheck = e(equalityMap, crossReferences, x, y);
+        return e(equalityMap, crossReferences, x, y) // Check first only the spine tree
+            && crossReferencesCheck(equalityMap, crossReferences); // Then check cross references
+    }
 
-        if (!isEqualWithoutCrossRefCheck) return false;
-
+    private static boolean crossReferencesCheck(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences) {
         logger.debug(" Checking cross-references ");
-        // then check the cross references
-        boolean isEqualCrossRefCheck = true;
+
         for (Object crossReferenceObject : crossReferences.keySet()) {
             for (Object equalityCheckedObject : equalityMap.keySet()) {
 
@@ -44,13 +43,12 @@ public class MObjectUtils {
                     }
 
                     if (!crossRefValueFound) {
-                        isEqualCrossRefCheck = false;
+                        return false;
                     }
                 }
             }
         }
-
-        return isEqualCrossRefCheck;
+        return true;
     }
 
     public static boolean e(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences, Object x, Object y) {
