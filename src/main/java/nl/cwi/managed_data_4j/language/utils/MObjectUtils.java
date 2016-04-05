@@ -1,6 +1,6 @@
 package nl.cwi.managed_data_4j.language.utils;
 
-import nl.cwi.managed_data_4j.language.managed_object.MObject;
+import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import org.apache.log4j.LogManager;
 
@@ -86,7 +86,8 @@ public class MObjectUtils {
             final int yLen = yVector.size();
 
             return xLen == yLen && // they should have the same size (structure)
-                (xLen == 0 || areVectorsEqual(equalityMap, crossReferences, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
+                (xLen == 0 ||
+                    areVectorsEqual(equalityMap, crossReferences, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
         }
 
         // Objects leaf
@@ -180,7 +181,7 @@ public class MObjectUtils {
 
     private static Class<?> getRealFieldClass(Object instance) {
         if (Proxy.isProxyClass(instance.getClass())) {
-            return ((MObject) Proxy.getInvocationHandler(instance)).schemaKlass().classOf();
+            return ((M) instance).schemaKlass().classOf();
         }
         return instance.getClass();
     }

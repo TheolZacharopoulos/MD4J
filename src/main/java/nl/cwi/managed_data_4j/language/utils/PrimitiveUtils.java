@@ -35,11 +35,11 @@ public class PrimitiveUtils {
                 break;
 
             case "Object":
-                if (value instanceof String ||
-                        value instanceof Integer ||
-                        value instanceof Boolean ||
-                        value instanceof Float ||
-                        value instanceof Double)
+                if (value instanceof String  ||
+                    value instanceof Integer ||
+                    value instanceof Boolean ||
+                    value instanceof Float   ||
+                    value instanceof Double)
                 {
                     ok = true;
                 }
