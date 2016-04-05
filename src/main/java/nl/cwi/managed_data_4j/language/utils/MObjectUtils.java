@@ -175,12 +175,15 @@ public class MObjectUtils {
             final Class<?> xClass = xFieldMethod.getReturnType();
             final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xClass);
 
-            // FIXME: Union find
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
             if (!isPrimitive && !isFieldContain) {
                 logger.debug(" [Cross-Reference] "); // Cross reference
-                return areFieldsEqual(ht, x, xFields, y, yFields, n + 1);
+
+                // TODO: Check for the right cross-reference here
+                boolean isTheRightReference = true;
+
+                return isTheRightReference && areFieldsEqual(ht, x, xFields, y, yFields, n + 1);
             }
             logger.debug(" [Contain] "); // Spine
 
