@@ -24,13 +24,15 @@ public class GeometryExample {
 
     public static void main(String[] args) {
 
+        final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         // Data objects (like Point) are described by schemas (like the Point interface)
         // This schema is managed by a data manager capable of initialization allowing the objects
         // (points) to be created with starting props.
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
-        final Schema pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
+        final Schema pointSchema = SchemaLoader.load(
+                schemaFactory, schemaSchema, Point.class, Point2D.class, Point3D.class, Line.class);
         final BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 

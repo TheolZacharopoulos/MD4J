@@ -204,7 +204,7 @@ public class MObject implements InvocationHandler, M {
         }
     }
 
-    // TODO: Needs to be changed???
+    // TODO: Dont implement hashCode and equals() and DONT USE IT, no hashSet only hashMaps <obj, mObj>
     /**
      * Searches for @key in the properties, if any found return the hashCode of the
      * first one it finds. Otherwise returns Java default hasCode() implementation.

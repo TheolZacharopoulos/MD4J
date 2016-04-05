@@ -18,11 +18,11 @@ public class BootstrappingTest {
         BasicFactory basicFactory = new BasicFactory(SchemaFactory.class, bootstrapSchema);
         SchemaFactory schemaFactory = basicFactory.make();
 
-        realSchemaSchema = SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+        realSchemaSchema = SchemaLoader.load(schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
         SchemaFactory schemaFactory2 = basicFactory2.make();
-        realSchemaSchema2 = SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+        realSchemaSchema2 = SchemaLoader.load(schemaFactory2, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
     }
 
     @Test

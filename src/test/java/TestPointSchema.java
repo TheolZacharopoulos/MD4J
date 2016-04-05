@@ -32,7 +32,7 @@ public class TestPointSchema {
         basicFactorySchemaSchema = new BasicFactory(SchemaFactory.class, bootstrapSchema);
         schemaFactory = basicFactorySchemaSchema.make();
 
-        pointSchema = SchemaLoader.load(schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class);
+        pointSchema = SchemaLoader.load(schemaFactory, bootstrapSchema, Point.class, Point2D.class, Point3D.class, Line.class);
         basicFactoryPointSchema = new BasicFactory(PointFactory.class, pointSchema);
         pointFactory = basicFactoryPointSchema.make();
     }

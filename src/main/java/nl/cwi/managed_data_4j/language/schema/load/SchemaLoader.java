@@ -73,7 +73,7 @@ public class SchemaLoader {
      * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
      * @return the instance of Schema
      */
-    public static Schema load(SchemaFactory factory, Class<?>... schemaKlassesDef) {
+    public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
 
         logger.debug("SchemaFactory: create schema");
 
@@ -87,40 +87,40 @@ public class SchemaLoader {
         schema.types(types.toArray(new Type[types.size()]));
 
         // get the schema's schemaKlass
-        final Klass schemaSchemaKlass = schema.klasses().stream()
-            .filter((Klass x) -> x.name().equals("Schema"))
+        final Klass schemaSchemaKlass = schemaSchema.klasses().stream()
+            .filter(klass -> klass.name().equals("Schema"))
             .findFirst().get();
 
         // wire the schema's schemaKlass
         schema.schemaKlass(schemaSchemaKlass);
 
-        // get the klass's schemaKlass
-        final Klass klassSchemaKlass = schema.klasses().stream()
-                .filter((Klass x) -> x.name().equals("Klass"))
-                .findFirst().get();
-
-        // wire the klasses's schemaKlass
-        for (Klass klass : schema.klasses()) {
-            klass.schemaKlass(klassSchemaKlass);
-        }
-
         // get the primitive's schemaKlass
-        final Klass primitiveSchemaKlass = schema.klasses().stream()
-                .filter((Klass x) -> x.name().equals("Primitive"))
+        final Klass primitiveSchemaKlass = schemaSchema.klasses().stream()
+                .filter(klass -> klass.name().equals("Primitive"))
                 .findFirst().get();
 
         // wire the primitive's schemaKlass
-        for (Primitive primitive : schema.primitives()) {
+        for (Primitive primitive : schemaSchema.primitives()) {
             primitive.schemaKlass(primitiveSchemaKlass);
         }
 
+        // get the klass's schemaKlass
+        final Klass klassSchemaKlass = schemaSchema.klasses().stream()
+                .filter(klass -> klass.name().equals("Klass"))
+                .findFirst().get();
+
+        // wire the klasses's schemaKlass
+        for (Klass klass : schemaSchema.klasses()) {
+            klass.schemaKlass(klassSchemaKlass);
+        }
+
         // get the field's schemaKlass
-        final Klass fieldSchemaKlass = schema.klasses().stream()
-                .filter((Klass x) -> x.name().equals("Field"))
+        final Klass fieldSchemaKlass = schemaSchema.klasses().stream()
+                .filter(klass -> klass.name().equals("Field"))
                 .findFirst().get();
 
         // wire the field's schemaKlass
-        for (Klass klass : schema.klasses()) {
+        for (Klass klass : schemaSchema.klasses()) {
             for (Field field : klass.fields()) {
                 field.schemaKlass(fieldSchemaKlass);
             }

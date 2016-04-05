@@ -24,7 +24,8 @@ public class TestEquality {
         PropertyConfigurator.configure("src/test/resources/logger.properties");
 
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
-        final Schema personSchema = SchemaLoader.load(schemaFactory, Person.class, Address.class);
+        final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
+        final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class);
         final BasicFactory basicFactoryForPersons = new BasicFactory(PersonFactory.class, personSchema);
 
         personFactory = basicFactoryForPersons.make();

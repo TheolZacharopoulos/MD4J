@@ -5,6 +5,6 @@ package nl.cwi.managed_data_4j.language.schema.models.definition;
  * @author Theologos Zacharopoulos
  */
 public interface M {
-    // Declare classOf() here
+    // TODO: classOf() here
     Klass schemaKlass(Klass... schemaKlass);
 }

@@ -80,10 +80,14 @@ public class BootSchema extends SchemaImpl {
         final Field typeKlassKeyField = new FieldImpl("key", false, true, false, false);
         typeKlassKeyField.owner(typeKlass);
 
+        final Field typeKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        typeKlassSchemaKlassField.owner(typeKlass);
+
         typeKlass.fields(
             typeKlassNameField,
             typeKlassSchemaField,
-            typeKlassKeyField);
+            typeKlassKeyField,
+            typeKlassSchemaKlassField);
 
         // ========================
         // * Primitive Klass
@@ -109,10 +113,14 @@ public class BootSchema extends SchemaImpl {
         final Field primitiveKlassKeyField = new FieldImpl("key", false, true, false, false);
         primitiveKlassKeyField.owner(primitiveKlass);
 
+        final Field primitiveKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        primitiveKlassSchemaKlassField.owner(primitiveKlass);
+
         primitiveKlass.fields(
             primitiveKlassNameField,
             primitiveKlassSchemaField,
-            primitiveKlassKeyField);
+            primitiveKlassKeyField,
+            primitiveKlassSchemaKlassField);
 
         // ========================
         // * Klass Klass
@@ -122,6 +130,8 @@ public class BootSchema extends SchemaImpl {
 
         // wiring
         schemaKlassSchemaKlassField.type(klassKlass);
+        typeKlassSchemaKlassField.type(klassKlass);
+        primitiveKlassSchemaKlassField.type(klassKlass);
 
         klassKlass.supers(typeKlass);
         typeKlass.subKlasses(primitiveKlass, klassKlass);
@@ -159,6 +169,10 @@ public class BootSchema extends SchemaImpl {
         final Field klassKlassKeyField = new FieldImpl("key", false, true, false, false);
         klassKlassKeyField.owner(klassKlass);
 
+        final Field klassKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        klassKlassSchemaKlassField.type(klassKlass);
+        klassKlassSchemaKlassField.owner(klassKlass);
+
         klassKlass.fields(
             klassKlassClassOfField,
             klassKlassNameField,
@@ -166,7 +180,8 @@ public class BootSchema extends SchemaImpl {
             klassKlassSchemaField,
             klassKlassSubsField,
             klassKlassSupersField,
-            klassKlassKeyField);
+            klassKlassKeyField,
+            klassKlassSchemaKlassField);
 
         // ========================
         // * Field Klass
@@ -215,6 +230,10 @@ public class BootSchema extends SchemaImpl {
         fieldKlassContainField.owner(fieldKlass);
         fieldKlassContainField.type(booleanPrimitive);
 
+        final Field fieldKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        fieldKlassSchemaKlassField.type(klassKlass);
+        fieldKlassSchemaKlassField.owner(fieldKlass);
+
         fieldKlass.fields(
             fieldKlassContainField,
             fieldKlassKeyField,
@@ -223,7 +242,8 @@ public class BootSchema extends SchemaImpl {
             fieldKlassOptionalField,
             fieldKlassInverseField,
             fieldKlassOwnerField,
-            fieldKlassTypeField);
+            fieldKlassTypeField,
+            fieldKlassSchemaKlassField);
 
         // ========================
         // * Bootstrap definition

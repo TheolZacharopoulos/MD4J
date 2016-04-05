@@ -13,20 +13,28 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 public class SchemaFactoryProvider {
 
     private static SchemaFactory schemaFactory = null;
+    private static Schema schemaSchema = null;
 
-    public static SchemaFactory getSchemaFactory() {
+    public static Schema getSchemaSchema() {
 
-        if (schemaFactory == null) {
-
+        if (schemaSchema == null) {
             final Schema bootstrapSchema = SchemaLoader.bootLoad();
             final BasicFactory basicFactory = new BasicFactory(SchemaFactory.class, bootstrapSchema);
 
             // schema factory made from bootstrapping
             final SchemaFactory bootStrapSchemaFactory = basicFactory.make();
 
-            final Schema realSchemaSchema =
-                    SchemaLoader.load(bootStrapSchemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+            schemaSchema = SchemaLoader.load(
+                    bootStrapSchemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+        }
+        return schemaSchema;
+    }
 
+    public static SchemaFactory getSchemaFactory() {
+
+        if (schemaFactory == null) {
+
+            final Schema realSchemaSchema = getSchemaSchema();
             final BasicFactory realBasicFactory = new BasicFactory(SchemaFactory.class, realSchemaSchema);
 
             // schema factory made from managed data
@@ -35,20 +43,5 @@ public class SchemaFactoryProvider {
             schemaFactory = realSchemaFactory;
         }
         return schemaFactory;
-    }
-
-    public static Schema getSchema(Class<?>... classes) {
-        final SchemaFactory schemaFactory = getSchemaFactory();
-        return SchemaLoader.load(schemaFactory, classes);
-    }
-
-    public static <T> T getFactory(Schema schema, Class<T> factory) {
-        final BasicFactory basicFactory = new BasicFactory(factory, schema);
-        return basicFactory.make();
-    }
-
-    public static <T> T getFactory(Class<T> factory, Class<?>... classes) {
-        final Schema schema = getSchema(classes);
-        return getFactory(schema, factory);
     }
 }

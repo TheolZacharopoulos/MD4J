@@ -82,6 +82,13 @@ public class MObjectUtils {
 
     public static boolean e(Map<Object, Object> ht, Object x, Object y) {
 
+        // TODO: get schemaKlass and check
+        // TODO: 2 traversals
+
+//        if (ht.get(x) == y) {
+//            return true;
+//        }
+
         // check for null first
         if (x == null && y == null) {
             logger.debug(" x and y are NULL");
@@ -117,7 +124,7 @@ public class MObjectUtils {
 
         // Objects leaf
         List<Method> xFields = Arrays.asList(xFieldClass.getMethods());;
-        logger.debug(" <<MObject>> (x) : " + xFieldClass.getSimpleName());
+        logger.debug(" <<Object>> (x) : " + xFieldClass.getSimpleName());
         if (!Proxy.isProxyClass(xFieldClass)) {
             final List<Method> xAllFields = Arrays.asList(xFieldClass.getMethods());
 

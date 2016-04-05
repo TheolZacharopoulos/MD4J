@@ -46,6 +46,7 @@ public class MObjectFieldRef extends MObjectFieldSingle {
                 mObj.getClass() + "' should be proxied since its a Managed object.");
         }
 
+        // TODO: remove Proxy.getInvocationHandler(!!!!
         final Klass valueSchemaKlass = ((MObject) Proxy.getInvocationHandler(mObj)).schemaKlass();
         final Klass fieldType = (Klass) this.field.type();
 
