@@ -284,8 +284,7 @@ public class MObject implements InvocationHandler, M {
         // then invoke it dynamically, and return.
         for (Method declaredMethod : this.getClass().getMethods()) {
             if (declaredMethod.getName().equals(fieldName)) {
-                method.invoke(this, args);
-                return null;
+                return method.invoke(this, args);
             }
         }
 

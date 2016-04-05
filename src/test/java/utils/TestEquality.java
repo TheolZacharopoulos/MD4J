@@ -48,21 +48,6 @@ public class TestEquality {
     }
 
     @Test
-    public void primitives_only_equality_with_real_object_Test() {
-        Person person1 = personFactory.person(25, "Alex");
-        Person person2 = new Person() {
-            @Override
-            public String name(String... name) { return "Alex"; }
-            @Override
-            public Integer age(Integer... age) { return 25; }
-            @Override
-            public Address address(Address... address) { return null; }
-        };
-
-        assertTrue(MObjectUtils.equals(person1, person2));
-    }
-
-    @Test
     public void primitives_only_equality_Test_fail() {
         Person person1 = personFactory.person(25, "Alex1");
         Person person2 = personFactory.person(25, "Alex");
@@ -79,21 +64,6 @@ public class TestEquality {
     }
 
     @Test
-    public void primitives_only_equality_real_object_Test_fail() {
-        Person person1 = personFactory.person(25, "Alex");
-        Person person2 = new Person() {
-            @Override
-            public String name(String... name) { return "Alex"; }
-            @Override
-            public Integer age(Integer... age) { return 26; }
-            @Override
-            public Address address(Address... address) { return null; }
-        };
-
-        assertFalse(MObjectUtils.equals(person1, person2));
-    }
-
-    @Test
     public void contain_equality_Test() {
         Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.person(24, "Alex");
@@ -102,33 +72,6 @@ public class TestEquality {
         Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.person(24, "Alex");
         person2.address(addressPerson2);
-
-        assertTrue(MObjectUtils.equals(person1, person2));
-    }
-
-    @Test
-    public void contain_equality_real_object_Test() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
-        person1.address(addressPerson1);
-
-        Person person2 = new Person() {
-            @Override
-            public String name(String... name) { return "Alex"; }
-            @Override
-            public Integer age(Integer... age) { return 24; }
-            @Override
-            public Address address(Address... address) { return new Address() {
-                @Override
-                public String street(String... street) { return "Science Park"; }
-                @Override
-                public Integer number(Integer... number) { return 242; }
-                @Override
-                public String city(String... city) { return "Amsterdam"; }
-                @Override
-                public Person person(Person... person) { return null; }
-            }; }
-        };
 
         assertTrue(MObjectUtils.equals(person1, person2));
     }
@@ -175,38 +118,6 @@ public class TestEquality {
     }
 
     @Test
-    public void cross_reference_equality_real_object_Test() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
-        person1.address(addressPerson1);
-        addressPerson1.person(person1);
-
-        Address addressPerson2 = new Address() {
-            @Override
-            public String street(String... street) { return "Science Park"; }
-            @Override
-            public Integer number(Integer... number) { return 242; }
-            @Override
-            public String city(String... city) { return "Amsterdam"; }
-            @Override
-            public Person person(Person... person) { return null; }
-        };
-
-        Person person2 = new Person() {
-            @Override
-            public String name(String... name) { return "Alex"; }
-            @Override
-            public Integer age(Integer... age) { return 24; }
-            @Override
-            public Address address(Address... address) { return addressPerson2; }
-        };
-
-        addressPerson2.person(person2);
-
-        assertTrue(MObjectUtils.equals(person1, person2));
-    }
-
-    @Test
     public void cross_reference_equality_Test_fail() {
         Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.person(24, "Alex");
@@ -216,38 +127,6 @@ public class TestEquality {
         Address addressPerson2 = personFactory.address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.person(24, "Alex");
         person2.address(addressPerson2);
-        addressPerson2.person(person1); // wrong person reference
-
-        assertFalse(MObjectUtils.equals(person1, person2));
-    }
-
-    @Test
-    public void cross_reference_equality_real_object_Test_fail() {
-        Address addressPerson1 = personFactory.address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.person(24, "Alex");
-        person1.address(addressPerson1);
-        addressPerson1.person(person1);
-
-        Address addressPerson2 = new Address() {
-            @Override
-            public String street(String... street) { return "Science Park"; }
-            @Override
-            public Integer number(Integer... number) { return 242; }
-            @Override
-            public String city(String... city) { return "Amsterdam"; }
-            @Override
-            public Person person(Person... person) { return null; }
-        };
-
-        Person person2 = new Person() {
-            @Override
-            public String name(String... name) { return "Alex"; }
-            @Override
-            public Integer age(Integer... age) { return 24; }
-            @Override
-            public Address address(Address... address) { return addressPerson2; }
-        };
-
         addressPerson2.person(person1); // wrong person reference
 
         assertFalse(MObjectUtils.equals(person1, person2));

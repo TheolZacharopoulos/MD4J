@@ -57,7 +57,7 @@ public class SchemaLoader {
     }
 
     // helper cache for the loading process.
-    private static Map<String, Type> typesCache = new LinkedHashMap<>();
+    private static final Map<String, Type> typesCache = new LinkedHashMap<>();
 
     /**
      * Bootstraps the schema schema
@@ -68,14 +68,57 @@ public class SchemaLoader {
     }
 
     /**
+     * This is a special case since every Managed data has a schemaKlass,
+     * which means that during the loading of managed objects (e.g. Point)
+     * we need an already created Klass that would used in the schemaKlass field definition.
+     * However, if the Klass schema definition has not been given as input in schemaKlassesDef,
+     * then the schema loader will never created, and we will have an error.
+     * Thus, we check if the Klass definition is given in schemaKlassesDef, and if not, then
+     * we can the Klass definition from the schemaSchema itself.
+     *
+     * @param schemaSchema the schemaSchema
+     * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
+     */
+    private static void setupCacheForSchemaKlass(Schema schemaSchema, Class<?>... schemaKlassesDef) {
+        boolean includesSchemaDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Schema"));
+        boolean includesTypeDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Type"));
+        boolean includesPrimitiveDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Primitive"));
+        boolean includesKlassDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Klass"));
+        boolean includesFieldDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Field"));
+
+        if (!includesSchemaDef) {
+            typesCache.put("Schema", schemaSchema.types().stream().filter(type -> type.name().equals("Schema")).findFirst().get());
+        }
+
+        if (!includesTypeDef) {
+            typesCache.put("Type", schemaSchema.types().stream().filter(type -> type.name().equals("Type")).findFirst().get());
+        }
+
+        if (!includesPrimitiveDef) {
+            typesCache.put("Primitive", schemaSchema.types().stream().filter(type -> type.name().equals("Primitive")).findFirst().get());
+        }
+
+        if (!includesKlassDef) {
+            typesCache.put("Klass", schemaSchema.types().stream().filter(type -> type.name().equals("Klass")).findFirst().get());
+        }
+
+        if (!includesFieldDef) {
+            typesCache.put("Field", schemaSchema.types().stream().filter(type -> type.name().equals("Field")).findFirst().get());
+        }
+    }
+
+    /**
      * Convert from a schema definitions (interface) to an instance of Schema.
      * @param factory the factory which creates the schema
+     * @param schemaSchema the schemaSchema
      * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
      * @return the instance of Schema
      */
     public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
 
         logger.debug("SchemaFactory: create schema");
+
+        setupCacheForSchemaKlass(schemaSchema, schemaKlassesDef);
 
         // create an empty schema using the factory, will wire it later
         final Schema schema = factory.schema();
@@ -232,18 +275,16 @@ public class SchemaLoader {
             // In case the field is multi value (many), that means that the real type is
             // not given in the method.getReturnType() because this will give Set ot List,
             // BUT the real type is in method.getGenericReturnType().
+            Class<?> fieldTypeClass;
             if (field.many()) {
                 final ParameterizedType fieldManyType = (ParameterizedType) method.getGenericReturnType();
-                final Class<?> fieldManyTypeClass = (Class<?>) fieldManyType.getActualTypeArguments()[0];
-
-                final Type fieldType = getFieldType(fieldManyTypeClass, schema, factory);
-                field.type(fieldType);
-
+                fieldTypeClass = (Class<?>) fieldManyType.getActualTypeArguments()[0];
             } else {
-                final Class<?> fieldSingleTypeClass = method.getReturnType();
-                final Type fieldType = getFieldType(fieldSingleTypeClass, schema, factory);
-                field.type(fieldType);
+                fieldTypeClass = method.getReturnType();
             }
+
+            final Type fieldType = getFieldType(fieldTypeClass, schema, factory);
+            field.type(fieldType);
         }
     }
 

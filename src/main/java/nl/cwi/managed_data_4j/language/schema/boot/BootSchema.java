@@ -255,7 +255,6 @@ public class BootSchema extends SchemaImpl {
                 fieldKlass
         ));
 
-        // The schema klass of the bootstrap schema does not have a reference.
-        this.schemaKlass = null;
+        this.schemaKlass = schemaKlass;
     }
 }

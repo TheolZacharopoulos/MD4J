@@ -5,8 +5,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-
-import java.lang.reflect.Proxy;
+import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 
 /**
  * Represents a single value field which is a Managed Object.
@@ -29,25 +28,21 @@ public class MObjectFieldRef extends MObjectFieldSingle {
     }
 
     @Override
-    public void check(Object mObj) throws InvalidFieldValueException {
+    public void check(Object obj) throws InvalidFieldValueException {
 
         // Check for optional
         if (!this.field.optional()) {
-            if (mObj == null) {
+            if (obj == null) {
                 throw new InvalidFieldValueException(
                     "Cannot assign null to non-optional field of klass '" +
                     field.owner().name() + "' with name '" + field.name() + "'");
             }
         }
 
-        if (!Proxy.isProxyClass(mObj.getClass())) {
-            throw new RuntimeException(
-                "The value '" + mObj + "' of type '" +
-                mObj.getClass() + "' should be proxied since its a Managed object.");
-        }
+        // cast it to managed object (should a managed object since it is here)
+        final M managedObject = (M) obj;
 
-        // TODO: remove Proxy.getInvocationHandler(!!!!
-        final Klass valueSchemaKlass = ((MObject) Proxy.getInvocationHandler(mObj)).schemaKlass();
+        final Klass valueSchemaKlass = managedObject.schemaKlass();
         final Klass fieldType = (Klass) this.field.type();
 
         boolean isSubKlass = false;
@@ -59,7 +54,7 @@ public class MObjectFieldRef extends MObjectFieldSingle {
             }
         }
 
-        if (! (valueSchemaKlass.name().equals(fieldType.name()) || isSubKlass)) {
+        if (!(valueSchemaKlass.name().equals(fieldType.name()) || isSubKlass)) {
             throw new InvalidFieldValueException(
                 "Invalid value for " + this.field.owner().name() + " " +
                 this.field.name() + " " + field.type().name() + " found (" + valueSchemaKlass.name() + ")");
