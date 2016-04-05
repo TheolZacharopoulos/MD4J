@@ -1,10 +1,7 @@
 package nl.cwi.managed_data_4j.language.utils;
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldMany;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSingle;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import org.apache.log4j.LogManager;
 
@@ -18,76 +15,42 @@ import java.util.stream.Collectors;
 public class MObjectUtils {
     private static final org.apache.log4j.Logger logger = LogManager.getLogger(MObjectUtils.class.getName());
 
-    public static String toString(Object mObj) {
-        if (!Proxy.isProxyClass(mObj.getClass())) {
-            throw new RuntimeException("Should check Managed Objects only.");
-        }
+    public static boolean equals(Object x, Object y) {
+        final Map<Object, Object> equalityMap = new HashMap<>();
+        final Map<Object, Object> crossReferences = new HashMap<>();
 
-        String mObjectToString = "";
-        final MObject mObject = (MObject) Proxy.getInvocationHandler(mObj);
-        final Klass schemaKlass = mObject.schemaKlass();
+        // Check first only the spine tree
+        boolean isEqualWithoutCrossRefCheck = e(equalityMap, crossReferences, x, y);
 
-        mObjectToString += klassToString(mObject, schemaKlass);
+        if (!isEqualWithoutCrossRefCheck) return false;
 
-        return mObjectToString;
-    }
+        logger.debug(" Checking cross-references ");
+        // then check the cross references
+        boolean isEqualCrossRefCheck = true;
+        for (Object crossReferenceObject : crossReferences.keySet()) {
+            for (Object equalityCheckedObject : equalityMap.keySet()) {
 
-    private static String klassToString(MObject mObject, Klass klass) {
-        String klassToString = "";
-        klassToString += klass.name() + "\n";
-        for (Field field : klass.fields()) {
-            klassToString += fieldToString(mObject, field);
-        }
-        return klassToString;
-    }
+                // if a cross-reference that has been already checked is found
+                if (crossReferenceObject == equalityCheckedObject) {
+                    // then check their equivalence
+                    final Object equalityValue = equalityMap.get(equalityCheckedObject);
+                    final Object crossRefValue = crossReferences.get(crossReferenceObject);
 
-    private static String fieldToString(MObject mObject, Field field) {
-        String fieldName = field.name();
-        String fieldToString = "";
-        fieldToString += "-" + fieldName;
-
-        if (field.many()) {
-            fieldToString += "[\n";
-            final MObjectFieldMany values = (MObjectFieldMany) mObject.getMObjectField(fieldName);
-
-            for (Object value : values) {
-
-                if (value != null && Proxy.isProxyClass(value.getClass())) {
-                    final MObject mValue = (MObject) Proxy.getInvocationHandler(value);
-
-                    fieldToString += "\t" + mValue.getMObjectField("name").get() + "\n";
-                } else {
-                    fieldToString += value + "\n";
+                    if (equalityValue != crossRefValue) {
+                        isEqualCrossRefCheck = false;
+                        logger.debug(" Cross-reference " + ((M)crossRefValue).schemaKlass().name() +
+                        " is not equal to " + ((M)crossRefValue).schemaKlass().name());
+                    }
                 }
             }
-            fieldToString += "]\n";
-        } else {
-            final MObjectFieldSingle value = (MObjectFieldSingle) mObject.getMObjectField(fieldName);
-
-            if (value != null && Proxy.isProxyClass(value.getClass())) {
-                MObject mValue = (MObject) Proxy.getInvocationHandler(value);
-                fieldToString += mValue.getMObjectField("name").get() + "\n";
-            } else {
-                fieldToString += value + "\n";
-            }
         }
 
-        return fieldToString;
+        return isEqualCrossRefCheck;
     }
 
-    public static boolean equals(Object x, Object y) {
-        final Map<Object, Object> ht = new HashMap<>();
-        return e(ht, x, y);
-    }
-
-    public static boolean e(Map<Object, Object> ht, Object x, Object y) {
+    public static boolean e(Map<Object, Object> equalityMap, Map<Object, Object> crossReferences, Object x, Object y) {
 
         // TODO: get schemaKlass and check
-        // TODO: 2 traversals
-
-//        if (ht.get(x) == y) {
-//            return true;
-//        }
 
         // check for null first
         if (x == null && y == null) {
@@ -107,6 +70,7 @@ public class MObjectUtils {
         final boolean yClassIsPrimitive = PrimitiveUtils.isPrimitiveClass(xFieldClass);
         if (xClassIsPrimitive && yClassIsPrimitive && xFieldClass.equals(yFieldClass)) {
             logger.debug(" << Primitive >> : (x = " + x + " | y = " + y + ")");
+            equalityMap.put(x, y);
             return x.equals(y);
         }
 
@@ -119,7 +83,7 @@ public class MObjectUtils {
             final int yLen = yVector.size();
 
             return xLen == yLen && // they should have the same size (structure)
-                (xLen == 0 || areVectorsEqual(ht, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
+                (xLen == 0 || areVectorsEqual(equalityMap, crossReferences, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
         }
 
         // Objects leaf
@@ -149,17 +113,26 @@ public class MObjectUtils {
         Collections.sort(xFields, (o1, o2) -> o1.getName().compareTo(o2.getName()));
         Collections.sort(yFields, (o1, o2) -> o1.getName().compareTo(o2.getName()));
 
-        return xFields.size() == yFields.size() && // they should have the same size (branch number)
-            (xFields.size() == 0 || areFieldsEqual(ht, x, xFields, y, yFields, 0)); // if the len is 0 then true, otherwise compare
+        boolean areFieldsEqual = xFields.size() == yFields.size() && // they should have the same size (branch number)
+            (xFields.size() == 0 ||
+                areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, 0)); // if the len is 0 then true, otherwise compare
+
+        equalityMap.put(x, y);
+
+        return areFieldsEqual;
     }
 
-    private static boolean areVectorsEqual(Map<Object, Object> ht, List<Object> xVector, List<Object> yVector, int n) {
+    private static boolean areVectorsEqual(
+        Map<Object, Object> equalityMap, Map<Object, Object> crossReferences,
+        List<Object> xVector, List<Object> yVector, int n) {
         return ((xVector.size() == yVector.size()) && xVector.size() == n) ||
-                e(ht, xVector.get(n), yVector.get(n)) && areVectorsEqual(ht, xVector, yVector, n + 1);
+                e(equalityMap, crossReferences, xVector.get(n), yVector.get(n))
+                    && areVectorsEqual(equalityMap, crossReferences, xVector, yVector, n + 1);
     }
 
     private static boolean areFieldsEqual(
-            Map<Object, Object> ht,
+            Map<Object, Object> equalityMap,
+            Map<Object, Object> crossReferences,
             Object x, List<Method> xFields,
             Object y, List<Method> yFields,
             int n)
@@ -185,16 +158,19 @@ public class MObjectUtils {
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
             if (!isPrimitive && !isFieldContain) {
-                logger.debug(" [Cross-Reference] "); // Cross reference
+                logger.debug(" [Cross-Reference] <" + xFieldMethod.getName() + ">"); // Cross reference
 
-                // TODO: Check for the right cross-reference here
-                boolean isTheRightReference = true;
+                // Dont include schemaKlass at the cross references
+                if (!xFieldMethod.getName().equals("schemaKlass")) {
+                    crossReferences.put(xFieldValue, yFieldValue);
+                }
 
-                return isTheRightReference && areFieldsEqual(ht, x, xFields, y, yFields, n + 1);
+                return areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, n + 1);
             }
-            logger.debug(" [Contain] "); // Spine
+            logger.debug(" [Contain] <" + xFieldMethod.getName() + ">"); // Spine
 
-            return e(ht, xFieldValue, yFieldValue) && areFieldsEqual(ht, x, xFields, y, yFields, n + 1);
+            return e(equalityMap, crossReferences, xFieldValue, yFieldValue) &&
+                areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, n + 1);
         }
     }
 

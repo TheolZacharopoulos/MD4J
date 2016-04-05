@@ -9,6 +9,5 @@ public interface Address extends M {
     String city(String... city);
 
     // Cross reference
-    @Optional
     Person person(Person... person);
 }
