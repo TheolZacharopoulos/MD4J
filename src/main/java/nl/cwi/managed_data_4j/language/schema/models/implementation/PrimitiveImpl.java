@@ -42,14 +42,6 @@ public class PrimitiveImpl implements Primitive {
     }
 
     @Override
-    public Field key(Field... key) {
-        if (key.length > 0) {
-            this.key = key[0];
-        }
-        return this.key;
-    }
-
-    @Override
     public Klass schemaKlass(Klass... schemaKlass) {
         if (schemaKlass.length > 0) {
             this.schemaKlass = schemaKlass[0];

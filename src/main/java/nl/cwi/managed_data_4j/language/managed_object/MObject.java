@@ -204,29 +204,6 @@ public class MObject implements InvocationHandler, M {
         }
     }
 
-    // TODO: Dont implement hashCode and equals() and DONT USE IT, no hashSet only hashMaps <obj, mObj>
-    /**
-     * Searches for @key in the properties, if any found return the hashCode of the
-     * first one it finds. Otherwise returns Java default hasCode() implementation.
-     * @return a hashCode
-     */
-    private int getKeyHashCode() {
-        for (MObjectField mObjectField : this.props.values()) {
-            final Field field = mObjectField.getField();
-
-            // if there is key at the fields type klass, use this one
-            if (field.type().key() != null) {
-                final MObjectField keyField = this.props.get(field.type().key().name());
-                final Object theKey = keyField.get();
-
-                return theKey.hashCode();
-            }
-        }
-
-        // otherwise return Java hashCode implementation.
-        return super.hashCode();
-    }
-
     /**
      * The default method are forwarded to the InvocationHandler.
      * But we want to call the default implementation in case of existence.
@@ -265,11 +242,6 @@ public class MObject implements InvocationHandler, M {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
-
-        // hashCode() method invocation of the proxied object
-        if (method.getName().equals("hashCode")) {
-            return this.getKeyHashCode();
-        }
 
         // if the method is default, invoke this one
         if (method.isDefault()) {

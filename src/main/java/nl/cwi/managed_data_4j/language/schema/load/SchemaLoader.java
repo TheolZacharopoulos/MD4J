@@ -213,7 +213,6 @@ public class SchemaLoader {
         }
 
         wireFieldTypes(factory, schema, allFieldsWithReturnType);
-        wireFieldTypeKeys(allFieldsWithReturnType);
         wireFieldInverse(allFieldsWithReturnType);
 
         wireKlassSupers(types, typesCache);
@@ -222,36 +221,6 @@ public class SchemaLoader {
 
         typesCache.clear();
         return types.keySet();
-    }
-
-    /**
-     * From all the created fields, get their klasses and set as key the first field found as KEY.
-     * @param allFieldsWithReturnType all the created fields
-     */
-    private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
-
-        // from all the fields created
-        allFieldsWithReturnType.keySet().stream()
-        .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
-
-        // get only the many
-        .filter(Field::many)
-
-        // get their type
-        .map(Field::type)
-
-        // get only those of type klass
-        .filter(Klass.class::isInstance)
-        .map(Klass.class::cast)
-
-        // for each klass, set key as the first field that is a Key otherwise null
-        .forEach(fieldTypeKlass ->
-            fieldTypeKlass.key(
-                fieldTypeKlass.fields().stream()
-                    .filter(Field::key)
-                    .findFirst()
-                    .orElse(null))
-        );
     }
 
     /**

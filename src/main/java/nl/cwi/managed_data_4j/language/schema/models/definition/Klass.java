@@ -2,7 +2,6 @@ package nl.cwi.managed_data_4j.language.schema.models.definition;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
-import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional;
 
 import java.util.Set;
 
@@ -36,10 +35,4 @@ public interface Klass extends Type {
      * Which Java class does type Klass is of.
      */
     Class<?> classOf(Class<?> ...classOf);
-
-    /**
-     * The field which may represent the key for this Klass.
-     */
-    @Optional
-    Field key(Field... key);
 }
