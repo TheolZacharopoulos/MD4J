@@ -3,6 +3,7 @@ package nl.cwi.managed_data_4j.language.utils;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Array;
@@ -142,7 +143,7 @@ public class MObjectUtils2 {
             final Object xFieldValue = getValueFromField(x, xField);
             final Object yFieldValue = getValueFromField(y, yField);
 
-            final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xField.type().schemaKlass().classOf());
+            final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xField.type().classOf());
 
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
@@ -175,7 +176,7 @@ public class MObjectUtils2 {
             } catch (NoSuchMethodException e) {
 
                 // if it does not work, get the params.
-                Class<?> parameterType = Array.newInstance(((Klass)field.type()).classOf(), 0).getClass();
+                Class<?> parameterType = Array.newInstance(((Type)field.type()).classOf(), 0).getClass();
                 method = instance.getClass().getMethod(field.name(), parameterType);
             }
 
