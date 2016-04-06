@@ -30,9 +30,4 @@ public interface Klass extends Type {
      */
     @Inverse(other=Schema.class, field="klasses")
     Schema schema(Schema... schema);
-
-    /**
-     * Which Java class does type Klass is of.
-     */
-    Class<?> classOf(Class<?> ...classOf);
 }

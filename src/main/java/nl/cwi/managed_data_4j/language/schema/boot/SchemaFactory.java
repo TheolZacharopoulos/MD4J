@@ -19,7 +19,7 @@ public interface SchemaFactory {
     /**
      * Builds a new Primitive with its type name
      */
-    Primitive Primitive(String name);
+    Primitive Primitive();
 
     /**
      * Builds a new empty Klass

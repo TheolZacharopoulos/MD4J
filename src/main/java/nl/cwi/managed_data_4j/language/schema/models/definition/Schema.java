@@ -27,7 +27,7 @@ public interface Schema extends M {
     /**
      * A set of klasses types.
      */
-    default Set<Klass> klasses() {
+    default Set<Klass> klasses(Klass... klass) {
         return types().stream()
             .filter(Klass.class::isInstance)
             .map(Klass.class::cast)
@@ -37,7 +37,7 @@ public interface Schema extends M {
     /**
      * A set of primitive types.
      */
-    default Set<Primitive> primitives() {
+    default Set<Primitive> primitives(Primitive... primitive) {
         return types().stream()
             .filter(Primitive.class::isInstance)
             .map(Primitive.class::cast)

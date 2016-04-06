@@ -15,14 +15,16 @@ public class PrimitiveImpl implements Primitive {
     protected Klass schemaKlass = null;
     protected Schema schema = null;
     protected Field key = null;
+    protected Class<?> classOf = null;
 
     public PrimitiveImpl(String name) {
-        this(name, null);
+        this(name, null, null);
     }
 
-    public PrimitiveImpl(String name, Schema schema) {
+    public PrimitiveImpl(String name, Schema schema, Class<?> classOf) {
         this.name = name;
         this.schema = schema;
+        this.classOf = classOf;
     }
 
     @Override
@@ -47,5 +49,13 @@ public class PrimitiveImpl implements Primitive {
             this.schemaKlass = schemaKlass[0];
         }
         return this.schemaKlass;
+    }
+
+    @Override
+    public Class<?> classOf(Class<?>... classOf) {
+        if (classOf.length > 0) {
+            this.classOf = classOf[0];
+        }
+        return this.classOf;
     }
 }

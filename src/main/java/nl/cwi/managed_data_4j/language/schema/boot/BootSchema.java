@@ -24,15 +24,15 @@ public class BootSchema extends SchemaImpl {
 
         // ========================
         // * String Primitive
-        final Primitive stringPrimitive = new PrimitiveImpl("String", schemaSchema);
+        final Primitive stringPrimitive = new PrimitiveImpl("String", schemaSchema, String.class);
 
         // ========================
         // * Boolean Primitive
-        final Primitive booleanPrimitive = new PrimitiveImpl("Boolean", schemaSchema);
+        final Primitive booleanPrimitive = new PrimitiveImpl("Boolean", schemaSchema, Boolean.class);
 
         // ========================
         // * Class Primitive
-        final Primitive classPrimitive = new PrimitiveImpl("Class", schemaSchema);
+        final Primitive classPrimitive = new PrimitiveImpl("Class", schemaSchema, Class.class);
 
         // ========================
         // * Schema Klass
@@ -79,10 +79,15 @@ public class BootSchema extends SchemaImpl {
         final Field typeKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
         typeKlassSchemaKlassField.owner(typeKlass);
 
+        final Field typeKlassClassOfField = new FieldImpl("classOf", false, false, false, false);
+        typeKlassClassOfField.owner(typeKlass);
+        typeKlassClassOfField.type(classPrimitive);
+
         typeKlass.fields(
             typeKlassNameField,
             typeKlassSchemaField,
-            typeKlassSchemaKlassField);
+            typeKlassSchemaKlassField,
+            typeKlassClassOfField);
 
         // ========================
         // * Primitive Klass
@@ -107,10 +112,15 @@ public class BootSchema extends SchemaImpl {
         final Field primitiveKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
         primitiveKlassSchemaKlassField.owner(primitiveKlass);
 
+        final Field primitiveKlassClassOfField = new FieldImpl("classOf", false, false, false, false);
+        primitiveKlassClassOfField.owner(primitiveKlass);
+        primitiveKlassClassOfField.type(classPrimitive);
+
         primitiveKlass.fields(
             primitiveKlassNameField,
             primitiveKlassSchemaField,
-            primitiveKlassSchemaKlassField);
+            primitiveKlassSchemaKlassField,
+            primitiveKlassClassOfField);
 
         // ========================
         // * Klass Klass

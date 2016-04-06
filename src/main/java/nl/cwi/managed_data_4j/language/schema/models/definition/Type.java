@@ -18,4 +18,9 @@ public interface Type extends M {
 
     @Inverse(other=Type.class, field="types")
     Schema schema(Schema... schema);
+
+    /**
+     * Which Java class does Type is of.
+     */
+    Class<?> classOf(Class<?>... classOf);
 }

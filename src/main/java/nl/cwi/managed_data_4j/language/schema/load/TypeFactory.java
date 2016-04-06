@@ -19,8 +19,10 @@ public class TypeFactory {
     {
 
         if (PrimitiveUtils.isPrimitiveClass(typeClass)) {
-            Primitive primitive = factory.Primitive(typeClass.getSimpleName());
+            Primitive primitive = factory.Primitive();
+            primitive.name(typeClass.getSimpleName());
             primitive.schema(schema);
+            primitive.classOf(typeClass);
             return primitive;
         }
 
