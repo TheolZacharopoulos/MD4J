@@ -23,18 +23,21 @@ In this thesis I am going to use the Java reflection capabilities to implement m
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Initial Study}\label{Initial Study}
-% TODO: more
-In their study on managed data, Loh et al. \cite{loh2012managed} present an implementation of managed data
-in Ruby and they use as a case study a web development framework from the Enso project to reuse database management and 
-access control mechanisms across different data definitions.
+In their study on managed data, Loh et al. \cite{loh2012managed} present the main idea of managed data, while using a show case of it in an implementation in Ruby. As a use case they present the Enso project in order to reuse database management and  access control mechanisms across different data definitions.
 
 This thesis is an extension of their work; we implement managed data in Java (a static programming language) using the Java reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} and dynamic proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}}. 
 Although proxies in static programming languages can not implement the full range of managed data \cite{loh2012managed}. 
-Java provides a strong implementation of the meta-object protocol \cite{kiczales1991art}, which can be used though the Java Reflection API \cite{forman2004java}. 
-Additionally, this project will focus on aspects and will provide a solution to the \ac{ccc} problem by using managed data.
+Java provides a strong implementation of the \ac{mop} \cite{kiczales1991art}, which can be used though the Java Reflection API \cite{forman2004java}. 
+Additionally, our work focuses on the aspects perspective and it provides a solution to the \ac{ccc} problem by using managed data
+and their data managers.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem statement}\label{Problem statement}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Problem Analysis}\label{Problem Analysis}
+% TODO: FOCUS HERE 
+% An analysis of the problem: where does it occur and how, how often, and what are the consequences? An important part is also to scope the research: what aspects are included and what aspects are deliberately left out, and why?
 
 The problem we study regards the \ac{ccc} that are scattered around the application, resulting to a hard to maintain system 
 by tangling implementation logic and concerns code together.
@@ -52,11 +55,6 @@ Furthermore, in terms of order, it has been observed that aspects are not elemen
 Finally, aspects invariably express non-functional requirements, but if the non-functional requirements are not elements of domain models then neither are aspects.
 
 In order to solve the aforementioned problems, we implement manage data, lifting the data management up to the application.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Problem Analysis}\label{Problem Analysis}
-% TODO: FOCUS HERE 
-% An analysis of the problem: where does it occur and how, how often, and what are the consequences? An important part is also to scope the research: what aspects are included and what aspects are deliberately left out, and why?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Questions}\label{Research Questions}
