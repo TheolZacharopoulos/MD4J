@@ -5,7 +5,7 @@ import nl.cwi.examples.state_machine.schemas.State;
 import nl.cwi.examples.state_machine.schemas.Transition;
 
 public interface StateMachineFactory {
-    State state();
-    Machine machine();
-    Transition transition();
+    State State();
+    Machine Machine();
+    Transition Transition();
 }
