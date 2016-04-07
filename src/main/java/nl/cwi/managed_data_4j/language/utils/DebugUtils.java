@@ -20,7 +20,6 @@ public class DebugUtils {
 
                 Klass klass = (Klass) type;
                 System.out.println("*" + klass.name());
-//                System.out.println(" - hashCode: " + klass.hashCode());
 
                 // supers
                 if (klass.supers() != null) {
@@ -45,7 +44,6 @@ public class DebugUtils {
 
                 for (Field field : klass.fields()) {
                     System.out.println("\t" + field.name());
-//                    System.out.println("\t - hashCode: " + field.hashCode());
 
                     // type
                     if (field.type() == null) {
