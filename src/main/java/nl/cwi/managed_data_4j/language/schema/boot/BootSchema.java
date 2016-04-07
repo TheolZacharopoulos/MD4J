@@ -53,9 +53,9 @@ public class BootSchema extends SchemaImpl {
         schemaKlassSchemaKlassField.owner(schemaKlass);
 
         schemaKlass.fields(
+            schemaKlassTypesField,
             schemaKlassKlassesField,
             schemaKlassPrimitivesField,
-            schemaKlassTypesField,
             schemaKlassSchemaKlassField);
 
         // ========================
@@ -84,10 +84,10 @@ public class BootSchema extends SchemaImpl {
         typeKlassClassOfField.type(classPrimitive);
 
         typeKlass.fields(
+            typeKlassClassOfField,
             typeKlassNameField,
             typeKlassSchemaField,
-            typeKlassSchemaKlassField,
-            typeKlassClassOfField);
+            typeKlassSchemaKlassField);
 
         // ========================
         // * Primitive Klass
@@ -117,10 +117,10 @@ public class BootSchema extends SchemaImpl {
         primitiveKlassClassOfField.type(classPrimitive);
 
         primitiveKlass.fields(
+            primitiveKlassClassOfField,
             primitiveKlassNameField,
             primitiveKlassSchemaField,
-            primitiveKlassSchemaKlassField,
-            primitiveKlassClassOfField);
+            primitiveKlassSchemaKlassField);
 
         // ========================
         // * Klass Klass
@@ -216,7 +216,7 @@ public class BootSchema extends SchemaImpl {
         fieldKlassKeyField.owner(fieldKlass);
         fieldKlassKeyField.type(booleanPrimitive);
 
-        final Field fieldKlassContainField = new FieldImpl("contain", false, false, false, false);
+        final Field fieldKlassContainField = new FieldImpl("contain", false, false, false, true);
         fieldKlassContainField.owner(fieldKlass);
         fieldKlassContainField.type(booleanPrimitive);
 
@@ -230,9 +230,9 @@ public class BootSchema extends SchemaImpl {
             fieldKlassManyField,
             fieldKlassNameField,
             fieldKlassOptionalField,
+            fieldKlassTypeField,
             fieldKlassInverseField,
             fieldKlassOwnerField,
-            fieldKlassTypeField,
             fieldKlassSchemaKlassField);
 
         // ========================
