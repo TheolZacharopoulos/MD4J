@@ -1,20 +1,25 @@
 package nl.cwi.managed_data_4j.language.utils;
 
+import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
-import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MObjectUtils {
     private static final org.apache.log4j.Logger logger = LogManager.getLogger(MObjectUtils.class.getName());
 
     public static boolean equals(Object x, Object y) {
+
+        if (!(x instanceof M) || !(y instanceof M)) {
+            logger.info("Equality works on managed objects only");
+            return false;
+        }
+
         final Map<Object, Object> equalityMap = new HashMap<>();
         final Map<Object, List<Object>> crossReferences = new HashMap<>();
 
@@ -53,8 +58,6 @@ public class MObjectUtils {
 
     public static boolean e(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences, Object x, Object y) {
 
-        // TODO: get schemaKlass and check, HOW?! We need the MObject if we want this
-
         // check for null first
         if (x == null && y == null) {
             logger.debug(" x and y are NULL");
@@ -64,14 +67,10 @@ public class MObjectUtils {
             return false;
         }
 
-        // extract class
-        final Class<?> xFieldClass = getRealFieldClass(x);
-        final Class<?> yFieldClass = getRealFieldClass(y);
-
         // primitive leaf, just compare values
-        final boolean xClassIsPrimitive = PrimitiveUtils.isPrimitiveClass(xFieldClass);
-        final boolean yClassIsPrimitive = PrimitiveUtils.isPrimitiveClass(xFieldClass);
-        if (xClassIsPrimitive && yClassIsPrimitive && xFieldClass.equals(yFieldClass)) {
+        if (PrimitiveUtils.isPrimitiveClass(x.getClass()) && PrimitiveUtils.isPrimitiveClass(y.getClass())
+            && x.getClass().equals(y.getClass()))
+        {
             logger.debug(" << Primitive >> : (x = " + x + " | y = " + y + ")");
             equalityMap.put(x, y);
             return x.equals(y);
@@ -85,41 +84,31 @@ public class MObjectUtils {
             final int xLen = xVector.size();
             final int yLen = yVector.size();
 
-            return xLen == yLen && // they should have the same size (structure)
-                (xLen == 0 ||
-                    areVectorsEqual(equalityMap, crossReferences, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
+            return
+                xLen == yLen && // they should have the same size (structure)
+                (xLen == 0 || areVectorsEqual(equalityMap, crossReferences, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
         }
 
-        // Objects leaf
-        List<Method> xFields = Arrays.asList(xFieldClass.getMethods());;
-        logger.debug(" <<Object>> (x) : " + xFieldClass.getSimpleName());
-        if (!Proxy.isProxyClass(xFieldClass)) {
-            final List<Method> xAllFields = Arrays.asList(xFieldClass.getMethods());
+        // Managed Objects leaf
+        final M mObjectX = ((M) x);
+        final Klass xKlass = mObjectX.schemaKlass();
 
-            // remove native methods
-            xFields = xAllFields.stream()
-                .filter(method -> !method.getDeclaringClass().getName().startsWith("java."))
-                .collect(Collectors.toList());
-        }
+        final M mObjectY = ((M) y);
+        final Klass yKlass = mObjectY.schemaKlass();
 
-        List<Method> yFields = Arrays.asList(yFieldClass.getMethods());;
-        logger.debug(" <<Object>> (y) : " + yFieldClass.getSimpleName());
-        if (!Proxy.isProxyClass(yFieldClass)) {
-            final List<Method> yAllFields = Arrays.asList(yFieldClass.getMethods());
+        final List<Field> xFields = new LinkedList<>(xKlass.fields());
+        logger.debug(" <<Object>> (x) : " + xKlass.name());
 
-            // remove native methods
-            yFields = yAllFields.stream()
-                .filter(method -> !method.getDeclaringClass().getName().startsWith("java."))
-                .collect(Collectors.toList());
-        }
+        final List<Field> yFields = new LinkedList<>(yKlass.fields());
+        logger.debug(" <<Object>> (y) : " + yKlass.name());
 
-        // sort fields by name
-        Collections.sort(xFields, (o1, o2) -> o1.getName().compareTo(o2.getName()));
-        Collections.sort(yFields, (o1, o2) -> o1.getName().compareTo(o2.getName()));
+        // sort fields by name, this way we know we compare the field with the right order
+        Collections.sort(xFields, (o1, o2) -> o1.name().compareTo(o2.name()));
+        Collections.sort(yFields, (o1, o2) -> o1.name().compareTo(o2.name()));
 
         boolean areFieldsEqual = xFields.size() == yFields.size() && // they should have the same size (branch number)
             (xFields.size() == 0 ||
-                areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, 0)); // if the len is 0 then true, otherwise compare
+            areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, 0)); // if the len is 0 then true, otherwise compare
 
         equalityMap.put(x, y);
 
@@ -137,32 +126,29 @@ public class MObjectUtils {
     private static boolean areFieldsEqual(
             Map<Object, Object> equalityMap,
             Map<Object, List<Object>> crossReferences,
-            Object x, List<Method> xFields,
-            Object y, List<Method> yFields,
+            Object x, List<Field> xFields,
+            Object y, List<Field> yFields,
             int n)
     {
         if (xFields.size() == n && xFields.size() == yFields.size()) {
             return true;
         } else {
 
-            final Method xFieldMethod = xFields.get(n);
-            final Method yFieldMethod = yFields.get(n);
+            final Field xField = xFields.get(n);
+            final Field yField = yFields.get(n);
 
-            logger.debug("\t(x) Field name: " + xFieldMethod.getName());
-            logger.debug("\t(y) Field name: " + yFieldMethod.getName());
+            logger.debug("\t(x) Field name: " + xField.name());
+            logger.debug("\t(y) Field name: " + yField.name());
 
-            final Object xFieldValue = getValueFromMethod(x, xFieldMethod);
-            final Object yFieldValue = getValueFromMethod(y, yFieldMethod);
+            final Object xFieldValue = getValueFromField(x, xField);
+            final Object yFieldValue = getValueFromField(y, yField);
 
-            final boolean isFieldContain = xFieldMethod.isAnnotationPresent(Contain.class);
-
-            final Class<?> xClass = xFieldMethod.getReturnType();
-            final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xClass);
+            final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xField.type().classOf());
 
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
-            if (!isPrimitive && !isFieldContain) {
-                logger.debug(" [Cross-Reference] <" + xFieldMethod.getName() + ">"); // Cross reference
+            if (!isPrimitive && !(xField.contain() || yField.contain())) {
+                logger.debug(" [Cross-Reference] <" + xField.name() + ">"); // Cross reference
 
                 // support multiple values, add value to cross references
                 if (!crossReferences.containsKey(xFieldValue)) {
@@ -172,22 +158,26 @@ public class MObjectUtils {
 
                 return areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, n + 1);
             }
-            logger.debug(" [Contain] <" + xFieldMethod.getName() + ">"); // Spine
+            logger.debug(" [Contain] <" + xField.name() + ">"); // Spine
 
             return e(equalityMap, crossReferences, xFieldValue, yFieldValue) &&
                 areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, n + 1);
         }
     }
 
-    private static Class<?> getRealFieldClass(Object instance) {
-        if (Proxy.isProxyClass(instance.getClass())) {
-            return ((M) instance).schemaKlass().classOf();
-        }
-        return instance.getClass();
-    }
-
-    private static Object getValueFromMethod(Object instance, Method method) {
+    private static Object getValueFromField(Object instance, Field field) {
         try {
+
+            Method method;
+            try {
+                // try with a method without params
+                method = instance.getClass().getMethod(field.name());
+            } catch (NoSuchMethodException e) {
+
+                // if it does not work, get the params.
+                Class<?> parameterType = Array.newInstance(((Type)field.type()).classOf(), 0).getClass();
+                method = instance.getClass().getMethod(field.name(), parameterType);
+            }
 
             // needs to be accessible in order to invoke it
             method.setAccessible(true);
@@ -214,7 +204,8 @@ public class MObjectUtils {
             } else {
                 return method.invoke(instance);
             }
-        } catch (IllegalAccessException | InvocationTargetException e) {
+
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return null;
