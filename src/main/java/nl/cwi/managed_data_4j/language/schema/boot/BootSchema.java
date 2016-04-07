@@ -49,7 +49,7 @@ public class BootSchema extends SchemaImpl {
         final Field schemaKlassPrimitivesField = new FieldImpl("primitives", true, false, false, false);
         schemaKlassPrimitivesField.owner(schemaKlass);
 
-        final Field schemaKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        final Field schemaKlassSchemaKlassField = new FieldImpl("schemaKlass", false, false, false, false);
         schemaKlassSchemaKlassField.owner(schemaKlass);
 
         schemaKlass.fields(
@@ -76,7 +76,7 @@ public class BootSchema extends SchemaImpl {
         typeKlassSchemaField.type(schemaKlass);
         typeKlassSchemaField.inverse(schemaKlassTypesField);
 
-        final Field typeKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        final Field typeKlassSchemaKlassField = new FieldImpl("schemaKlass", false, false, false, false);
         typeKlassSchemaKlassField.owner(typeKlass);
 
         final Field typeKlassClassOfField = new FieldImpl("classOf", false, false, false, false);
@@ -109,7 +109,7 @@ public class BootSchema extends SchemaImpl {
         primitiveKlassSchemaField.type(schemaKlass);
         primitiveKlassSchemaField.inverse(schemaKlassTypesField);
 
-        final Field primitiveKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        final Field primitiveKlassSchemaKlassField = new FieldImpl("schemaKlass", false, false, false, false);
         primitiveKlassSchemaKlassField.owner(primitiveKlass);
 
         final Field primitiveKlassClassOfField = new FieldImpl("classOf", false, false, false, false);
@@ -207,7 +207,7 @@ public class BootSchema extends SchemaImpl {
         fieldKlassOptionalField.owner(fieldKlass);
         fieldKlassOptionalField.type(booleanPrimitive);
 
-        final Field fieldKlassInverseField = new FieldImpl("inverse", false, true, false, false);
+        final Field fieldKlassInverseField = new FieldImpl("inverse", false, false, false, false);
         fieldKlassInverseField.owner(fieldKlass);
         fieldKlassInverseField.type(fieldKlass);
         fieldKlassInverseField.inverse(fieldKlassInverseField);
@@ -220,7 +220,7 @@ public class BootSchema extends SchemaImpl {
         fieldKlassContainField.owner(fieldKlass);
         fieldKlassContainField.type(booleanPrimitive);
 
-        final Field fieldKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        final Field fieldKlassSchemaKlassField = new FieldImpl("schemaKlass", false, false, false, false);
         fieldKlassSchemaKlassField.type(klassKlass);
         fieldKlassSchemaKlassField.owner(fieldKlass);
 
