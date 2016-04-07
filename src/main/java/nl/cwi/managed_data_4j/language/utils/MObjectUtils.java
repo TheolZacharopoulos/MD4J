@@ -74,8 +74,11 @@ public class MObjectUtils {
         // vector leaf
         if (ArrayUtils.isMany(x.getClass()) && ArrayUtils.isMany(y.getClass())) {
             logger.debug(" << Vector >> ");
-            final List<Object> xVector = new LinkedList<>((Collection<Object>) x);
-            final List<Object> yVector = new LinkedList<>((Collection<Object>) y);
+
+            final Collection<Object> xCollection = (Collection<Object>) x;
+            final Collection<Object> yCollection = (Collection<Object>) y;
+            final List<Object> xVector = new LinkedList<>(xCollection);
+            final List<Object> yVector = new LinkedList<>(yCollection);
             final int xLen = xVector.size();
             final int yLen = yVector.size();
 
@@ -120,8 +123,8 @@ public class MObjectUtils {
         int n)
     {
         return ((xVector.size() == yVector.size()) && xVector.size() == n) ||
-                e(equalityMap, crossReferences, xVector.get(n), yVector.get(n))
-                    && areVectorsEqual(equalityMap, crossReferences, xVector, yVector, n + 1);
+            e(equalityMap, crossReferences, xVector.get(n), yVector.get(n)) &&
+            areVectorsEqual(equalityMap, crossReferences, xVector, yVector, n + 1);
     }
 
     private static boolean areFieldsEqual(
