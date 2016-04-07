@@ -4,6 +4,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
+import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Array;
@@ -63,8 +64,9 @@ public class MObjectUtils {
         }
 
         // primitive leaf, just compare values
-        if (PrimitiveUtils.isPrimitiveClass(x.getClass()) && PrimitiveUtils.isPrimitiveClass(y.getClass())
-            && x.getClass().equals(y.getClass()))
+        if (PrimitiveUtils.isPrimitiveClass(x.getClass()) &&
+            PrimitiveUtils.isPrimitiveClass(y.getClass()) &&
+            x.getClass().equals(y.getClass()))
         {
             logger.debug(" << Primitive >> : (x = " + x + " | y = " + y + ")");
             equalityMap.put(x, y);
@@ -81,8 +83,6 @@ public class MObjectUtils {
             final List<Object> yVector = new LinkedList<>(yCollection);
             final int xLen = xVector.size();
             final int yLen = yVector.size();
-
-            // TODO: SORT THE VECTOR!!!
 
             return
                 xLen == yLen && // they should have the same size (structure)
@@ -122,6 +122,28 @@ public class MObjectUtils {
         List<Object> yVector,
         int n)
     {
+
+        // Sort the vectors based on the field's name
+        Collections.sort(xVector, ((o1, o2) -> {
+            String o1Name = ((String) getValueFromField(o1, "name", new PrimitiveImpl("String", null, String.class)));
+            String o2Name = (String) getValueFromField(o2, "name", new PrimitiveImpl("String", null, String.class));
+
+            if (o1Name != null && o2Name != null) {
+                return o1Name.compareTo(o2Name);
+            }
+            return 0;
+        }));
+
+        Collections.sort(yVector, ((o1, o2) -> {
+            String o1Name = (String) getValueFromField(o1, "name", new PrimitiveImpl("String", null, String.class));
+            String o2Name = (String) getValueFromField(o2, "name", new PrimitiveImpl("String", null, String.class));
+
+            if (o1Name != null && o2Name != null) {
+                return o1Name.compareTo(o2Name);
+            }
+            return 0;
+        }));
+
         return ((xVector.size() == yVector.size()) && xVector.size() == n) ||
             e(equalityMap, crossReferences, xVector.get(n), yVector.get(n)) &&
             areVectorsEqual(equalityMap, crossReferences, xVector, yVector, n + 1);
@@ -144,8 +166,8 @@ public class MObjectUtils {
             logger.debug("\t(x) Field name: " + xField.name());
             logger.debug("\t(y) Field name: " + yField.name());
 
-            final Object xFieldValue = getValueFromField(x, xField);
-            final Object yFieldValue = getValueFromField(y, yField);
+            final Object xFieldValue = getValueFromField(x, xField.name(), xField.type());
+            final Object yFieldValue = getValueFromField(y, yField.name(), yField.type());
 
             final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xField.type().classOf());
 
@@ -169,18 +191,18 @@ public class MObjectUtils {
         }
     }
 
-    private static Object getValueFromField(Object instance, Field field) {
+    private static Object getValueFromField(Object instance, String fieldName, Type fieldType) {
         try {
 
             Method method;
             try {
                 // try with a method without params
-                method = instance.getClass().getMethod(field.name());
+                method = instance.getClass().getMethod(fieldName);
             } catch (NoSuchMethodException e) {
 
                 // if it does not work, get the params.
-                Class<?> parameterType = Array.newInstance(((Type)field.type()).classOf(), 0).getClass();
-                method = instance.getClass().getMethod(field.name(), parameterType);
+                Class<?> parameterType = Array.newInstance((fieldType).classOf(), 0).getClass();
+                method = instance.getClass().getMethod(fieldName, parameterType);
             }
 
             // needs to be accessible in order to invoke it
