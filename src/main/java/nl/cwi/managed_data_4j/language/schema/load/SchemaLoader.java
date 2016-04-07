@@ -375,7 +375,12 @@ public class SchemaLoader {
             logger.debug("    > isContain: " + contain);
 
             // add its fields, the owner Klass will be added later
-            final Field field = factory.Field(contain, key, many, fieldName, optional);
+            final Field field = factory.Field();
+            field.name(fieldName);
+            field.contain(contain);
+            field.key(key);
+            field.many(many);
+            field.optional(optional);
 
             fieldsForKlass.put(fieldName, field);
 
