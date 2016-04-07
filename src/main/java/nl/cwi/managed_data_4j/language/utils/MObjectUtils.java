@@ -13,12 +13,7 @@ import java.util.*;
 public class MObjectUtils {
     private static final org.apache.log4j.Logger logger = LogManager.getLogger(MObjectUtils.class.getName());
 
-    public static boolean equals(Object x, Object y) {
-
-        if (!(x instanceof M) || !(y instanceof M)) {
-            logger.info("Equality works on managed objects only");
-            return false;
-        }
+    public static boolean equals(M x, M y) {
 
         final Map<Object, Object> equalityMap = new HashMap<>();
         final Map<Object, List<Object>> crossReferences = new HashMap<>();
@@ -56,7 +51,7 @@ public class MObjectUtils {
         return true;
     }
 
-    public static boolean e(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences, Object x, Object y) {
+    private static boolean e(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences, Object x, Object y) {
 
         // check for null first
         if (x == null && y == null) {
