@@ -473,14 +473,22 @@ public class SchemaLoader {
      * @return a set of sub klasses
      */
     private static Set<Klass> buildSubs(Class<?> schemaKlassDefinition, Map<String, Type> cache) {
-        Set<Klass> subs = cache.values().stream()
-            .filter(Klass.class::isInstance)
-            .map(Klass.class::cast)
-            .flatMap(klass -> klass.supers().stream())
-            .filter(Objects::nonNull)
-            .filter(superKlass -> superKlass.name() != null)
-            .filter(superKlass -> superKlass.name().equals(schemaKlassDefinition.getSimpleName()))
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+        final Set<Klass> subs = new LinkedHashSet<>();
+
+        for (Type sub : cache.values()) {
+            if (sub instanceof Klass) {
+                final Klass subKlass = (Klass) sub;
+
+                for (Klass superKlass : subKlass.supers()) {
+                    if (superKlass != null &&
+                        superKlass.name() != null &&
+                        superKlass.name().equals(schemaKlassDefinition.getSimpleName()))
+                    {
+                        subs.add(subKlass);
+                    }
+                }
+            }
+        }
 
         return subs.isEmpty() ? Collections.emptySet() : subs;
     }

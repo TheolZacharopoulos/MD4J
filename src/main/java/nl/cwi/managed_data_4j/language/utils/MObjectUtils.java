@@ -79,6 +79,8 @@ public class MObjectUtils {
             final int xLen = xVector.size();
             final int yLen = yVector.size();
 
+            // TODO: SORT THE VECTOR!!!
+
             return
                 xLen == yLen && // they should have the same size (structure)
                 (xLen == 0 || areVectorsEqual(equalityMap, crossReferences, xVector, yVector, 0)); // if the len is 0 then true, otherwise compare
@@ -111,8 +113,12 @@ public class MObjectUtils {
     }
 
     private static boolean areVectorsEqual(
-        Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences,
-        List<Object> xVector, List<Object> yVector, int n) {
+        Map<Object, Object> equalityMap,
+        Map<Object, List<Object>> crossReferences,
+        List<Object> xVector,
+        List<Object> yVector,
+        int n)
+    {
         return ((xVector.size() == yVector.size()) && xVector.size() == n) ||
                 e(equalityMap, crossReferences, xVector.get(n), yVector.get(n))
                     && areVectorsEqual(equalityMap, crossReferences, xVector, yVector, n + 1);

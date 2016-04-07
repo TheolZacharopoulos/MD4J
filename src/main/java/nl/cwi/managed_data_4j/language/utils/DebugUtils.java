@@ -2,21 +2,25 @@ package nl.cwi.managed_data_4j.language.utils;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 
 import java.util.Set;
 
 public class DebugUtils {
 
+    public static void debugSchema(Schema schema) {
+        debugTypes(schema.types());
+    }
+
     public static void debugTypes(Set<Type> types) {
-        System.out.println("=========================");
         for (Type type : types) {
 
             if (type instanceof Klass) {
 
                 Klass klass = (Klass) type;
                 System.out.println("*" + klass.name());
-                System.out.println(" - hashCode: " + klass.hashCode());
+//                System.out.println(" - hashCode: " + klass.hashCode());
 
                 // supers
                 if (klass.supers() != null) {
@@ -41,7 +45,7 @@ public class DebugUtils {
 
                 for (Field field : klass.fields()) {
                     System.out.println("\t" + field.name());
-                    System.out.println("\t - hashCode: " + field.hashCode());
+//                    System.out.println("\t - hashCode: " + field.hashCode());
 
                     // type
                     if (field.type() == null) {

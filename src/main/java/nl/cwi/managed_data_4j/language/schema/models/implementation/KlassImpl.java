@@ -3,6 +3,7 @@ package nl.cwi.managed_data_4j.language.schema.models.implementation;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -43,6 +44,7 @@ public class KlassImpl implements Klass {
         this.classOf = classOf;
     }
 
+    @Contain
     @Override
     public Set<Field> fields(Field... field) {
         if (field.length > 0) {

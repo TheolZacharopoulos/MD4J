@@ -1,13 +1,16 @@
 package nl.cwi.managed_data_4j.language.schema.boot;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.FieldImpl;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.KlassImpl;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.SchemaImpl;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This schema describes the schema of a schemaSchema (self description / MetaSchema)
@@ -159,23 +162,23 @@ public class BootSchema extends SchemaImpl {
         final Field klassKlassSchemaField = new FieldImpl("schema", false, false, false, false);
         klassKlassSchemaField.owner(klassKlass);
         klassKlassSchemaField.type(schemaKlass);
-        klassKlassSchemaField.inverse(schemaKlassTypesField);
+        klassKlassSchemaField.inverse(schemaKlassKlassesField);
 
         final Field klassKlassClassOfField = new FieldImpl("classOf", false, false, false, false);
         klassKlassClassOfField.owner(klassKlass);
         klassKlassClassOfField.type(classPrimitive);
 
-        final Field klassKlassSchemaKlassField = new FieldImpl("schemaKlass", false, true, false, false);
+        final Field klassKlassSchemaKlassField = new FieldImpl("schemaKlass", false, false, false, false);
         klassKlassSchemaKlassField.type(klassKlass);
         klassKlassSchemaKlassField.owner(klassKlass);
 
         klassKlass.fields(
             klassKlassClassOfField,
             klassKlassNameField,
-            klassKlassFieldsField,
             klassKlassSchemaField,
-            klassKlassSubsField,
             klassKlassSupersField,
+            klassKlassSubsField,
+            klassKlassFieldsField,
             klassKlassSchemaKlassField);
 
         // ========================
@@ -194,6 +197,7 @@ public class BootSchema extends SchemaImpl {
         final Field fieldKlassOwnerField = new FieldImpl("owner", false, false, false, false);
         fieldKlassOwnerField.owner(fieldKlass);
         fieldKlassOwnerField.type(klassKlass);
+        fieldKlassOwnerField.inverse(klassKlassFieldsField);
 
         final Field fieldKlassTypeField = new FieldImpl("type", false, false, false, false);
         fieldKlassTypeField.owner(fieldKlass);
@@ -216,7 +220,7 @@ public class BootSchema extends SchemaImpl {
         fieldKlassKeyField.owner(fieldKlass);
         fieldKlassKeyField.type(booleanPrimitive);
 
-        final Field fieldKlassContainField = new FieldImpl("contain", false, false, false, true);
+        final Field fieldKlassContainField = new FieldImpl("contain", false, false, false, false);
         fieldKlassContainField.owner(fieldKlass);
         fieldKlassContainField.type(booleanPrimitive);
 
@@ -231,9 +235,59 @@ public class BootSchema extends SchemaImpl {
             fieldKlassNameField,
             fieldKlassOptionalField,
             fieldKlassTypeField,
-            fieldKlassInverseField,
             fieldKlassOwnerField,
+            fieldKlassInverseField,
             fieldKlassSchemaKlassField);
+
+        // ========================
+        // * set the schemaKlasses
+        // - schema schema
+        this.schemaKlass = schemaKlass;
+
+        // - primitives
+        stringPrimitive.schemaKlass(primitiveKlass);
+        booleanPrimitive.schemaKlass(primitiveKlass);
+        classPrimitive.schemaKlass(primitiveKlass);
+
+        // - klasses
+        schemaKlass.schemaKlass(klassKlass);
+        typeKlass.schemaKlass(klassKlass);
+        primitiveKlass.schemaKlass(klassKlass);
+        klassKlass.schemaKlass(klassKlass);
+        fieldKlass.schemaKlass(klassKlass);
+
+        // - fields
+        //   - type
+        typeKlassNameField.schemaKlass(fieldKlass);
+        typeKlassSchemaField.schemaKlass(fieldKlass);
+        typeKlassSchemaKlassField.schemaKlass(fieldKlass);
+        typeKlassClassOfField.schemaKlass(fieldKlass);
+
+        //   - primitive
+        primitiveKlassClassOfField.schemaKlass(fieldKlass);
+        primitiveKlassNameField.schemaKlass(fieldKlass);
+        primitiveKlassSchemaField.schemaKlass(fieldKlass);
+        primitiveKlassSchemaKlassField.schemaKlass(fieldKlass);
+
+        //   - klass
+        klassKlassClassOfField.schemaKlass(fieldKlass);
+        klassKlassNameField.schemaKlass(fieldKlass);
+        klassKlassFieldsField.schemaKlass(fieldKlass);
+        klassKlassSchemaField.schemaKlass(fieldKlass);
+        klassKlassSupersField.schemaKlass(fieldKlass);
+        klassKlassSubsField.schemaKlass(fieldKlass);
+        klassKlassSchemaKlassField.schemaKlass(fieldKlass);
+
+        //   - field
+        fieldKlassContainField.schemaKlass(fieldKlass);
+        fieldKlassKeyField.schemaKlass(fieldKlass);
+        fieldKlassManyField.schemaKlass(fieldKlass);
+        fieldKlassNameField.schemaKlass(fieldKlass);
+        fieldKlassOptionalField.schemaKlass(fieldKlass);
+        fieldKlassTypeField.schemaKlass(fieldKlass);
+        fieldKlassInverseField.schemaKlass(fieldKlass);
+        fieldKlassOwnerField.schemaKlass(fieldKlass);
+        fieldKlassSchemaKlassField.schemaKlass(fieldKlass);
 
         // ========================
         // * Bootstrap definition
@@ -244,7 +298,29 @@ public class BootSchema extends SchemaImpl {
                 klassKlass,
                 fieldKlass
         ));
+    }
 
-        this.schemaKlass = schemaKlass;
+    @Contain
+    @Override
+    public Set<Type> types(Type... type) {
+        if (type.length > 0) {
+            if (type.length > 1) {
+                this.types = new LinkedHashSet<>();
+                for (Type aType : type) {
+                    this.types.add(aType);
+                }
+            } else {
+                this.types = Collections.singleton(type[0]);
+            }
+        }
+        return this.types;
+    }
+
+    @Override
+    public Klass schemaKlass(Klass... schemaKlass) {
+        if (schemaKlass.length > 0) {
+            this.schemaKlass = schemaKlass[0];
+        }
+        return this.schemaKlass;
     }
 }

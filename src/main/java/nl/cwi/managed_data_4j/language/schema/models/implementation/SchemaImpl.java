@@ -3,6 +3,7 @@ package nl.cwi.managed_data_4j.language.schema.models.implementation;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -25,6 +26,7 @@ public class SchemaImpl implements Schema {
         this.schemaKlass = schemaKlass;
     }
 
+    @Contain
     @Override
     public Set<Type> types(Type... type) {
         if (type.length > 0) {

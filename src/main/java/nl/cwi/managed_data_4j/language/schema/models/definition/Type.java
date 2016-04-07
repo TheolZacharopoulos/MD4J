@@ -16,7 +16,7 @@ public interface Type extends M {
     @Key
     String name(String... name);
 
-    @Inverse(other=Type.class, field="types")
+    @Inverse(other=Schema.class, field="types")
     Schema schema(Schema... schema);
 
     /**
