@@ -194,6 +194,13 @@ public class SchemaLoader {
             final Map<String, Field> fieldsForKlass =
                 buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
 
+            // TODO: The problem is here, it initializes without the wiring.
+            //       + should we create create a KlassImpl here and create
+            //         the real klass, from the factory, in the end?
+            //         DOES NOT WORK,
+            //                  it setups the fields in the initialization,
+            //                  and there is no key field then so its initialised as a list
+
             // create a new klass
             final Klass klass = factory.Klass();
             klass.name(klassName);

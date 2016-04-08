@@ -12,6 +12,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.singl
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
 
 import java.lang.invoke.MethodHandles;
@@ -102,7 +103,8 @@ public class MObject implements InvocationHandler, M {
         } else {
 
             // if there is a key, then make it a Set, otherwise a list
-            if (field.key() != null) {
+            // TODO: fix, because it can not be initialized with key this does not work.
+            if (hasKey(field)) {
                 this.props.put(field.name(), new MObjectFieldManySet(this, field));
             } else {
                 this.props.put(field.name(), new MObjectFieldManyList(this, field));
@@ -193,7 +195,8 @@ public class MObject implements InvocationHandler, M {
             // it's an array since it's many
             Object [] inits = ((Object[]) value);
 
-            if (field.key() != null) {
+            // TODO: fix, because it can not be initialized with key this does not work.
+            if (hasKey(field)) {
                 ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
             } else {
                 ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
@@ -202,6 +205,12 @@ public class MObject implements InvocationHandler, M {
         } else {
             ((MObjectFieldSingle) mObjectField).init(value);
         }
+    }
+
+    private boolean hasKey(Field field) {
+        return (field.type() instanceof Primitive) ||
+            ((Klass) field.type()).fields().stream()
+            .anyMatch(Field::key);
     }
 
     /**
