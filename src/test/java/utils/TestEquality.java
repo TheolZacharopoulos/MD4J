@@ -13,6 +13,9 @@ import test_definition.PersonFactory;
 import test_definition.schemas.Address;
 import test_definition.schemas.Person;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
 public class TestEquality {
@@ -130,6 +133,111 @@ public class TestEquality {
 
         person2.address(addressPerson2);
         addressPerson2.person(person1); // wrong person reference
+
+        assertFalse(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void cross_reference_equality_primitive_set_ordered_Test() {
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
+        person1.address(addressPerson1);
+        addressPerson1.person(person1);
+
+        person1.skills(new String[]{"skill1","skill2","skill3"});
+
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
+        person2.address(addressPerson2);
+        addressPerson2.person(person2);
+
+        person2.skills(new String[]{"skill1","skill2","skill3"});
+
+        assertTrue(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void cross_reference_equality_primitive_set_not_ordered_Test() {
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
+        person1.address(addressPerson1);
+        addressPerson1.person(person1);
+
+        person1.skills(new String[]{"skill1","skill2","skill3"});
+
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
+        person2.address(addressPerson2);
+        addressPerson2.person(person2);
+
+        person2.skills(new String[]{"skill3","skill2","skill1"});
+
+        assertTrue(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void cross_reference_equality_primitive_set_Test_fail() {
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
+        person1.address(addressPerson1);
+        addressPerson1.person(person1);
+
+        person1.skills(new String[]{"skill1","skill2","skill3"});
+
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
+        person2.address(addressPerson2);
+        addressPerson2.person(person2);
+
+        person2.skills(new String[]{"skill1","skill2"});
+
+        assertFalse(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void cross_reference_equality_klass_set_not_ordered_Test() {
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
+        person1.address(addressPerson1);
+        addressPerson1.person(person1);
+
+        Person person1Friend1 = personFactory.Person(20, "George");
+        Person person1Friend2 = personFactory.Person(22, "Martin");
+
+        Set<Person> person1Friends = new LinkedHashSet<>();
+        person1Friends.add(person1Friend1);
+        person1Friends.add(person1Friend2);
+
+        person1.friends(person1Friends.toArray(new Person[person1Friends.size()]));
+
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
+        person2.address(addressPerson2);
+        addressPerson2.person(person2);
+
+        person2.friends(person1Friends.toArray(new Person[person1Friends.size()]));
+
+        assertTrue(MObjectUtils.equals(person1, person2));
+    }
+
+    @Test
+    public void cross_reference_equality_klass_set_Test_fail() {
+        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person1 = personFactory.Person(24, "Alex");
+        person1.address(addressPerson1);
+        addressPerson1.person(person1);
+
+        Person person1Friend1 = personFactory.Person(20, "George");
+        Person person1Friend2 = personFactory.Person(22, "Martin");
+
+        person1.friends(new Person[]{person1Friend1, person1Friend2});
+
+        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
+        Person person2 = personFactory.Person(24, "Alex");
+        person2.address(addressPerson2);
+        addressPerson2.person(person2);
+
+        person2.friends(new Person[]{person1Friend2});
 
         assertFalse(MObjectUtils.equals(person1, person2));
     }

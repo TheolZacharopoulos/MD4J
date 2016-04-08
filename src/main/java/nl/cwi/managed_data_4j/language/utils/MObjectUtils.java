@@ -122,30 +122,28 @@ public class MObjectUtils {
         List<Object> yVector,
         int n)
     {
+        // end
+        if (((xVector.size() == yVector.size()) && xVector.size() == n)) {
+            return true;
+        }
 
+        // in case the vector contains M objects and its a set,
+        // then we need to order them in order to check for equality.
         // Sort the vectors based on the field's name
-        Collections.sort(xVector, ((o1, o2) -> {
-            String o1Name = ((String) getValueFromField(o1, "name", new PrimitiveImpl("String", null, String.class)));
-            String o2Name = (String) getValueFromField(o2, "name", new PrimitiveImpl("String", null, String.class));
+        if (xVector.size() > 0 && xVector.get(0) instanceof M) {
+            Collections.sort(xVector, fieldNameComparison());
+            Collections.sort(yVector, fieldNameComparison());
+        }
 
-            if (o1Name != null && o2Name != null) {
-                return o1Name.compareTo(o2Name);
-            }
-            return 0;
-        }));
+        // If it is primitive,
+        // then order based on the primitive type
+        if (xVector.size() > 0 && PrimitiveUtils.isPrimitiveClass(xVector.get(0).getClass())) {
+            Collections.sort(xVector, PrimitiveUtils.orderBasedOnClass(xVector.get(0).getClass()));
+            Collections.sort(yVector, PrimitiveUtils.orderBasedOnClass(yVector.get(0).getClass()));
+        }
 
-        Collections.sort(yVector, ((o1, o2) -> {
-            String o1Name = (String) getValueFromField(o1, "name", new PrimitiveImpl("String", null, String.class));
-            String o2Name = (String) getValueFromField(o2, "name", new PrimitiveImpl("String", null, String.class));
-
-            if (o1Name != null && o2Name != null) {
-                return o1Name.compareTo(o2Name);
-            }
-            return 0;
-        }));
-
-        return ((xVector.size() == yVector.size()) && xVector.size() == n) ||
-            e(equalityMap, crossReferences, xVector.get(n), yVector.get(n)) &&
+        // continue
+        return e(equalityMap, crossReferences, xVector.get(n), yVector.get(n)) &&
             areVectorsEqual(equalityMap, crossReferences, xVector, yVector, n + 1);
     }
 
@@ -235,5 +233,20 @@ public class MObjectUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Helper method, Compare based on the field's name
+     */
+    private static Comparator <Object> fieldNameComparison() {
+        return (Object o1, Object o2) -> {
+            String o1Name = ((String) getValueFromField(o1, "name", new PrimitiveImpl("String", null, String.class)));
+            String o2Name = (String) getValueFromField(o2, "name", new PrimitiveImpl("String", null, String.class));
+
+            if (o1Name != null && o2Name != null) {
+                return o1Name.compareTo(o2Name);
+            }
+            return 0;
+        };
     }
 }
