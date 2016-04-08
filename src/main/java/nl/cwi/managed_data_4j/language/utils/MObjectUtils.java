@@ -230,7 +230,7 @@ public class MObjectUtils {
             }
 
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.debug("Error on getting field's value");
         }
         return null;
     }
