@@ -15,12 +15,12 @@ public class ReflectionUtils {
             // Order only the primitives and non-many,
             // the rest put them at the end.
             boolean isM1Comparable = (
-                (!ArrayUtils.isMany(o1.getReturnType())) &&
+                (!PrimitiveUtils.isMany(o1.getReturnType())) &&
                 PrimitiveUtils.isPrimitive(o1.getReturnType().getSimpleName())
             );
 
             boolean isM2Comparable = (
-                (!ArrayUtils.isMany(o2.getReturnType())) &&
+                (!PrimitiveUtils.isMany(o2.getReturnType())) &&
                 PrimitiveUtils.isPrimitive(o2.getReturnType().getSimpleName())
             );
 

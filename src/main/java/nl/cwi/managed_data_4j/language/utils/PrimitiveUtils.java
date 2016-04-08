@@ -3,8 +3,18 @@ package nl.cwi.managed_data_4j.language.utils;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 public class PrimitiveUtils {
+
+    public static boolean isMany(Class<?> clazz) {
+        if (clazz.isArray()) return true;
+        if (Set.class.isAssignableFrom(clazz)) return true;
+        if (List.class.isAssignableFrom(clazz)) return true;
+
+        return false;
+    }
 
     public static boolean isPrimitiveValue(String typeName, Object value) {
         boolean ok = false;

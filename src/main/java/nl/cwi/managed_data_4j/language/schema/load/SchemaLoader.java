@@ -7,14 +7,13 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
-import nl.cwi.managed_data_4j.language.utils.ArrayUtils;
+import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
 import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Dynamically loads schemas.
@@ -359,7 +358,7 @@ public class SchemaLoader {
             logger.debug("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
 
             // check for many
-            final boolean many = ArrayUtils.isMany(fieldReturnClass);
+            final boolean many = PrimitiveUtils.isMany(fieldReturnClass);
             logger.debug("    > isMany: " + many);
 
             // check for optional

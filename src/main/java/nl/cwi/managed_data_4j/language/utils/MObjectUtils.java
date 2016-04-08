@@ -74,7 +74,7 @@ public class MObjectUtils {
         }
 
         // vector leaf
-        if (ArrayUtils.isMany(x.getClass()) && ArrayUtils.isMany(y.getClass())) {
+        if (PrimitiveUtils.isMany(x.getClass()) && PrimitiveUtils.isMany(y.getClass())) {
             logger.debug(" << Vector >> ");
 
             final Collection<Object> xCollection = (Collection<Object>) x;
