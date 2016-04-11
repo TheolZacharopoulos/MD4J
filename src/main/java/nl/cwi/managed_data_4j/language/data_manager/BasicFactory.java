@@ -84,7 +84,7 @@ public class BasicFactory implements IFactory {
         final ClassLoader schemaFactoryCallingMethodClassLoader = schemaFactoryCallingMethodClass.getClassLoader();
 
         // Find the schema klass
-        Klass schemaKlass = schema.klasses().stream()
+        final Klass schemaKlass = schema.klasses().stream()
             .filter(klass -> klass.name().equals(schemaFactoryCallingMethodClass.getSimpleName()))
             .findFirst()
             .orElseThrow(() -> new RuntimeException(

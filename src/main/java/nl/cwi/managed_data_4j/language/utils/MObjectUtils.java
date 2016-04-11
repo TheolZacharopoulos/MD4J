@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Array;
@@ -53,6 +54,7 @@ public class MObjectUtils {
     }
 
     private static boolean e(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences, Object x, Object y) {
+        logger.setLevel(Level.OFF);
 
         // check for null first
         if (x == null && y == null) {
@@ -230,7 +232,7 @@ public class MObjectUtils {
             }
 
         } catch (Throwable e) {
-            logger.debug("Error on getting field's value");
+            logger.error("Error on getting field's value: " + e.getCause());
         }
         return null;
     }

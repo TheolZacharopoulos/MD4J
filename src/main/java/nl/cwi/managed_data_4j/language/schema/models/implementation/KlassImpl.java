@@ -121,4 +121,12 @@ public class KlassImpl implements Klass {
         }
         return this.schemaKlass;
     }
+
+    @Override
+    public Field key(Field... key) {
+        if (key.length > 0) {
+            this.key = key[0];
+        }
+        return this.key;
+    }
 }

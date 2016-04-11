@@ -16,6 +16,11 @@ public class PrimitiveUtils {
         return false;
     }
 
+    public static boolean doesManyNeedsAKey(Class<?> clazz) {
+        if (Set.class.isAssignableFrom(clazz)) return true;
+        return false;
+    }
+
     public static boolean isPrimitiveValue(String typeName, Object value) {
         boolean ok = false;
 

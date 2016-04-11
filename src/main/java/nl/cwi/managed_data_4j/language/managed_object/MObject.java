@@ -8,11 +8,9 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldManySet;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldPrimitive;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldRef;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSingle;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
 
 import java.lang.invoke.MethodHandles;
@@ -55,15 +53,12 @@ public class MObject implements InvocationHandler, M {
         this.schemaKlass = schemaKlass;
         this.factory = factory;
 
-        if (this.schemaKlass.fields() != null) {
+        // setup fields and properties / set default values.
+        this.schemaKlass.fields().forEach(this::safeSetupField);
 
-            // setup fields and properties / set default values.
-            this.schemaKlass.fields().forEach(this::safeSetupField);
-
-            // initialize fields with actual values.
-            if (initializers != null) {
-                this.safeInitializeProps(initializers);
-            }
+        // initialize fields with actual values.
+        if (initializers != null) {
+            this.safeInitializeProps(initializers);
         }
     }
 
@@ -102,8 +97,6 @@ public class MObject implements InvocationHandler, M {
             }
         } else {
 
-            // if there is a key, then make it a Set, otherwise a list
-            // TODO: fix, because it can not be initialized with key this does not work.
             if (hasKey(field)) {
                 this.props.put(field.name(), new MObjectFieldManySet(this, field));
             } else {
@@ -140,18 +133,6 @@ public class MObject implements InvocationHandler, M {
                 this._set(fld.name(), initializers[i]);
             }
         }
-    }
-
-    /**
-     * Helper method that returns the MObject field by it's name.
-     * Its used in order to avoid using reflection
-     * to get the fields of a Managed Object, since it is already here.
-     *
-     * @param fieldName the field's name
-     * @return the MObjectField from the managed Object properties
-     */
-    public MObjectField getMObjectField(String fieldName) {
-        return this.props.get(fieldName);
     }
 
     /**
@@ -195,22 +176,19 @@ public class MObject implements InvocationHandler, M {
             // it's an array since it's many
             Object [] inits = ((Object[]) value);
 
-            // TODO: fix, because it can not be initialized with key this does not work.
             if (hasKey(field)) {
-                ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
+                mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
             } else {
-                ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
+                mObjectField.init(new LinkedList<>(Arrays.asList(inits)));
             }
 
         } else {
-            ((MObjectFieldSingle) mObjectField).init(value);
+            mObjectField.init(value);
         }
     }
 
     private boolean hasKey(Field field) {
-        return (field.type() instanceof Primitive) ||
-            ((Klass) field.type()).fields().stream()
-            .anyMatch(Field::key);
+        return field.type().key() != null;
     }
 
     /**

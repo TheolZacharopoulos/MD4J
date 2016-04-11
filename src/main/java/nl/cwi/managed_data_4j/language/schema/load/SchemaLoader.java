@@ -7,8 +7,12 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
+import nl.cwi.managed_data_4j.language.schema.models.implementation.FieldImpl;
+import nl.cwi.managed_data_4j.language.schema.models.implementation.KlassImpl;
+import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
 import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
 import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Method;
@@ -115,6 +119,7 @@ public class SchemaLoader {
      */
     public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
 
+        logger.setLevel(Level.OFF);
         logger.debug("SchemaFactory: create schema");
 
         setupCacheForSchemaKlass(schemaSchema, schemaKlassesDef);
@@ -194,13 +199,6 @@ public class SchemaLoader {
             final Map<String, Field> fieldsForKlass =
                 buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
 
-            // TODO: The problem is here, it initializes without the wiring.
-            //       + should we create create a KlassImpl here and create
-            //         the real klass, from the factory, in the end?
-            //         DOES NOT WORK,
-            //                  it setups the fields in the initialization,
-            //                  and there is no key field then so its initialised as a list
-
             // create a new klass
             final Klass klass = factory.Klass();
             klass.name(klassName);
@@ -220,6 +218,7 @@ public class SchemaLoader {
 
         wireFieldTypes(factory, schema, allFieldsWithReturnType);
         wireFieldInverse(allFieldsWithReturnType);
+        wireFieldTypeKeys(allFieldsWithReturnType);
 
         wireKlassSupers(types, typesCache);
         wireKlassSubs(types, typesCache);
@@ -250,8 +249,12 @@ public class SchemaLoader {
             // In case the field is multi value (many), that means that the real type is
             // not given in the method.getReturnType() because this will give Set ot List,
             // BUT the real type is in method.getGenericReturnType().
-            Class<?> fieldTypeClass;
+            final Class<?> fieldTypeClass;
+
+            // in case it is multi field, get the return the Generic Return Type
             if (field.many()) {
+                // The type in this case will be Set or List,
+                // but the Generic Return Type will be the actual type.
                 final ParameterizedType fieldManyType = (ParameterizedType) method.getGenericReturnType();
                 fieldTypeClass = (Class<?>) fieldManyType.getActualTypeArguments()[0];
             } else {
@@ -329,6 +332,46 @@ public class SchemaLoader {
                         ((Klass) type).classOf(klassInterface);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * From all the created fields that are type of Klass,
+     * get their klasses and set as key the first field found as KEY.
+     *
+     * We dont need that for primitives since it is done during the type assignment.
+     * @param allFieldsWithReturnType all the created fields
+     */
+    private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
+
+        for (String classNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
+            final Field field = allFieldsWithReturnType.get(classNameFieldNameCombo).field;
+            final Type fieldType = field.type();
+
+            // we don't care about keys if it is not many
+            if (!field.many()) continue;
+
+            // in case it is a primitive, then we need to check if it needs to have a key
+            // that happens when the primitive is a type of Set (needs a key).
+            // in that case we set the key to the field itself.
+            if (PrimitiveUtils.isPrimitive(field.type().name())) {
+
+                final Method method = allFieldsWithReturnType.get(classNameFieldNameCombo).method;
+                if (PrimitiveUtils.doesManyNeedsAKey(method.getReturnType())) {
+                    fieldType.key(field);
+                }
+
+            } else {
+
+                // in case it is a Klass then just set as key the first field found as KEY,
+                // null if none found.
+                final Klass klassFieldType = (Klass) fieldType;
+                final Field key = klassFieldType.fields().stream()
+                        .filter(Field::key)
+                        .findFirst()
+                        .orElse(null);
+                fieldType.key(key);
             }
         }
     }
