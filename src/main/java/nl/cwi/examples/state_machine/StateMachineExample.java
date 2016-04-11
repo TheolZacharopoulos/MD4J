@@ -72,6 +72,8 @@ public class StateMachineExample {
         final Machine doorStateMachine = stateMachineFactory.Machine();
         doorStateMachine.start(openState);
         doorStateMachine.states(openState, closedState);
+        openState.machine(doorStateMachine);
+        closedState.machine(doorStateMachine);
 
         final List<String> commands = new LinkedList<>(Arrays.asList(
                 OPEN_TRANSITION,
