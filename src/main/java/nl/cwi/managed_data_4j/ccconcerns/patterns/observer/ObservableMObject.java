@@ -1,6 +1,5 @@
 package nl.cwi.managed_data_4j.ccconcerns.patterns.observer;
 
-import nl.cwi.managed_data_4j.language.data_manager.IFactory;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
@@ -17,8 +16,8 @@ public class ObservableMObject extends MObject implements Observable {
     // a list of observers for that object
     private List<Observe> observers;
 
-    public ObservableMObject(Klass schemaKlass, IFactory factory, Object... initializers) {
-        super(schemaKlass, factory, initializers);
+    public ObservableMObject(Klass schemaKlass, Object... initializers) {
+        super(schemaKlass, initializers);
         observers = new ArrayList<Observe>();
     }
 

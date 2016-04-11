@@ -15,6 +15,6 @@ public class ObservableFactory extends BasicFactory {
 
     @Override
     protected MObject createManagedObject(Klass klass, Object... _inits) {
-        return new ObservableMObject(klass, this, _inits);
+        return new ObservableMObject(klass, _inits);
     }
 }

@@ -1,6 +1,5 @@
 package nl.cwi.managed_data_4j.language.managed_object;
 
-import nl.cwi.managed_data_4j.language.data_manager.IFactory;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
@@ -38,19 +37,14 @@ public class MObject implements InvocationHandler, M {
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;
 
-    // The data manager that manages this managed object.
-    protected IFactory factory;
-
     /**
      * A managed object.
      *
      * @param schemaKlass the schema klass in which managed object belongs to
-     * @param factory the data manager that manages this managed object.
      * @param initializers initialization values for the object.
      */
-    public MObject(Klass schemaKlass, IFactory factory, Object... initializers) {
+    public MObject(Klass schemaKlass, Object... initializers) {
         this.schemaKlass = schemaKlass;
-        this.factory = factory;
 
         // setup fields and properties / set default values.
         this.schemaKlass.fields().forEach(this::safeSetupField);

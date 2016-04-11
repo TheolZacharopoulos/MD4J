@@ -107,7 +107,7 @@ public class BasicFactory implements IFactory {
      * @return a new Managed Object.
      */
     protected MObject createManagedObject(Klass klass, Object... inits) {
-        return new MObject(klass, this, inits); // return a basic managed object
+        return new MObject(klass, inits); // return a basic managed object
     }
 
     /**

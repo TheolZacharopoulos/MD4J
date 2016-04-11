@@ -1,6 +1,5 @@
 package nl.cwi.managed_data_4j.ccconcerns.patterns.lockable;
 
-import nl.cwi.managed_data_4j.language.data_manager.IFactory;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
@@ -9,8 +8,8 @@ public class LockableMObject extends MObject implements Lockable {
 
     private boolean isLocked = false;
 
-    public LockableMObject(Klass schemaKlass, IFactory factory, Object... initializers) {
-        super(schemaKlass, factory, initializers);
+    public LockableMObject(Klass schemaKlass, Object... initializers) {
+        super(schemaKlass, initializers);
     }
 
     public void lock() {
