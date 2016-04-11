@@ -2,24 +2,22 @@
 % Chapter: Introduction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}\label{Introduction}
-\ac{ccc} is a problem for which the classic programming techniques can not tackle with sufficiently. 
+\ac{ccc} is a problem the classic programming techniques can not tackle with sufficiently. 
 This results in scattered and tangled code, which affects the system's modularity and it's ease of maintenance and evolution. 
-Since \ac{oop} and \ac{pp} techniques can not solve this problem, \ac{aop} presented \cite{kiczales1997aspect} in order to
-provide a solution by introducing the notion of \textit{aspects}.
+Since \ac{oop} and \ac{pp} techniques can not solve this problem, \ac{aop} was introduced \cite{kiczales1997aspect} in order to provide a solution to the problem, by presenting the notion of \textit{aspects}.
 
-\ac{aop} results in a modular and \textit{single-responsibility} design whose properties must be implemented as \textit{components} (cleanly encapsulated procedure) and \textit{aspects} (not clearly encapsulated procedure), both separate concepts that are combined for the result through a process called \textit{weaving}. 
-However, relying on \ac{aop}, paradoxically, does not improve the evolution of a project even with the modularity that it provides 
-since it introduces tight coupling between the aspects and the application. 
-As a result the way to tackle with this problem we need a more sophisticated and expressing crosscut language.
-Consequently, \ac{ccc} could be handled in a higher level of the language such as the data structuring and management mechanisms.
+\ac{aop} results in a modular and \textit{single-responsibility} based design, whose properties must be implemented as \textit{components} (cleanly encapsulated procedure) and \textit{aspects} (not clearly encapsulated procedure), both separate concepts that are combined for the result through an automated process called \textit{weaving}. 
+However, relying on \ac{aop}, paradoxically, does not improve the evolution of a project even with the modularity that it provides. The reason is that it introduces tight coupling between the aspects and the application. 
+As a result, the way to address this problem is to consider of a new sophisticated and expressing crosscut language. \ac{ccc} could be handled on a higher level of the language such as the data structuring and management mechanisms.
 
-Managed data \cite{loh2012managed} allows programmers to take control of important aspects of data as reusable modules. 
+Managed data \cite{loh2012managed} allows the developers to take control of important aspects of data as reusable modules. 
 Using managed data a developer can build \textit{data managers} that handle the fundamental data manipulation primitives 
 that are usually hard-coded in the programming language, by introducing custom data manipulation mechanisms. 
-Managed data have been researched and implemented under the Enso project\footnote{\label{enso}\url{http://enso-lang.org/}}, which is developed in Ruby\footnote{\label{ruby}\url{https://www.ruby-lang.org/en/}} (a dynamic programming language) using Ruby’s reflection capabilities. 
-Furthermore, managed data are considered less able to be supported in static languages directly which makes it more challenging for 
-this thesis since it is going to be implemented in Java.
-In this thesis I am going to use the Java reflection capabilities to implement managed data and focus on specific aspects and design patterns implementations using the data managers concept of managed data. 
+Managed data have been researched and implemented under the Enso project\footnote{\label{enso}\url{http://enso-lang.org/}}, which is developed in Ruby\footnote{\label{ruby}\url{https://www.ruby-lang.org/en/}} (a dynamic programming language) using the meta-programming framework of Ruby. 
+Furthermore, it is considered\cite{loh2012managed} that managed data cannot be fully supported in static languages directly, which makes it more challenging for this thesis since it is implemented in Java.
+In this thesis we use the Java reflection API in order to implement managed data and focus on specific aspects and design patterns implementations using the data managers concept. 
+
+Finally, in order to evaluate the implementation of aspects and how we deal with \ac{ccc} in managed data, we have reimplemented a part of a well-known use case, the JHotDraw, and evaluated the results on a number of explicit criteria.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Initial Study}\label{Initial Study}
@@ -31,82 +29,118 @@ Java provides a strong implementation of the \ac{mop} \cite{kiczales1991art}, wh
 Additionally, our work focuses on the aspects perspective and it provides a solution to the \ac{ccc} problem by using managed data
 and their data managers.
 
+The most famous implementation of \ac{aop} is the one provided by Kiczales et al. called AspectJ \cite{kiczales2001overview}. 
+Although AspectJ has been used by a number of projects, some of them with significant research results \cite{hannemann2002design} \cite{marinajhotdraw}, it includes all the trade-offs of \ac{aop}, which are presented in detail in section \ref{Problem statement}. 
+In this thesis we show how we use managed data in order to tame aspects and compare the results with an AspectJ show case, the AJHotDraw.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem statement}\label{Problem statement}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Problem Analysis}\label{Problem Analysis}
-% TODO: FOCUS HERE 
-% An analysis of the problem: where does it occur and how, how often, and what are the consequences? An important part is also to scope the research: what aspects are included and what aspects are deliberately left out, and why?
 
-The problem we study regards the \ac{ccc} that are scattered around the application, resulting to a hard to maintain system 
-by tangling implementation logic and concerns code together.
+% Predefined data structuring mechanisms
+\subsubsection{Predefined data structuring mechanisms}\label{Predefined data structuring mechanisms problem}
+One of the most important characteristics of programming languages is the data structures definition.
+Different types of data structures can be found on different languages and paradigms including \textit{structures}, \textit{objects}, \textit{predefined data structures}, \textit{abstract data types} and more.
+The common characteristic of these definitions is that they are all predefined. 
+Thus, they do not allow the developers to take control on the data structuring and management mechanisms, but only to create data of these types \cite{loh2012managed}.
+
+The problem with this approach is that the predefined data structuring mechanisms can not implement \acrlong{ccc} and other ``common requirements'' for data management. 
+More specifically, those requirements are not properties that belong to a data structure definition, since, although it is easy to define them individually for every data type, that introduces a significant amount of duplicated and scattered code through the program.
+
+Consequently, in this thesis we implement managed data, which gives the programmers control over the data structuring mechanisms.
+
+% Cross cutting concerns
+\subsubsection{Crosscutting concerns}\label{Cross cutting concerns problem}
+
+As it has be seen \cite{hannemann2005role} there are a number of concerns during software implementation, that a developer has to work with. 
+For good software modularity, these concerns have to be implemented on different modules, each of these modules implement only one concern.
+However, some of these concerns can not fit to separate modules but their implementation cuts across the system's modules. 
+Those concerns are called \acrlong{ccc} and result to the problem of \textit{scattered} and \textit{tangled} code. 
+
+The problem we study focuses on the \ac{ccc} that are scattered around the application, resulting in a hard to maintain system 
+by tangling implementation logic and concerns code together. 
+In order to deal with this problem a refactoring of those concerns has to take place, in which the tangled and scattered implementation has to be replaced with an equivalent \textit{aspect} \cite{hannemann2005role}.
+
+In this thesis we focus on the modularization of such \ac{ccc} in aspects, using managed data. 
+We refactor those concerns in modular data structures each of which implement only one concern by lifting the data management up to the application level and allowing the developers to define the concerns in their own data structures.
+
+% Aspect Oriented Programming
+\subsubsection{Aspect Oriented Programming problems}\label{Aspect Oriented Programming problem}
+
 Even though, \ac{aop} provides new modularization mechanisms, which should result in easier evolving software, 
 it delivers solutions that are as hard and sometimes even harder to evolve than before \cite{tourwe2003existence}. 
 The problem lays on the aspects, which have to include a crosscut description of all places in the application where this code yields an influence. 
 Thus, the aspects are tightly coupled to the application and this greatly affects the evolvability of the overall system. 
 
-Additionally, Friedrich Steimann \cite{steimann2005domain} argues that modeling languages are not aspect ready. 
+Additionally, Steimann \cite{steimann2005domain} argues that modeling languages are not aspect ready. 
 The problem that arises is located at the level of software modeling. 
-More specifically, in \textit{roles modeling}, whereas in \ac{oop} roles are tied to the collaborations,
-collaborations rely on interactions of objects, and aspects on the other hand are typically defined independently of one another. 
+More specifically, whereas in \ac{oop} roles are tied to the collaborations, in \textit{roles modeling} collaborations rely on interactions of objects and aspects are typically defined independently of one another.
 
-Furthermore, in terms of order, it has been observed that aspects are not elements of the domain, they describe the order rather than the domain. 
+Furthermore, in terms of order, it has been observed that aspects are not elements of the domain, they rather describe the order than the domain. 
 Finally, aspects invariably express non-functional requirements, but if the non-functional requirements are not elements of domain models then neither are aspects.
-
-In order to solve the aforementioned problems, we implement manage data, lifting the data management up to the application.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Questions}\label{Research Questions}
-Managed data has not been practically implemented in a static language before, therefore my first research questions states 
-``Can managed data be implemented in a static language like Java?''. 
-Based in the previous argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \ac{ccc}, my second research question is ``Can managed data solve \ac{ccc} and to what extend does it improve the software evolution problems that \ac{aop} introduces in a modular solution?''. 
+Managed data has not been practically implemented in a static language before, therefore our first research questions states 
+\textit{``Can managed data be implemented in a static language?''}.
+Based on the previous argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve \ac{ccc} and to what extend does it improve the software evolution problems that \ac{aop} introduces in a modular solution?''}. 
 Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
-I am going to evaluate the implementation of managed data on an inventory of aspects and design patterns. 
-As a result the third research question states ``To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, in contrast with the original and the AOP implementation.''
+we evaluate the implementation of managed data on an inventory of aspects and design patterns. 
+As a result the third research question states \textit{``To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, compared to the original and the \ac{aop} implementation.''}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Solution Outline}\label{Solution Outline}
-Our solution is consisted of an implementation of managed data in Java. 
-This framework can be used by applications in order to deal with \ac{ccc}.
+Our solution consists of an implementation of managed data in Java. More specifically, we have implemented a framework that can be used in order to create managed data in Java.
+This framework provides all the mechanisms of managed data using Java reflection and dynamic proxies. Additionally, one can use the framework in order to refactor the \ac{ccc} of an application.
 
-To validate our hypotheses we are going to implement managed data in Java using the Java Reflection API and Dynamic Proxies. 
-More specifically we are going to use Java interfaces for \textit{schemas} and dynamic proxies for \textit{data managers}. 
-Furthermore, we are going to provide as a proof of concept the examples given in \cite{loh2012managed} but this time developed in Java. As mentioned in \cite{loh2012managed} to stack data managers I am going to use the Decorator Pattern \cite{gamma1995design}. 
+As it has been already mentioned, to validate our hypotheses we have implemented managed data in Java using the Java Reflection API and Dynamic Proxies. 
+More specifically we define \textit{schemas} using Java interfaces and dynamic proxies for the \textit{data managers}. 
+Furthermore, we provide a proof of concept the examples given in \cite{loh2012managed} but this time developed in Java using our framework. 
+To stack data managers\cite{loh2012managed}, we use the \textit{Decorator Pattern} \cite{gamma1995design}. 
 
-In order to prove that managed data solves the problems that \ac{aop} introduces, we are going to implement an inventory of the following aspects and design patterns from JHotDraw using data managers:
+In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented an inventory of the following aspects and design patterns from JHotDraw using data managers:
 \begin{description}
+
   \item[The Observer Pattern,] which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters pattern code through the classes. 
   This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
 
-  \item[The Singleton Pattern,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, it can easily be abstracted as an aspect and replace the \ac{oop} usage in JHotDraw. 
-
-  \item[The Template Method,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, it scatters code by introducing roles such as those of \textit{AbstractClass} and \textit{ConcreteClass}.
-
   \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
   More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
+
+  % TODO: include this?
+  \item[The Singleton Pattern,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, can easily be abstracted as an aspect and replace the \ac{oop} usage in JHotDraw. 
+
+  % TODO: include this?
+  \item[The Template Method,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, scatters code by introducing roles such as those of \textit{AbstractClass} and \textit{ConcreteClass}.
+
 \end{description}
 
-This inventory is implemented using data managers that have modularity as a main characteristic and is been evaluated in a new JHotDraw implementation. 
-We compare those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
-Since our solution is a refactoring of the JHotDraw framework we need a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. 
-However, JHotDraw comes with no tests. 
-Thus, we use the TestJHotDraw, which is a subproject of the AJHotDraw development team, and it is developed in order to contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications and allow for a better assessment of aspect orientation.
-Since we use our JHotDraw implementation for the functional evaluation of our solution, we can use the presented criteria \cite{hannemann2002design}, which are \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
+This inventory is implemented using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
+We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
+Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. However, JHotDraw comes with no tests. 
+Thus, we use TestJHotDraw, which is a subproject of the AJHotDraw development team, and is developed in order to contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications allowing for a better assessment of aspect orientation.
+Since we use our JHotDraw implementation for the functional evaluation of our solution, we can use some already researched criteria \cite{hannemann2002design}, which consist of \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Method}\label{Research Method}
-The answers for the research questions have been extracted from the background material, in our Java managed data implementation and an evaluation of our implementation in an existing use case system the JHotDraw.
+In order to answer our research questions we studied the theoretical background, we examined our managed data implementation in Java and we evaluated our implementation in an existing use case system, the JHotDraw.
 
 \begin{description}
 
-  \item[Managed data implementation in a static language.]
+  \item[Managed data implementation in a static programming language.]
   In order to answer the question if managed data could be implemented in a static language, we've implemented managed data in Java 
-  using Java's reflection capabilities\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}}, using Java interfaces 
+  using Java's reflection capabilities\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}}, Java interfaces 
   for schemas definition and dynamic proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}}
   for the data managers. An extensive presentation of the implementation is given in Chapter \ref{Implementation}.
 
-  \item[Use case implementation and evaluation.] In order to argue about the contribution of our implementation and managed data for aspects handling in general, we've used an use case application (JHotDraw) which is considered as a good design use case for \ac{oop}, along with it's \ac{aop} implementation (AJHotDraw). Using these application as references we've implemented our own version of JHotDraw using managed data to tame some of it's aspects, the results are presented extensively in Chapter \ref{Evaluation}.
+  \item[Use case implementation.] 
+  In order to argue about the contribution of our implementation and managed data for aspects handling in general, we've used a use case application (JHotDraw) which is considered as a good design use case for \ac{oop}, along with it's \ac{aop} implementation (AJHotDraw).
+  Thus, we have built our version of the JHotDraw application using our managed data framework to refactor the \ac{ccc}.
+
+  \item[Use case evaluation.]
+  In order to show if our managed data solved the issues of \ac{aop} in terms of modularity, we have gathered a number of metrics for each of the three implementations the results are presented extensively in Chapter \ref{Evaluation}.
 
 \end{description}	
 
@@ -115,85 +149,84 @@ The answers for the research questions have been extracted from the background m
 
 \begin{description}
   \item[Contribution 1: Managed data implementation in Java.]
-  Our first contribution with this thesis is the implementation of managed data in a static language like Java.
+  Our first contribution is the implementation of managed data in a static language, in our case we chose Java.
+  The reason we chose Java as the programming language is because Java is a very popular, static, object oriented programming language, with meta-programming (reflective) capabilities which we took advantage of.
   Managed data implemented as an internal \ac{dsl} in Java, using interfaces for schema definitions and dynamic proxies
   for the data managers.
 
   \item[Contribution 2: Managed data Java framework.]
-  The final deliverable is a Java library with which the developer can define and implement aspects as reusable modules
-and integrate them with an application without mixing the business logic with concern logic.
-More specifically, the schemas and the data managers have to be defined by the developer, as well as any additional
-functionality that may needed to be integrated to the patterns or roles of the application.
+  The final deliverable is a Java library, which the developer can use to define managed data and data managers for them. 
+  Additionally, the developer can define and implement aspects as reusable modules and introduce them in an application without mixing the business logic with the concern logic. 
+  More specifically, the schemas and the data managers have to be defined by the developer, as well as any additional functionality that needs to be integrated to the patterns or roles of the application.
 
   \item[Contribution 3: Managed data Evaluation in JHotDraw.]
-  We implemented a new version of the JHotDraw application using our framework in order to evaluated our \ac{ccc} solution.
-  More specifically, we focused on the \textit{Undo} concern, which is scattered around the implementation of the JHotDraw.
+  We implemented a new version of the JHotDraw application using our framework in order to evaluate our refactoring of \ac{ccc}.
+  More specifically, we focused on the \textit{Undo} concern, which is a \textit{Command Pattern} and it is scattered around the modules of the JHotDraw, as well as the \textit{Observer Pattern} which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
+  % TODO: more concerns will be added here? (Persistence?)
 
   \item[Contribution 4: JHotDraw implementation results assessment and comparison with AJHotDraw.]
-  Finally, we present the results of our evaluation and we compare them we another implementation of the JHotDraw which 
-  implements aspects using \ac{aop} and the AspectJ language, the AJHotDraw.
+  Finally, we present the results of our evaluation and we compare them with AJHotDraw which implements \ac{aop} using the AspectJ language, again in Java.
 
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Related Work}\label{Related Work}
-In this section we discuss the related work of research that inspired this thesis. 
+In this section we discuss the related work of research that inspired this thesis.
 More specifically, we discuss points that we followed and points that we've tried to improve as well as the reason of doing it.
 
 \begin{description}
 
   \item[Meta-Object Protocol]~\\
   Managed data can be implemented using reflection and the \ac{mop}. 
-  The authors of Enso \cite{loh2012managed} implemented it in Ruby using reflection and the \textbf{method\_missing} mechanism. 
+  The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and more specifically, the \textbf{method\_missing} mechanism. 
   In other languages (such as Java, JavaScript or C\#) that support dynamic proxies, they can be used for the managed data implementation, which is the way we've implemented it.
   The \ac{mop} \cite{kiczales1991art} was first implemented for simple \ac{oop} capabilities of the Lisp language in order to satisfy some developer demands including compatibility, extensibility and developers experimentation. 
   The idea was that the languages have been designed to be viewed as black box abstractions without giving the programmers the control over semantics or the implementation of those abstractions. 
   \ac{mop} opens up those abstractions to the programmer so he can adjust aspects of the implementation strategy. 
-  Providing an open implementation can be advantageous in wide range of high-level languages and that \ac{mop} technology is a powerful tool for providing that power to the programmer \cite{kiczales1991art}. 
+  Providing an open implementation can be advantageous in a wide range of high-level languages and thus \ac{mop} technology is a powerful tool for providing that power to the programmer \cite{kiczales1991art}. 
   Furthermore, \ac{mop} provides flexibility to the programmer because as a language becomes more and more high level and it's expressive power becomes more and more focused, the ability to cleanly integrate something outside the language's scope becomes more and more difficult. 
   Thus, both \ac{mop} and managed data allow the programmer to be able to control the interpretation of structure and behavior in a program.
-  However, \ac{mop} focuses on behavior of the objects and classes, while in managed data focus on the data management only.
+  However, \ac{mop} focuses on behavior of the objects and classes, while in managed data the focus rests solely on the data management.
   One could conclude that managed data is a subset of the \ac{mop} approach since managed data have a more narrow scope.
-
 
   \item[Adaptive Object Model]~\\
   Managed data \cite{loh2012managed} is closely related to the \ac{aom}. \ac{aom} \cite{yoder2002adaptive} is an architectural style that emphasizes flexibility and runtime dynamic configuration. 
   Architectures that are designed to adapt at runtime to new user requirements by retrieving descriptive information that can be interpreted at runtime, are sometimes called a ``reflective architecture'' or a ``meta architecture''. 
   An \ac{aom} system, is a system that represents classes, attributes, relationships, and behavior as metadata, something that is closely related to the managed data.
-  However, on one hand \ac{aom} style is more general than the managed data since it is described at a very high level as a pattern language. Additionally, it covers business rules and user interfaces, in addition to data management. 
-  On the other hand, \ac{aom} does not discuss issues of integration with programming languages, the representation of data schemas, or of bootstrapping, which are central characteristics of managed data. \ac{aom} is also presented as a technique for implementing business systems, not as a general programming or data abstraction technique \cite{loh2012managed}.
+  However, on one hand \ac{aom} style is more general than the managed data since it is described at a very high level as a pattern language and it covers business rules and user interfaces, in addition to data management. 
+  On the other hand, \ac{aom} does not discuss issues of integration with programming languages, the representation of data schemas, or bootstrapping, which are central characteristics of managed data. 
+  \ac{aom} is also presented as a technique for implementing business systems, not as a general programming or data abstraction technique \cite{loh2012managed}.
 
   \item[Model Driven Software Development]~\\
   \ac{mdsd} refers to a software development method which generates code from defined models. 
-  The model represent abstract data that consisted of the structure and properties definition of an entity.
+  The models represent abstract data that consist of the structure and properties definition of an entity.
   The idea of the model in \ac{mdsd} is closely related to the \textit{schemas} in managed data.
-  Similarly to the model definition, schemas define the structure, the properties and any meta-data that describe an entity
-  following by a code generation that adds functionality to that entity for it's manipulation.
+  Similarly to the model definition, schemas define the structure, the properties and any metadata that describe an entity, followed by code generation that adds any extra functionality and manipulation mechanisms to that entity.
 
   \item[The Enso Language]~\\
   Enso project\footnote{\url{http://enso-lang.org/}} is the first implementation of managed data, 
   it is open source\footnote{\url{https://github.com/enso-lang/enso}} and is used for EnsoWeb, a web framework written with managed data.
-  Although Enso is implemented in Ruby, which is a dynamic language, the source code was a informative place to start for our static implementation in Java. 
-  The structure of Enso was an inspiration of our implementation even though some parts have changed completely in order to follow our needs and support of Java's static system.
-  Additionally, examples presented in Enso, are also implemented in our case and are presented in the Appendix \ref{Example Application}.
+  Although Enso is implemented in Ruby, which is a dynamic language, the source code was a very helpful resource for our static implementation in Java. 
+  The design of Enso was an inspiration for our implementation even though some parts have changed completely in order to conform to our needs and support Java's static type system.
+  Additionally, examples presented in Enso, are also implemented in our case and are presented in Chapter \ref{Example Application}.
 
   \item[Aspect Oriented Programming]~\\
-  Although \ac{aop} is not directly connected to managed data, it allows a mechanism that is relative easy to be supported in managed data.
-  This mechanism consist of the \textit{weaving} of aspect code in specific join points. 
-  The way to support this mechanism in managed data it is through data managers, which it is the main topic of this thesis and 
-  is going to presented deeply in the following chapters.
+  Although \ac{aop} is not directly connected to managed data, it is a mechanism that is relatively easy to be supported in managed data.
+  This mechanism consists of the \textit{weaving} of aspect code in specific join points. 
+  The way to support this in managed data is through data managers. 
+  How to tame aspects in managed data is the main topic of this thesis and is going to be presented extensively in the following chapters.
 
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Document Outline}\label{Document Outline}
 In this section we outline the structure of this thesis. 
-In Chapter \ref{Background} we introduce the background, focusing on the concepts, which the reader must be familiarizes with 
-in order to follow the next chapters.
-In Chapter \ref{Theory} a basic theory is presented, which is going to be used a a reference for our implementation.
-In Chapter \ref{Implementation} the implementation is demonstrated and analyzed, providing explanation of our issues 
+In Chapter \ref{Background} we introduce the background, focusing on the concepts, which the reader must be familiar with in order to follow the next chapters.
+In Chapter \ref{Example Application} we demonstrate an example to show the capabilities of our implementation.
+% In Chapter \ref{Theory} the theory is presented, which is going to be used as a reference for our implementation.
+In Chapter \ref{Implementation} the implementation is discussed, providing explanation of our issues 
 and implementation details.
-Next, in Chapter \ref{Evaluation} an evaluation of our implementation is presented, by applying it in JHotDraw. 
+Next, in Chapter \ref{Evaluation} an evaluation of our implementation is illustrated, by applying it in JHotDraw. 
 Additionally, some metrics, claims and results are presented.
-Finally, a conclusion is given in Chapter \ref{Conclusion} along with some further work in \ref{Further Work}.
+Finally, a conclusion is given in Chapter \ref{Conclusion} followed by further work in Chapter \ref{Further Work}.
 
