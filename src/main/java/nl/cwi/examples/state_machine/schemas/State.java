@@ -9,11 +9,11 @@ import java.util.Set;
 
 public interface State extends M {
 
-    @Inverse(other = Machine.class, field = "states")
-    Machine machine(Machine... machine);
-
     @Key
     String name(String... name);
+
+    @Inverse(other = Machine.class, field = "states")
+    Machine machine(Machine... machine);
 
     @Contain
     Set<Transition> out(Transition... transition);

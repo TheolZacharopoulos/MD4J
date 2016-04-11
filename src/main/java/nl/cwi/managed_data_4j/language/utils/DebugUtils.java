@@ -62,18 +62,11 @@ public class DebugUtils {
 
                     // inverse
                     if (field.inverse() != null) {
-                        System.out.println("\t\t- Inverse : " + field.inverse().name());
+                        System.out.println("\t\t- Inverse : <" + field.inverse().owner().name() + "> " + field.inverse().name());
                     }
 
                     // many
                     System.out.println("\t\t- Many : " + field.many());
-                    if (field.many()) {
-                        if (field.type() != null) {
-                            System.out.println("\t\t\t Key : " + field.name());
-                        } else {
-                            System.out.println("\t\t\t Key : <<NULL>>");
-                        }
-                    }
 
                     // optional
                     System.out.println("\t\t- Optional : " + field.optional());

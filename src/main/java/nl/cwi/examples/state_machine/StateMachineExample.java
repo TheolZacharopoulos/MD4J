@@ -11,6 +11,8 @@ import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.language.utils.DebugUtils;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -24,44 +26,42 @@ public class StateMachineExample {
     public final static String CLOSE_TRANSITION = "close";
 
     public static void main(String[] args) {
+        PropertyConfigurator.configure("src/main/resources/logger.properties");
 
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         final Schema stateMachineSchema =
-                SchemaLoader.load(schemaFactory, schemaSchema, State.class, Transition.class, Machine.class);
+                SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
         final BasicFactory basicFactoryForStateMachines = new BasicFactory(StateMachineFactory.class, stateMachineSchema);
         final StateMachineFactory stateMachineFactory = basicFactoryForStateMachines.make();
 
-//        // ================================ Update Logging ===================================
-//        System.out.println("=============");
-//        System.out.println("Observable Objects: ");
-//
-//        final ObservableFactory observableFactory = new ObservableFactory(StateMachineFactory.class, stateMachineSchema);
-//        final StateMachineFactory observableStateMachineFactory = observableFactory.make();
-//
-//        final State openState = observableStateMachineFactory.State();
-//
-//        // Add Logging concerns
-//        ((Observable) openState).observe(UpdateLogger::log);
-//        // ===================================================================================
+        DebugUtils.debugSchema(stateMachineSchema);
 
+        // Door State Machine definition
+        final Machine doorStateMachine = stateMachineFactory.Machine();
+
+        // Open State definition
         final State openState = stateMachineFactory.State();
-
+        openState.machine(doorStateMachine);
         openState.name(OPEN_STATE);
 
+        // Closed State definition
         final State closedState = stateMachineFactory.State();
+        closedState.machine(doorStateMachine);
         closedState.name(CLOSED_STATE);
 
-        final Transition closeTransition = stateMachineFactory.Transition();
-        closeTransition.event(CLOSE_TRANSITION);
-        closeTransition.from(openState);
-        closeTransition.to(closedState);
-
+        // Open Transition
         final Transition openTransition = stateMachineFactory.Transition();
         openTransition.event(OPEN_TRANSITION);
         openTransition.from(closedState);
         openTransition.to(openState);
+
+        // Close Transition
+        final Transition closeTransition = stateMachineFactory.Transition();
+        closeTransition.event(CLOSE_TRANSITION);
+        closeTransition.from(openState);
+        closeTransition.to(closedState);
 
         openState.in(openTransition);
         openState.out(closeTransition);
@@ -69,11 +69,8 @@ public class StateMachineExample {
         closedState.in(closeTransition);
         closedState.out(openTransition);
 
-        final Machine doorStateMachine = stateMachineFactory.Machine();
         doorStateMachine.start(openState);
         doorStateMachine.states(openState, closedState);
-        openState.machine(doorStateMachine);
-        closedState.machine(doorStateMachine);
 
         final List<String> commands = new LinkedList<>(Arrays.asList(
                 OPEN_TRANSITION,
