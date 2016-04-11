@@ -355,7 +355,7 @@ public class SchemaLoader {
             // in case it is a primitive, then we need to check if it needs to have a key
             // that happens when the primitive is a type of Set (needs a key).
             // in that case we set the key to the field itself.
-            if (PrimitiveUtils.isPrimitive(field.type().name())) {
+            if (field.type().schemaKlass().name().equals("Primitive")) {
 
                 final Method method = allFieldsWithReturnType.get(classNameFieldNameCombo).method;
                 if (PrimitiveUtils.doesManyNeedsAKey(method.getReturnType())) {

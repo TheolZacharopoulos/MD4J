@@ -90,7 +90,7 @@ public class MObject implements InvocationHandler, M {
         if (!field.many()) {
 
             // if it is a primitive make it a Primitive field, otherwise a reference (managed object)
-            if (PrimitiveUtils.isPrimitive(field.type().name())) {
+            if (field.type().schemaKlass().name().equals("Primitive")) {
                 this.props.put(field.name(), new MObjectFieldPrimitive(this, field));
             } else {
                 this.props.put(field.name(), new MObjectFieldRef(this, field));
