@@ -58,12 +58,4 @@ public class PrimitiveImpl implements Primitive {
         }
         return this.classOf;
     }
-
-    @Override
-    public Field key(Field... key) {
-        if (key.length > 0) {
-            this.key = key[0];
-        }
-        return this.key;
-    }
 }

@@ -41,8 +41,6 @@ public class TestSchemaDefinition {
         assertEquals("", person.name());
         assertEquals(new Integer(0), person.age());
         assertEquals(null, person.address());
-        assertThat(person.skills(), instanceOf(Set.class));
-        assertEquals(0, person.skills().size());
 
         assertThat(person.grades(), instanceOf(List.class));
         assertEquals(0, person.grades().size());
@@ -59,8 +57,6 @@ public class TestSchemaDefinition {
         assertEquals("Alex", person.name());
         assertEquals(new Integer(0), person.age());
         assertEquals(null, person.address());
-        assertThat(person.skills(), instanceOf(Set.class));
-        assertEquals(0, person.skills().size());
 
         assertThat(person.grades(), instanceOf(List.class));
         assertEquals(0, person.grades().size());
@@ -77,8 +73,6 @@ public class TestSchemaDefinition {
         assertEquals("", person.name());
         assertEquals(new Integer(26), person.age());
         assertEquals(null, person.address());
-        assertThat(person.skills(), instanceOf(Set.class));
-        assertEquals(0, person.skills().size());
 
         assertThat(person.grades(), instanceOf(List.class));
         assertEquals(0, person.grades().size());
@@ -100,29 +94,6 @@ public class TestSchemaDefinition {
         assertEquals(new Integer(0), person.age());
         assertEquals(address.city(), person.address().city());
 
-        assertThat(person.skills(), instanceOf(Set.class));
-        assertEquals(0, person.skills().size());
-
-        assertThat(person.grades(), instanceOf(List.class));
-        assertEquals(0, person.grades().size());
-
-        assertThat(person.friends(), instanceOf(List.class));
-        assertEquals(0, person.friends().size());
-    }
-
-    @Test
-    public void initialize_skills_Test() {
-        Person person = personFactory.Person();
-        person.skills("skill1", "skill2");
-
-        assertEquals("", person.name());
-        assertEquals(new Integer(0), person.age());
-        assertEquals(null, person.address());
-        assertThat(person.skills(), instanceOf(Set.class));
-        assertEquals(2, person.skills().size());
-        assertTrue(person.skills().contains("skill1"));
-        assertTrue(person.skills().contains("skill2"));
-
         assertThat(person.grades(), instanceOf(List.class));
         assertEquals(0, person.grades().size());
 
@@ -138,7 +109,6 @@ public class TestSchemaDefinition {
         assertEquals("", person.name());
         assertEquals(new Integer(0), person.age());
         assertEquals(null, person.address());
-        assertThat(person.skills(), instanceOf(Set.class));
 
         assertThat(person.grades(), instanceOf(List.class));
         assertEquals(2, person.grades().size());
@@ -163,7 +133,6 @@ public class TestSchemaDefinition {
         assertEquals("", person.name());
         assertEquals(new Integer(0), person.age());
         assertEquals(null, person.address());
-        assertThat(person.skills(), instanceOf(Set.class));
 
         assertThat(person.grades(), instanceOf(List.class));
         assertEquals(0, person.grades().size());
@@ -185,17 +154,12 @@ public class TestSchemaDefinition {
         person.address(address);
 
         person.grades(1, 2);
-        person.skills("skill1", "skill2");
 
         assertEquals("Alex", person.name());
         assertEquals(new Integer(26), person.age());
         assertEquals(address.city(), person.address().city());
         assertEquals(address.number(), person.address().number());
         assertEquals(address.street(), person.address().street());
-
-        assertThat(person.skills(), instanceOf(Set.class));
-        assertTrue(person.skills().contains("skill1"));
-        assertTrue(person.skills().contains("skill2"));
 
         assertThat(person.grades(), instanceOf(List.class));
         assertEquals(2, person.grades().size());

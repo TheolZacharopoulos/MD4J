@@ -2,6 +2,7 @@ package nl.cwi.managed_data_4j.language.schema.models.definition;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional;
 
 import java.util.Set;
 
@@ -30,4 +31,7 @@ public interface Klass extends Type {
      */
     @Inverse(other=Schema.class, field="klasses")
     Schema schema(Schema... schema);
+
+    @Optional
+    Field key(Field... key);
 }

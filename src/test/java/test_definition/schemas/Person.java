@@ -13,8 +13,6 @@ public interface Person extends M {
 
     List<Integer> grades(Integer... grades);
 
-    Set<String> skills(String... skill);
-
     @Contain
     List<Person> friends(Person... friend);
 

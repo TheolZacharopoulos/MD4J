@@ -97,10 +97,17 @@ public class MObject implements InvocationHandler, M {
             }
         } else {
 
-            if (hasKey(field)) {
-                this.props.put(field.name(), new MObjectFieldManySet(this, field));
-            } else {
+            // in case it is a Primitive, then is always a List
+            // Sets of Primitives are not supported (yet)
+            if (field.type().schemaKlass().name().equals("Primitive")) {
                 this.props.put(field.name(), new MObjectFieldManyList(this, field));
+            } else {
+                final Klass klassType = (Klass) field.type();
+                if (klassType.key()!= null) {
+                    this.props.put(field.name(), new MObjectFieldManySet(this, field));
+                } else {
+                    this.props.put(field.name(), new MObjectFieldManyList(this, field));
+                }
             }
         }
     }
@@ -176,19 +183,22 @@ public class MObject implements InvocationHandler, M {
             // it's an array since it's many
             Object [] inits = ((Object[]) value);
 
-            if (hasKey(field)) {
-                mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
-            } else {
+            // in case it is a Primitive, then is always a List
+            // Sets of Primitives are not supported (yet)
+            if (field.type().schemaKlass().name().equals("Primitive")) {
                 mObjectField.init(new LinkedList<>(Arrays.asList(inits)));
+            } else {
+                final Klass klassType = (Klass) field.type();
+                if (klassType.key()!= null) {
+                    mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
+                } else {
+                    mObjectField.init(new LinkedList<>(Arrays.asList(inits)));
+                }
             }
 
         } else {
             mObjectField.init(value);
         }
-    }
-
-    private boolean hasKey(Field field) {
-        return field.type().key() != null;
     }
 
     /**

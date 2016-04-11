@@ -345,35 +345,28 @@ public class SchemaLoader {
      */
     private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
 
-        for (String classNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
-            final Field field = allFieldsWithReturnType.get(classNameFieldNameCombo).field;
-            final Type fieldType = field.type();
+        // from all the fields created
+        allFieldsWithReturnType.keySet().stream()
+            .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
 
-            // we don't care about keys if it is not many
-            if (!field.many()) continue;
+            // get only the many
+            .filter(Field::many)
 
-            // in case it is a primitive, then we need to check if it needs to have a key
-            // that happens when the primitive is a type of Set (needs a key).
-            // in that case we set the key to the field itself.
-            if (field.type().schemaKlass().name().equals("Primitive")) {
+            // get their type
+            .map(Field::type)
 
-                final Method method = allFieldsWithReturnType.get(classNameFieldNameCombo).method;
-                if (PrimitiveUtils.doesManyNeedsAKey(method.getReturnType())) {
-                    fieldType.key(field);
-                }
+            // get only those of type klass
+            .filter(type -> type.schemaKlass().name().equals("Klass"))
+            .map(Klass.class::cast)
 
-            } else {
-
-                // in case it is a Klass then just set as key the first field found as KEY,
-                // null if none found.
-                final Klass klassFieldType = (Klass) fieldType;
-                final Field key = klassFieldType.fields().stream()
+            // for each klass, set key as the first field that is a Key otherwise null
+            .forEach(fieldTypeKlass ->
+                fieldTypeKlass.key(
+                    fieldTypeKlass.fields().stream()
                         .filter(Field::key)
                         .findFirst()
-                        .orElse(null);
-                fieldType.key(key);
-            }
-        }
+                        .orElse(null))
+            );
     }
 
     /**

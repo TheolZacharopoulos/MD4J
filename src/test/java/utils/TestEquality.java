@@ -144,54 +144,12 @@ public class TestEquality {
         person1.address(addressPerson1);
         addressPerson1.person(person1);
 
-        person1.skills(new String[]{"skill1","skill2","skill3"});
-
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
         addressPerson2.person(person2);
-
-        person2.skills(new String[]{"skill1","skill2","skill3"});
 
         assertTrue(MObjectUtils.equals(person1, person2));
-    }
-
-    @Test
-    public void cross_reference_equality_primitive_set_not_ordered_Test() {
-        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.Person(24, "Alex");
-        person1.address(addressPerson1);
-        addressPerson1.person(person1);
-
-        person1.skills(new String[]{"skill1","skill2","skill3"});
-
-        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
-        Person person2 = personFactory.Person(24, "Alex");
-        person2.address(addressPerson2);
-        addressPerson2.person(person2);
-
-        person2.skills(new String[]{"skill3","skill2","skill1"});
-
-        assertTrue(MObjectUtils.equals(person1, person2));
-    }
-
-    @Test
-    public void cross_reference_equality_primitive_set_Test_fail() {
-        Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
-        Person person1 = personFactory.Person(24, "Alex");
-        person1.address(addressPerson1);
-        addressPerson1.person(person1);
-
-        person1.skills(new String[]{"skill1","skill2","skill3"});
-
-        Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
-        Person person2 = personFactory.Person(24, "Alex");
-        person2.address(addressPerson2);
-        addressPerson2.person(person2);
-
-        person2.skills(new String[]{"skill1","skill2"});
-
-        assertFalse(MObjectUtils.equals(person1, person2));
     }
 
     @Test

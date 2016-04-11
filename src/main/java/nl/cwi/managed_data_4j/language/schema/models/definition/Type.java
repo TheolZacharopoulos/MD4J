@@ -24,7 +24,4 @@ public interface Type extends M {
      * Which Java class does Type is of.
      */
     Class<?> classOf(Class<?>... classOf);
-
-    @Optional
-    Field key(Field... key);
 }
