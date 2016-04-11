@@ -7,11 +7,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
-import nl.cwi.managed_data_4j.language.schema.models.implementation.FieldImpl;
-import nl.cwi.managed_data_4j.language.schema.models.implementation.KlassImpl;
-import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
 import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
-import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 
@@ -392,7 +388,25 @@ public class SchemaLoader {
         // That means that a constructor with initialization in the schema factory, should have order arguments
         // in alphabetical order, and include only the primitives.
         final Method[] fields = schemaKlassDefinition.getMethods();
-        Arrays.sort(fields, ReflectionUtils.methodsOrderComparator());
+        Arrays.sort(fields, (Method o1, Method o2) -> {
+
+            // Order only the primitives and non-many,
+            // the rest put them at the end.
+            boolean isM1Comparable = (
+                (!PrimitiveUtils.isMany(o1.getReturnType())) &&
+                PrimitiveUtils.isPrimitive(o1.getReturnType().getSimpleName())
+            );
+
+            boolean isM2Comparable = (
+                (!PrimitiveUtils.isMany(o2.getReturnType())) &&
+                PrimitiveUtils.isPrimitive(o2.getReturnType().getSimpleName())
+            );
+
+            if ((!isM1Comparable) && (!isM2Comparable)) return 0;
+            if (!isM1Comparable) return 1;
+            if (!isM2Comparable) return -1;
+            return o1.getName().compareTo(o2.getName());
+        });
 
         for (Method schemaKlassField : fields) {
             final String fieldName = schemaKlassField.getName();

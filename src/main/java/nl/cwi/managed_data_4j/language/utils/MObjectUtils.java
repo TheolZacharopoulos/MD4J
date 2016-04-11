@@ -169,7 +169,7 @@ public class MObjectUtils {
             final Object xFieldValue = getValueFromField(x, xField.name(), xField.type());
             final Object yFieldValue = getValueFromField(y, yField.name(), yField.type());
 
-            final boolean isPrimitive = PrimitiveUtils.isPrimitiveClass(xField.type().classOf());
+            final boolean isPrimitive = xField.type().schemaKlass().name().equals("Primitive");
 
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
