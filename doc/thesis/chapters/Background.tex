@@ -367,19 +367,85 @@ These elements are shown in the figure \ref{fig:Concerns_Selection_Listener}.
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Role-based Refactoring of \acrlong{ccc}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Evaluation}
+% \subsubsection{Role-based Refactoring of \acrlong{ccc}}
+% \paragraph{Evaluation}
+% TODO: Keep it?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The ``Undo'' Concern of JHotDraw}\label{The Undo Concern of JHotDraw}
+After a fan-in analysis of JHotDraw \cite{marin2004identifying}, Marin identified the  ``Undo'' \ac{ccc} in JHotDraw and he presents an approach to the aspect-oriented refactoring of this concern \cite{marin2004refactoring}. 
+Marin uses the \textit{(un)pluggability} property of a concern as an estimate of its refactoring cost. 
+The author propose the refactoring of the ``Undo'' \ac{ccc} in JHotDraw using AspectJ. 
+During the fan-in analysis \cite{marin2004identifying}, the results have shown about 30 undo activities defined for various elements of JHotDraw. 
+A representation of the elements in the JHotDraw implementation of Undo concern in figure \ref{fig:Participants_for_undo_in_JHotDraw}.
+
+\begin{figure}[h]
+	\centering
+  	\fbox{\includegraphics[width=.6\textwidth]{figures/BG_Participants_for_undo_in_JHOTDRAW.png}}
+  	\caption{Participants for undo in JHotDraw \cite{marin2004refactoring}}
+  	\label{fig:Participants_for_undo_in_JHotDraw}
+\end{figure}
+
+The \texttt{Activity} component participate in the implementation of the \textit{Command} design pattern\cite{gamma1995design}. 
+Many of these activities have support for undo functionality, which in JHotDraw is implemented by means of nested (undo) classes. 
+The nested class knows how to undo the given activity and maintains a list of affected figures whose state is also affected if the activity must be undone. 
+Whenever the activity modifies its state, it also updates fields in its associated undo activity to actually perform the undo. 
+The \texttt{Undoable Command} object serves three roles: 
+\begin{itemize}
+	\item it assumes the request to execute the command
+	\item then, it delegates the command's execution to the wrapped command 
+	\item and last, acquires a reference to the undo activity associated with the wrapped command and it pushes it into a stack managed by an \texttt{UndoManager}. 
+	When executing an \texttt{Undo Command}, the top undo activity in the stack is extracted and, after the execution of its \texttt{undo()} method, is pushed into a redo stack managed  by the same \texttt{UndoManager}.
+\end{itemize}
+
+Given this implementation, it is obvious that the primary decomposition of \textit{Command} is crosscut by a number of elements as follows: 
+
+\begin{itemize}
+	\item the field by \texttt{AbstractCommand} for storing the reference to the associated \texttt{Undo Activity}.
+
+	\item the accessors for this field implemented by the same class.
+	\item the \texttt{UndoActivity} nested classes implemented by most of the concrete commands that support undo.
+
+	\item the factory methods for the undo activities declared by each concrete command that can be undone.
+	
+	\item the references to the before enumerated elements from non-undo related members.
+\end{itemize}
+
+In order to refactor this concern in AspectJ, the implementation of AJHotDraw succeeded though the following steps \cite{marin2004refactoring}:
+
+\begin{enumerate}
+
+	\item An undo-dedicated aspect is associated to each of undo-able command. 
+	The aspect will implement the entire undo functionality for the given command, while the undo code is removed from the command class.
+
+ 	\item Each aspect will consistently be named by appending \texttt{UndoActivity} to the name of its associated command class to enforce the relation between the two.
+
+	\item Next, the command's nested \texttt{UndoActivity} class moves to the aspect. 
+	The factory methods for the undo activities also move to the the aspect, from where are introduced back, into the associated command classes, using inter-type declarations.
+
+	\item Finally, the undo setup is attached to those methods from which was previously removed, namely execute() method, by means of an AspectJ \texttt{advice}.
+
+\end{enumerate}
+
+This proposition \cite{marin2004refactoring} provides an easy migration to an aspect-based solution. 
+The \ac{ccc} has been identified, then removed from the system, and finally re-added in an aspect-specific manner.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Evaluation}
+\subsubsection{(Un)pluggability of the Undo concern}
+In order to evaluate the \ac{ccc} refactoring of ``Undo'' Marin \cite{marin2004refactoring} used the (Un)pluggability property.
+
+The author groups the commands as complexity assessment based on first the degree of \textit{tangling} of the undo setup in the command's logic, particularly the activity's \texttt{execute()}method and second, on the impact of removing the undo-related part from its original site, which can be estimated by the number of references to the factory method and to the methods of the nested undo activity.
+
+Thus, the (un)pluggability property gives a measure of how clear the concern is distinguished in the original code and is a good estimate of the refactoring costs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{AspectJ Drawbacks in the Undo Solution}
+By aspect-refactoring, now the two concerns are separated, modularized and the secondary concern of undo is no longer tangled into the implementation of the primary one. 
+However, a number of drawbacks that could overcome by a better aspect language support, which can be discussed in relation to this experiment. 
+For instance, since AspectJ's mechanisms do not allow introduction of nested classes, the post-refactoring association will only be an indirect one, based on naming conventions (``\texttt{UndoActivity}''). 
+This is a weaker connection than the one provided by the original solution. 
+Another drawback that is observed is the change of the visibility of the methods introduced from the aspects, for example the inter-type declarations. 
+The visibility declared in the aspect refers to the aspect and not to the target class. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{The ``Persistence'' Concern of JHotDraw}
