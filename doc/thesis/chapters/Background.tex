@@ -236,13 +236,13 @@ Thus, conforming to all those interfaces, a proxy can be casted to any of them a
 All the proxy objects have an associated object of type \texttt{InvocationHandler}, which handles the method invocations performed on the proxy, the interface of the invocation handler is shown in listing \ref{lst:The Invocation Handler Interface}.
 
 \begin{sourcecode}
-	\label{lst:The Invocation Handler Interface}
 	\begin{lstlisting}[language=Java]
 public interface InvocationHandler {
 	public Object invoke(Object proxy, Method method,Object[] args) throws Throwable;
 }		
 	\end{lstlisting}
 	\caption{The Invocation Handler Interface}
+	\label{lst:The Invocation Handler Interface}
 \end{sourcecode}
 
 The arguments of the \texttt{invoke} method include the object on which the method was originally invoked (i.e., the proxy), the method itself that was invoked on the proxy, and the arguments of that method, if any.
@@ -263,7 +263,6 @@ Hence, this would lead to scattered logging code and tangled code with the metho
 This is a problem that can be solved with dynamic proxies, a simple solution is presented in listing \ref{lst:Logging in dynamic proxies}.
 
 \begin{sourcecode}
-	\label{lst:Logging in dynamic proxies}
 	\begin{lstlisting}[language=Java]
 
 import java.lang.reflect.*;
@@ -302,6 +301,7 @@ public class TracingIH implements InvocationHandler {
 
 	\end{lstlisting}
 	\caption{An invocation handler for a proxy that traces calls \cite{forman2004java}}
+	\label{lst:Logging in dynamic proxies}
 \end{sourcecode}
 
 % TODO: Reread - Recheck

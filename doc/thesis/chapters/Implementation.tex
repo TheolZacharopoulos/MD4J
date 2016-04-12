@@ -1,64 +1,115 @@
+% !TEX root = ../thesis.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \chapter{Theory}\label{Theory}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Self Describing}\label{Self Describing}
+% \subsection{Reuse}
+% \subsection{Malleability}
+% \subsection{Java runtime}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Model Driven Development}\label{MDD}
+% \subsection{Object and Schemas}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Schema}
+
+% \subsection{Description of Schema}
+% % A class has a name and a list of fields, each of which ha a name and a type 
+
+% \subsection{Schema Schema}
+
+% \subsection{Metadata}
+% % Inverse fields 
+% % – parent/child, instructor/course, etc 
+% % – automatically maintained 
+% % Field properties 
+% % – key: ensures uniqueness in context 
+% % – traversal: ensures reachability 
+% % – ordering: ordered/unordered collections 
+% % Invariants 
+% % – field.type = field.inverse.owner  
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Factories}
+% % Manages data described by a schema 
+
+% % Interpreted 
+% % – Virtual object has fields specified by schema 
+% % – Ensures data is valid with respect to schema 
+
+% % Multiple interpretations
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Implementation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Implementation}\label{Implementation}
+\section{Intro}\label{sec:Intro Implementation}
+This chapter describes out implementation of managed data in Java.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Managed Data}\label{Managed Data Implementation}
+\section{Managed Data}\label{sec:Managed Data Implementation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Schema}\label{Schema Implementation}
+\subsection{Schema}\label{subsec:Schema Implementation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Schema Definition}\label{Schema Definition}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Data Managers}\label{Data Manager Implementation}
+\subsection{Data Managers}\label{sec:Data Manager Implementation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Data Managers Definition}\label{Data Managers Definition}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Bootstrapping}\label{Bootstrapping}
+\section{Bootstrapping}\label{sec:Bootstrapping}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Cutting the umbilical cord}\label{Cutting the umbilical cord}
+\subsection{Cutting the umbilical cord}\label{subsec:Cutting the umbilical cord}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Self-describing schema (SchemaSchema)}\label{SchemaSchema}
+\section{Self-describing schema (SchemaSchema)}\label{sec:SchemaSchema}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Schema Loading}\label{Schema Loading}
+\section{Schema Loading}\label{sec:Schema Loading}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Forward}\label{Schema Loading Forward}
+\subsection{Forward}\label{subsec:Schema Loading Forward}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Wire the Cross-References}\label{Schema Loading Wire the Cross-References}
+\subsection{Wire the Cross-References}\label{subsec:Schema Loading Wire the Cross-References}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Typing}\label{Implementation Typing}
+\section{Typing}\label{sec:Implementation Typing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Primitives}\label{Typing Primitives}
+\subsection{Primitives}\label{subsec:Typing Primitives}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Collections}\label{Typing Collections}
+\subsection{Collections}\label{subsec:Typing Collections}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Implementation Issues}\label{Implementation Issues}
+\section{Implementation Issues}\label{sec:Implementation Issues}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Methods ordering}\label{Methods ordering}
+\subsection{Methods ordering}\label{subsec:Methods ordering}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Hash-code of Managed Objects}\label{Hashcode of Managed Objects}
+\subsection{Hash-code of Managed Objects}\label{subsec:Hashcode of Managed Objects}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Default methods of Managed Objects}\label{Default methods of Managed Objects}
+\subsection{Default methods of Managed Objects}\label{subsec:Default methods of Managed Objects}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Collections of Managed Objects}\label{Collections of Managed Objects}
+\subsection{Collections of Managed Objects}\label{subsec:Collections of Managed Objects}
+
+\subsubsection{Set of Primitives}
+\subsubsection{Set of non-Primitives}
+\subsubsection{Lists of Primitives}
+\subsubsection{Lists of non-Primitives}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Transparent equivalence}\label{Transparent equivalence}
+\subsection{Managed Object Equivalence}\label{subsec:Managed Object equivalence}

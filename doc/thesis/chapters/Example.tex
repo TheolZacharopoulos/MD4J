@@ -3,11 +3,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Example Applications
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Example Application}\label{Example Application}
+\chapter{Example Application: State Machine Monitoring}\label{Example Application}
 In order to show the contribution of our implementation in terms aspect refactoring, we are going to present a simple example.
 The example consists of a simple state machines application, which is inspired by Martin Fowler \cite{fowler2010domain}.
 
-% change this a bit
+% TODO: Rephrase
 The requirements of the application are simple: A state machine consists of a number of named state declarations, where each state contains transitions to other states (identified by name) when a certain event happens.
 
 In our example we want to first define these models, next interpret the definition given a list of event and finally log any changed in the console.
@@ -17,7 +17,6 @@ In our example we want to first define these models, next interpret the definiti
 First we need to define all the needed models of the state machines application. As extracted from the requirements, the models that are derive are \texttt{State} \ref{lst:State_Schema}, \texttt{Machine} \ref{lst:Machine_Schema} and \texttt{Transition} \ref{lst:Transition_Schema}.
 
 \begin{sourcecode}
-	\label{lst:State_Schema}
 	\begin{lstlisting}[language=Java]
 public interface State extends M {
 
@@ -34,10 +33,10 @@ public interface State extends M {
 }
 	\end{lstlisting}
 	\caption{The State Schema}
+	\label{lst:State_Schema}
 \end{sourcecode}
 
 \begin{sourcecode}
-	\label{lst:Machine_Schema}
 	\begin{lstlisting}[language=Java]
 public interface Machine {
     State start(State... state);
@@ -47,10 +46,10 @@ public interface Machine {
 }
 	\end{lstlisting}
 	\caption{The Machine Schema}
+	\label{lst:Machine_Schema}
 \end{sourcecode}
 
 \begin{sourcecode}
-	\label{lst:Transition_Schema}
 	\begin{lstlisting}[language=Java]
 public interface Transition extends M {
 
@@ -65,6 +64,7 @@ public interface Transition extends M {
 }
 	\end{lstlisting}
 	\caption{The Transition Schema}
+	\label{lst:Transition_Schema}
 \end{sourcecode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,7 +72,6 @@ public interface Transition extends M {
 In order to create the three schemas as managed data we need also to define a factory, which makes managed data instances for each of these schemas \ref{lst:StateMachineFactory}.
 
 \begin{sourcecode}
-	\label{lst:StateMachineFactory}
 	\begin{lstlisting}[language=Java]
 public interface StateMachineFactory {
     State State();
@@ -81,10 +80,11 @@ public interface StateMachineFactory {
 }
 	\end{lstlisting}
 	\caption{The StateMachine Factory}
+	\label{lst:StateMachineFactory}
 \end{sourcecode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Data managers definition}
+\section{Data managers}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Basic Data Manager}
@@ -93,7 +93,5 @@ public interface StateMachineFactory {
 \subsection{Observable Data Manager}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Aspects}
+\section{Monitoring}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Logging}
