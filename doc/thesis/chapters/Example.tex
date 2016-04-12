@@ -1,20 +1,87 @@
+% !TEX root = ../thesis.tex
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Example Applications
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Example Application}\label{Example Application}
-% State Machine
+In order to show the contribution of our implementation in terms aspect refactoring, we are going to present a simple example.
+The example consists of a simple state machines application, which is inspired by Martin Fowler \cite{fowler2010domain}.
+
+% change this a bit
+The requirements of the application are simple: A state machine consists of a number of named state declarations, where each state contains transitions to other states (identified by name) when a certain event happens.
+
+In our example we want to first define these models, next interpret the definition given a list of event and finally log any changed in the console.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schemas definition}
+First we need to define all the needed models of the state machines application. As extracted from the requirements, the models that are derive are \texttt{State} \ref{lst:State_Schema}, \texttt{Machine} \ref{lst:Machine_Schema} and \texttt{Transition} \ref{lst:Transition_Schema}.
+
+\begin{sourcecode}
+	\label{lst:State_Schema}
+	\begin{lstlisting}[language=Java]
+public interface State extends M {
+
+    @Inverse(other = Machine.class, field = "states")
+    Machine machine(Machine... machine);
+
+    @Key
+    String name(String... name);
+
+    @Contain
+    Set<Transition> out(Transition... transition);
+
+    Set<Transition> in(Transition... transition);
+}
+	\end{lstlisting}
+	\caption{The State Schema}
+\end{sourcecode}
+
+\begin{sourcecode}
+	\label{lst:Machine_Schema}
+	\begin{lstlisting}[language=Java]
+public interface Machine {
+    State start(State... state);
+
+    @Contain
+    Set<State> states(State... state);
+}
+	\end{lstlisting}
+	\caption{The Machine Schema}
+\end{sourcecode}
+
+\begin{sourcecode}
+	\label{lst:Transition_Schema}
+	\begin{lstlisting}[language=Java]
+public interface Transition extends M {
+
+    @Key
+    String event(String... event);
+
+    @Inverse(other = State.class, field = "out")
+    State from(State... from);
+
+    @Inverse(other = State.class, field = "in")
+    State to(State... to);
+}
+	\end{lstlisting}
+	\caption{The Transition Schema}
+\end{sourcecode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{State Schema}
+\section{Factory definition}
+In order to create the three schemas as managed data we need also to define a factory, which makes managed data instances for each of these schemas \ref{lst:StateMachineFactory}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Machine Schema}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Transition Schema}
+\begin{sourcecode}
+	\label{lst:StateMachineFactory}
+	\begin{lstlisting}[language=Java]
+public interface StateMachineFactory {
+    State State();
+    Machine Machine();
+    Transition Transition();
+}
+	\end{lstlisting}
+	\caption{The StateMachine Factory}
+\end{sourcecode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Data managers definition}
