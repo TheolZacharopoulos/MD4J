@@ -44,23 +44,24 @@ public class StateMachineExample {
         final State closedState = stateMachineFactory.State(CLOSED_STATE);
         closedState.machine(doorStateMachine);
 
-        // Open Transition
-        final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
-        openTransition.from(closedState);
-        openTransition.to(openState);
-
         // Close Transition
         final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
         closeTransition.from(openState);
         closeTransition.to(closedState);
 
+        // Open Transition
+        final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
+        openTransition.from(closedState);
+        openTransition.to(openState);
+
+        // State machine start
+        doorStateMachine.start(openState);
+
+        // wiring:
         openState.in(openTransition);
         openState.out(closeTransition);
-
         closedState.in(closeTransition);
         closedState.out(openTransition);
-
-        doorStateMachine.start(openState);
         doorStateMachine.states(openState, closedState);
 
         final List<String> commands = new LinkedList<>(Arrays.asList(
