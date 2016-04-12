@@ -5,13 +5,13 @@ import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import test_definition.PersonFactory;
 import test_definition.schemas.Address;
 import test_definition.schemas.Person;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
@@ -141,8 +141,6 @@ public class TestSchemaDefinition {
         assertEquals(2, person.friends().size());
     }
 
-
-
     @Test
     public void initialize_all_Test() {
         Person person = personFactory.Person(26, "Alex");
@@ -168,5 +166,17 @@ public class TestSchemaDefinition {
 
         assertThat(person.friends(), instanceOf(List.class));
         assertEquals(2, person.friends().size());
+    }
+
+    @Test
+    public void structure_inverse_Test() {
+        Person person = personFactory.Person(26, "Alex");
+        Address address = personFactory.Address("Amsterdam", 242, "Science Park");
+
+        // inverse
+        person.address(address);
+
+        assertEquals(person.name(), address.tenant().name());
+        assertEquals(person.age(), address.tenant().age());
     }
 }

@@ -110,12 +110,12 @@ public class TestEquality {
         Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
-        addressPerson1.person(person1);
+        addressPerson1.tenant(person1);
 
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
-        addressPerson2.person(person2);
+        addressPerson2.tenant(person2);
 
         assertTrue(MObjectUtils.equals(person1, person2));
     }
@@ -126,13 +126,13 @@ public class TestEquality {
         Person person1 = personFactory.Person(24, "Alex");
 
         person1.address(addressPerson1);
-        addressPerson1.person(person1);
+        addressPerson1.tenant(person1);
 
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
 
         person2.address(addressPerson2);
-        addressPerson2.person(person1); // wrong person reference
+        addressPerson2.tenant(person1); // wrong tenant reference
 
         assertFalse(MObjectUtils.equals(person1, person2));
     }
@@ -142,12 +142,12 @@ public class TestEquality {
         Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
-        addressPerson1.person(person1);
+        addressPerson1.tenant(person1);
 
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
-        addressPerson2.person(person2);
+        addressPerson2.tenant(person2);
 
         assertTrue(MObjectUtils.equals(person1, person2));
     }
@@ -157,14 +157,14 @@ public class TestEquality {
         Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
-        addressPerson1.person(person1);
+        addressPerson1.tenant(person1);
 
         person1.grades(new Integer[]{1,2,3});
 
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
-        addressPerson2.person(person2);
+        addressPerson2.tenant(person2);
 
         person2.grades(new Integer[]{1,2,3});
 
@@ -176,14 +176,14 @@ public class TestEquality {
         Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
-        addressPerson1.person(person1);
+        addressPerson1.tenant(person1);
 
         person1.grades(new Integer[]{1,2,3});
 
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
-        addressPerson2.person(person2);
+        addressPerson2.tenant(person2);
 
         person2.grades(new Integer[]{1, 3});
 
@@ -191,11 +191,11 @@ public class TestEquality {
     }
 
     @Test
-    public void cross_reference_equality_klass_set_not_ordered_Test() {
+    public void cross_reference_equality_klass_list_Test() {
         Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
-        addressPerson1.person(person1);
+        addressPerson1.tenant(person1);
 
         Person person1Friend1 = personFactory.Person(20, "George");
         Person person1Friend2 = personFactory.Person(22, "Martin");
@@ -209,7 +209,7 @@ public class TestEquality {
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
-        addressPerson2.person(person2);
+        addressPerson2.tenant(person2);
 
         person2.friends(person1Friends.toArray(new Person[person1Friends.size()]));
 
@@ -217,11 +217,11 @@ public class TestEquality {
     }
 
     @Test
-    public void cross_reference_equality_klass_set_Test_fail() {
+    public void cross_reference_equality_klass_list_Test_fail() {
         Address addressPerson1 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person1 = personFactory.Person(24, "Alex");
         person1.address(addressPerson1);
-        addressPerson1.person(person1);
+        addressPerson1.tenant(person1);
 
         Person person1Friend1 = personFactory.Person(20, "George");
         Person person1Friend2 = personFactory.Person(22, "Martin");
@@ -231,7 +231,7 @@ public class TestEquality {
         Address addressPerson2 = personFactory.Address("Amsterdam", 242, "Science Park");
         Person person2 = personFactory.Person(24, "Alex");
         person2.address(addressPerson2);
-        addressPerson2.person(person2);
+        addressPerson2.tenant(person2);
 
         person2.friends(new Person[]{person1Friend2});
 

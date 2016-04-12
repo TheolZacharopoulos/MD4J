@@ -1,13 +1,13 @@
 package test_definition.schemas;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
-import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 
 public interface Address extends M {
     String street(String... street);
     Integer number(Integer... number);
     String city(String... city);
 
-    // Cross reference
-    Person person(Person... person);
+    @Inverse(other = Person.class, field = "address")
+    Person tenant(Person... tenant);
 }
