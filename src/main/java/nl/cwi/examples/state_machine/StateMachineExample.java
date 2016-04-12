@@ -3,15 +3,11 @@ package nl.cwi.examples.state_machine;
 import nl.cwi.examples.state_machine.schemas.Machine;
 import nl.cwi.examples.state_machine.schemas.State;
 import nl.cwi.examples.state_machine.schemas.Transition;
-import nl.cwi.managed_data_4j.ccconcerns.aspects.UpdateLogger;
-import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.Observable;
-import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
-import nl.cwi.managed_data_4j.language.utils.DebugUtils;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.util.Arrays;
@@ -36,30 +32,25 @@ public class StateMachineExample {
         final BasicFactory basicFactoryForStateMachines = new BasicFactory(StateMachineFactory.class, stateMachineSchema);
         final StateMachineFactory stateMachineFactory = basicFactoryForStateMachines.make();
 
-        DebugUtils.debugSchema(stateMachineSchema);
-
+        // ========================================================
         // Door State Machine definition
         final Machine doorStateMachine = stateMachineFactory.Machine();
 
         // Open State definition
-        final State openState = stateMachineFactory.State();
+        final State openState = stateMachineFactory.State(OPEN_STATE);
         openState.machine(doorStateMachine);
-        openState.name(OPEN_STATE);
 
         // Closed State definition
-        final State closedState = stateMachineFactory.State();
+        final State closedState = stateMachineFactory.State(CLOSED_STATE);
         closedState.machine(doorStateMachine);
-        closedState.name(CLOSED_STATE);
 
         // Open Transition
-        final Transition openTransition = stateMachineFactory.Transition();
-        openTransition.event(OPEN_TRANSITION);
+        final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
         openTransition.from(closedState);
         openTransition.to(openState);
 
         // Close Transition
-        final Transition closeTransition = stateMachineFactory.Transition();
-        closeTransition.event(CLOSE_TRANSITION);
+        final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
         closeTransition.from(openState);
         closeTransition.to(closedState);
 
