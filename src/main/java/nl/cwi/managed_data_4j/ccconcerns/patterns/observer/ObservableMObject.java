@@ -30,7 +30,7 @@ public class ObservableMObject extends MObject implements Observable {
     }
 
     @Override
-    protected void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
+    public void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
         super._set(_name, _value);
 
         // Run the observe function for each of the observers on every "set"

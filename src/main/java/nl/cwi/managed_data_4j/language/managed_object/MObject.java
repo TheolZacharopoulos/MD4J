@@ -141,7 +141,11 @@ public class MObject implements InvocationHandler, M {
      * @return the fields value.
      * @throws NoSuchFieldError in case there no field with this name.
      */
-    protected Object _get(String name) throws NoSuchFieldError {
+    public Object _get(String name) throws NoSuchFieldError {
+        return _getField(name).get(); // return the field's value
+    }
+
+    public MObjectField _getField(String name) throws NoSuchFieldError {
         final MObjectField mObjectField = this.props.get(name);
 
         // check if the field exists
@@ -149,8 +153,7 @@ public class MObject implements InvocationHandler, M {
             throw new NoSuchFieldError(
                 "No field named '" + name + "' in class '" + schemaKlass.name() + "'");
         }
-
-        return mObjectField.get(); // return the field's value
+        return mObjectField;
     }
 
     /**
@@ -160,7 +163,7 @@ public class MObject implements InvocationHandler, M {
      * @throws NoSuchFieldError in case there no field with this name.
      * @throws InvalidFieldValueException in case the value is not the right type.
      */
-    protected void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException {
+    public void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException {
         final MObjectField mObjectField = this.props.get(name);
 
         // check if the field exists
