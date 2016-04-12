@@ -9,63 +9,66 @@
 % Section: CCC
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Cross Cutting Concerns}\label{Cross Cutting Concerns}
-There is a significant research in software engineering that focuses on the importance of software modularity. 
-The number of advantages of modular systems is outrageous, with maybe the most significant the extensibility and evolution of a system \cite{parnas1972criteria}.
+There is significant research in software engineering that focuses on the importance of software modularity. 
+The most significant, among the many, advantage of modular systems is the extensibility and evolution of a system \cite{parnas1972criteria}.
 
-However, during the development of a system there is a number of concerns that they have to be considered and implemented into the system. 
-In order to follow the modularity principles, those concerns have to be implemented in a separate modules, this way the program will be extensible and its evolution easier.
-Nonetheless, many of those concerns can not fit into the existing modular mechanisms of any of the existing programming paradigms including both \ac{oop} and \ac{pp}. 
+However, during the development of a system there is a number of concerns that have to be considered and implemented into the system. 
+In order to follow the modularity principles, those concerns have to be implemented in separate modules, this way the program will be extensible and its evolution will be easier.
+Nonetheless, many of those concerns can not fit into the existing modular mechanisms in any of the existing programming paradigms including both \acrlong{oop} and \acrlong{pp}. 
 In those cases, the concerns are scattered through the modules of the system, resulting to scattered and tangled code. 
-Those concerns called \acrlong{ccc} \cite{hannemann2005role}.
-\ac{ccc} considered a serious issue for the evolution of a system and the effects of tangled and scattered code disastrous for a system's extensibility.
+Those concerns are called \acrlong{ccc} \cite{hannemann2005role}.
+\ac{ccc} are considered a serious issue for the evolution of a system and their effects of tangled and scattered code can be disastrous for a system's extensibility.
 
-The reason is that the code which is related to a concern, is scattered in multiple modules, while the concern code is tangled with the different modules logic. 
-Thus, this results to a system which does not follow the \textit{Single Responsibility Principle} and consequently the system will be hard to maintain.
+The reason is that the code which is related to a concern is scattered in multiple modules, while the concern code is tangled with the each module's logic resulting in a system, which does not follow the \textit{Single Responsibility Principle} and consequently is hard to maintain.
 
-Some examples of those \ac{ccc} are persistence, caching, logging, error handling \cite{lippert2000study}, access control and many more. 
-Additionally, some design patterns scatter ``design pattern code'' thought the application, such as the \textit{Observer Pattern}, \textit{template Pattern}, \textit{command Pattern} etc. \cite{hannemann2002design} \cite{marin2004refactoring}.
+Among many examples of those \ac{ccc} are persistence, caching, logging, error handling \cite{lippert2000study} and access control. 
+Additionally, some design patterns scatter ``design pattern code'' through the application, for instance the \textit{Observer Pattern}, \textit{Template Pattern}, \textit{Command Pattern} etc. \cite{hannemann2002design} \cite{marin2004refactoring}.
 
 In order to solve this problem we need a way to refactor and transform the non-modularized \ac{ccc} into a modular \textit{aspect}.
-Refactorings of \ac{ccc} should replace all the scattered and tangled code of a concern with an equivalent module \cite{hannemann2005role}, which in \ac{aop} it is called \textit{aspect} \cite{kiczales1997aspect}.
+In other words, refactorings of \ac{ccc} should replace all the scattered and tangled code of a concern with an equivalent module \cite{hannemann2005role}, which in \ac{aop} terminology is called \textit{aspect} \cite{kiczales1997aspect}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: AOP
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Aspect Oriented Programming}\label{Aspect Oriented Programming}
 
-Kiczales et al. present \cite{kiczales1997aspect} by using an example of a very simple image processing application. 
-In that system, and in general, whenever two properties being programmed must compose differently and yet be coordinated (in the example filters and loop-fusion), they \textbf{crosscut} each other.
-Because general purposes languages provide only one composition mechanism, which mechanisms lead to complexity and tangling, the programmer must do the co-composition manually. 
-According to their theory, an system's property can be either a \textit{component}, if it \textbf{can} be cleanly encapsulated in a generalized procedure, or an \textit{aspect}, if it \textbf{can not} be cleanly encapsulated in a generalized procedure. 
-\ac{aop} supports the programmer in cleanly separating components and aspects from each other by providing mechanisms that makes possible to abstract and compose them together when producing the whole system. 
-This is in contrast to common programming paradigms, \ac{oop} and \ac{pp}, that allow programmers in only separating the \text-it{components} from each other but crosscut the concerns.
+Kiczales et al. present \ac{aop} \cite{kiczales1997aspect} by using an example of a very simple image processing application. 
+In that system, as in every system, whenever two properties which are being programmed must compose different tasks and yet be coordinated (in the example filters and loop-fusion), they \textbf{crosscut} each other.
+Because general purposes languages provide only one composition mechanism, which leads to complexity and tangling, the programmer must do the co-composition manually.
+According to their theory, a system's property can be either a \textit{component}, if it can be clearly encapsulated in a generalized procedure, otherwise it is an \textit{aspect}.
+\ac{aop} supports the programmer in separating components and aspects from each other by providing mechanisms that make it possible to abstract and compose them together when producing the whole system (\textit{aspect weaving}).
+Alternatively to the common programming paradigms, \ac{oop} and \ac{pp} that allow programmers to only separate the \textit{components} from each other but crosscut the concerns.
 
-However, implementing \ac{aop} programs is not that easy since several tools are needed in order to succeed it. 
+However, implementing \ac{aop} programs is not that easy since several tools are needed in order to succeed. 
 More specifically, a general purpose language needs only a language, a \textit{compiler} and a \textit{program} written in the language that implements the application.
-In case of an \ac{aop} based implementation, a program consists of a \textit{component language}, in which the components are programmed, one or more \textit{aspect languages}, in which the aspects are programmed, an aspect \textit{weaver} for the combined languages, a \textit{component program} that implements the components using the component language and finally, one or more \textit{aspect programs} that implement the aspects using the aspect languages.
-Additionally, an essential function of the aspect weaver is the concept of join points, which are those elements of the component language semantics that the aspect programs coordinate with. 
+In the case of an \ac{aop} based implementation, a program consists of a \textit{component language}, in which the components are programmed, one or more \textit{aspect languages}, in which the aspects are programmed, an aspect \textit{weaver} for the combined languages, a \textit{component program} that implements the components using the component language and finally, one or more \textit{aspect programs} that implement the aspects using the aspect languages.
+Additionally, an essential function of the aspect weaver is the concept of \textit{join points}, namely the elements of the component language semantics that the aspect programs coordinate with. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{AspectJ}\label{AspectJ}
-There is a some significant work in the area of aspect oriented languages but one the most important contribution is the AspectJ\footnote{\url{https://eclipse.org/aspectj/}} project, which is a simple and practical aspect-oriented extension to Java and it has been introduced by Kiczales et al. \cite{kiczales2001overview}.
+There is significant work in the area of aspect oriented languages but one the most important contribution is the AspectJ\footnote{\url{https://eclipse.org/aspectj/}} project, which is a simple and practical aspect-oriented extension to Java and it has been introduced by Kiczales et al. \cite{kiczales2001overview}.
 The authors of AspectJ provide examples of programs developed in AspectJ and show that by using it, \ac{ccc} can be implemented in clear form, which in other general purpose languages would lead to tangled and scattered code. 
 AspectJ was developed as a compatible extension to Java so that it would facilitate adoption by current Java programmers. 
-The compatibility lays on upward compatibility, platform compatibility, tool compatibility, and programmer compatibility. One of the most important characteristic of AspectJ is that it is not a \ac{dsl} but a general purpose language that uses Java's static type system.
-All of the above properties are those that we target for our managed data implementation as well.
+The compatibility lays on upward compatibility, platform compatibility, tool compatibility and programmer compatibility. One of the most important characteristics of AspectJ is that it is not a \ac{dsl} but a general purpose language that uses Java's static type system.
+Our goal is to apply those properties for our managed data implementation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Design Patterns in \acrlong{aop}}\label{Design Patterns in Aspect Oriented Programming}
+\subsection{Design Patterns in Aspect Oriented Programming}\label{Design Patterns in Aspect Oriented Programming}
 
 Hannemann et al. present a showcase of \ac{aop} \cite{hannemann2002design} in which they conduct an aspect-oriented implementation of the Gang of Four design patterns \cite{gamma1995design} in AspectJ, in which 17 out of 23 cases show modularity improvements.
 Even though design patterns offer flexible solutions to common software problems, those patterns involve crosscutting structures between roles and classes / objects. 
-There are several problems that the \ac{oop} design patterns introduce in respect of \ac{ccc}, and specifically in cases when one object plays multiple roles, many objects play one role, or an object play roles in multiple patterns \cite{sullivan2002advanced} (design pattern composition).
+There are several problems that the \ac{oop} design patterns introduce in respect to \ac{ccc}, specifically in cases when one object plays multiple roles, many objects play one role, or an object play roles in multiple patterns \cite{sullivan2002advanced} (design pattern composition).
 
-The problem lays on the way a design pattern influences the structure of the system and its implementation, pattern implementations are often tailored to the instance of use, and this often leads them to disappear into the code and lose their modularity \cite{hannemann2002design}. Even worst, in case of multiple patterns used in a system (pattern overlay and pattern composition), it can become difficult to trace particular instances of a design pattern. 
-Composition creates large clusters of mutually dependent classes\cite{sullivan2002advanced}, and some design patterns explicitly use other patterns in their solution.
+The problem lays on the way a design pattern influences the structure of the system and its implementation. 
+Pattern implementations are often binded to the instance of use resulting in their scattering into the code and losing their modularity \cite{hannemann2002design}.
 
-\subsubsection{Observer pattern in \acrlong{aop}}\label{Observer pattern in Aspect Oriented Programming}
-Hannemann et al. \cite{hannemann2002design} provide some example implementations of several design patterns, including the \textit{Observer Pattern} in which they focus on with a detailed implementation \ref{The Observer Pattern in JHotDraw}.
-As they mention, in a observer pattern implementation, both the \textit{Subject} and the \textit{Observer} have to know about their roles and hence have ``pattern related code'' in them, consequently adding or removing code from a class, requires changes of code in that class. 
+Even worse, in case of multiple patterns used in a system (pattern overlay and pattern composition), it can become difficult to trace particular instances of a design pattern. 
+Composition creates large clusters of mutually dependent classes\cite{sullivan2002advanced} and some design patterns explicitly use other patterns in their solution.
+
+\subsubsection{Observer pattern in Aspect Oriented Programming}\label{Observer pattern in Aspect Oriented Programming}
+Hannemann et al. \cite{hannemann2002design} provide some example implementations of several design patterns, including the \textit{Observer Pattern} in which they focus on a detailed implementation.
+As they mention, in an observer pattern implementation, both the \textit{Subject} and the \textit{Observer} have to know about their roles and have ``pattern related code'' in them. 
+As a result, adding or removing code from a class requires changes of code in that class. 
 
 In their implementation \cite{hannemann2002design} of the observer pattern in AspectJ, they separate abstract aspects for: 
 
@@ -87,14 +90,14 @@ And concrete aspects for each instance of the pattern fills in the specific part
 \end{itemize}
 
 \subsubsection{Modularity Properties}\label{Modularity Properties}
-The modularity properties which this implementation relates are\cite{hannemann2002design}:
+The modularity properties implemented in this thesis are\cite{hannemann2002design}:
 
 \begin{description}
-	\item [Locality:] All the code that implements the \textit{Observer} pattern is in the abstract and concrete observer aspects, none of it is in the participant classes. 
-	The participant classes are entirely free of the pattern context, and as a consequence there is no coupling between the participants.
+	\item [Locality:] All the code that implements the observer pattern is in the abstract and concrete observer aspects, none of it is in the participant classes. 
+	The participant classes are entirely free of the pattern context and as a consequence there is no coupling between the participants.
 
 	\item [Reusability:] The core pattern code is abstracted and reusable. 
-	The abstract aspect can be reused and shared across multiple \textit{Observer} pattern instances.
+	The abstract aspect can be reused and shared across multiple observer pattern instances.
 
 	\item [Composition transparency:] Because a pattern participants implementation is not coupled to the pattern, if a \textit{Subject} or \textit{Observer} takes part in multiple observing relationships their code does not become more complicated and the pattern instances are not confused. 
 
@@ -119,121 +122,128 @@ The modularity properties which this implementation relates are\cite{hannemann20
 % As it has been presented above, Hannemann et al. \cite{hannemann2002design} evaluate their solutions by using the following criteria: \textit{Locality}, \textit{Reusability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}.
 
 In general an object or a class that is not coupled to its role in a pattern can be used in different contexts without modifications and the reusability of participants can be increased. 
-The locality also means that existing classes can be incorporated into a pattern instance without the need to adapt them with extra effort, all the changes are made in the pattern instance. 
+The locality also means that existing classes can be incorporated into a pattern instance without the need to adapt them with extra effort. All the changes are made in the pattern instance. 
 This makes the pattern implementations themselves relatively (un)pluggable. 
-If we can reuse generalized pattern code and localize the code for a particular pattern instance, this can result in multiple instances of the same pattern in one application making easy to understand (composition transparency). 
-This solves a common problem with having multiple instances of a design pattern in one application.
+If we can reuse generalized pattern code and localize the code for a particular pattern instance, this can result in multiple instances of the same pattern in one application, making it easy to understand (composition transparency). 
+This solves the common problem of having multiple instances of a design pattern in one application.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evolvability issues}\label{Aspect Oriented Programming Evolvability}
-Since modularization and separation of concerns makes the evolution of an application a lot easier and \ac{aop} provides mechanisms for modularization and system decomposition, aspect-oriented programs should be easier to be evolved and maintained.
-Paradoxically this is not the case \cite{tourwe2003existence} since \ac{aop} technologies deliver applications that are as hard, and sometimes even harder to than was the case before.
+Since modularization and separation of concerns make the evolution of an application a lot easier and \ac{aop} provides mechanisms for modularization and system decomposition, aspect-oriented programs should be easier to be evolved and maintained.
+Paradoxically, this is not the case \cite{tourwe2003existence} since \ac{aop} technologies deliver applications that are as hard, and sometimes even harder, as non-\ac{aop}.
 
-According to Tourwe et al. \cite{tourwe2003existence} the problem is that aspects have to include a crosscut description of all places in the application. 
-Thus, it is much harder to make such crosscuts unaware to the application and most importantly to the rest of the modules. 
-Additionally, current means for specifying concerns rely heavily in the existing structure of the application, therefore the aspects are tightly coupled to the application (and its structure) and of course this affects negatively the evolvability of a system since it makes it hard to change structurally.
+According to Tourwe et al. \cite{tourwe2003existence} the problem is that aspects have to include a crosscut description of all places in the application.
+Thus, it is much harder to make such crosscuts oblivious to the application and most importantly to the rest of the modules. 
+Additionally, current means for specifying concerns rely heavily in the existing structure of the application, therefore the aspects are tightly coupled to the application (and its structure) and of course this affects negatively the evolvability of a system since it makes it hard to change it's structural.
 As Tourwe \cite{tourwe2003existence} proposes, a solution for this problem would be the creation of a new, more sophisticated crosscut language. 
 A language that enables the developer to discriminate between methods based on what they actually do instead of what they look like, in a more intentional way.
-This is something that we tried to show in our thesis, a new language that implements \ac{ccc} in a modular way.
+This new language that implements \ac{ccc} in a modular way is something try to realize in our thesis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Managed Data 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Managed Data}\label{Managed Data}
-Managed data \cite{loh2012managed} is a data abstraction mechanism that allows the programmer to control the definition of the data and their manipulation mechanisms, additionally it provides a modular way to control aspects of data.
-Managed data helps the programmer by giving them control over the structuring mechanism, which until now were predefined from the programming languages. 
-The developers could not take control on them, but they could only to create data of those types.
-Significant flexibility is provided since it lifts data management up to the application level by allowing the programmer to build data managers that handle the fundamental data manipulation primitives that are normally hard-coded into the programming language. 
+Managed data \cite{loh2012managed} is a data abstraction mechanism that allows the programmer to control the definition of the data and their manipulation mechanisms. 
+Additionally it provides a modular way to control aspects of data.
+Managed data helps the programmer by giving them control over the structuring mechanisms, which until now were predefined by the programming languages. 
+The developers could not take control of them, they could only create data of those types.
+Managed data provides significant flexibility since it lifts data management up to the application level, by allowing the programmer to build data managers that handle the fundamental data manipulation primitives, normally hard-coded into the programming language. 
 
 Managed data has three essential components:
 
 \begin{description}
-	\item [Data description language,] that describe the desired structure and properties of data.
+	\item [Data description language,] that describes the desired structure and properties of data.
+
 	\item [Data managers,] that enable creation and manipulation of instances of data.
-	\item [Integration,] with a programming language to allow data created and manipulated.
+
+	\item [Integration,] with a programming language to allow data to be created and manipulated.
 \end{description}
 
-In the traditional approach, the programming language includes a process and data definition mechanism, which are both predefined. 
-However, with managed data, the data structuring mechanisms are defined by the programmer by interpretation of data definitions. 
+In the traditional approach, the programming language includes data definition mechanisms and their processes, which are both predefined. 
+However, with managed data, the data structuring mechanisms are defined by the programmer by interpretation of data definitions.
 Of course, since a data definition model is also data, it requires a meta-definition mechanism.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Schemas}\label{Schemas}
-The schemas are the way to describe the structure and the behavior of the data to be managed. 
+The schemas are the way to describe the structure of the data to be managed. 
 They can be just a simple data description language which programmers can use to describe simple kind of data. 
 For example Loh et al. \cite{loh2012managed} used Ruby hash for the data description on a simple example where the hash was an object that represented a mapping from values to values. 
 However, a simple schema format like this can not be used to describe itself because it is not a record. 
 
-A self-describing would allow schemas to be managed data themselves, thus we need a self-describing schema that can be used to describe schemas. 
-A Schema-Schema(self-describing) is also managed data with its own data manager. 
-This process is called \textit{Bootstrapping} and it is needed in order to ``jumpstart'' the process, this extends the benefits of programmable data structuring to their own implementation.
+A self-describing schema would allow schemas to be managed data themselves. 
+We therefore need a self-describing schema that can be used to describe schemas, namely the ``Schema-Schema''. 
+A Schema-Schema is also managed data with its own data manager.
+This process is called \textit{Bootstrapping} and it is needed in order to ``jumpstart'' the process. 
+This extends the benefits of programmable data structuring to their own implementation.
 Schemas can be interpreted in many different ways to create different kinds of records based on the manipulation provided by the data managers.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Managers}\label{Data Managers}
 Data managers are the mechanisms that interpret \textit{schemas} with defined manipulation strategies set by the programmers. 
 The input to a data manager is a schema, which describes the structure of the data to be managed.
-Since the schema is only known dynamically the data managers must be able to determine the fields and methods of the managed data object dynamically as well.
-In order to implement such operation we need a meta-programming mechanism that dynamically analyses the structure of a schema and applies the functionality of the data managers to it.
+Since the schema is only known dynamically, the data managers must be able to determine the fields and methods of the managed data object dynamically as well.
+In order to implement such an operation we need a meta-programming mechanism that dynamically analyses the structure of a schema and applies to it the functionality of the data managers.
 In their implementation Loh et al. \cite{loh2012managed} used the ``missing\_method'' implementation in order to succeed that.
-In case of Java we will use reflection and dynamic proxies.
+In out case we will use Java's reflection API and dynamic proxies.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Reflection
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Java Reflection and Dynamic Proxies}\label{Java Reflection and Dynamic Proxies}
-The Java programming language provides the programmer with a Reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} and with it offers the ability to examine or modify the runtime behavior of applications running in the \ac{jvm}. 
-Also, Java comes with an implementation of Dynamic Proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}} which is a class that implements a list of interfaces specified at runtime.
+The Java programming language provides the programmer with a Reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} that offers the ability to examine or modify the runtime behavior of applications running in the \ac{jvm}. 
+Additionally, Java comes with an implementation of Dynamic Proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}} which is a class that implements a list of interfaces specified at runtime.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Reflection}\label{Reflection}
 
-% TODO: Change wording
 Reflection is the ability of a running program to examine itself and its environment and to change what it does depending on what it finds \cite{forman2004java}.
 
-In order for this self-examination to be succeeded, the program needs to have a representation of itself, which is called \textit{metadata}.
+In order for this self-examination to be successful, the program needs to have a representation of itself, which is called \textit{metadata}.
 In a \ac{oop} language this metadata is organized into objects, hence they are called \textit{metaobjects}. 
 Finally, the process of the runtime self-examination of these metaobjects is called \textit{introspection}.
 
 Java supports reflection with its reflection API since the version 1.1.
 Java provides many operations for using metaobjects performing intercession.
-Using Java reflection a running program can learn a lot about it self, this information may derive from classes (the \texttt{Class} metaobject), class name, class methods, a class super and sub classes, methods (the \texttt{Method} metaobject), method name, method parameters, method type, variables, variables handlers and more. 
+Using Java reflection a running program can learn a lot about itself. 
+This information may derive from classes (the \texttt{Class} metaobject), class name, class methods, a class super and sub classes, methods (the \texttt{Method} metaobject), method name, method parameters, method type, variables, variables handlers and more. 
 Querying information from these metaobjects is called introspection.
-Additionally to the examining of the these metaobjects, a developer has the ability to dynamically call a method that is discovered at the runtime, this process is called \textit{dynamic invocation}. 
-Using dynamic invocation, a \texttt{Method} metaobject can be commanded to invoke the method that it represents during the program's runtime. 
+Additionally to the examining of the these metaobjects, a developer has the ability to dynamically call a method that is discovered at runtime. 
+This process is called \textit{dynamic invocation}. 
+Using dynamic invocation, a \texttt{Method} metaobject can be instructed to invoke the method that it represents during the program's runtime. 
 
-Although reflection is considered helpful for developing flexible software, it has some pitfalls:
+Although reflection is considered helpful for developing flexible software, it has some known pitfalls:
 
 \begin{description}
 	
-	\item[Security.] Since metaobjects give a developer the ability to invoke and change underline data of the program, it also gives access to places that are supposed to be secure (e.g. \texttt{private}).
+	\item[Security.] Since metaobjects give a developer the ability to invoke and change underlined data of the program, it also gives access them to places that are supposed to be secure (e.g. \texttt{private} variables).
 
-	\item[Code complexity.] Consider a program that uses both normal object and metaobjects, that introduces an extra level of complexity since now a developer has to deal with different kind of objects on different levels, meta and normal level.
+	\item[Code complexity.] Consider a program that uses both normal objects and metaobjects. 
+	That introduces an extra level of complexity since now a developer has to deal with different kinds of objects on different levels, meta and normal level.
 
 	\item[Runtime performance.] Of course the runtime dynamic examination and introspection introduce significant overhead on most language implementations. 
-	In case of Java's dynamic proxies it has been observed 6.5x overhead \cite{marr2015zero}. 
-	However, this is not something that we consider in this thesis.
+	In the case of Java's dynamic proxies a 6.5x overhead observed \cite{marr2015zero}. 
+	However, this is not something that we take into consideration in our implementation.
 
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dynamic Proxies}\label{Dynamic Proxies}
-Since the version 1.3 Java supports the concept of \textit{Dynamic Proxies}.
-A \textit{proxy} is an object that supports the interface of another object \textit{target}, so that the proxy can substitute for the target for all practical purposes\cite{forman2004java}.
-A proxy has to have the same interface as the \textit{target} so that it can be used in exactly the same way, additionally
-it \textit{delegates} some or all of the calls that it receives to its target and thus acts as either an intermediary or a substitute object.
+Since 1.3 version Java supports the concept of \textit{Dynamic Proxies}.
+A \textit{proxy} is an object that supports the interface of another object (\textit{target}), so that the proxy can substitute for the target for all practical purposes\cite{forman2004java}.
+A proxy has to have the same interface as the \textit{target} so that it can be used in exactly the same way. 
+Additionally it \textit{delegates} some or all of the calls that it receives to its target and thus acts as either an intermediary or a substitute object.
 As a result, a programmer has the capability to add behavior to objects dynamically. 
 The Java reflection API contains a dynamic proxy-creation facility, in \texttt{java.lang.reflect.Proxy}.
 
-There are several examples of dynamic proxies implementation in Java including \textit{implicit conformance}, \textit{future invocations} \cite{pratikakis2004transparent}, \textit{dynamic multi dispatch}, \textit{design by contract} or \textit{\ac{aop}} \cite{eugster2006uniform}.
+There are several examples of dynamic proxies implementation in Java including implicit conformance, future invocations \cite{pratikakis2004transparent}, dynamic multi dispatch, design by contract or \ac{aop} \cite{eugster2006uniform}.
 
 \subsubsection{Proxy Objects}\label{Proxy Objects}
-A proxy is an object which conforms to a set of interfaces, which that proxy was created for. 
-The corresponding proxy class extends the class \texttt{Proxy} and implements all interfaces.
-Thus, conforming to all those interfaces, a proxy can be casted to any of them and any method defined in those interface can be invoked on the proxy object \cite{eugster2006uniform}.
+A proxy is an object which conforms to a set of interfaces, for which that proxy was created for. 
+The corresponding proxy class extends the class \texttt{Proxy} and implements all its interfaces.
+Thus, conforming to all those interfaces, a proxy can be casted to any of them and any method defined in those interfaces can be invoked on the proxy object \cite{eugster2006uniform}.
 
 \subsubsection{Invocation Handlers}\label{Invocation Handlers}
-All the proxy objects have an associated object of type \texttt{InvocationHandler}, which handles the method invocations performed on the proxy, the interface of the invocation handler is shown in listing \ref{lst:The Invocation Handler Interface}.
+All the proxy objects have an associated object of type \texttt{InvocationHandler}, which handles the method invocations performed on the proxy, and its interface is shown in listing \ref{lst:The Invocation Handler Interface}.
 
 \begin{sourcecode}
 	\begin{lstlisting}[language=Java]
@@ -250,21 +260,20 @@ Therefore, the \texttt{invoke} method is capable of handling any method invocati
 
 \subsubsection{Issues}\label{Dynamic Proxies Issues}
 A proxy instance is an object and it responds to the methods declared by \texttt{java.lang.Object}. 
-Thus an issue that arises is when these methods should be invoked and from which object \cite{forman2004java}.
+Thus, when these methods should be invoked and from which object is an issue that arises \cite{forman2004java}.
 
-The methods \texttt{equals}, \texttt{hashCode}, and \texttt{toString} inherited by all classes from the \texttt{Object} class and they are handled just like custom methods.
+The methods \texttt{equals}, \texttt{hashCode}, and \texttt{toString} are inherited by all classes from the \texttt{Object} class and they are handled just like custom methods.
 If they are proxied then they are also overridden by the proxy classes and invocations to them are forwarded to the invocation handler of the proxy. 
 Other methods defined in \texttt{Object} are not overridden by proxy classes, as they are \texttt{final} \cite{eugster2006uniform}.
 
 \subsubsection{Logging Example}
 Previously we mentioned the \textit{logging} \ac{ccc} \ref{Cross Cutting Concerns}.
-In case of every method invocation of an object has to be logged into the console we need to write logging code on each of the methods of that class.
-Hence, this would lead to scattered logging code and tangled code with the method's logic.
-This is a problem that can be solved with dynamic proxies, a simple solution is presented in listing \ref{lst:Logging in dynamic proxies}.
+Image that every method invocation of an object has to be logged into the console, in that case we would need to write logging code on each of the methods of that class.
+This would lead to scattered logging code through the methods.
+This is problem can be solved with dynamic proxies and a simple solution is presented in listing \ref{lst:Logging in dynamic proxies}.
 
-\begin{sourcecode}
+\begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java]
-
 import java.lang.reflect.*;
 import java.io.PrintWriter;
 
@@ -311,7 +320,7 @@ public class TracingIH implements InvocationHandler {
 \section{JHotDraw And AJHotDraw}\label{JHotDraw And AJHotDraw}
 JHotDraw\footnote{\url{http://www.jhotdraw.org/}} is a Java GUI framework for technical and structured graphics. 
 It is an open-source, well-designed and flexible drawing framework of around 18,000 non-comment lines of Java code. 
-JHotDraw's  design relies heavily on some well-known design patterns\cite{gamma1995design} and it is consider as a showcase for software quality techniques provided to the \ac{oop} community. 
+JHotDraw's  design relies heavily on some well-known design patterns\cite{gamma1995design} and it is considered as a showcase for software quality techniques provided to the \ac{oop} community. 
 
 The fact that JHotDraw is appraised as a so well-designed application makes it an ideal candidate as a showcase for an aspect oriented migration. 
 Marin and Moonen \cite{marinajhotdraw} use this showcase for adoption of aspect-oriented techniques in existing systems. 
@@ -335,19 +344,19 @@ According to the authors the contributions of AJHotDraw include:
 	\item Addressing the challenges risen by testing aspect oriented systems.
 \end{enumerate}
 
-In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, which is called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}}) in ordet to ensure behavioral equivalence between the original and the refactored solution. 
-Refactoring implies preserving the observable behavior of an application\cite{fowler2009refactoring} and the original JHotDraw comes without tests. 
-There were several benefits taken from the aspect-oriented implementation approach\cite{marinajhotdraw}. 
-The authors believe that the project will contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications and allow for a better assessment of aspect orientation.
+In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, which is called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}} in order to ensure behavioral equivalence between the original and the refactored solution. 
+Refactoring implies preserving the observable behavior of an application\cite{fowler2009refactoring} and since the original JHotDraw comes without tests, TestJHotDraw was created. 
+There are several contributions of the aspect-oriented implementation approach\cite{marinajhotdraw}. 
+The authors suggest that the project contributes to a gradual and safe adoption of aspect-oriented techniques in existing applications and allow for a better assessment of aspect orientation.
 
-In this thesis we have used JHotDraw and AJHotDraw as well as the test project, TestJHotDraw, in order to evaluate our \ac{ccc} refactoring in managed data. 
+In this thesis we have used JHotDraw and AJHotDraw as well as the test project, TestJHotDraw, in order to evaluate our \ac{ccc} refactoring in managed data.
 The detailed evaluation is described in Chapter \ref{Evaluation}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Refactoring of Crosscutting Concerns}\label{Refactoring of ccc}
 The refactoring of legacy code to aspect oriented code is also known as \textit{Aspect Refactoring} \cite{marin2005approach}. 
 During this process it is important to identify which elements are going to be refactored and which \textit{aspect} solutions will replace them. 
-To evaluate the refactored elements \cite{fowler2009refactoring}, a testing component for a type is needed in order to ensure behavior conservation, hence some coherent criteria to organize \ac{ccc} are needed. 
+To evaluate the refactored elements \cite{fowler2009refactoring}, a testing component is needed in order to ensure behavior conservation, hence some coherent criteria to organize \ac{ccc} are needed. 
 Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into types, which are descriptions of similar concerns that share the following properties: 
 
 \begin{itemize}
@@ -364,7 +373,7 @@ The legacy code architecture of JHotDraw is displayed in figure \ref{fig:Selecti
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.5\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
+  	\fbox{\includegraphics[width=.55\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
   	\caption{Observer pattern: Selection Listener \cite{marin2005approach}}
   	\label{fig:Selection_Listener}
 \end{figure}
@@ -375,35 +384,30 @@ The \texttt{DrawingView} interface partially defines the \textit{Subject} role.
 The \textit{Subject} role is a secondary concern for the \texttt{DrawingView} interface. 
 Two classes implement this interface and only one, \texttt{StandardDrawingView}, contains a non-empty implementation of the \textit{Subject} role.
 
-The aspect refactoring would be described as the aspect construct comprises both the \textit{Subject} and \textit{Observer} roles definition and maintains a list of associations between each \textit{Subject} and its \textit{Observer} objects.
-The type-based refactoring\cite{marin2005approach} distinguishes several crosscutting elements that occur in an implementation of the \textit{Observer} pattern: role superimposition, applied twice, for each of the two roles and consistent behavior to notify the observers of the changes in the subject object. 
+The aspect refactoring could be described as the aspect construct comprising both the \textit{Subject} and \textit{Observer} roles definition and maintaining a list of associations between each \textit{Subject} and its \textit{Observer} objects.
+The type-based refactoring\cite{marin2005approach} distinguishes several crosscutting elements that occur in an implementation of the \textit{Observer} pattern: role superimposition, applied twice, for each of the two roles and consistent behavior to notify the observers of the changes in the \textit{Subject} object.
 The \texttt{GenericRole} (empty) interface documents the crosscutting type of role superimposition. 
 Specific roles, like \textit{Observer} and \textit{Subject} (\texttt{SelectionSubject}) extend the interface.
-These elements are shown in the figure \ref{fig:Concerns_Selection_Listener}.
+These elements are shown in figure \ref{fig:Concerns_Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.5\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
+  	\fbox{\includegraphics[width=.55\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
   	\caption{The concern types in Selection Listener \cite{marin2005approach}}
   	\label{fig:Concerns_Selection_Listener}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsubsection{Role-based Refactoring of \acrlong{ccc}}
-% \paragraph{Evaluation}
-% TODO: Keep it?
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The ``Undo'' Concern of JHotDraw}\label{The Undo Concern of JHotDraw}
-After a fan-in analysis of JHotDraw \cite{marin2004identifying}, Marin identified the  ``Undo'' concern in JHotDraw and he presents an approach to the aspect-oriented refactoring of it \cite{marin2004refactoring}. 
+After a fan-in analysis of JHotDraw \cite{marin2004identifying}, Marin identified the  ``Undo'' concern in JHotDraw and he presents an approach to its aspect-oriented refactoring \cite{marin2004refactoring}. 
 He uses the \textit{(un)pluggability} property of a concern as an estimate of its refactoring cost. 
 The author proposes the refactoring of the ``Undo'' concern in JHotDraw using AspectJ with the implementation of AJHotDraw. 
 During the fan-in analysis \cite{marin2004identifying}, the results have shown about 30 undo activities defined for various elements of JHotDraw. 
-A representation of the elements in the JHotDraw implementation of ``Undo'' concern in figure \ref{fig:Participants_for_undo_in_JHotDraw}.
+A representation of the elements in the JHotDraw implementation of the ``Undo'' concern can be seen in figure \ref{fig:Participants_for_undo_in_JHotDraw}.
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.5\textwidth]{figures/BG_Participants_for_undo_in_JHOTDRAW.png}}
+  	\fbox{\includegraphics[width=.55\textwidth]{figures/BG_Participants_for_undo_in_JHOTDRAW.png}}
   	\caption{Participants for undo in JHotDraw \cite{marin2004refactoring}}
   	\label{fig:Participants_for_undo_in_JHotDraw}
 \end{figure}
@@ -437,7 +441,7 @@ Given this implementation, it is obvious that the primary decomposition of \text
 	\item The references to the before enumerated elements from non-undo related members.
 \end{itemize}
 
-In order to refactor this concern in AspectJ, the implementation of AJHotDraw succeeded though the following steps \cite{marin2004refactoring}:
+The implementation of AJHotDraw succeeded in refactoring this concern in JHotDraw through the following steps \cite{marin2004refactoring}:
 
 \begin{enumerate}
 
@@ -458,20 +462,21 @@ The \ac{ccc} has been identified, then removed from the system, and finally re-a
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{(Un)pluggability of the Undo concern}
-In order to evaluate the \ac{ccc} refactoring of ``Undo'' Marin \cite{marin2004refactoring} used the (Un)pluggability property.
-
-The author groups the commands as complexity assessment based on first the degree of \textit{tangling} of the undo setup in the command's logic, particularly the activity's \texttt{execute()}method and second on the impact of removing the undo-related part from its original site, which can be estimated by the number of references to the factory method and to the methods of the nested undo activity.
-
-Thus, the (un)pluggability property gives a measure of how clear the concern is distinguished in the original code and is a good estimate of the refactoring costs.
+In order to evaluate the \ac{ccc} refactoring of ``Undo'' Marin \cite{marin2004refactoring} used the (Un)pluggability property. The author groups the complexity of the commands based two criteria.
+First, on the degree of \textit{tangling} of the undo setup in the command's logic, particularly the activity's \texttt{execute()}method. 
+Second, on the impact of removing the undo-related part from its original site, which can be estimated by the number of references to the factory method and to the methods of the nested undo activity.
+Thus, the (un)pluggability property gives a measure of how clearly the concern is distinguished in the original code and is a good estimate of the refactoring costs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{AspectJ Drawbacks in the Undo Solution}
-By aspect-refactoring now the two concerns are separated, modularized and the secondary concern of undo is no longer tangled into the implementation of the primary one. 
-However, a number of drawbacks could overcome by a better aspect language support, which can be discussed in relation to this thesis. 
-For instance, since AspectJ's mechanisms do not allow introduction of nested classes, the post-refactoring association will only be an indirect one, based on naming conventions (``\texttt{UndoActivity}''). 
+By executing aspect-refactoring the two concerns are separated, modularized and the secondary concern of undo is no longer tangled into the implementation of the primary one.
+
+However, there are certain drawbacks to this approach.
+For instance, AspectJ's mechanisms do not allow introduction of nested classes, the post-refactoring association will only be an indirect one, based on naming conventions (``\texttt{UndoActivity}''). 
 This is a weaker connection than the one provided by the original solution. 
 Another drawback that is observed is the change of the visibility of the methods introduced from the aspects, for example the inter-type declarations. 
 The visibility declared in the aspect refers to the aspect and not to the target class. 
+Such drawbacks could be overcome by a better aspect language support, which will be further discussed in this thesis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{The ``Persistence'' Concern of JHotDraw}

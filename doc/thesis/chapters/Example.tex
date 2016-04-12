@@ -21,10 +21,10 @@ As extracted from the requirements, we need a \texttt{Machine} \ref{lst:Machine_
 \begin{sourcecode}
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface Machine {
-    State start(State... state);
+	State start(State... state);
 
-    @Contain
-    Set<State> states(State... state);
+	@Contain
+	Set<State> states(State... state);
 }
 	\end{lstlisting}
 	\caption{The Machine Schema}
@@ -38,18 +38,17 @@ The \texttt{@Contain} annotation here defines that the \texttt{states} field of 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface State extends M {
-
 	@Key
-    String name(String... name);
+	String name(String... name);
 
-    @Inverse(other = Machine.class, field = "states")
-    Machine machine(Machine... machine);
-
-    @Contain
-    Set<Transition> out(Transition... transition);
+	@Inverse(other = Machine.class, field = "states")
+	Machine machine(Machine... machine);
 
 	@Contain
-    Set<Transition> in(Transition... transition);
+	Set<Transition> out(Transition... transition);
+
+	@Contain
+	Set<Transition> in(Transition... transition);
 }
 	\end{lstlisting}
 	\caption{The State Schema}
@@ -68,15 +67,14 @@ As it can be seen in the schema definition, listing \ref{lst:State_Schema}, the 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface Transition extends M {
+	@Key 					|\label{line:transition_key}| 
+	String event(String... event);
 
-    @Key 					|\label{line:transition_key}| 
-    String event(String... event);
+	@Inverse(other = State.class, field = "out")
+	State from(State... from);
 
-    @Inverse(other = State.class, field = "out")
-    State from(State... from);
-
-    @Inverse(other = State.class, field = "in")
-    State to(State... to);
+	@Inverse(other = State.class, field = "in")
+	State to(State... to);
 }
 	\end{lstlisting}
 	\caption{The Transition Schema}
