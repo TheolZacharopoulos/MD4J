@@ -14,6 +14,7 @@ import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
+import nl.cwi.managed_data_4j.language.utils.DebugUtils;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -39,6 +40,8 @@ public class Main {
         // Create a schema Factory which creates Schema instances.
         final SchemaFactory schemaFactory = basicFactory.make();
 
+        System.out.println("===================================");
+        System.out.println("LOAD FROM BOOT SCHEMA");
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         final Schema realSchemaSchema = SchemaLoader.load(
@@ -46,17 +49,23 @@ public class Main {
 
         // =======================
         // Test equality
+        System.out.println("===================================");
+        System.out.println("LOAD FROM REAL SCHEMASCHEMA");
         final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
         final SchemaFactory schemaFactory2 = basicFactory2.make();
         final Schema realSchemaSchema2 = SchemaLoader.load(
             schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+
+        DebugUtils.debugSchema(bootstrapSchema);
+        System.out.println("=======================================");
+        DebugUtils.debugSchema(realSchemaSchema);
 
         System.out.println(" Check boot and real schema equality");
         boolean equalBootReal = MObjectUtils.equals(bootstrapSchema, realSchemaSchema);
         if (equalBootReal) {
             System.out.println("* EQUAL *");
         } else {
-            System.out.println("Should be equal");
+            System.err.println("Should be equal");
             System.exit(-1);
         }
 
@@ -65,7 +74,7 @@ public class Main {
         if (equalRealReal) {
             System.out.println("* EQUAL *");
         } else {
-            System.out.println("Should be equal");
+            System.err.println("Should be equal");
             System.exit(-1);
         }
 
