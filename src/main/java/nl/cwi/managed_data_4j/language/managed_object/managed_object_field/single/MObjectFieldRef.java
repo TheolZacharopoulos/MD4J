@@ -24,6 +24,10 @@ public class MObjectFieldRef extends MObjectFieldSingle {
         if (value != null) {
             this.check(value);
         }
+        __set(value);
+    }
+
+    public void __set(Object value) {
         this.value = value;
     }
 
