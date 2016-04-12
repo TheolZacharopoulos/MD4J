@@ -14,30 +14,12 @@ In our example we want to first define these models, next interpret the definiti
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schemas definition}
-First we need to define all the needed models of the state machines application. As extracted from the requirements, the models that are derive are \texttt{State} \ref{lst:State_Schema}, \texttt{Machine} \ref{lst:Machine_Schema} and \texttt{Transition} \ref{lst:Transition_Schema}.
+First we need to define all the models of the state machine application. 
+As extracted from the requirements, we need a \texttt{Machine} \ref{lst:Machine_Schema}, a \texttt{State} \ref{lst:State_Schema}, and a \texttt{Transition} \ref{lst:Transition_Schema} between states.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}
-	\begin{lstlisting}[language=Java]
-public interface State extends M {
-
-    @Inverse(other = Machine.class, field = "states")
-    Machine machine(Machine... machine);
-
-    @Key
-    String name(String... name);
-
-    @Contain
-    Set<Transition> out(Transition... transition);
-
-    Set<Transition> in(Transition... transition);
-}
-	\end{lstlisting}
-	\caption{The State Schema}
-	\label{lst:State_Schema}
-\end{sourcecode}
-
-\begin{sourcecode}
-	\begin{lstlisting}[language=Java]
+	\begin{lstlisting}[language=Java,escapechar=|]
 public interface Machine {
     State start(State... state);
 
@@ -49,11 +31,45 @@ public interface Machine {
 	\label{lst:Machine_Schema}
 \end{sourcecode}
 
-\begin{sourcecode}
-	\begin{lstlisting}[language=Java]
+In the \texttt{Machine} schema definition, listing \ref{lst:Machine_Schema} all we need is a \texttt{start}ing state and a set of \texttt{states} that the machine can be into at each time.
+The \texttt{@Contain} annotation here defines that the \texttt{states} field of this schema is part of the spine tree, but more on this on the implementation Chapter \ref{subsubsec:Schema Definition Annotations}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java,escapechar=|]
+public interface State extends M {
+
+	@Key
+    String name(String... name);
+
+    @Inverse(other = Machine.class, field = "states")
+    Machine machine(Machine... machine);
+
+    @Contain
+    Set<Transition> out(Transition... transition);
+
+	@Contain
+    Set<Transition> in(Transition... transition);
+}
+	\end{lstlisting}
+	\caption{The State Schema}
+	\label{lst:State_Schema}
+\end{sourcecode}
+
+For the \texttt{State} schema definition, listing \ref{lst:State_Schema}, we need a \texttt{name} field, which is representing name of the state. 
+As it can be seen the \texttt{name} field has been annotated with the \texttt{@Key} annotation, which indicates that this field will be used as a key in case of a \texttt{Set} instance of this schema.
+Additionally, the schema includes a set of \texttt{in} and \texttt{out} transitions.
+Since those two fields are of type \texttt{Set}, that means that a field of the \texttt{Transition} schema has to be marked as key.
+In this case is the name (line \ref{line:transition_key} listing \ref{lst:Transition_Schema}).
+Finally, the field \texttt{machine} represents which state machine's is the current state part of. 
+As it can be seen in the schema definition, listing \ref{lst:State_Schema}, the \texttt{machine} field has been annotated with \texttt{@Inverse}, which indicates that this field is a reference to a field of an other schema, in this case this schema is the \texttt{Machine} schema and the field is the \texttt{states} field.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java,escapechar=|]
 public interface Transition extends M {
 
-    @Key
+    @Key 					|\label{line:transition_key}| 
     String event(String... event);
 
     @Inverse(other = State.class, field = "out")
@@ -67,11 +83,15 @@ public interface Transition extends M {
 	\label{lst:Transition_Schema}
 \end{sourcecode}
 
+Finally, for the \texttt{Transition} schema definition, listing \ref{lst:Transition_Schema}, all we need is an \texttt{event} which represents the event of the transition and it is also the \textbf{key}.
+Additionally, the \texttt{from} and \texttt{to} states represent the state that the machine changes from and to respectively.
+However, those are just reference to the \texttt{State} schema, listing \ref{lst:State_Schema}, to the \texttt{in} and \texttt{out} fields respectively, since they are defined with the \texttt{@Inverse} annotation.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Factory definition}
-In order to create the three schemas as managed data we need also to define a factory, which makes managed data instances for each of these schemas \ref{lst:StateMachineFactory}.
+The question now is how can we build instances of managed objects for those schemas. For Java to create the three schemas as managed data, we need to define a factory, which will be the one that creates managed data instances for each of these the defined schemas \ref{lst:StateMachineFactory}.
 
-\begin{sourcecode}
+\begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java]
 public interface StateMachineFactory {
     State State();
@@ -90,8 +110,23 @@ public interface StateMachineFactory {
 \subsection{Basic Data Manager}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Execution}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Monitoring concern}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Observable Data Manager}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Monitoring}
+\subsubsection{Execution}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Immutability}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Lockable Data Manager}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Execution}
 
