@@ -39,12 +39,12 @@ public class MObjectFieldManyList extends MObjectFieldMany<List<Object>> {
     }
 
     @Override
-    public void __insert(M object) {
-        this.value.add(object);
+    public void __insert(Object value) {
+        this.value.add(value);
     }
 
     @Override
-    public void __delete(M object) {
-        this.value.remove(object);
+    public void __delete(Object value) {
+        this.value.remove(value);
     }
 }

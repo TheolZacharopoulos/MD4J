@@ -37,6 +37,6 @@ public abstract class MObjectFieldMany<T> extends MObjectField<T> implements Ite
         return null;
     }
 
-    public abstract void __insert(M object);
-    public abstract void __delete(M object);
+    public abstract void __insert(Object value);
+    public abstract void __delete(Object value);
 }

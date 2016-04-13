@@ -229,5 +229,17 @@ public class TestSchemaDefinition {
         car2.owner(person);
 
         assertEquals(2, person.cars().size());
+
+        // add in inverse
+        Car car3 = personFactory.Car("Nissan");
+        car3.owner(person);
+
+        assertEquals(3, person.cars().size());
+
+        // remove in inverse
+        Person person2 = personFactory.Person(25, "George");
+        car3.owner(person2);
+
+        assertEquals(2, person.cars().size());
     }
 }
