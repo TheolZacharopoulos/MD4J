@@ -91,11 +91,18 @@ public class BasicFactory implements IFactory {
             "Error on klass extraction of class (" + schemaFactoryCallingMethodClass.getSimpleName() + ") " +
             "from factory (" + moSchemaFactoryClass.getSimpleName() + ")"));
 
-        return Proxy.newProxyInstance(
+        final MObject managedObject = this.createManagedObject(schemaKlass, inits);
+
+        final Object proxiedManagedObject = Proxy.newProxyInstance(
                 schemaFactoryCallingMethodClassLoader,   // the class loader of the return type of the called method of the schema factory.
                 proxiedInterfaces.toArray(new Class[proxiedInterfaces.size()]),  // the interfaces that the Proxy will proxy.
-                createManagedObject(schemaKlass, inits)  // proxy it to a new Managed Object
+                managedObject  // proxy it to a new Managed Object
         );
+
+        // wire the proxy object.
+        managedObject.setProxy(proxiedManagedObject);
+
+        return proxiedManagedObject;
     }
 
     /**

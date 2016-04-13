@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObje
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
 
 /**
@@ -30,9 +31,12 @@ public abstract class MObjectFieldMany<T> extends MObjectField<T> implements Ite
         throw new InvalidFieldValueException("Cannot assign to many-values field " + field.name());
     }
 
-    public void check(T mobj) throws InvalidFieldValueException {}
+    public void check(T value) throws InvalidFieldValueException {}
 
     protected T defaultValue() throws UnknownTypeException {
         return null;
     }
+
+    public abstract void __insert(M object);
+    public abstract void __delete(M object);
 }

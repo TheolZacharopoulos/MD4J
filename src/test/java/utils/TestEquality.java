@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import test_definition.PersonFactory;
 import test_definition.schemas.Address;
+import test_definition.schemas.Car;
 import test_definition.schemas.Person;
 
 import java.util.LinkedHashSet;
@@ -28,7 +29,7 @@ public class TestEquality {
 
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
-        final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class);
+        final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class, Car.class);
         final BasicFactory basicFactoryForPersons = new BasicFactory(PersonFactory.class, personSchema);
 
         personFactory = basicFactoryForPersons.make();

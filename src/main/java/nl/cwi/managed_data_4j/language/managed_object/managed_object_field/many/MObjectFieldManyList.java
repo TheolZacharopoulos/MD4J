@@ -4,6 +4,7 @@ import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -35,5 +36,15 @@ public class MObjectFieldManyList extends MObjectFieldMany<List<Object>> {
     @Override
     public Iterator iterator() {
         return this.value.iterator();
+    }
+
+    @Override
+    public void __insert(M object) {
+        this.value.add(object);
+    }
+
+    @Override
+    public void __delete(M object) {
+        this.value.remove(object);
     }
 }

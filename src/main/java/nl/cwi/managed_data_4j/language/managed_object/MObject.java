@@ -23,6 +23,16 @@ import java.util.*;
  */
 public class MObject implements InvocationHandler, M {
 
+    private Object proxy = null;
+
+    public void setProxy(Object proxy) {
+        this.proxy = proxy;
+    }
+
+    public Object getProxy() {
+        return proxy;
+    }
+
     @Override
     public Klass schemaKlass(Klass... schemaKlass) {
         if (schemaKlass.length > 0) {

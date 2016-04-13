@@ -5,13 +5,14 @@ import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import test_definition.PersonFactory;
 import test_definition.schemas.Address;
+import test_definition.schemas.Car;
 import test_definition.schemas.Person;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
@@ -28,7 +29,7 @@ public class TestSchemaDefinition {
 
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
-        final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class);
+        final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class, Car.class);
         final BasicFactory basicFactoryForPersons = new BasicFactory(PersonFactory.class, personSchema);
 
         personFactory = basicFactoryForPersons.make();
@@ -120,7 +121,7 @@ public class TestSchemaDefinition {
     }
 
     @Test
-    public void initialize_friends_Test() {
+    public void initialize_list_Test() {
         Person person = personFactory.Person();
 
         Person friend1 = personFactory.Person();
@@ -139,6 +140,30 @@ public class TestSchemaDefinition {
 
         assertThat(person.friends(), instanceOf(List.class));
         assertEquals(2, person.friends().size());
+    }
+
+    @Test
+    public void initialize_set_Test() {
+        Person person = personFactory.Person();
+
+
+        Car car1 = personFactory.Car("Tesla");
+        Car car2 = personFactory.Car("Ford");
+
+        person.cars(car1, car2);
+
+        assertEquals("", person.name());
+        assertEquals(new Integer(0), person.age());
+        assertEquals(null, person.address());
+
+        assertThat(person.grades(), instanceOf(List.class));
+        assertEquals(0, person.grades().size());
+
+        assertThat(person.friends(), instanceOf(List.class));
+        assertEquals(0, person.friends().size());
+
+        assertThat(person.cars(), instanceOf(Set.class));
+        assertEquals(2, person.cars().size());
     }
 
     @Test
@@ -182,5 +207,27 @@ public class TestSchemaDefinition {
         assertEquals(person.address().street(), address.street());
         assertEquals(person.address().city(), address.city());
         assertEquals(person.address().number(), address.number());
+
+        Address address2 = personFactory.Address("Athens", 22, "Kolonaki");
+
+        // change inverse
+        address2.tenant(person);
+
+        assertEquals(person.address().street(), address2.street());
+        assertEquals(person.address().city(), address2.city());
+        assertEquals(person.address().number(), address2.number());
+    }
+
+    @Test
+    public void structure_inverse_many_Test() {
+        Person person = personFactory.Person(26, "Alex");
+        Car car1 = personFactory.Car("Tesla");
+        Car car2 = personFactory.Car("Ford");
+
+        // multi inverse
+        car1.owner(person);
+        car2.owner(person);
+
+        assertEquals(2, person.cars().size());
     }
 }

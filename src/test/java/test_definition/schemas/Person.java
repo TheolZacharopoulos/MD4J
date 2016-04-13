@@ -5,6 +5,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Cont
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional;
 
 import java.util.List;
+import java.util.Set;
 
 public interface Person extends M {
 
@@ -21,4 +22,7 @@ public interface Person extends M {
 
     @Contain
     Address address(Address... address);
+
+    @Contain
+    Set<Car> cars(Car... cars);
 }

@@ -1,6 +1,7 @@
 package test_definition;
 
 import test_definition.schemas.Address;
+import test_definition.schemas.Car;
 import test_definition.schemas.Person;
 
 public interface PersonFactory {
@@ -9,4 +10,7 @@ public interface PersonFactory {
 
     Address Address();
     Address Address(String city, Integer number, String street);
+
+    Car Car();
+    Car Car(String brand);
 }
