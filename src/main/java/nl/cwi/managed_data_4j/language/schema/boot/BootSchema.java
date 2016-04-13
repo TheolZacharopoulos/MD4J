@@ -165,7 +165,7 @@ public class BootSchema extends SchemaImpl {
         final Field klassKlassSchemaField = new FieldImpl("schema", false, false, false, false);
         klassKlassSchemaField.owner(klassKlass);
         klassKlassSchemaField.type(schemaKlass);
-        klassKlassSchemaField.inverse(schemaKlassKlassesField);
+        klassKlassSchemaField.inverse(schemaKlassTypesField);
 
         final Field klassKlassClassOfField = new FieldImpl("classOf", false, false, false, false);
         klassKlassClassOfField.owner(klassKlass);
