@@ -174,9 +174,13 @@ public class TestSchemaDefinition {
         Address address = personFactory.Address("Amsterdam", 242, "Science Park");
 
         // inverse
-        person.address(address);
+        address.tenant(person);
 
         assertEquals(person.name(), address.tenant().name());
         assertEquals(person.age(), address.tenant().age());
+
+        assertEquals(person.address().street(), address.street());
+        assertEquals(person.address().city(), address.city());
+        assertEquals(person.address().number(), address.number());
     }
 }
