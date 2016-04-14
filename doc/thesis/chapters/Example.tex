@@ -13,7 +13,25 @@ The requirements of the application are simple: A state machine consists of a nu
 In our example we want to first define these models, next interpret the definition given a list of event and finally log any changed in the console.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Schemas definition}
+\section{The Object Oriented Way}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Models definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{A simple program}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Monitor concern}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{A monitoring program}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Managed Data Way}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Schemas definition}
 First we need to define all the models of the state machine application. 
 As extracted from the requirements, we need a \texttt{Machine} \ref{lst:Machine_Schema}, a \texttt{State} \ref{lst:State_Schema}, and a \texttt{Transition} \ref{lst:Transition_Schema} between states.
 
@@ -32,7 +50,7 @@ public interface Machine {
 \end{sourcecode}
 
 In the \texttt{Machine} schema definition, listing \ref{lst:Machine_Schema} all we need is a \texttt{start}ing state and a set of \texttt{states} that the machine can be into at each time.
-The \texttt{@Contain} annotation here defines that the \texttt{states} field of this schema is part of the spine tree, but more on this on the implementation Chapter \ref{subsubsec:Schema Definition Annotations}.
+The \texttt{@Contain} annotation here defines that the \texttt{states} field of this schema is part of the spine tree, but more on this on the implementation Chapter \ref{Schema Definition}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}[H]
@@ -86,7 +104,7 @@ Additionally, the \texttt{from} and \texttt{to} states represent the state that 
 However, those are just reference to the \texttt{State} schema, listing \ref{lst:State_Schema}, to the \texttt{in} and \texttt{out} fields respectively, since they are defined with the \texttt{@Inverse} annotation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Factory definition}
+\subsection{Factory definition}
 The question now is how can we build instances of managed objects for those schemas. For Java to create the three schemas as managed data, we need to define a factory, which will be the one that creates managed data instances for each of these the defined schemas \ref{lst:StateMachineFactory}.
 
 \begin{sourcecode}[H]
@@ -102,22 +120,22 @@ public interface StateMachineFactory {
 \end{sourcecode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Data managers}
+\subsection{Data managers}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Basic Data Manager}
+\subsubsection{Basic Data Manager}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Execution}
+\subsubsection{A simple program}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Monitoring concern}
+\subsection{Monitoring concern}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Observable Data Manager}
+\subsubsection{Observable Data Manager}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Execution}
+\subsubsection{A monitoring program}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Immutability}

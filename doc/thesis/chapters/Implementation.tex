@@ -47,52 +47,58 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Managed data in Java}\label{Implementation}
 \section{Intro}\label{sec:Intro Implementation}
-% This chapter describes our managed data in Java.
+% This chapter describes our managed data implementation in Java.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Managed Data}\label{sec:Managed Data Implementation}
+\section{Managed Data Implementation}\label{sec:Managed Data Implementation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Schema}\label{subsec:Schema Implementation}
+\subsubsection{Schemas Definition}\label{Schema Definition}
+% interfaces
+% annotations
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Schema Definition: Java interfaces}\label{Schema Definition: Java interfaces}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Schema Definition: Annotations}\label{subsubsec:Schema Definition Annotations}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Data Managers}\label{sec:Data Manager Implementation}
+\subsubsection{Schema Factories}\label{Schema Factories}
+% interfaces
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Data Managers Definition}\label{Data Managers Definition}
+% Dynamic proxies
+% Decorator pattern to stack them
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bootstrapping}\label{sec:Bootstrapping}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Cutting the umbilical cord}\label{subsec:Cutting the umbilical cord}
+\subsection{Self-describing schema (SchemaSchema)}\label{sec:SchemaSchema}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Self-describing schema (SchemaSchema)}\label{sec:SchemaSchema}
+\subsection{ManagedData4J Schema}\label{sec:ManagedData4J Schema}
+% Our schema definition here.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Cutting the umbilical cord}\label{subsec:Cutting the umbilical cord}
+% boot schema
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schema Loading}\label{sec:Schema Loading}
+% mention wiring
+% why we need the boot
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Forward}\label{subsec:Schema Loading Forward}
+\section{Types support}\label{sec:Implementation Types}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Wire the Cross-References}\label{subsec:Schema Loading Wire the Cross-References}
+\subsection{Primitives}\label{subsec:Types Primitives}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Typing}\label{sec:Implementation Typing}
+\subsection{Collections}\label{subsec:Types Collections}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Primitives}\label{subsec:Typing Primitives}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Collections}\label{subsec:Typing Collections}
+\subsubsection{Set of Primitives}
+\subsubsection{Set of non-Primitives}
+\subsubsection{Lists of Primitives}
+\subsubsection{Lists of non-Primitives}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation Issues}\label{sec:Implementation Issues}
@@ -100,19 +106,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Methods ordering}\label{subsec:Methods ordering}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The usage of Key}\label{subsec:The usage of Key}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Hash-code of Managed Objects}\label{subsec:Hashcode of Managed Objects}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Default methods of Managed Objects}\label{subsec:Default methods of Managed Objects}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Collections of Managed Objects}\label{subsec:Collections of Managed Objects}
-
-\subsubsection{Set of Primitives}
-\subsubsection{Set of non-Primitives}
-\subsubsection{Lists of Primitives}
-\subsubsection{Lists of non-Primitives}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Managed Object Equivalence}\label{subsec:Managed Object equivalence}
