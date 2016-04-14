@@ -39,42 +39,21 @@ public class MObjectFieldManySet extends MObjectFieldMany<Set<Object>> {
 
     @Override
     public void __insert(Object value) {
-
-        // since we do not support (yet) Sets of primitives,
-        // this would be a managed object.
-        final M mObjectNewValue = (M)value;
-        final Field newValueKeyField = mObjectNewValue.schemaKlass().key();
-
-        // in order to insert values in the set, we need to check first if
-        // the value already exists, Java's Set ca not do that since the objects are proxied
-        // so this is the place that we need to use the, in order to check for duplicates
-        if (newValueKeyField != null) {
-            boolean exists = false;
-            for (Object existingValue : this.value) {
-                final Field existingValueKeyField = ((M)existingValue).schemaKlass().key();
-                if (existingValueKeyField != null) {
-
-                    final Object existingValueKeyValue =
-                            ReflectionUtils.getValueFromFieldSafe(existingValue, existingValueKeyField.name(), existingValueKeyField.type());
-                    final Object newValueKeyValue =
-                            ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type());
-
-                    if (newValueKeyValue != null && existingValueKeyValue != null &&
-                        existingValueKeyValue.equals(newValueKeyValue))
-                    {
-                        exists = true;
-                    }
-                }
-            }
-
-            if (!exists) {
-                this.value.add(value);
-            }
+        if (!findValue(value).isPresent()) {
+            this.value.add(value);
         }
     }
 
     @Override
     public void __delete(Object value) {
+        final Optional<Object> existingValue = findValue(value);
+        if (existingValue.isPresent()) {
+            this.value.remove(existingValue.get());
+        }
+    }
+
+    private Optional<Object> findValue(Object value) {
+
         // since we do not support (yet) Sets of primitives,
         // this would be a managed object.
         final M mObjectNewValue = (M)value;
@@ -94,12 +73,13 @@ public class MObjectFieldManySet extends MObjectFieldMany<Set<Object>> {
                             ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type());
 
                     if (newValueKeyValue != null && existingValueKeyValue != null &&
-                        existingValueKeyValue.equals(newValueKeyValue))
+                            existingValueKeyValue.equals(newValueKeyValue))
                     {
-                        this.value.remove(existingValue);
+                        return Optional.of(existingValue);
                     }
                 }
             }
         }
+        return Optional.empty();
     }
 }
