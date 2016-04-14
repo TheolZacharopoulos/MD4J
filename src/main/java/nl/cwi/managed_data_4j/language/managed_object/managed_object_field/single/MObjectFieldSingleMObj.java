@@ -13,9 +13,9 @@ import java.lang.reflect.Proxy;
  * Represents a single value field which is a Managed Object.
  * @author Theologos Zacharopoulos
  */
-public class MObjectFieldRef extends MObjectFieldSingle {
+public class MObjectFieldSingleMObj extends MObjectFieldSingle {
 
-    public MObjectFieldRef(MObject owner, Field field)
+    public MObjectFieldSingleMObj(MObject owner, Field field)
             throws UnknownTypeException, InvalidFieldValueException
     {
         super(owner, field);
@@ -60,7 +60,6 @@ public class MObjectFieldRef extends MObjectFieldSingle {
                 if (newValue != null) {
                     final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
                     final MObjectFieldMany newValueMObjectInverseField = (MObjectFieldMany) newValueMObject._getField(inverse.name());
-
                     newValueMObjectInverseField.__insert(owner.getProxy());
                 }
 
@@ -69,25 +68,15 @@ public class MObjectFieldRef extends MObjectFieldSingle {
                 // set old inverse reference to null
                 if (oldValue != null) {
                     final MObject oldValueMObject = (MObject) Proxy.getInvocationHandler(oldValue);
-                    final MObjectFieldRef oldValueMObjectInverseField = (MObjectFieldRef) oldValueMObject._getField(inverse.name());
+                    final MObjectFieldSingleMObj oldValueMObjectInverseField = (MObjectFieldSingleMObj) oldValueMObject._getField(inverse.name());
                     oldValueMObjectInverseField.__set(null);
-
-                    // TODO: That throws stack overflow
-//                    try {
-//                        ReflectionUtils.setValueToField(oldValue, inverse.name(), inverse.type(), null);
-//                    } catch (Throwable e) {}
                 }
 
                 // set new inverse reference to owner
                 if (newValue != null) {
                     final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
-                    final MObjectFieldRef newValueMObjectInverseField = (MObjectFieldRef) newValueMObject._getField(inverse.name());
+                    final MObjectFieldSingleMObj newValueMObjectInverseField = (MObjectFieldSingleMObj) newValueMObject._getField(inverse.name());
                     newValueMObjectInverseField.__set(owner.getProxy());
-
-                    // TODO: That throws stack overflow
-//                    try {
-//                        ReflectionUtils.setValueToField(newValue, inverse.name(), inverse.type(), owner.getProxy());
-//                    } catch (Throwable e) {}
                 }
             }
         }

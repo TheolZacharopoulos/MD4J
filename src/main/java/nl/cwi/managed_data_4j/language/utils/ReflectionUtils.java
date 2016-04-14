@@ -1,7 +1,6 @@
 package nl.cwi.managed_data_4j.language.utils;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;

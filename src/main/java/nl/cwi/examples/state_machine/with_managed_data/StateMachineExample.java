@@ -1,8 +1,8 @@
-package nl.cwi.examples.state_machine;
+package nl.cwi.examples.state_machine.with_managed_data;
 
-import nl.cwi.examples.state_machine.schemas.Machine;
-import nl.cwi.examples.state_machine.schemas.State;
-import nl.cwi.examples.state_machine.schemas.Transition;
+import nl.cwi.examples.state_machine.with_managed_data.schemas.Machine;
+import nl.cwi.examples.state_machine.with_managed_data.schemas.State;
+import nl.cwi.examples.state_machine.with_managed_data.schemas.Transition;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;

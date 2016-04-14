@@ -10,9 +10,9 @@ import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
  * Represents a single value field which is a Primitive.
  * @author Theologos Zacharopoulos
  */
-public class MObjectFieldPrimitive extends MObjectFieldSingle {
+public class MObjectFieldSinglePrimitive extends MObjectFieldSingle {
 
-    public MObjectFieldPrimitive(MObject owner, Field field)
+    public MObjectFieldSinglePrimitive(MObject owner, Field field)
             throws UnknownTypeException, InvalidFieldValueException
     {
         super(owner, field);

@@ -5,8 +5,8 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldManyList;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldManySet;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldPrimitive;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldRef;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSingleMObj;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSinglePrimitive;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
@@ -94,9 +94,9 @@ public class MObject implements InvocationHandler, M {
 
             // if it is a primitive make it a Primitive field, otherwise a reference (managed object)
             if (field.type().schemaKlass().name().equals("Primitive")) {
-                this.props.put(field.name(), new MObjectFieldPrimitive(this, field));
+                this.props.put(field.name(), new MObjectFieldSinglePrimitive(this, field));
             } else {
-                this.props.put(field.name(), new MObjectFieldRef(this, field));
+                this.props.put(field.name(), new MObjectFieldSingleMObj(this, field));
             }
         } else {
 
@@ -134,7 +134,7 @@ public class MObject implements InvocationHandler, M {
      * @throws InvalidFieldValueException in case of wrong type of the initialization value.
      */
     protected void initializeProps(Object... initializers) throws InvalidFieldValueException {
-        List<Field> fieldList = new LinkedList<>();
+        final List<Field> fieldList = new LinkedList<>();
         fieldList.addAll(this.schemaKlass.fields());
 
         for (int i = 0; i < fieldList.size(); i++) {
@@ -192,13 +192,13 @@ public class MObject implements InvocationHandler, M {
             // in case it is a Primitive, then is always a List
             // Sets of Primitives are not supported (yet)
             if (field.type().schemaKlass().name().equals("Primitive")) {
-                mObjectField.init(new LinkedList<>(Arrays.asList(inits)));
+                ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
             } else {
                 final Klass klassType = (Klass) field.type();
                 if (klassType.key()!= null) {
-                    mObjectField.init(new LinkedHashSet<>(Arrays.asList(inits)));
+                    ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
                 } else {
-                    mObjectField.init(new LinkedList<>(Arrays.asList(inits)));
+                    ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
                 }
             }
 

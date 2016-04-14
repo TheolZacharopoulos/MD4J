@@ -125,13 +125,13 @@ public class SchemaLoader {
         final Set<Type> types = buildTypesFromClasses(factory, schema, schemaKlassesDef);
 
         // wire the types on schema
+        // it is inverse so it will refer to schema.types() directly
         types.forEach(type -> type.schema(schema));
-        schema.types(types.toArray(new Type[types.size()]));
 
         // get the schema's schemaKlass
         final Klass schemaSchemaKlass = schemaSchema.klasses().stream()
             .filter(klass -> klass.name().equals("Schema"))
-            .findFirst().get();
+            .findFirst().orElse(null);
 
         // wire the schema's schemaKlass
         schema.schemaKlass(schemaSchemaKlass);
@@ -139,7 +139,7 @@ public class SchemaLoader {
         // get the primitive's schemaKlass
         final Klass primitiveSchemaKlass = schemaSchema.klasses().stream()
                 .filter(klass -> klass.name().equals("Primitive"))
-                .findFirst().get();
+                .findFirst().orElse(null);
 
         // wire the primitive's schemaKlass
         for (Primitive primitive : schemaSchema.primitives()) {
@@ -149,7 +149,7 @@ public class SchemaLoader {
         // get the klass's schemaKlass
         final Klass klassSchemaKlass = schemaSchema.klasses().stream()
                 .filter(klass -> klass.name().equals("Klass"))
-                .findFirst().get();
+                .findFirst().orElse(null);
 
         // wire the klasses's schemaKlass
         for (Klass klass : schemaSchema.klasses()) {
@@ -159,7 +159,7 @@ public class SchemaLoader {
         // get the field's schemaKlass
         final Klass fieldSchemaKlass = schemaSchema.klasses().stream()
                 .filter(klass -> klass.name().equals("Field"))
-                .findFirst().get();
+                .findFirst().orElse(null);
 
         // wire the field's schemaKlass
         for (Klass klass : schemaSchema.klasses()) {
@@ -237,7 +237,6 @@ public class SchemaLoader {
     {
         final Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
 
-        // ** Issue #1 **
         // The elements in the array returned getMethods(), are not sorted and are not in any particular order.
         // Looks like it is not possible to get them in the definition order, by using reflection.
         // So for now, the order of the methods are alphabetical, and it takes only the primitives in the ordering.

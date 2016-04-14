@@ -1,4 +1,4 @@
-package nl.cwi.examples.state_machine.schemas;
+package nl.cwi.examples.state_machine.with_managed_data.schemas;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
