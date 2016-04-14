@@ -45,6 +45,8 @@ public class MObjectFieldManyList extends MObjectFieldMany<List<Object>> {
 
     @Override
     public void __delete(Object value) {
-        this.value.remove(value);
+        if (this.value.contains(value)) {
+            this.value.remove(value);
+        }
     }
 }

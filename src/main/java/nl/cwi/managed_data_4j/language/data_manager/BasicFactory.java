@@ -3,6 +3,7 @@ package nl.cwi.managed_data_4j.language.data_manager;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -124,6 +125,8 @@ public class BasicFactory implements IFactory {
      * @param newInterface the interface to be added in the proxied interfaces list.
      */
     private void addProxiedInterface(Class<?> newInterface) {
-        proxiedInterfaces.add(newInterface);
+        if (newInterface != null && !PrimitiveUtils.isPrimitiveClass(newInterface)) {
+            proxiedInterfaces.add(newInterface);
+        }
     }
 }
