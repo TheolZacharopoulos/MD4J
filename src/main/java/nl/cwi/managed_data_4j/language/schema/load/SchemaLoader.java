@@ -372,7 +372,7 @@ public class SchemaLoader {
             .forEach(klass -> {
                 final TypeWithClass typeWithClass = types.get(klass);
                 final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
-                if (superKlasses.size() > 0) {
+                if (superKlasses.size() > 0 && superKlasses.toArray()[0] != null) {
                     klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
                 }
             });
