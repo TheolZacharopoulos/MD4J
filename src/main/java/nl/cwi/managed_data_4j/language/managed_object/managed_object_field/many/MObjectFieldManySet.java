@@ -68,9 +68,9 @@ public class MObjectFieldManySet extends MObjectFieldMany<Set<Object>> {
                 if (existingValueKeyField != null) {
 
                     final Object existingValueKeyValue =
-                            ReflectionUtils.getValueFromFieldSafe(existingValue, existingValueKeyField.name(), existingValueKeyField.type());
+                            ReflectionUtils.getValueFromFieldSafe(existingValue, existingValueKeyField.name(), existingValueKeyField.type().classOf());
                     final Object newValueKeyValue =
-                            ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type());
+                            ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type().classOf());
 
                     if (newValueKeyValue != null && existingValueKeyValue != null &&
                             existingValueKeyValue.equals(newValueKeyValue))

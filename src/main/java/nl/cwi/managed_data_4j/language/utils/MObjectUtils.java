@@ -188,7 +188,7 @@ public class MObjectUtils {
 
     private static Object getValueFromField(Object instance, String fieldName, Type fieldType) {
         try {
-            return ReflectionUtils.getValueFromField(instance, fieldName, fieldType);
+            return ReflectionUtils.getValueFromField(instance, fieldName, fieldType.classOf());
         } catch (Throwable e) {
             logger.error("Error on getting field's value: " + e.getCause());
         }

@@ -68,10 +68,14 @@ public class MObjectFieldRef extends MObjectFieldSingle {
 
                 // set old inverse reference to null
                 if (oldValue != null) {
-                    final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
-                    final MObjectFieldRef newValueMObjectInverseField = (MObjectFieldRef) newValueMObject._getField(inverse.name());
-                    newValueMObjectInverseField.__set(null);
-//                    setValueToField(newValue, inverse.name(), inverse.type(), null);
+                    final MObject oldValueMObject = (MObject) Proxy.getInvocationHandler(oldValue);
+                    final MObjectFieldRef oldValueMObjectInverseField = (MObjectFieldRef) oldValueMObject._getField(inverse.name());
+                    oldValueMObjectInverseField.__set(null);
+
+                    // TODO: That throws stack overflow
+//                    try {
+//                        ReflectionUtils.setValueToField(oldValue, inverse.name(), inverse.type(), null);
+//                    } catch (Throwable e) {}
                 }
 
                 // set new inverse reference to owner
@@ -81,7 +85,9 @@ public class MObjectFieldRef extends MObjectFieldSingle {
                     newValueMObjectInverseField.__set(owner.getProxy());
 
                     // TODO: That throws stack overflow
-//                    setValueToField(newValue, inverse.name(), inverse.type(), owner.getProxy());
+//                    try {
+//                        ReflectionUtils.setValueToField(newValue, inverse.name(), inverse.type(), owner.getProxy());
+//                    } catch (Throwable e) {}
                 }
             }
         }

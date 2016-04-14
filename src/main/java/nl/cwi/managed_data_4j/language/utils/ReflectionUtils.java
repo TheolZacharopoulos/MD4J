@@ -9,14 +9,14 @@ import java.util.Comparator;
 
 public class ReflectionUtils {
 
-    public static Object getValueFromFieldSafe(Object instance, String fieldName, Type fieldType) {
+    public static Object getValueFromFieldSafe(Object instance, String fieldName, Class<?> fieldType) {
         try {
             return ReflectionUtils.getValueFromField(instance, fieldName, fieldType);
         } catch (Throwable e) {}
         return null;
     }
 
-    public static Object getValueFromField(Object instance, String fieldName, Type fieldType) throws Throwable {
+    public static Object getValueFromField(Object instance, String fieldName, Class<?> fieldType) throws Throwable {
 
         Method method;
         try {
@@ -25,7 +25,7 @@ public class ReflectionUtils {
         } catch (NoSuchMethodException e) {
 
             // if it does not work, get the params.
-            Class<?> parameterType = Array.newInstance((fieldType).classOf(), 0).getClass();
+            Class<?> parameterType = Array.newInstance(fieldType, 0).getClass();
             method = instance.getClass().getMethod(fieldName, parameterType);
         }
 
@@ -61,8 +61,8 @@ public class ReflectionUtils {
      */
     public static Comparator<Object> fieldNameComparison() {
         return (Object o1, Object o2) -> {
-            String o1Name = ((String) getValueFromFieldSafe(o1, "name", new PrimitiveImpl("String", null, String.class)));
-            String o2Name = (String) getValueFromFieldSafe(o2, "name", new PrimitiveImpl("String", null, String.class));
+            String o1Name = (String) getValueFromFieldSafe(o1, "name", String.class);
+            String o2Name = (String) getValueFromFieldSafe(o2, "name", String.class);
 
             if (o1Name != null && o2Name != null) {
                 return o1Name.compareTo(o2Name);
@@ -78,7 +78,7 @@ public class ReflectionUtils {
      * @param fieldType the type of the field
      * @param value the value to set
      */
-    public void setValueToField(Object instance, String fieldName, Type fieldType, Object value)  throws Throwable {
+    public static void setValueToField(Object instance, String fieldName, Type fieldType, Object value)  throws Throwable {
         Method method;
 
         // Get params method params.
