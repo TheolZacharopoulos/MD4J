@@ -29,7 +29,7 @@ public interface Schema extends M {
      */
     default Set<Klass> klasses(Klass... klass) {
         return types().stream()
-            .filter(Klass.class::isInstance)
+            .filter(type -> type.schemaKlass().name().equals("Klass"))
             .map(Klass.class::cast)
             .collect(Collectors.toSet());
     }
@@ -39,7 +39,7 @@ public interface Schema extends M {
      */
     default Set<Primitive> primitives(Primitive... primitive) {
         return types().stream()
-            .filter(Primitive.class::isInstance)
+                .filter(type -> type.schemaKlass().name().equals("Primitive"))
             .map(Primitive.class::cast)
             .collect(Collectors.toSet());
     }

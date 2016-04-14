@@ -16,7 +16,7 @@ public class DebugUtils {
     public static void debugTypes(Set<Type> types) {
         for (Type type : types) {
 
-            if (type instanceof Klass) {
+            if (type.schemaKlass().name().equals("Klass")) {
 
                 Klass klass = (Klass) type;
                 System.out.println("*" + klass.name());
