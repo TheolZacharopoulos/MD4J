@@ -2,6 +2,7 @@ package nl.cwi.managed_data_4j.ccconcerns.patterns.observer;
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class ObservableMObject extends MObject implements Observable {
     }
 
     @Override
-    public void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException {
+    public void _set(String _name, Object _value) throws NoSuchFieldError, InvalidFieldValueException, NoKeyFieldException {
         super._set(_name, _value);
 
         // Run the observe function for each of the observers on every "set"

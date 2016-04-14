@@ -3,6 +3,7 @@ package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
@@ -11,31 +12,33 @@ import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
  * Represents a multi value field.
  * @author Theologos Zacharopoulos
  */
-public abstract class MObjectFieldMany<T> extends MObjectField<T> implements Iterable {
+public abstract class MObjectFieldMany extends MObjectField implements Iterable {
 
     public MObjectFieldMany(MObject owner, Field field) throws UnknownTypeException {
         super(owner, field);
-        this.value = null;
     }
 
     @Override
-    public void init(T values) throws InvalidFieldValueException {
+    public void init(Object values) throws InvalidFieldValueException, NoKeyFieldException {
         if (!PrimitiveUtils.isMany(values.getClass())) {
             throw new InvalidFieldValueException("Non-array value passed to many-field");
         }
     }
 
     @Override
-    public void set(T value) throws InvalidFieldValueException {
+    public void set(Object value) throws InvalidFieldValueException {
         throw new InvalidFieldValueException("Cannot assign to many-values field " + field.name());
     }
 
-    public void check(T value) throws InvalidFieldValueException {}
+    public void check(Object value) throws InvalidFieldValueException {}
 
-    protected T defaultValue() throws UnknownTypeException {
+    protected Object defaultValue() throws UnknownTypeException {
         return null;
     }
 
-    public abstract void __insert(Object value);
-    public abstract void __delete(Object value);
+    public abstract void add(Object value) throws NoKeyFieldException;
+
+    public abstract void __insert(Object value) throws NoKeyFieldException;
+
+    public abstract void __delete(Object value) throws NoKeyFieldException;
 }

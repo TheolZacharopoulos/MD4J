@@ -2,6 +2,7 @@ package nl.cwi.managed_data_4j.language.managed_object.managed_object_field;
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 
@@ -9,7 +10,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
  * Represents the field of a managed object.
  * @author Theologos Zacharopoulos
  */
-public abstract class MObjectField<T> {
+public abstract class MObjectField {
 
     // the owner of the field as an Managed Object.
     protected final MObject owner;
@@ -19,9 +20,6 @@ public abstract class MObjectField<T> {
 
     // the Inverse of the field.
     protected final Field inverse;
-
-    // The value of the field.
-    protected T value;
 
     /**
      * A field of the Managed Object
@@ -40,36 +38,34 @@ public abstract class MObjectField<T> {
      * @param value the initialization value
      * @throws InvalidFieldValueException when an invalid value for this field is given
      */
-    public abstract void init(T value) throws InvalidFieldValueException;
+    public abstract void init(Object value) throws InvalidFieldValueException, NoKeyFieldException;
 
     /**
      * Checks the given value if it is valid
      * @param value the initialization value
      * @throws InvalidFieldValueException when an invalid value for this field is given
      */
-    protected abstract void check(T value) throws InvalidFieldValueException;
+    protected abstract void check(Object value) throws InvalidFieldValueException;
 
     /**
      * Returns a default value for this kind of field.
      * @return a default value
      * @throws UnknownTypeException when the field type name is unknown.
      */
-    protected abstract T defaultValue() throws UnknownTypeException;
+    protected abstract Object defaultValue() throws UnknownTypeException;
 
     /**
      * Sets a value to the field.
      * @param value the initialization value
      * @throws InvalidFieldValueException when an invalid value for this field is given
      */
-    public abstract void set(T value) throws InvalidFieldValueException;
+    public abstract void set(Object value) throws InvalidFieldValueException;
 
     /**
      * Returns the value of the field
      * @return the fields value.
      */
-    public T get() {
-        return this.value;
-    }
+    public abstract Object get();
 
     /**
      * Returns the Field object that is wrapped.

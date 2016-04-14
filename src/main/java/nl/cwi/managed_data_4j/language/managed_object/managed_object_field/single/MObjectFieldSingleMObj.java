@@ -2,11 +2,13 @@ package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.sing
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldMany;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+
 import java.lang.reflect.Proxy;
 
 /**
@@ -53,14 +55,18 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
                 if (oldValue != null) {
                     final MObject oldValueMObject = (MObject) Proxy.getInvocationHandler(oldValue);
                     final MObjectFieldMany oldValueMObjectInverseField = (MObjectFieldMany) oldValueMObject._getField(inverse.name());
-                    oldValueMObjectInverseField.__delete(owner.getProxy());
+                    try {
+                        oldValueMObjectInverseField.__delete(owner.getProxy());
+                    } catch (NoKeyFieldException e) {}
                 }
 
                 // insert owner to new inverse reference
                 if (newValue != null) {
                     final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
                     final MObjectFieldMany newValueMObjectInverseField = (MObjectFieldMany) newValueMObject._getField(inverse.name());
-                    newValueMObjectInverseField.__insert(owner.getProxy());
+                    try {
+                        newValueMObjectInverseField.__insert(owner.getProxy());
+                    } catch (NoKeyFieldException e) {}
                 }
 
             } else { // otherwise, old and new are both managed objects

@@ -10,7 +10,9 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
  * Represents a single value field
  * @author Theologos Zacharopoulos
  */
-public abstract class MObjectFieldSingle extends MObjectField<Object> {
+public abstract class MObjectFieldSingle extends MObjectField {
+
+    protected Object value;
 
     public MObjectFieldSingle(MObject owner, Field field)
             throws UnknownTypeException, InvalidFieldValueException
@@ -34,5 +36,10 @@ public abstract class MObjectFieldSingle extends MObjectField<Object> {
     @Override
     protected Object defaultValue() throws UnknownTypeException {
         return null;
+    }
+
+    @Override
+    public Object get() {
+        return this.value;
     }
 }

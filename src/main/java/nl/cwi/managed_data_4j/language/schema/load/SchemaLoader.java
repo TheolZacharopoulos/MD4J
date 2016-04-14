@@ -122,7 +122,7 @@ public class SchemaLoader {
         final Schema schema = factory.Schema();
 
         // build the types from the schema klasses definition
-        final Set<Type> types = buildTypesFromClasses(factory, schema, schemaKlassesDef);
+        final Set<Type> types = buildTypesFromClasses(factory, schema, schemaSchema, schemaKlassesDef);
 
         // wire the types on schema
         // it is inverse so it will refer to schema.types() directly
@@ -135,6 +135,11 @@ public class SchemaLoader {
 
         // wire the schema's schemaKlass
         schema.schemaKlass(schemaSchemaKlass);
+
+        return schema;
+    }
+
+    private static void wireSchemaKlasses(Schema schemaSchema) {
 
         // get the primitive's schemaKlass
         final Klass primitiveSchemaKlass = schemaSchema.klasses().stream()
@@ -167,13 +172,12 @@ public class SchemaLoader {
                 field.schemaKlass(fieldSchemaKlass);
             }
         }
-
-        return schema;
     }
 
     private static Set<Type> buildTypesFromClasses(
             SchemaFactory factory,
             Schema schema,
+            Schema schemaSchema,
             Class<?>... schemaKlassesDefinition)
     {
         final Map<Type, TypeWithClass> types = new LinkedHashMap<>();
@@ -213,6 +217,8 @@ public class SchemaLoader {
         wireFieldInverse(allFieldsWithReturnType);
         wireFieldTypeKeys(allFieldsWithReturnType);
 
+        wireSchemaKlasses(schemaSchema);
+
         wireKlassSupers(types, typesCache);
         wireKlassSubs(types, typesCache);
         wireKlassClassOf(types, schemaKlassesDefinition);
@@ -247,15 +253,8 @@ public class SchemaLoader {
 
             // Order only the primitives and non-many,
             // the rest put them at the end.
-            boolean isM1Comparable = (
-                    (!PrimitiveUtils.isMany(o1.getReturnType())) &&
-                            PrimitiveUtils.isPrimitive(o1.getReturnType().getSimpleName())
-            );
-
-            boolean isM2Comparable = (
-                    (!PrimitiveUtils.isMany(o2.getReturnType())) &&
-                            PrimitiveUtils.isPrimitive(o2.getReturnType().getSimpleName())
-            );
+            boolean isM1Comparable = ((!PrimitiveUtils.isMany(o1.getReturnType())) && PrimitiveUtils.isPrimitiveClass(o1.getReturnType()));
+            boolean isM2Comparable = ((!PrimitiveUtils.isMany(o2.getReturnType())) && PrimitiveUtils.isPrimitiveClass(o2.getReturnType()));
 
             if ((!isM1Comparable) && (!isM2Comparable)) return 0;
             if (!isM1Comparable) return 1;

@@ -2,6 +2,7 @@ package nl.cwi.managed_data_4j.language.managed_object;
 
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldManyList;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldManySet;
@@ -15,7 +16,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.*;
 
 /**
@@ -123,7 +123,7 @@ public class MObject implements InvocationHandler, M {
     private void safeInitializeProps(Object... initializers) {
         try {
             this.initializeProps(initializers);
-        } catch (InvalidFieldValueException e) {
+        } catch (InvalidFieldValueException | NoKeyFieldException e) {
             e.printStackTrace();
             throw new RuntimeException("Error on field initialization");
         }
@@ -134,7 +134,7 @@ public class MObject implements InvocationHandler, M {
      * @param initializers the initialization values
      * @throws InvalidFieldValueException in case of wrong type of the initialization value.
      */
-    protected void initializeProps(Object... initializers) throws InvalidFieldValueException {
+    protected void initializeProps(Object... initializers) throws InvalidFieldValueException, NoKeyFieldException {
         final List<Field> fieldList = new LinkedList<>();
         fieldList.addAll(this.schemaKlass.fields());
 
@@ -174,7 +174,7 @@ public class MObject implements InvocationHandler, M {
      * @throws NoSuchFieldError in case there no field with this name.
      * @throws InvalidFieldValueException in case the value is not the right type.
      */
-    public void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException {
+    public void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException, NoKeyFieldException {
         final MObjectField mObjectField = this.props.get(name);
 
         // check if the field exists
@@ -194,12 +194,15 @@ public class MObject implements InvocationHandler, M {
             // Sets of Primitives are not supported (yet)
             if (field.type().schemaKlass().name().equals("Primitive")) {
                 ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
+                Arrays.asList(inits).forEach(((MObjectFieldManyList)mObjectField)::add);
             } else {
                 final Klass klassType = (Klass) field.type();
-                if (klassType.key()!= null) {
-                    ((MObjectFieldManySet) mObjectField).init(new LinkedHashSet<>(Arrays.asList(inits)));
+                if (klassType.key() != null) {
+                    for (Object initValue : Arrays.asList(inits)) {
+                        ((MObjectFieldManySet) mObjectField).add(initValue);
+                    }
                 } else {
-                    ((MObjectFieldManyList) mObjectField).init(new LinkedList<>(Arrays.asList(inits)));
+                    Arrays.asList(inits).forEach(((MObjectFieldManyList)mObjectField)::add);
                 }
             }
 

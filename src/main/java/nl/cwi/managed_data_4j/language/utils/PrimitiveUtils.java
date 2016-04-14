@@ -1,7 +1,5 @@
 package nl.cwi.managed_data_4j.language.utils;
 
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -114,57 +112,5 @@ public class PrimitiveUtils {
         }
 
         return null;
-    }
-
-    public static boolean isPrimitive(String typeName) {
-
-        switch (typeName) {
-            case "String":
-                return true;
-
-            case "Integer":
-            case "int":
-                return true;
-
-            case "Boolean":
-            case "boolean":
-                return true;
-
-            case "Float":
-                return true;
-
-            case "Double":
-                return true;
-
-            case "Class":
-                return true;
-        }
-
-        return false;
-    }
-
-    public static Object primitiveDefault(String typeName) throws UnknownTypeException {
-        switch (typeName) {
-            case "String":
-                return "";
-
-            case "Integer":
-            case "int":
-                return 0;
-
-            case "Boolean":
-            case "bool":
-                return false;
-
-            case "Float":
-            case "Double":
-                return 0.0;
-
-            case "Class":
-                return null;
-
-            default:
-                throw new UnknownTypeException("Unknown primitive type: " + typeName);
-        }
     }
 }
