@@ -4,10 +4,10 @@ import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents a multi value field which is a Set.
@@ -39,13 +39,67 @@ public class MObjectFieldManySet extends MObjectFieldMany<Set<Object>> {
 
     @Override
     public void __insert(Object value) {
-        this.value.add(value);
+
+        // since we do not support (yet) Sets of primitives,
+        // this would be a managed object.
+        final M mObjectNewValue = (M)value;
+        final Field newValueKeyField = mObjectNewValue.schemaKlass().key();
+
+        // in order to insert values in the set, we need to check first if
+        // the value already exists, Java's Set ca not do that since the objects are proxied
+        // so this is the place that we need to use the, in order to check for duplicates
+        if (newValueKeyField != null) {
+            boolean exists = false;
+            for (Object existingValue : this.value) {
+                final Field existingValueKeyField = ((M)existingValue).schemaKlass().key();
+                if (existingValueKeyField != null) {
+
+                    final Object existingValueKeyValue =
+                            ReflectionUtils.getValueFromFieldSafe(existingValue, existingValueKeyField.name(), existingValueKeyField.type());
+                    final Object newValueKeyValue =
+                            ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type());
+
+                    if (newValueKeyValue != null && existingValueKeyValue != null &&
+                        existingValueKeyValue.equals(newValueKeyValue))
+                    {
+                        exists = true;
+                    }
+                }
+            }
+
+            if (!exists) {
+                this.value.add(value);
+            }
+        }
     }
 
     @Override
     public void __delete(Object value) {
-        if (this.value.contains(value)) {
-            this.value.remove(value);
+        // since we do not support (yet) Sets of primitives,
+        // this would be a managed object.
+        final M mObjectNewValue = (M)value;
+        final Field newValueKeyField = mObjectNewValue.schemaKlass().key();
+
+        // in order to insert values in the set, we need to check first if
+        // the value already exists, Java's Set ca not do that since the objects are proxied
+        // so this is the place that we need to use the, in order to check for duplicates
+        if (newValueKeyField != null) {
+            for (Object existingValue : this.value) {
+                final Field existingValueKeyField = ((M)existingValue).schemaKlass().key();
+                if (existingValueKeyField != null) {
+
+                    final Object existingValueKeyValue =
+                            ReflectionUtils.getValueFromFieldSafe(existingValue, existingValueKeyField.name(), existingValueKeyField.type());
+                    final Object newValueKeyValue =
+                            ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type());
+
+                    if (newValueKeyValue != null && existingValueKeyValue != null &&
+                        existingValueKeyValue.equals(newValueKeyValue))
+                    {
+                        this.value.remove(existingValue);
+                    }
+                }
+            }
         }
     }
 }

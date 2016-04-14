@@ -2,6 +2,7 @@ package nl.cwi.managed_data_4j.language.schema.models.definition;
 
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional;
 
 /**
  * Field definition
@@ -28,6 +29,7 @@ public interface Field extends M {
     /**
      * The inverse of a Field is a Field that it is inverse of.
      */
+    @Optional
     @Inverse(other=Field.class, field="inverse")
     Field inverse(Field... field);
 

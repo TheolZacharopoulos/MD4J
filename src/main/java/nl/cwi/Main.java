@@ -47,6 +47,10 @@ public class Main {
         final Schema realSchemaSchema = SchemaLoader.load(
             schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
+        DebugUtils.debugSchema(bootstrapSchema);
+        System.out.println("=======================================");
+        DebugUtils.debugSchema(realSchemaSchema);
+
         // =======================
         // Test equality
         System.out.println("===================================");
@@ -55,10 +59,6 @@ public class Main {
         final SchemaFactory schemaFactory2 = basicFactory2.make();
         final Schema realSchemaSchema2 = SchemaLoader.load(
             schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
-
-        DebugUtils.debugSchema(bootstrapSchema);
-        System.out.println("=======================================");
-        DebugUtils.debugSchema(realSchemaSchema);
 
         System.out.println(" Check boot and real schema equality");
         boolean equalBootReal = MObjectUtils.equals(bootstrapSchema, realSchemaSchema);

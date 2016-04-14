@@ -8,7 +8,6 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Cont
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Method;
@@ -115,7 +114,6 @@ public class SchemaLoader {
      */
     public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
 
-        logger.setLevel(Level.OFF);
         logger.debug("SchemaFactory: create schema");
 
         setupCacheForSchemaKlass(schemaSchema, schemaKlassesDef);
@@ -127,6 +125,7 @@ public class SchemaLoader {
         final Set<Type> types = buildTypesFromClasses(factory, schema, schemaKlassesDef);
 
         // wire the types on schema
+        types.forEach(type -> type.schema(schema));
         schema.types(types.toArray(new Type[types.size()]));
 
         // get the schema's schemaKlass
@@ -199,12 +198,10 @@ public class SchemaLoader {
             final Klass klass = factory.Klass();
             klass.name(klassName);
             klass.schema(schema);
-            klass.fields(fieldsForKlass.values().toArray(new Field[fieldsForKlass.values().size()]));
 
-            // wire the owner klass in fields
-            for (Field field : fieldsForKlass.values()) {
-                field.owner(klass);
-            }
+            // wire the owner klass in fields,
+            // it is inverse so it will refer to klass.fields() directly
+            fieldsForKlass.values().forEach(field -> field.owner(klass));
 
             typesCache.put(klass.name(), klass);
 
@@ -222,147 +219,6 @@ public class SchemaLoader {
 
         typesCache.clear();
         return types.keySet();
-    }
-
-    /**
-     * For all the fields created, set the real types of the field.
-     * The trick here is that in case of multi value (many), the type is not the collection but
-     * but the Generic Return Type which we can take via reflection.
-     *
-     * @param factory the schema factory
-     * @param schema the schema
-     * @param allFieldsWithReturnType all the created fields
-     */
-    private static void wireFieldTypes(
-        SchemaFactory factory,
-        Schema schema,
-        Map<String, FieldWithMethod> allFieldsWithReturnType)
-    {
-        for (String klassNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
-            final Method method = allFieldsWithReturnType.get(klassNameFieldNameCombo).method;
-            final Field field = allFieldsWithReturnType.get(klassNameFieldNameCombo).field;
-
-            // In case the field is multi value (many), that means that the real type is
-            // not given in the method.getReturnType() because this will give Set ot List,
-            // BUT the real type is in method.getGenericReturnType().
-            final Class<?> fieldTypeClass;
-
-            // in case it is multi field, get the return the Generic Return Type
-            if (field.many()) {
-                // The type in this case will be Set or List,
-                // but the Generic Return Type will be the actual type.
-                final ParameterizedType fieldManyType = (ParameterizedType) method.getGenericReturnType();
-                fieldTypeClass = (Class<?>) fieldManyType.getActualTypeArguments()[0];
-            } else {
-                fieldTypeClass = method.getReturnType();
-            }
-
-            final Type fieldType = getFieldType(fieldTypeClass, schema, factory);
-            field.type(fieldType);
-        }
-    }
-
-    /**
-     * Wire the inverse fields.
-     * @param allFieldsWithReturnType all the created fields
-     */
-    private static void wireFieldInverse(Map<String, FieldWithMethod> allFieldsWithReturnType) {
-        for (String classNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
-            final Method method = allFieldsWithReturnType.get(classNameFieldNameCombo).method;
-            final Field field = allFieldsWithReturnType.get(classNameFieldNameCombo).field;
-
-            final Field fieldInverseField = buildInverse(method, allFieldsWithReturnType);
-            if (fieldInverseField != null) {
-                field.inverse(fieldInverseField);
-            }
-        }
-    }
-
-    /**
-     * Wire all the super klasses
-     * @param types all the types
-     * @param cache a type cache
-     */
-    private static void wireKlassSupers(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
-        types.keySet().stream()
-            .filter(Klass.class::isInstance)
-            .map(Klass.class::cast)
-            .forEach(klass -> {
-                final TypeWithClass typeWithClass = types.get(klass);
-                final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
-                if (superKlasses.size() > 0) {
-                    klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
-                }
-            });
-    }
-
-    /**
-     * Wire all the sub klasses
-     * @param types all the types
-     * @param cache a type cache
-     */
-    private static void wireKlassSubs(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
-        types.keySet().stream()
-            .filter(Klass.class::isInstance)
-            .map(Klass.class::cast)
-            .forEach(klass -> {
-                final TypeWithClass typeWithClass = types.get(klass);
-                final Set<Klass> subKlasses = buildSubs(typeWithClass.clazz, cache);
-                if (subKlasses.size() > 0) {
-                    final Klass[] subsToArray = subKlasses.toArray(new Klass[subKlasses.size()]);
-                    klass.subKlasses(subsToArray);
-                }
-            });
-    }
-
-    /**
-     * Wire all the classOf
-     * @param types all the types
-     * @param schemaKlassesDefinition the class Of the Klass
-     */
-    public static void wireKlassClassOf(Map<Type, TypeWithClass> types, Class<?>[] schemaKlassesDefinition) {
-        for (Type type : types.keySet()) {
-            for (Class klassInterface : schemaKlassesDefinition) {
-                if (type instanceof Klass) {
-                    if (klassInterface.getSimpleName().equals(type.name())) {
-                        ((Klass) type).classOf(klassInterface);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * From all the created fields that are type of Klass,
-     * get their klasses and set as key the first field found as KEY.
-     *
-     * We dont need that for primitives since it is done during the type assignment.
-     * @param allFieldsWithReturnType all the created fields
-     */
-    private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
-
-        // from all the fields created
-        allFieldsWithReturnType.keySet().stream()
-            .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
-
-            // get only the many
-            .filter(Field::many)
-
-            // get their type
-            .map(Field::type)
-
-            // get only those of type klass
-            .filter(type -> type.schemaKlass().name().equals("Klass"))
-            .map(Klass.class::cast)
-
-            // for each klass, set key as the first field that is a Key otherwise null
-            .forEach(fieldTypeKlass ->
-                fieldTypeKlass.key(
-                    fieldTypeKlass.fields().stream()
-                        .filter(Field::key)
-                        .findFirst()
-                        .orElse(null))
-            );
     }
 
     /**
@@ -393,13 +249,13 @@ public class SchemaLoader {
             // Order only the primitives and non-many,
             // the rest put them at the end.
             boolean isM1Comparable = (
-                (!PrimitiveUtils.isMany(o1.getReturnType())) &&
-                PrimitiveUtils.isPrimitive(o1.getReturnType().getSimpleName())
+                    (!PrimitiveUtils.isMany(o1.getReturnType())) &&
+                            PrimitiveUtils.isPrimitive(o1.getReturnType().getSimpleName())
             );
 
             boolean isM2Comparable = (
-                (!PrimitiveUtils.isMany(o2.getReturnType())) &&
-                PrimitiveUtils.isPrimitive(o2.getReturnType().getSimpleName())
+                    (!PrimitiveUtils.isMany(o2.getReturnType())) &&
+                            PrimitiveUtils.isPrimitive(o2.getReturnType().getSimpleName())
             );
 
             if ((!isM1Comparable) && (!isM2Comparable)) return 0;
@@ -447,6 +303,154 @@ public class SchemaLoader {
     }
 
     /**
+     * For all the fields created, set the real types of the field.
+     * The trick here is that in case of multi value (many), the type is not the collection but
+     * but the Generic Return Type which we can take via reflection.
+     *
+     * @param factory the schema factory
+     * @param schema the schema
+     * @param allFieldsWithReturnType all the created fields
+     */
+    private static void wireFieldTypes(
+        SchemaFactory factory,
+        Schema schema,
+        Map<String, FieldWithMethod> allFieldsWithReturnType)
+    {
+        for (String klassNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
+            final Method method = allFieldsWithReturnType.get(klassNameFieldNameCombo).method;
+            final Field field = allFieldsWithReturnType.get(klassNameFieldNameCombo).field;
+
+            // In case the field is multi value (many), that means that the real type is
+            // not given in the method.getReturnType() because this will give Set ot List,
+            // BUT the real type is in method.getGenericReturnType().
+            final Class<?> fieldTypeClass;
+
+            // in case it is multi field, get the return the Generic Return Type
+            if (field.many()) {
+                // The type in this case will be Set or List,
+                // but the Generic Return Type will be the actual type.
+                final ParameterizedType fieldManyType = (ParameterizedType) method.getGenericReturnType();
+                fieldTypeClass = (Class<?>) fieldManyType.getActualTypeArguments()[0];
+            } else {
+                fieldTypeClass = method.getReturnType();
+            }
+
+            final Type fieldType = getFieldType(fieldTypeClass, schema, factory);
+            field.type(fieldType);
+
+            logger.debug(" > Wire type: " + field.name() + ".type(" + fieldType.name() + ")");
+        }
+    }
+
+    /**
+     * Wire the inverse fields.
+     * @param allFieldsWithReturnType all the created fields
+     */
+    private static void wireFieldInverse(Map<String, FieldWithMethod> allFieldsWithReturnType) {
+        for (String classNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
+            final Method method = allFieldsWithReturnType.get(classNameFieldNameCombo).method;
+            final Field field = allFieldsWithReturnType.get(classNameFieldNameCombo).field;
+
+            final Field fieldInverseField = buildInverse(method, allFieldsWithReturnType);
+            if (fieldInverseField != null) {
+                logger.debug(" > Wire inverse:  " +
+                        field.owner().name() + "." + field.name() +
+                        ".inverse(" + fieldInverseField.owner().name() + "." + fieldInverseField.name() + ")");
+
+                field.inverse(fieldInverseField);
+            }
+        }
+    }
+
+    /**
+     * Wire all the super klasses
+     * @param types all the types
+     * @param cache a type cache
+     */
+    private static void wireKlassSupers(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
+        types.keySet().stream()
+            .filter(type -> type.schemaKlass().name().equals("Klass"))
+            .map(Klass.class::cast)
+            .forEach(klass -> {
+                final TypeWithClass typeWithClass = types.get(klass);
+                final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
+                if (superKlasses.size() > 0) {
+                    klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
+                }
+            });
+    }
+
+    /**
+     * Wire all the sub klasses
+     * @param types all the types
+     * @param cache a type cache
+     */
+    private static void wireKlassSubs(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
+        types.keySet().stream()
+            .filter(type -> type.schemaKlass().name().equals("Klass"))
+            .map(Klass.class::cast)
+            .forEach(klass -> {
+                final TypeWithClass typeWithClass = types.get(klass);
+                final Set<Klass> subKlasses = buildSubs(typeWithClass.clazz, cache);
+                if (subKlasses.size() > 0) {
+                    final Klass[] subsToArray = subKlasses.toArray(new Klass[subKlasses.size()]);
+                    klass.subKlasses(subsToArray);
+                }
+            });
+    }
+
+    /**
+     * Wire all the classOf
+     * @param types all the types
+     * @param schemaKlassesDefinition the class Of the Klass
+     */
+    public static void wireKlassClassOf(Map<Type, TypeWithClass> types, Class<?>[] schemaKlassesDefinition) {
+        for (Type type : types.keySet()) {
+            for (Class klassInterface : schemaKlassesDefinition) {
+                if (type.schemaKlass().name().equals("Klass")) {
+                    if (klassInterface.getSimpleName().equals(type.name())) {
+                        ((Klass) type).classOf(klassInterface);
+                        logger.debug("> Wire " + type.name() + ".classOf(" + klassInterface.getName() + ")");
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * From all the created fields that are type of Klass,
+     * get their klasses and set as key the first field found as KEY.
+     *
+     * We dont need that for primitives since it is done during the type assignment.
+     * @param allFieldsWithReturnType all the created fields
+     */
+    private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
+
+        // from all the fields created
+        allFieldsWithReturnType.keySet().stream()
+            .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
+
+            // get only the many
+            .filter(Field::many)
+
+            // get their type
+            .map(Field::type)
+
+            // get only those of type klass
+            .filter(type -> type.schemaKlass().name().equals("Klass"))
+            .map(Klass.class::cast)
+
+            // for each klass, set key as the first field that is a Key otherwise null
+            .forEach(fieldTypeKlass ->
+                fieldTypeKlass.key(
+                    fieldTypeKlass.fields().stream()
+                        .filter(Field::key)
+                        .findFirst()
+                        .orElse(null))
+            );
+    }
+
+    /**
      * Builds an inverse field from a given method.
      * @param method the method
      * @param allFieldsWithReturnType all the created fields
@@ -477,6 +481,7 @@ public class SchemaLoader {
                      fieldForSearchOwnerName.equals(inverseOtherName))
                 {
                     fieldInverseField = fieldForSearch;
+                    break;
                 }
             }
         }
@@ -532,7 +537,7 @@ public class SchemaLoader {
         final Set<Klass> subs = new LinkedHashSet<>();
 
         for (Type sub : cache.values()) {
-            if (sub instanceof Klass) {
+            if (sub.schemaKlass().name().equals("Klass")) {
                 final Klass subKlass = (Klass) sub;
 
                 for (Klass superKlass : subKlass.supers()) {

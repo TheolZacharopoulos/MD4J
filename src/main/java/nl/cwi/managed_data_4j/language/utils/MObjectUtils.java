@@ -4,12 +4,8 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class MObjectUtils {
@@ -54,7 +50,6 @@ public class MObjectUtils {
     }
 
     private static boolean e(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences, Object x, Object y) {
-        logger.setLevel(Level.OFF);
 
         // check for null first
         if (x == null && y == null) {
@@ -133,8 +128,8 @@ public class MObjectUtils {
         // then we need to order them in order to check for equality.
         // Sort the vectors based on the field's name
         if (xVector.size() > 0 && xVector.get(0) instanceof M) {
-            Collections.sort(xVector, fieldNameComparison());
-            Collections.sort(yVector, fieldNameComparison());
+            Collections.sort(xVector, ReflectionUtils.fieldNameComparison());
+            Collections.sort(yVector, ReflectionUtils.fieldNameComparison());
         }
 
         // If it is primitive,
@@ -193,62 +188,10 @@ public class MObjectUtils {
 
     private static Object getValueFromField(Object instance, String fieldName, Type fieldType) {
         try {
-
-            Method method;
-            try {
-                // try with a method without params
-                method = instance.getClass().getMethod(fieldName);
-            } catch (NoSuchMethodException e) {
-
-                // if it does not work, get the params.
-                Class<?> parameterType = Array.newInstance((fieldType).classOf(), 0).getClass();
-                method = instance.getClass().getMethod(fieldName, parameterType);
-            }
-
-            // needs to be accessible in order to invoke it
-            method.setAccessible(true);
-
-            // in case the method needs parameters, we need to construct the parameter type
-            if (method.getParameters().length > 0) {
-
-                // We need the following in order to invoke the method with this kind of parameter
-                // Get the parameter type, and get the first one
-                final Class<?>[] parameterTypes = method.getParameterTypes();
-                final Class<?> firstParameterType = parameterTypes[0];
-
-                // In case of vargs, make it from array to single type
-                // after, create an empty array of that type, this way we can invoke methods that need
-                // empty vargs as parameters.
-                Object emptyArrayOfFirstParameterType;
-                if (firstParameterType.isArray()) {
-                    emptyArrayOfFirstParameterType = Array.newInstance(firstParameterType.getComponentType(), 0);
-                } else {
-                    emptyArrayOfFirstParameterType = Array.newInstance(firstParameterType, 0);
-                }
-
-                return method.invoke(instance, emptyArrayOfFirstParameterType);
-            } else {
-                return method.invoke(instance);
-            }
-
+            return ReflectionUtils.getValueFromField(instance, fieldName, fieldType);
         } catch (Throwable e) {
             logger.error("Error on getting field's value: " + e.getCause());
         }
         return null;
-    }
-
-    /**
-     * Helper method, Compare based on the field's name
-     */
-    private static Comparator <Object> fieldNameComparison() {
-        return (Object o1, Object o2) -> {
-            String o1Name = ((String) getValueFromField(o1, "name", new PrimitiveImpl("String", null, String.class)));
-            String o2Name = (String) getValueFromField(o2, "name", new PrimitiveImpl("String", null, String.class));
-
-            if (o1Name != null && o2Name != null) {
-                return o1Name.compareTo(o2Name);
-            }
-            return 0;
-        };
     }
 }

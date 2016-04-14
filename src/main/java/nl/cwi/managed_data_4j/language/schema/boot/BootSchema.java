@@ -182,10 +182,10 @@ public class BootSchema extends SchemaImpl {
             klassKlassClassOfField,
             klassKlassNameField,
             klassKlassKeyField,
-            klassKlassSchemaField,
             klassKlassSupersField,
             klassKlassSubsField,
             klassKlassFieldsField,
+            klassKlassSchemaField,
             klassKlassSchemaKlassField);
 
         // ========================
@@ -221,7 +221,7 @@ public class BootSchema extends SchemaImpl {
         fieldKlassOptionalField.owner(fieldKlass);
         fieldKlassOptionalField.type(booleanPrimitive);
 
-        final Field fieldKlassInverseField = new FieldImpl("inverse", false, false, false, false);
+        final Field fieldKlassInverseField = new FieldImpl("inverse", false, true, false, false);
         fieldKlassInverseField.owner(fieldKlass);
         fieldKlassInverseField.type(fieldKlass);
         fieldKlassInverseField.inverse(fieldKlassInverseField);
@@ -245,8 +245,8 @@ public class BootSchema extends SchemaImpl {
             fieldKlassNameField,
             fieldKlassOptionalField,
             fieldKlassTypeField,
-            fieldKlassOwnerField,
             fieldKlassInverseField,
+            fieldKlassOwnerField,
             fieldKlassSchemaKlassField);
 
         // ========================
@@ -306,7 +306,10 @@ public class BootSchema extends SchemaImpl {
                 typeKlass,
                 primitiveKlass,
                 klassKlass,
-                fieldKlass
+                fieldKlass,
+                stringPrimitive,
+                classPrimitive,
+                booleanPrimitive
         ));
     }
 

@@ -3,14 +3,11 @@ package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.sing
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldMany;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * Represents a single value field which is a Managed Object.
@@ -37,6 +34,11 @@ public class MObjectFieldRef extends MObjectFieldSingle {
         this.value = value;
     }
 
+    /**
+     * Notify any dependencies for the change of that field.
+     * @param oldValue the old value of the field
+     * @param newValue the old value of the field
+     */
     private void notify(Object oldValue, Object newValue) {
         // if the new value is the same as the old one, then nothing changes
         if (oldValue == newValue) return;
@@ -47,28 +49,39 @@ public class MObjectFieldRef extends MObjectFieldSingle {
             // if it is many, then old and new are both collections
             if (inverse.many()) {
 
-                // set old inverse reference to null
+                // delete owner from old reference
                 if (oldValue != null) {
-                    // TODO: delete (owner) from oldValue
-                    setValueToField(newValue, inverse.name(), inverse.type(), null);
+                    final MObject oldValueMObject = (MObject) Proxy.getInvocationHandler(oldValue);
+                    final MObjectFieldMany oldValueMObjectInverseField = (MObjectFieldMany) oldValueMObject._getField(inverse.name());
+                    oldValueMObjectInverseField.__delete(owner.getProxy());
                 }
 
-                // set new inverse reference to owner
+                // insert owner to new inverse reference
                 if (newValue != null) {
-                    // TODO: add (owner) to newValue
-//                    setValueToField(newValue, inverse.name(), inverse.type(), owner.getProxy());
+                    final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
+                    final MObjectFieldMany newValueMObjectInverseField = (MObjectFieldMany) newValueMObject._getField(inverse.name());
+
+                    newValueMObjectInverseField.__insert(owner.getProxy());
                 }
 
             } else { // otherwise, old and new are both managed objects
 
                 // set old inverse reference to null
                 if (oldValue != null) {
-                    setValueToField(newValue, inverse.name(), inverse.type(), null);
+                    final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
+                    final MObjectFieldRef newValueMObjectInverseField = (MObjectFieldRef) newValueMObject._getField(inverse.name());
+                    newValueMObjectInverseField.__set(null);
+//                    setValueToField(newValue, inverse.name(), inverse.type(), null);
                 }
 
                 // set new inverse reference to owner
                 if (newValue != null) {
-                    setValueToField(newValue, inverse.name(), inverse.type(), owner.getProxy());
+                    final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
+                    final MObjectFieldRef newValueMObjectInverseField = (MObjectFieldRef) newValueMObject._getField(inverse.name());
+                    newValueMObjectInverseField.__set(owner.getProxy());
+
+                    // TODO: That throws stack overflow
+//                    setValueToField(newValue, inverse.name(), inverse.type(), owner.getProxy());
                 }
             }
         }
@@ -106,47 +119,5 @@ public class MObjectFieldRef extends MObjectFieldSingle {
                 "Invalid value for " + this.field.owner().name() + " " +
                 this.field.name() + " " + field.type().name() + " found (" + valueSchemaKlass.name() + ")");
         }
-    }
-
-    /**
-     * Sets a value to a field reflectively
-     * @param instance the instance of the object to set the field to
-     * @param fieldName the field name of the field
-     * @param fieldType the type of the field
-     * @param value the value to set
-     */
-    private void setValueToField(Object instance, String fieldName, Type fieldType, Object value) {
-        try {
-            Method method;
-
-            // Get params method params.
-            Class<?> parameterType = Array.newInstance((fieldType).classOf(), 0).getClass();
-            method = instance.getClass().getMethod(fieldName, parameterType);
-
-            // needs to be accessible in order to invoke it
-            method.setAccessible(true);
-
-            // We need the following in order to invoke the method with this kind of parameter
-            // Get the parameter type, and get the first one
-            final Class<?>[] parameterTypes = method.getParameterTypes();
-            final Class<?> firstParameterType = parameterTypes[0];
-
-            // In case of vargs, make it from array to single type
-            // after, create an empty array of that type, this way we can invoke methods that need
-            // empty vargs as parameters.
-            Object arrayOfParameterType;
-            if (firstParameterType.isArray()) {
-                arrayOfParameterType = Array.newInstance(firstParameterType.getComponentType(), 1);
-            } else {
-                arrayOfParameterType = Array.newInstance(firstParameterType, 1);
-            }
-
-            // push the value to the parameter type array.
-            Array.set(arrayOfParameterType, 0, value);
-
-            // invoke the method to set the field value
-            method.invoke(instance, arrayOfParameterType);
-
-        } catch (Throwable e) {}
     }
 }

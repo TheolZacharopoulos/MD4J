@@ -57,13 +57,6 @@ public class StateMachineExample {
         // State machine start
         doorStateMachine.start(openState);
 
-        // TODO: remove wiring (make inverse work for multi).
-        openState.in(openTransition);
-        openState.out(closeTransition);
-        closedState.in(closeTransition);
-        closedState.out(openTransition);
-        doorStateMachine.states(openState, closedState);
-
         final List<String> commands = new LinkedList<>(Arrays.asList(
                 OPEN_TRANSITION,
                 CLOSE_TRANSITION,
