@@ -1,7 +1,5 @@
 package nl.cwi.managed_data_4j.language.utils;
 
-import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Comparator;
@@ -11,7 +9,9 @@ public class ReflectionUtils {
     public static Object getValueFromFieldSafe(Object instance, String fieldName, Class<?> fieldType) {
         try {
             return ReflectionUtils.getValueFromField(instance, fieldName, fieldType);
-        } catch (Throwable e) {}
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -23,9 +23,14 @@ public class ReflectionUtils {
             method = instance.getClass().getMethod(fieldName);
         } catch (NoSuchMethodException e) {
 
-            // if it does not work, get the params.
-            Class<?> parameterType = Array.newInstance(fieldType, 0).getClass();
-            method = instance.getClass().getMethod(fieldName, parameterType);
+            if (fieldType.isArray()) {
+                // if it does not work, get the params.
+                method = instance.getClass().getMethod(fieldName, fieldType);
+            } else {
+                // if it does not work, get the params.
+                Class<?> parameterType = Array.newInstance(fieldType, 0).getClass();
+                method = instance.getClass().getMethod(fieldName, parameterType);
+            }
         }
 
         // needs to be accessible in order to invoke it
@@ -70,18 +75,25 @@ public class ReflectionUtils {
         };
     }
 
+    public static void setValueToFieldSafe(Object instance, String fieldName, Class<?> typeClass, Object value) {
+        try {
+            ReflectionUtils.setValueToField(instance, fieldName, typeClass, value);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Sets a value to a field reflectively
      * @param instance the instance of the object to set the field to
      * @param fieldName the field name of the field
-     * @param fieldType the type of the field
+     * @param typeClass the class of the field
      * @param value the value to set
      */
-    public static void setValueToField(Object instance, String fieldName, Type fieldType, Object value)  throws Throwable {
+    public static void setValueToField(Object instance, String fieldName, Class<?> typeClass, Object value)  throws Throwable {
         Method method;
 
         // Get params method params.
-        Class<?> parameterType = Array.newInstance((fieldType).classOf(), 0).getClass();
+        Class<?> parameterType = Array.newInstance(typeClass, 0).getClass();
         method = instance.getClass().getMethod(fieldName, parameterType);
 
         // needs to be accessible in order to invoke it

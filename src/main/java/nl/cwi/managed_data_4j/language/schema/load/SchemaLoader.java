@@ -29,7 +29,7 @@ public class SchemaLoader {
     /**
      * Helper private class to keep Fields with their Method which define them.
      */
-    private static class FieldWithMethod {
+    private static final class FieldWithMethod {
 
         public Field field = null;
         public Method method = null;
@@ -43,7 +43,7 @@ public class SchemaLoader {
     /**
      * Helper private class to keep Types with their Classes which define them.
      */
-    private static class TypeWithClass {
+    private static final class TypeWithClass {
 
         public Type type = null;
         public Class<?> clazz = null;
