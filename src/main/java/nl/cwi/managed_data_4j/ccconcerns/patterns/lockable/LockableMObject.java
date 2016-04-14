@@ -16,6 +16,13 @@ public class LockableMObject extends MObject implements Lockable {
         isLocked = true;
     }
 
+    /**
+     * Simple decorator that locks the object
+     * @param name the name of the field
+     * @param value the value of the field
+     * @throws NoSuchFieldError
+     * @throws InvalidFieldValueException
+     */
     @Override
     public void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException {
         if (isLocked) {

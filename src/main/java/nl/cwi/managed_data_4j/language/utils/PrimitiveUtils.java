@@ -6,8 +6,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Utilities needed for the Java primitives
+ * @author Theoogos Zacharopoulos
+ */
 public class PrimitiveUtils {
 
+    /**
+     * Checks if a given class is instance of one of the supported Array classes
+     * @param clazz the class to be checked
+     * @return true if it is an array class that is supported, false otherwise
+     */
     public static boolean isMany(Class<?> clazz) {
         if (clazz.isArray()) return true;
         if (Set.class.isAssignableFrom(clazz)) return true;
@@ -61,6 +70,11 @@ public class PrimitiveUtils {
        return ok;
     }
 
+    /**
+     * Checks if a given class is instance of one of the supported primitives classes
+     * @param typeClass the class to check
+     * @return true if it is a primitive class that is supported, false otherwise
+     */
     public static boolean isPrimitiveClass(Class<?> typeClass) {
         if (String.class.isAssignableFrom(typeClass)) return true;
         if (Integer.class.isAssignableFrom(typeClass)) return true;
