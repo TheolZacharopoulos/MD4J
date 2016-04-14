@@ -59,7 +59,7 @@ public abstract class MObjectField {
      * @param value the initialization value
      * @throws InvalidFieldValueException when an invalid value for this field is given
      */
-    public abstract void set(Object value) throws InvalidFieldValueException;
+    public abstract void set(Object value) throws InvalidFieldValueException, NoKeyFieldException;
 
     /**
      * Returns the value of the field

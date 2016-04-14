@@ -24,7 +24,7 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
     }
 
     @Override
-    public void set(Object value) throws InvalidFieldValueException {
+    public void set(Object value) throws InvalidFieldValueException, NoKeyFieldException {
         if (value != null) {
             this.check(value);
         }
@@ -41,7 +41,7 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
      * @param oldValue the old value of the field
      * @param newValue the old value of the field
      */
-    private void notify(Object oldValue, Object newValue) {
+    private void notify(Object oldValue, Object newValue) throws NoKeyFieldException {
         // if the new value is the same as the old one, then nothing changes
         if (oldValue == newValue) return;
 
@@ -55,18 +55,14 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
                 if (oldValue != null) {
                     final MObject oldValueMObject = (MObject) Proxy.getInvocationHandler(oldValue);
                     final MObjectFieldMany oldValueMObjectInverseField = (MObjectFieldMany) oldValueMObject._getField(inverse.name());
-                    try {
-                        oldValueMObjectInverseField.__delete(owner.getProxy());
-                    } catch (NoKeyFieldException e) {}
+                    oldValueMObjectInverseField.__delete(owner.getProxy());
                 }
 
                 // insert owner to new inverse reference
                 if (newValue != null) {
                     final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
                     final MObjectFieldMany newValueMObjectInverseField = (MObjectFieldMany) newValueMObject._getField(inverse.name());
-                    try {
-                        newValueMObjectInverseField.__insert(owner.getProxy());
-                    } catch (NoKeyFieldException e) {}
+                    newValueMObjectInverseField.__insert(owner.getProxy());
                 }
 
             } else { // otherwise, old and new are both managed objects

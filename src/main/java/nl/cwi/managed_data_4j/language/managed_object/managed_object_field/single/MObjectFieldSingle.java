@@ -3,6 +3,7 @@ package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.sing
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 
@@ -21,12 +22,12 @@ public abstract class MObjectFieldSingle extends MObjectField {
         this.value = defaultValue();
     }
 
-    public void init(Object value) throws InvalidFieldValueException {
+    public void init(Object value) throws InvalidFieldValueException, NoKeyFieldException {
         this.set(value);
     }
 
     @Override
-    public void set(Object value) throws InvalidFieldValueException {
+    public void set(Object value) throws InvalidFieldValueException, NoKeyFieldException {
         if (value != null) {
             this.check(value);
         }

@@ -63,6 +63,11 @@ public class MObjectFieldManyList extends MObjectFieldMany {
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.values.isEmpty();
+    }
+
+    @Override
     public Object get() {
         return this.values;
     }

@@ -70,6 +70,11 @@ public class MObjectFieldManySet extends MObjectFieldMany {
         this.values.remove(keyValue);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return this.values.isEmpty();
+    }
+
     private Object getKeyValue(Object value) throws NoKeyFieldException {
         // since we do not support (yet) Sets of primitives,
         // this would be a managed object.
