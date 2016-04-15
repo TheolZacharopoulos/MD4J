@@ -75,65 +75,33 @@ A list of the available structure meta data and concepts that are supported in o
 \end{description}
 
 Using all the aforementioned constructs of our data definition language, a programmer can define any kind of schemas, even itself (see section \ref{SchemaSchema}).
-
-\subsection{Schemas example and explanation}\label{Schemas example and explanation}
-In order to show our schema definition in practice we use the following example schemas, which are the same that are used as a simple example use case in Enso \cite{loh2012managed}:
-
-\begin{sourcecode}[H]
-	\begin{lstlisting}[language=Java,escapechar=|]
-public interface Point extends M {
-}
-	\end{lstlisting}
-	\caption{The Point Schema}
-	\label{lst:Point_Schema_implementation}
-\end{sourcecode}
-
-\begin{sourcecode}[H]
-	\begin{lstlisting}[language=Java,escapechar=|]
-public interface Point2D extends Point {
-	Integer x(Integer... x);
-	Integer y(Integer... y);
-}
-	\end{lstlisting}
-	\caption{The Point2D Schema}
-	\label{lst:Point2D_Schema_implementation}
-\end{sourcecode}
-
-\begin{sourcecode}[H]
-	\begin{lstlisting}[language=Java,escapechar=|]
-public interface Line extends M {
-	@Contain
-	Point2D startPoint(Point2D... p);
-
-	@Contain
-	Point2D endPoint(Point2D... p);
-}
-	\end{lstlisting}
-	\caption{The Line Schema}
-	\label{lst:Line_Schema_implementation}
-\end{sourcecode}
-
-% TODO: explain.
-
-However, even if we have the definitions of schemas, we still need a way to create instances of them.
+An example of schemas definition is presented in Chapter \ref{Example Application}, in listings \ref{lst:Machine_Schema}, \ref{lst:State_Schema} and \ref{lst:Transition_Schema}.
+In those definition the above concepts can be recognized as well as their meaning in context.
 
 \subsection{Schema Factories}\label{Schema Factories}
-% interfaces
+However, even if we have the definitions of schemas, we still need a way to create instances of them.
+We can not use Java's mechanisms for this functionality since we need the schema instances to be managed data.
+Thus, we use Java interfaces to define \textit{Schema Factories}.
+A \textit{Schema Factory} is a list of constructor definitions for specific schemas.
 
-% Constructors
-% Initialization values
-% Limitations / Issues encountered
+The methods of this interface are used like the constructor definition on a Java class.
+However, in our case they are defined as methods in a Java interface while the implementation is handled by the data managers.
+Since those methods are constructors we can define a constructor with or without initial values.
+Nevertheless, we have encountered a limitation that considers the constructors with initialization values, which makes them inappropriate to use.
 
-\subsubsection{Methods ordering}\label{Methods ordering}
+\subsubsection{Methods Ordering Issue}\label{Methods ordering}
+The problem lays on Java's reflection mechanisms in terms of methods ordering.
+More specifically, when the methods of a \texttt{java.lang.Class} requested, by using the \texttt{public Method[] getMethods()} method\footnote{As it is mentioned in \url{https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html\#getMethods--}, The elements in the returned array are not sorted and are not in any particular order.}, the returned values are not ordered with the same order as they are defined in the source code.
+Consequently, since the schema definition is reflectively analyzed in the data managers, and it depends on that order, those methods they can not be used in the initialization of the values.
 
-% methods order its not the same as they are defined in the source code, so they can not be used in the initialization of the values.
-% no contractor with init values
-% alternatives:
-% Alphabetical order. (its gonna be used only as an alternative)
+However, we've implemented an alternative way in order to support such feature.
+In our implementation we order both the defined methods and the fields before we initialize them using their \textbf{alphabetical order}.
+This is something that can be used by the programmers although it is considered as a confusing method of doing it.
+Therefore, as an advice for more wise usage of the constructor definition, we suggest to either provide only constructors without initialization values or to write constructors with only \textbf{primitive} initialization values in \textbf{alphabetical order}.
+In different case there is the danger that the fields of the schema will get values in different order leading to an error or a wrong-valued instance.
 
 \subsection{Data Managers Implementation}\label{Data Managers Implementation}
 % Schemas are not complete specifications without a cor- responding data manager. In this case our simple schema is a definition of a data type, and does not state whether the records are immutable or mutable, if they can be stored in a database, or transformed in other ways. Schemas can be interpreted in many different ways to create different kinds of records.
-
 
 % Dynamic proxies
 % Decorator pattern to stack them
@@ -146,10 +114,11 @@ However, even if we have the definitions of schemas, we still need a way to crea
 
 % Multiple interpretations
 
+\subsubsection{ManageData4J Basic Data Manager}
 % Our data manager implementation
 
 \subsubsection{Observable Data Manager Implementation}
-% It’s important the data managers to inherit from a base one, thats the modular aspect (BasicFactory).
+% It’s important the data managers to inherit from a base one, thats the modular aspect (BasicDataManager).
 
 \subsection{Managed Objects}\label{sec:Managed Objects}
 % The M interface
