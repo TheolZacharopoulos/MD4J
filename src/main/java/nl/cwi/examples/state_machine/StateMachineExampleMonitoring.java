@@ -5,9 +5,9 @@ import nl.cwi.examples.state_machine.schemas.Machine;
 import nl.cwi.examples.state_machine.schemas.State;
 import nl.cwi.examples.state_machine.schemas.Transition;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.Observable;
-import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableFactory;
+import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableDataManager;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
-import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
@@ -21,8 +21,9 @@ public class StateMachineExampleMonitoring {
 
     public final static String OPEN_STATE       = "Open";
     public final static String CLOSED_STATE     = "Closed";
-    public final static String OPEN_TRANSITION  = "open";
-    public final static String CLOSE_TRANSITION = "close";
+
+    public final static String OPEN_TRANSITION  = "open_door";
+    public final static String CLOSE_TRANSITION = "close_door";
 
     public static void main(String[] args) {
         PropertyConfigurator.configure("src/main/resources/logger.properties");
@@ -32,20 +33,20 @@ public class StateMachineExampleMonitoring {
 
         final Schema stateMachineSchema =
                 SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
-        final BasicFactory basicFactoryForStateMachines = new BasicFactory(StateMachineFactory.class, stateMachineSchema);
+        final BasicDataManager basicFactoryForStateMachines = new BasicDataManager(StateMachineFactory.class, stateMachineSchema);
         final StateMachineFactory stateMachineFactory = basicFactoryForStateMachines.make();
 
         // ========================================================
         // State Machine monitoring
-        final ObservableFactory observableFactory = new ObservableFactory(StateMachineFactory.class, stateMachineSchema);
+        final ObservableDataManager observableFactory = new ObservableDataManager(StateMachineFactory.class, stateMachineSchema);
         final StateMachineFactory observableStateMachineFactory = observableFactory.make();
 
         // ========================================================
-        // Door State Machine definition, with monitoring data manager
+        // Door State Machine definition, with observable data manager
         final Machine doorStateMachine = observableStateMachineFactory.Machine();
 
         // Add Monitoring concerns
-        ((Observable) doorStateMachine).observe(StateMachineMonitoring::log);
+        ((Observable) doorStateMachine).observe(StateMachineMonitoring::monitor);
         ((Observable) doorStateMachine).observe(StateMachineMonitoring::notify);
 
         // Open State definition

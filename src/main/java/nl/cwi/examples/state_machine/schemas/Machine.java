@@ -5,10 +5,10 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Cont
 import java.util.Set;
 
 public interface Machine {
-    State start(State... state);
+    State start(State... startingState);
 
-    State current(State... state);
+    State current(State... currentState);
 
     @Contain
-    Set<State> states(State... state);
+    Set<State> states(State... states);
 }

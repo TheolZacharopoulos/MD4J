@@ -6,11 +6,11 @@ import nl.cwi.examples.geometry.schemas.Point2D;
 import nl.cwi.examples.geometry.schemas.Point3D;
 import nl.cwi.managed_data_4j.ccconcerns.aspects.UpdateLogger;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.lockable.Lockable;
-import nl.cwi.managed_data_4j.ccconcerns.patterns.lockable.LockableFactory;
+import nl.cwi.managed_data_4j.ccconcerns.patterns.lockable.LockableDataManager;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.Observable;
-import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableFactory;
+import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableDataManager;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
-import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
@@ -32,7 +32,7 @@ public class GeometryExample {
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
         final Schema pointSchema = SchemaLoader.load(
                 schemaFactory, schemaSchema, Point.class, Point2D.class, Point3D.class, Line.class);
-        final BasicFactory basicFactoryForPoints = new BasicFactory(PointFactory.class, pointSchema);
+        final BasicDataManager basicFactoryForPoints = new BasicDataManager(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 
         final Point2D point = pointFactory.Point2D(3, 2);
@@ -62,7 +62,7 @@ public class GeometryExample {
         System.out.println("=============");
         System.out.println("Observable Objects: ");
 
-        final ObservableFactory observableFactory = new ObservableFactory(PointFactory.class, pointSchema);
+        final ObservableDataManager observableFactory = new ObservableDataManager(PointFactory.class, pointSchema);
         final PointFactory observablePointFactory = observableFactory.make();
 
         // Create a new observer-record managed object.
@@ -81,7 +81,7 @@ public class GeometryExample {
         System.out.println("=============");
         System.out.println("Lockable Objects: ");
 
-        final LockableFactory lockableFactory = new LockableFactory(PointFactory.class, pointSchema);
+        final LockableDataManager lockableFactory = new LockableDataManager(PointFactory.class, pointSchema);
         final PointFactory lockablePointFactory = lockableFactory.make();
         final Point2D lockablePoint = lockablePointFactory.Point2D();
         lockablePoint.x(1);

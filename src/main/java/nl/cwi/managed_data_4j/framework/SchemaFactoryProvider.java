@@ -1,6 +1,6 @@
 package nl.cwi.managed_data_4j.framework;
 
-import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
@@ -19,7 +19,7 @@ public class SchemaFactoryProvider {
 
         if (schemaSchema == null) {
             final Schema bootstrapSchema = SchemaLoader.bootLoad();
-            final BasicFactory basicFactory = new BasicFactory(SchemaFactory.class, bootstrapSchema);
+            final BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
 
             // schema factory made from bootstrapping
             final SchemaFactory bootStrapSchemaFactory = basicFactory.make();
@@ -35,7 +35,7 @@ public class SchemaFactoryProvider {
         if (schemaFactory == null) {
 
             final Schema realSchemaSchema = getSchemaSchema();
-            final BasicFactory realBasicFactory = new BasicFactory(SchemaFactory.class, realSchemaSchema);
+            final BasicDataManager realBasicFactory = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
 
             // schema factory made from managed data
             final SchemaFactory realSchemaFactory = realBasicFactory.make();

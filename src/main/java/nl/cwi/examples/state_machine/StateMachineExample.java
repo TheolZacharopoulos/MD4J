@@ -2,7 +2,7 @@ package nl.cwi.examples.state_machine;
 
 import nl.cwi.examples.state_machine.schemas.*;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
-import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
@@ -16,8 +16,9 @@ public class StateMachineExample {
 
     public final static String OPEN_STATE       = "Open";
     public final static String CLOSED_STATE     = "Closed";
-    public final static String OPEN_TRANSITION  = "open";
-    public final static String CLOSE_TRANSITION = "close";
+
+    public final static String OPEN_TRANSITION  = "open_door";
+    public final static String CLOSE_TRANSITION = "close_door";
 
     public static void main(String[] args) {
         PropertyConfigurator.configure("src/main/resources/logger.properties");
@@ -27,7 +28,7 @@ public class StateMachineExample {
 
         final Schema stateMachineSchema =
                 SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
-        final BasicFactory basicFactoryForStateMachines = new BasicFactory(StateMachineFactory.class, stateMachineSchema);
+        final BasicDataManager basicFactoryForStateMachines = new BasicDataManager(StateMachineFactory.class, stateMachineSchema);
         final StateMachineFactory stateMachineFactory = basicFactoryForStateMachines.make();
 
         // ========================================================
@@ -55,11 +56,9 @@ public class StateMachineExample {
         // State machine start
         doorStateMachine.start(openState);
 
-        final List<String> commands = new LinkedList<>(Arrays.asList(
+        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
                 CLOSE_TRANSITION,
-                OPEN_TRANSITION));
-
-        interpretStateMachine(doorStateMachine, commands);
+                OPEN_TRANSITION)));
     }
 
     private static void interpretStateMachine(Machine stateMachine, List<String> commands) {

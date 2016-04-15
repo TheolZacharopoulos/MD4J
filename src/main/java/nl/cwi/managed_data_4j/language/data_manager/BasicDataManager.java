@@ -14,7 +14,7 @@ import java.util.Set;
  * Represents the basic data manager.
  * @author Theologos Zacharopoulos
  */
-public class BasicFactory implements IFactory {
+public class BasicDataManager implements IDataManager {
 
     // the Class of the Schema-Factory.
     protected final Class<?> moSchemaFactoryClass;
@@ -32,7 +32,7 @@ public class BasicFactory implements IFactory {
      * @param proxiedInterfaces (Optional) extra proxied Interfaces which will be attached to
      *                          the Dynamic proxy of the managed object.
      */
-    public BasicFactory(Class<?> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
+    public BasicDataManager(Class<?> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
         this.moSchemaFactoryClass = moSchemaFactoryClass;
         this.schema = schema;
 
