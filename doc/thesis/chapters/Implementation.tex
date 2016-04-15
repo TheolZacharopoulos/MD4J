@@ -4,43 +4,137 @@
 % Chapter: Implementation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Managed data in Java}\label{Implementation}
-\section{Intro}\label{sec:Intro Implementation}
-This chapter describes our managed data implementation in Java.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+As it has been already mentioned, the programming languages include data definition mechanisms that are predefined and that makes them insufficient to define \ac{ccc} without repeating and scatter code through the components \cite{loh2012managed}.
+Notably, the problem is that \ac{ccc} are features of the data management not of the data types themselves.
+That is why we implement managed data to allow the developer to define the mechanisms of data manipulation.
+This chapter describes our managed data implementation in Java, which consists of our first research question that is if it is possible to implement managed data in a static language.
+It is important to mention here that our implementation is inspired by the Enso\footnote{\url{https://github.com/enso-lang/enso}}, which is written in Ruby language. 
+Although Ruby is a dynamic language, Enso significantly contributed on our version's basic structure.
+
 \section{Managed Data Implementation}\label{sec:Managed Data Implementation}
+Managed data provides the programmer to handle the fundamental data manipulation mechanisms using \textit{Data Managers}.
+The data managers are needed in order to interpret the data description language, which is used to define the structure and the structural behavior of the data to be managed.
+Using the data description language a programmer defines \textit{Schemas} that are the input of the \textit{Data Managers}.
+The \textit{Schemas} and the \textit{Data Managers} are the essential components of managed data along with an \textit{Integration} with the programming language which in this case is Java.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Schemas Definition}\label{Schema Definition}
-% % A class has a name and a list of fields, each of which ha a name and a type 
+\subsection{Data description with Schemas}\label{Schema Definition}
+In order to define \textit{Schemas} in managed data we need a data description language that allows to define records / classes, which are collections of fields. 
+This language can be anything, e.g. XML, JSON or a different formalism like in Enso; however, in our implementation we choose to use \textbf{Java Interfaces} for data description language in order to define records of Managed Data.
+By using \textbf{Java Interfaces} the \textit{Schemas} classes are tightly coupled structurally to the Java interface we use to define them. 
+Also, the Java interfaces use conventions to encode semantics, 
+like Java annotations, this is very useful for meta data definition.
 
-% interfaces
-% annotations
+Consequently, to define a \textit{Schema} we first need to define a set of classes that describe that schema.
+A \texttt{schemaKlass} \footnote{
+	We use the ``Klass'' instead of ``Class'' convention in order not to introduce ambiguity between Java's and our type system. Klass its our own class type and Class is Java's native class type.} 
+is described by a name and a set of \texttt{Field}s, each of which has a name and a \texttt{Type}.
+Since a Java interfaces are used to define a \texttt{Schema} and an interface definition to define a \texttt{schemaKlass}, then we need a way to define \texttt{Field}s for a schema \texttt{schemaKlass}.
+A \texttt{Field} in our data description language can be defined using a \textit{Java Method} definition. 
+Additionally, there is a number of attributes that define the structure of a Schema and can be consider as meta data.
+In order to define this meta data in our data description language, which is the Java interfaces, we use \textit{Java Annotations}.
+Annotations consist of a very declarative way to express meta data in interfaces and they are coupled structurally to the Java system.
+Thus, in order to supply with meta data (annotations) a field, we define annotation in a \textit{Method} target level since a \texttt{Field} is defined by a \textit{Method} in the interface.
 
-% \subsection{Metadata}
-% Inverse fields 
-% – parent/child, instructor/course, etc 
-% – automatically maintained 
-% Field properties 
-% – key: ensures uniqueness in context 
-% – traversal: ensures reachability 
-% – ordering: ordered/unordered collections 
-% Invariants 
-% – field.type = field.inverse.owner  
+Note that, using Java interfaces and annotations for our Schemas definition, we profit with a first level of type checking from the Java language. 
+Since before we run our interpretation of those schemas JVM does type checking in the definitions and if something is wrong it will show the proper message to the programmer.
+This also benefits the programmer who uses IDE's that do dynamic type checking while writing code, since they will spot errors on the definitions of the schemas on real time. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Schema Factories}\label{Schema Factories}
+A list of the available structure meta data and concepts that are supported in our language is the following \cite{loh2012managed}:
+\begin{description}
+	\item [@Key] When a method (field) is annotated with the \texttt{@Key} annotation, then this forces its value to be unique within collections of this field's Klass.
+	The key is used on a single field of a Type and its value should represents the uniqueness of its Type's instance.
+	Another way to look at is as a counterpart of the \texttt{hashCode} in traditional Java programs.
+	This way when many values of a Klass are in a Set, the key field ensures uniqueness in context.
+
+	\item [@Inverse] This annotation includes two \textit{Annotation element definitions} \footnote{
+		\url{https://docs.oracle.com/javase/tutorial/java/annotations/declaring.html}}.
+	When a method is annotated with the \texttt{@Inverse(Class other, String field)} annotation, then the inverse \texttt{field}element must be a \texttt{Field}'s name in the \texttt{Class} interface, given by the \texttt{type} element.
+	This meta data is used as a reference definition in schemas.
+	When a programmer updates the value of a field that is inverse, then the value of the field that this inverse refers to will be also updated.
+	This mechanism is interpreter by the managed object and is used for automated \textit{wiring} of the field across a schema.
+
+	\item [@Contain] When a field is annotated with the \texttt{@Contain} annotation, then this field is considered as \textit{traversal}. 
+	The traversals describe a minimum spanning tree that is called \textit{spine} and ensures reachability.
+	That spine is used in implementations that need a depth-first search by distinguish between the actual information (depth) and the cross-references of the spanning tree.
+	An example of this functionality is the managed objects equivalence that is presented in section \ref{Managed Object equivalence}.
+	Sometimes traversal fields describe composition, or ``is a part of'', relationships \cite{loh2012managed}.
+
+	\item [@Optional] When the \texttt{@Optional} annotation is on a field definition then this field is allowed to have a null value.
+	Those fields are optional to have a value, \texttt{Inverse} fields are \texttt{Optional}. 
+
+	\item [Java Inheritance] In addition to the Java Annotation, our language uses more Java mechanisms for the data description. 
+	Java inheritance is one of them. 
+	A \texttt{schemaKlass} can extend another super Klass and in our language that mechanism works as the traditional Java inheritance, supporting sub typing mechanisms.
+	Note that since we use interfaces as schema Klasses, then we implicitly support multiple inheritance because in Java an interface can extend more than one interfaces.
+
+	\item [Java Collections (many)] Finally, another Java mechanism that is used from our implementation is the definition of a field that includes many values.
+	For this case, a programmer has to define a field's \texttt{Type} as a \texttt{java.util.List} or a \texttt{java.util.Set} of this \texttt{Type}. 
+	The support of the Java collections in our implementation is described in section \ref{subsec:Types Collections}.
+
+\end{description}
+
+Using all the aforementioned constructs of our data definition language, a programmer can define any kind of schemas, even itself (see section \ref{SchemaSchema}).
+
+\subsection{Schemas example and explanation}\label{Schemas example and explanation}
+In order to show our schema definition in practice we use the following example schemas, which are the same that are used as a simple example use case in Enso \cite{loh2012managed}:
+
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java,escapechar=|]
+public interface Point extends M {
+}
+	\end{lstlisting}
+	\caption{The Point Schema}
+	\label{lst:Point_Schema_implementation}
+\end{sourcecode}
+
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java,escapechar=|]
+public interface Point2D extends Point {
+	Integer x(Integer... x);
+	Integer y(Integer... y);
+}
+	\end{lstlisting}
+	\caption{The Point2D Schema}
+	\label{lst:Point2D_Schema_implementation}
+\end{sourcecode}
+
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java,escapechar=|]
+public interface Line extends M {
+	@Contain
+	Point2D startPoint(Point2D... p);
+
+	@Contain
+	Point2D endPoint(Point2D... p);
+}
+	\end{lstlisting}
+	\caption{The Line Schema}
+	\label{lst:Line_Schema_implementation}
+\end{sourcecode}
+
+% TODO: explain.
+
+However, even if we have the definitions of schemas, we still need a way to create instances of them.
+
+\subsection{Schema Factories}\label{Schema Factories}
 % interfaces
 
 % Constructors
 % Initialization values
-% Limitations
+% Limitations / Issues encountered
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Managed Objects}\label{sec:Managed Objects}
+\subsubsection{Methods ordering}\label{Methods ordering}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Data Managers Definition}\label{Data Managers Definition}
+% methods order its not the same as they are defined in the source code, so they can not be used in the initialization of the values.
+% no contractor with init values
+% alternatives:
+% Alphabetical order. (its gonna be used only as an alternative)
+
+\subsection{Data Managers Implementation}\label{Data Managers Implementation}
+% Schemas are not complete specifications without a cor- responding data manager. In this case our simple schema is a definition of a data type, and does not state whether the records are immutable or mutable, if they can be stored in a database, or transformed in other ways. Schemas can be interpreted in many different ways to create different kinds of records.
+
+
 % Dynamic proxies
 % Decorator pattern to stack them
 
@@ -52,57 +146,60 @@ This chapter describes our managed data implementation in Java.
 
 % Multiple interpretations
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Bootstrapping}\label{sec:Bootstrapping}
+% Our data manager implementation
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Self-describing schema (SchemaSchema)}\label{sec:SchemaSchema}
-% \section{Self Describing}\label{Self Describing}
+\subsubsection{Observable Data Manager Implementation}
+% It’s important the data managers to inherit from a base one, thats the modular aspect (BasicFactory).
+
+\subsection{Managed Objects}\label{sec:Managed Objects}
+% The M interface
+
+\section{Self-Describing Schemas}\label{SchemaSchema}
 % \subsection{Reuse}
 % \subsection{Malleability}
 % \subsection{Java runtime}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ManagedData4J Schema}\label{sec:ManagedData4J Schema}
 % Our schema definition here.
+% Klass_System
+% Since you want to decouple from Java reflection, you want your own Klass system. And why not have *that* represented as managed objects as well (e.g. with interfaces, and bootstrapped using factories etc.). Then the approach of managed data can be applied at the meta level as well (at least partially).
+% You define your Klass as an interface, just like you define Point.
+% Each Managed Object has a meta class (or schema class), so it points to a Klass. Klasses are part of a schema. 
+% To construct the Klass system you analyze the java interfaces using reflection and build instances of Schema, Klass, Field etc. using an appropriate factory/data manager.
 
+\subsection{Bootstrapping}\label{sec:Bootstrapping}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cutting the umbilical cord}\label{subsec:Cutting the umbilical cord}
 % boot schema
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schema Loading}\label{sec:Schema Loading}
 % mention wiring
 % why we need the boot
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Types support}\label{sec:Implementation Types}
+\section{Type support}\label{sec:Implementation Types}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Primitives}\label{subsec:Types Primitives}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Collections}\label{subsec:Types Collections}
+
+\subsubsection{The many field of the Field klass}
+% // In case the field is multi value, that means that the real type is not given in the method.getReturnType() because this will give Set of List, BUT the real type is in method.getGenericReturnType().
+% Dont make Set primitive / Type, 
+% Just use the (many) property of the field.
 
 \subsubsection{Set of Primitives}
 \subsubsection{Set of non-Primitives}
+\paragraph{The usage of Key}\label{The usage of Key}
 \subsubsection{Lists of Primitives}
 \subsubsection{Lists of non-Primitives}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Implementation Issues}\label{sec:Implementation Issues}
+\section{Implementation Issues}\label{Implementation Issues}
+\subsection{The classOf field}\label{The classOf field}
+\subsection{The schemaKlass field}\label{The schemaKlass field}
+\subsection{Invocation via Reflection}\label{Invocation via Reflection}
+\subsection{Hash-code of Managed Objects}\label{Hashcode of Managed Objects}
+\subsection{Equivalence}\label{Managed Object equivalence}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Methods ordering}\label{subsec:Methods ordering}
+\section{Benefits and Limitations}\label{Benefits and Limitations}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The usage of Key}\label{subsec:The usage of Key}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Hash-code of Managed Objects}\label{subsec:Hashcode of Managed Objects}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Managed Object Equivalence}\label{subsec:Managed Object equivalence}
+\section{Claims}\label{Implementation Claims}
