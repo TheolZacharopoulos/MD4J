@@ -1,76 +1,66 @@
 % !TEX root = ../thesis.tex
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \chapter{Theory}\label{Theory}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Self Describing}\label{Self Describing}
-% \subsection{Reuse}
-% \subsection{Malleability}
-% \subsection{Java runtime}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Model Driven Development}\label{MDD}
-% \subsection{Object and Schemas}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Schema}
-
-% \subsection{Description of Schema}
-% % A class has a name and a list of fields, each of which ha a name and a type 
-
-% \subsection{Schema Schema}
-
-% \subsection{Metadata}
-% % Inverse fields 
-% % – parent/child, instructor/course, etc 
-% % – automatically maintained 
-% % Field properties 
-% % – key: ensures uniqueness in context 
-% % – traversal: ensures reachability 
-% % – ordering: ordered/unordered collections 
-% % Invariants 
-% % – field.type = field.inverse.owner  
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Factories}
-% % Manages data described by a schema 
-
-% % Interpreted 
-% % – Virtual object has fields specified by schema 
-% % – Ensures data is valid with respect to schema 
-
-% % Multiple interpretations
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Implementation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Managed data in Java}\label{Implementation}
 \section{Intro}\label{sec:Intro Implementation}
-% This chapter describes our managed data implementation in Java.
+This chapter describes our managed data implementation in Java.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Managed Data Implementation}\label{sec:Managed Data Implementation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Schemas Definition}\label{Schema Definition}
+% % A class has a name and a list of fields, each of which ha a name and a type 
+
 % interfaces
 % annotations
+
+% \subsection{Metadata}
+% Inverse fields 
+% – parent/child, instructor/course, etc 
+% – automatically maintained 
+% Field properties 
+% – key: ensures uniqueness in context 
+% – traversal: ensures reachability 
+% – ordering: ordered/unordered collections 
+% Invariants 
+% – field.type = field.inverse.owner  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Schema Factories}\label{Schema Factories}
 % interfaces
+
+% Constructors
+% Initialization values
+% Limitations
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Managed Objects}\label{sec:Managed Objects}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Data Managers Definition}\label{Data Managers Definition}
 % Dynamic proxies
 % Decorator pattern to stack them
 
+% Manages data described by a schema 
+
+% Interpreted 
+% – Virtual object has fields specified by schema 
+% – Ensures data is valid with respect to schema 
+
+% Multiple interpretations
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Bootstrapping}\label{sec:Bootstrapping}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Self-describing schema (SchemaSchema)}\label{sec:SchemaSchema}
+% \section{Self Describing}\label{Self Describing}
+% \subsection{Reuse}
+% \subsection{Malleability}
+% \subsection{Java runtime}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ManagedData4J Schema}\label{sec:ManagedData4J Schema}
