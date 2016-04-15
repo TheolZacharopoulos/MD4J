@@ -11,8 +11,8 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Cont
  */
 public interface Line extends M {
     @Contain
-    Point2D startPoint(Point2D ...p);
+    Point2D startPoint(Point2D... p);
 
     @Contain
-    Point2D endPoint(Point2D ...p);
+    Point2D endPoint(Point2D... p);
 }
