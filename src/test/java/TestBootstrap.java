@@ -1,4 +1,4 @@
-import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
@@ -19,7 +19,7 @@ public class TestBootstrap {
     public void equality_Test() {
         final Schema bootstrapSchema = SchemaLoader.bootLoad();
 
-        final BasicFactory basicFactory = new BasicFactory(SchemaFactory.class, bootstrapSchema);
+        final BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
 
         // Create a schema Factory which creates Schema instances.
         final SchemaFactory schemaFactory = basicFactory.make();
@@ -31,7 +31,7 @@ public class TestBootstrap {
 
         // =======================
         // Test equality
-        final BasicFactory basicFactory2 = new BasicFactory(SchemaFactory.class, realSchemaSchema);
+        final BasicDataManager basicFactory2 = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
         final SchemaFactory schemaFactory2 = basicFactory2.make();
         final Schema realSchemaSchema2 = SchemaLoader.load(
                 schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);

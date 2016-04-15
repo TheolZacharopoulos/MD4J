@@ -1,5 +1,5 @@
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
-import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
@@ -30,7 +30,7 @@ public class TestSchemaDefinition {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class, Car.class);
-        final BasicFactory basicFactoryForPersons = new BasicFactory(PersonFactory.class, personSchema);
+        final BasicDataManager basicFactoryForPersons = new BasicDataManager(PersonFactory.class, personSchema);
 
         personFactory = basicFactoryForPersons.make();
     }
