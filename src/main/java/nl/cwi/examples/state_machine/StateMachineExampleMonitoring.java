@@ -1,8 +1,11 @@
-package nl.cwi.examples.state_machine.with_managed_data;
+package nl.cwi.examples.state_machine;
 
-import nl.cwi.examples.state_machine.with_managed_data.schemas.Machine;
-import nl.cwi.examples.state_machine.with_managed_data.schemas.State;
-import nl.cwi.examples.state_machine.with_managed_data.schemas.Transition;
+import nl.cwi.examples.state_machine.concerns.StateMachineMonitoring;
+import nl.cwi.examples.state_machine.schemas.Machine;
+import nl.cwi.examples.state_machine.schemas.State;
+import nl.cwi.examples.state_machine.schemas.Transition;
+import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.Observable;
+import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableFactory;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicFactory;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
@@ -14,7 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class StateMachineExample {
+public class StateMachineExampleMonitoring {
 
     public final static String OPEN_STATE       = "Open";
     public final static String CLOSED_STATE     = "Closed";
@@ -33,8 +36,17 @@ public class StateMachineExample {
         final StateMachineFactory stateMachineFactory = basicFactoryForStateMachines.make();
 
         // ========================================================
-        // Door State Machine definition
-        final Machine doorStateMachine = stateMachineFactory.Machine();
+        // State Machine monitoring
+        final ObservableFactory observableFactory = new ObservableFactory(StateMachineFactory.class, stateMachineSchema);
+        final StateMachineFactory observableStateMachineFactory = observableFactory.make();
+
+        // ========================================================
+        // Door State Machine definition, with monitoring data manager
+        final Machine doorStateMachine = observableStateMachineFactory.Machine();
+
+        // Add Monitoring concerns
+        ((Observable) doorStateMachine).observe(StateMachineMonitoring::log);
+        ((Observable) doorStateMachine).observe(StateMachineMonitoring::notify);
 
         // Open State definition
         final State openState = stateMachineFactory.State(OPEN_STATE);
@@ -58,30 +70,22 @@ public class StateMachineExample {
         doorStateMachine.start(openState);
 
         final List<String> commands = new LinkedList<>(Arrays.asList(
-                OPEN_TRANSITION,
-                CLOSE_TRANSITION,
-                OPEN_TRANSITION,
                 CLOSE_TRANSITION,
                 OPEN_TRANSITION));
 
         interpretStateMachine(doorStateMachine, commands);
     }
 
-    private static void interpretStateMachine(Machine sm, List<String> commands) {
+    private static void interpretStateMachine(Machine stateMachine, List<String> commands) {
 
-        State current = sm.start();
-        System.out.println("Start: " + current.name());
+        stateMachine.current(stateMachine.start());
 
         for (String event : commands) {
-            Transition transition = current.out().stream()
-                .filter(trans -> trans.event().equals(event))
-                .findFirst()
-                .orElse(null);
-
-            if (transition != null) {
-                current = transition.to();
-                System.out.println(
-                    "Changed: " + transition.from().name() + " to " + transition.to().name() + ", current: " + current.name());
+            for (Transition trans : stateMachine.current().out()) {
+                if (trans.event().equals(event)) {
+                    stateMachine.current(trans.to());
+                    break;
+                }
             }
         }
     }
