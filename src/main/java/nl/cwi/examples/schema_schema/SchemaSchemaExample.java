@@ -1,6 +1,7 @@
 package nl.cwi.examples.schema_schema;
 
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
@@ -16,7 +17,7 @@ public class SchemaSchemaExample {
         // This minimal bootstrap schema is necessarily self-describing as it must change itself and
         // it processes simplistic data managers that only allow updating.
         // It is also hardcoded.
-        final Schema bootstrapSchema = SchemaLoader.bootLoad();
+        final Schema bootstrapSchema = new BootSchema();
 
         final BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
 

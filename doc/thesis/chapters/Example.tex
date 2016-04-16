@@ -148,9 +148,9 @@ public class StateMachineExample {
 		final Schema schemaSchema = ...; |\label{line:state_schemaSchema}|
 		final Schema stateMachineSchema = ....; |\label{line:state_schemaMachineSchema}|
 
-		final BasicDataManager basicFactoryForStateMachines = 
+		final BasicDataManager basicDataManagerForStateMachines = 
 				new BasicDataManager(StateMachineFactory.class, stateMachineSchema);  |\label{line:state_meaning_full_code}|
-		final StateMachineFactory stateMachineFactory = basicFactoryForStateMachines.make();
+		final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make();
 
 		// Door State Machine definition
 		final Machine doorStateMachine = stateMachineFactory.Machine(); |\label{line:state_machine_creation_basic}|
@@ -265,10 +265,10 @@ Additionally, the concerns are attached to the machine object very easily, as ca
 	\begin{lstlisting}[language=Java, escapechar=|]
 ...
 // State Machine monitoring
-final ObservableDataManager observableFactory = 
+final ObservableDataManager observableDataManager = 
 			new ObservableDataManager(StateMachineFactory.class, stateMachineSchema);
 
-final StateMachineFactory observableStateMachineFactory = observableFactory.make();
+final StateMachineFactory observableStateMachineFactory = observableDataManager.make();
 
 // Door State Machine definition, with observable data manager
 final Machine doorStateMachine = observableStateMachineFactory.Machine();

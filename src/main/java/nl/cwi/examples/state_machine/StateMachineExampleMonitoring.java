@@ -33,13 +33,13 @@ public class StateMachineExampleMonitoring {
 
         final Schema stateMachineSchema =
                 SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
-        final BasicDataManager basicFactoryForStateMachines = new BasicDataManager(StateMachineFactory.class, stateMachineSchema);
-        final StateMachineFactory stateMachineFactory = basicFactoryForStateMachines.make();
+        final BasicDataManager basicDataManagerForStateMachines = new BasicDataManager(StateMachineFactory.class, stateMachineSchema);
+        final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make();
 
         // ========================================================
         // State Machine monitoring
-        final ObservableDataManager observableFactory = new ObservableDataManager(StateMachineFactory.class, stateMachineSchema);
-        final StateMachineFactory observableStateMachineFactory = observableFactory.make();
+        final ObservableDataManager observableDataManager = new ObservableDataManager(StateMachineFactory.class, stateMachineSchema);
+        final StateMachineFactory observableStateMachineFactory = observableDataManager.make();
 
         // ========================================================
         // Door State Machine definition, with observable data manager

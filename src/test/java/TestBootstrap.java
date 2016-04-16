@@ -1,4 +1,5 @@
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
@@ -17,7 +18,7 @@ public class TestBootstrap {
 
     @Test
     public void equality_Test() {
-        final Schema bootstrapSchema = SchemaLoader.bootLoad();
+        final Schema bootstrapSchema = new BootSchema();
 
         final BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
 
