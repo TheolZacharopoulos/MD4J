@@ -5,119 +5,119 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Managed data in Java}\label{Implementation}
 
-As it has been already mentioned, the programming languages include data definition mechanisms that are predefined and that makes them insufficient to define \ac{ccc} without repeating and scatter code through the components \cite{loh2012managed}.
-Notably, the problem is that \ac{ccc} are features of the data management not of the data types themselves.
-That is why we implement managed data to allow the developer to define the mechanisms of data manipulation.
-This chapter describes our managed data implementation in Java, which consists of our first research question that is if it is possible to implement managed data in a static language.
-It is important to mention here that our implementation is inspired by the Enso\footnote{\url{https://github.com/enso-lang/enso}}, which is written in Ruby language. 
-Although Ruby is a dynamic language, Enso significantly contributed on our version's basic structure.
+As it has been already mentioned, the programming languages include data definition mechanisms that are predefined, which makes them insufficient to define \ac{ccc} without repeating and scatter code through the components \cite{loh2012managed}.
+Notably, the problem is that \ac{ccc} consider as features of the data management and not of the data types themselves.
+As a result, we implement managed data to allow the developer to define the mechanisms of data manipulation.
+This chapter describes our managed data implementation in Java, which consists of our first research question, which is \textit{``Can managed data be implemented in a static language?''}.
+It is important to mention that our implementation is inspired by Enso\footnote{\url{https://github.com/enso-lang/enso}}, which is written in Ruby. 
+Although Ruby is a dynamic language, Enso significantly contributed on our implementation's structure.
 
 \section{Managed Data Implementation}\label{sec:Managed Data Implementation}
-Managed data provides the programmer to handle the fundamental data manipulation mechanisms using \textit{Data Managers} having a strong emphasis on modularity.
-The data managers are needed in order to interpret the data description language, which is used to define the structure and the structural behavior of the data to be managed.
-Using the data description language a programmer defines \textit{Schemas} that are the input of the \textit{Data Managers}.
-The \textit{Schemas} and the \textit{Data Managers} are the essential components of managed data along with an \textit{Integration} with the programming language which in this case is Java.
+Managed data provides the programmer to handle the fundamental data manipulation mechanisms using \textit{Data Managers} and emphasizes strongly on modularity.
+Using a data description language the programmer can define \textit{Schemas} that are the input of the \textit{Data Managers}. The \textit{Data Manager} in turn interprets the data description language that is used to define the structure and the behavior of the data to be managed.
+The \textit{Schemas} and the \textit{Data Managers} are the essential components of managed data along with the \textit{Integration} with the programming language which in our case is Java.
 
 \subsection{Data description with Schemas}\label{Schema Definition}
-In order to define \textit{Schemas} in managed data we need a data description language that allows to define records / classes, which are collections of fields. 
-This language can be anything, e.g. XML, JSON or a different formalism like in Enso; however, in our implementation we choose to use \textbf{Java Interfaces} for data description language in order to define records of Managed Data.
-By using \textbf{Java Interfaces} the \textit{Schemas} classes are tightly coupled structurally to the Java interface we use to define them. 
-Also, the Java interfaces use conventions to encode semantics, 
-like Java annotations, this is very useful for meta data definition.
+In order to define \textit{Schemas} in managed data we need a data description language that allows to define records as collections of fields. 
+This language can be anything, e.g. XML, JSON or a different formalism like in Enso.
+However, in our implementation we chose to use \textbf{Java Interfaces} for data description language that allows to define records of managed data.
+By using Java interfaces the \textit{Schema} classes are tightly coupled structurally to the Java interface we use to define them. 
+Moreover, Java interfaces use several conventions to encode semantics, for instance Java annotations, which are very useful for meta data definition on \textit{Schema}s.
 
 Consequently, to define a \textit{Schema} we first need to define a set of classes that describe that schema.
-A \texttt{schemaKlass} \footnote{
-	We use the ``Klass'' instead of ``Class'' convention in order not to introduce ambiguity between Java's and our type system. Klass its our own class type and Class is Java's native class type.} 
+A schema \texttt{Klass} \footnote{
+	We use the ``Klass'' instead of ``Class'' convention in order to avoid any kind of ambiguities between Java's Class type and our type system. Klass is used to describe our own class type while Class describes Java's native class type.} 
 is described by a name and a set of \texttt{Field}s, each of which has a name and a \texttt{Type}.
-Since a Java interfaces are used to define a \texttt{Schema} and an interface definition to define a \texttt{schemaKlass}, then we need a way to define \texttt{Field}s for a schema \texttt{schemaKlass}.
-A \texttt{Field} in our data description language can be defined using a \textit{Java Method} definition. 
-Additionally, there is a number of attributes that define the structure of a Schema and can be consider as meta data.
-In order to define this meta data in our data description language, which is the Java interfaces, we use \textit{Java Annotations}.
+Since Java interfaces are used to define \texttt{schemaKlass} we need a way to define \texttt{Field}s for a \texttt{schemaKlass}.
+A \texttt{Field} in our data description language can be defined by using \textbf{Java's Method} definition.
+
+Additionally, there are several attributes that help with the structure defining of a \texttt{Schema}, which considered as meta data.
+In order to define the meta data in our data description language (interfaces), we use \textit{Java Annotations}.
 Annotations consist of a very declarative way to express meta data in interfaces and they are coupled structurally to the Java system.
-Thus, in order to supply with meta data (annotations) a field, we define annotation in a \textit{Method} target level since a \texttt{Field} is defined by a \textit{Method} in the interface.
+Thus, to annotated a field with meta data, we define annotations in a \textit{Method} target level since a \texttt{Field} is defined by a \textit{Method} declaration Java interfaces.
 
-Note that, using Java interfaces and annotations for our Schemas definition, we profit with a first level of type checking from the Java language. 
-Since before we run our interpretation of those schemas JVM does type checking in the definitions and if something is wrong it will show the proper message to the programmer.
-This also benefits the programmer who uses IDE's that do dynamic type checking while writing code, since they will spot errors on the definitions of the schemas on real time. 
+Note that, using Java interfaces and annotations for our schemas definition, we gain a first level of type checking from \ac{jvm}. 
+The reason is that before we run our runtime interpretation of schemas, \ac{jvm} performs type checking in the definitions and in case wrong types it notifies the programmer.
+Additionally, this benefits the programmer who uses IDE's that perform real time type inspection\footnote{\url{https://www.jetbrains.com/help/idea/15.0/code-analysis.html}} while typing, since errors on the definitions will be spotted immediately. 
 
-A list of the available structure meta data and concepts that are supported in our language is the following \cite{loh2012managed}:
+A list of the available structure concepts that are supported in our language is the following \cite{loh2012managed}:
 \begin{description}
-	\item [@Key] When a method (field) is annotated with the \texttt{@Key} annotation, then this forces its value to be unique within collections of this field's Klass.
-	The key is used on a single field of a Type and its value should represents the uniqueness of its Type's instance.
-	Another way to look at is as a counterpart of the \texttt{hashCode} in traditional Java programs.
-	This way when many values of a Klass are in a Set, the key field ensures uniqueness in context.
+	\item [@Key] When a method (field definition) is annotated with the \texttt{@Key} annotation that forces its value to be unique within collections of this field's Klass.
+	The key should be used on a single field of a Type and its value represents the uniqueness of its Klass's instance.
+	Another way to look at this is as a counterpart of the \texttt{hashCode} in traditional Java programs.
+	This way when many values of a Klass are in a Set, the key field ensures uniqueness in its context.
 
-	\item [@Inverse] This annotation includes two \textit{Annotation element definitions} \footnote{
+	\item [@Inverse] This annotation includes two \textit{annotation element definitions} \footnote{
 		\url{https://docs.oracle.com/javase/tutorial/java/annotations/declaring.html}}.
-	When a method is annotated with the \texttt{@Inverse(Class other, String field)} annotation, then the inverse \texttt{field}element must be a \texttt{Field}'s name in the \texttt{Class} interface, given by the \texttt{type} element.
-	This meta data is used as a reference definition in schemas.
-	When a programmer updates the value of a field that is inverse, then the value of the field that this inverse refers to will be also updated.
+	When a method is annotated with the \texttt{@Inverse(Class other, String field)} annotation, then the inverse \texttt{field} element must be a \texttt{Field}'s name in the \texttt{Class} interface, given by the \texttt{type} element.
+	This meta data is used as a reference declaration in schemas meaning that when a programmer updates the value of a field that is annotated with inverse, then the value of the field that refers to will be also updated.
 	This mechanism is interpreter by the managed object and is used for automated \textit{wiring} of the field across a schema.
 
 	\item [@Contain] When a field is annotated with the \texttt{@Contain} annotation, then this field is considered as \textit{traversal}. 
-	The traversals describe a minimum spanning tree that is called \textit{spine} and ensures reachability.
-	That spine is used in implementations that need a depth-first search by distinguish between the actual information (depth) and the cross-references of the spanning tree.
-	An example of this functionality is the managed objects equivalence that is presented in section \ref{Managed Object equivalence}.
+	In general, traversals describe a minimum spanning tree that is called \textit{spine} and ensures reachability of values.
+	The spine is used in implementations that need a depth-first search by distinguishing between the actual information and the cross-references of the spanning tree.
+	An example of such functionality is the equivalence between managed objects that is presented in Section \ref{Managed Object equivalence}.
 	Sometimes traversal fields describe composition, or ``is a part of'', relationships \cite{loh2012managed}.
 
-	\item [@Optional] When the \texttt{@Optional} annotation is on a field definition then this field is allowed to have a null value.
-	Those fields are optional to have a value, \texttt{Inverse} fields are \texttt{Optional}. 
+	\item [@Optional] When the \texttt{@Optional} annotation is on a field's definition this field is allowed to not include value (\texttt{null}).
+	\texttt{Inverse} fields are \texttt{Optional}. 
 
-	\item [Java Inheritance] In addition to the Java Annotation, our language uses more Java mechanisms for the data description. 
+	\item [Java Inheritance] In addition to the Java annotations, our language uses more Java mechanisms for schemas definition. 
 	Java inheritance is one of them. 
-	A \texttt{schemaKlass} can extend another super Klass and in our language that mechanism works as the traditional Java inheritance, supporting sub typing mechanisms.
-	With this we have succeeded a \textit{Type Hierarchy} model that includes super and sub classes on managed objects.
-	Note that since we use interfaces as schema Klasses, then we implicitly support multiple inheritance because in Java an interface can extend more than one interfaces.
+	A \texttt{schemaKlass} can extend another Klass (super), which works as the traditional Java inheritance, supporting sub typing mechanisms.
+	Implementing this we introduce a \textit{Type Hierarchy} model that includes super and sub classes on managed objects.
+	Note that since we use interfaces for \texttt{schemaKlass}, we implicitly support multiple inheritance because a Java interface can extend more than one interfaces.
 
-	\item [Java Collections (many)] Finally, another Java mechanism that is used from our implementation is the definition of a field that includes many values.
-	For this case, a programmer has to define a field's \texttt{Type} as a \texttt{java.util.List} or a \texttt{java.util.Set} of this \texttt{Type}.
+	\item [Java Collections] Finally, another Java mechanism that we use is the definition of a field that includes many values.
+	To define such a field, a programmer has to declare a field's \texttt{Type} as a \texttt{java.util.List} or a \texttt{java.util.Set} of this \texttt{Type}.
 
 \end{description}
 
-Using all the aforementioned constructs of our data definition language, a programmer can define any kind of schemas, even itself (see section \ref{Self-Describing Schemas}).
-An example of schemas definition is presented in Chapter \ref{Example Application}, in listings \ref{lst:Machine_Schema}, \ref{lst:State_Schema} and \ref{lst:Transition_Schema}.
-In those definition the above concepts can be recognized as well as their meaning in context.
+Using all the aforementioned constructs of our data definition language, a programmer can define any kind of schemas, even itself (see Section \ref{Self-Describing Schemas}).
+An example of schema definition is presented in Chapter \ref{Example Application} Listings \ref{lst:Machine_Schema}, \ref{lst:State_Schema} and \ref{lst:Transition_Schema}.
+In those definition the above concepts can be recognized and their meaning in context can be revealed.
 
 \subsection{Schema Factories}\label{Schema Factories}
-However, even if we have the definitions of schemas, we still need a way to create instances of them.
-We can not use Java's mechanisms for this functionality since we need the schema instances to be managed data.
-Thus, we use Java interfaces to define \textit{Schema Factories}.
-A \textit{Schema Factory} is a list of constructor definitions for specific schemas.
+However, even if we have the definitions of schemas, we still need a way to create instances of managed data described by them.
+We can not use Java's mechanisms for this functionality since we need them to be managed data and not ordinary objects.
+Thus, we use Java interfaces (again) to define \textit{Schema Factories}.
+A \textit{Schema Factory} is a list of constructor definitions for specific schema Klasses.
 
 The methods of this interface are used like the constructor definition on a Java class.
-However, in our case they are defined as methods in a Java interface while the implementation is handled by the data managers.
-Since those methods are constructors we can define a constructor with or without initial values.
-Nevertheless, we have encountered a limitation that considers the constructors with initialization values, which makes them inappropriate to use.
+However, in our case they are defined as methods in a Java interface while their implementation is handled by the data managers.
+Since those methods are constructors, we can define a constructor with or without initial values.
+Unfortunately, we have encountered a limitation that considers the constructors with initialization values, which makes them inappropriate to use in complicated schemas.
 
 \subsubsection{Methods Ordering Issue}\label{Methods ordering}
 The problem lays on Java's reflection mechanisms in terms of methods ordering.
-More specifically, when the methods of a \texttt{java.lang.Class} requested, by using the \texttt{public Method[] getMethods()} method\footnote{As it is mentioned in \url{https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html\#getMethods--}, The elements in the returned array are not sorted and are not in any particular order.}, the returned values are not ordered with the same order as they are defined in the source code.
-Consequently, since the schema definition is reflectively analyzed in the data managers, and it depends on that order, those methods they can not be used in the initialization of the values.
+More specifically, when the methods of a \texttt{java.lang.Class} are requested by using the \texttt{public Method[] getMethods()} method\footnote{
+	As it is mentioned in \url{https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html\#getMethods--}, the elements in the returned array are not sorted and are not in any particular order.}, 
+the returned values are not ordered with the same order as they are defined in the source code.
+Consequently, since the schema definition is reflectively analyzed in the data managers and it depends on that order, those methods can not be used in the initialization of values.
 
 However, we have implemented an alternative way in order to support such feature.
-In our implementation we order both the defined methods and the fields before we initialize them using their \textbf{alphabetical order}.
-This is something that can be used by the programmers although it is considered as a confusing method of doing it.
-Therefore, as an advice for more wise usage of the constructor definition, we suggest to either provide only constructors without initialization values or to write constructors with only \textbf{primitive} initialization values in \textbf{alphabetical order}.
-In different case there is the danger that the fields of the schema will get values in different order leading to an error or a wrong-valued instance.
+In our implementation we \textbf{alphabetical order} by name both the defined methods and the fields before we initialize them.
+That feature can be used by the programmers although it can be proved confusing.
+Therefore, as an advice about the usage of the constructor definition, we suggest to either provide only constructors without initialization values or to write constructors with only \textbf{primitive} initialization values in \textbf{alphabetical order}.
+In the case of initialization with values the danger that the fields of the schema will get values in different order exists, leading to an error or a wrong value assignment.
 
 \subsection{Data Managers Implementation}\label{Data Managers Implementation}
 However, the schemas are not a complete managed data specification without a corresponding \texttt{Data Manager}.
-A \texttt{Data Manager} is responsible to interpret the schema and build virtual objects (managed objects), which fields are specified by the given schema and it creates dynamic objects that act according to the specification.
+A data manager is responsible to interpret the schema and build virtual objects (managed objects). 
+The managed object's fields are specified by the given schema and acts according to the specification given by the data manager.
 Additionally, the data manager ensures that the data given are valid with respect to schema.
-More specifically, the \texttt{Data Manager}s describe how a schema definition is handled from the outside world and what are its specifications.
-These properties many include \ac{ccc} that can be described separately by a special data manager, separating schema and concern definitions.
-Thus, a managed object can have multiple interpretations based on the data managers.
+More specifically, the data managers describe how a schema definition is handled from the outside world and what are its specifications.
+These properties many include \ac{ccc} that can be described separately by special data manager, separating schema and concern definitions.
+Thus, a managed object can have multiple interpretations based on the data manager that they interpret it.
 
-A \texttt{Data Manager} is initialized with a \texttt{Schema} and it provides a new \texttt{Managed Object} instance which has the properties given by the \texttt{Data Manager}.
-Additional to the \texttt{Schema} which includes a Set of \texttt{Type}s (\texttt{Primitive}s or \texttt{Klass}es), it also needs a \texttt{Schema Factory} that includes constructor definitions of the given \texttt{Klass}.
-After the initialization of \texttt{Data Manager} and the interpretation of the schemas, a \texttt{Data Manager} provides the mechanism of creation new schema factories that create managed objects with the properties attached by the data manager.
+A data manager is initialized with a \texttt{Schema} and provides a new \texttt{Managed Object} instance which has the properties given by that data manager.
+Additional to the \texttt{Schema} that includes a Set of \texttt{Type}s (\texttt{Primitive}s or \texttt{Klass}es), it also needs a \texttt{Schema Factory} that declares the constructors of the given schema \texttt{Klass}.
+After the initialization of data manager and the interpretation of the schemas, a data manager provides the mechanism of creation new  \texttt{Schema Factories}, which in turn create  \texttt{Managed Objects} with the specifications of the data manager.
 
-An example taken from Chapter \ref{Example Application} is shown in listing \ref{lst:Basic data Manager Example}, the line \ref{line:basic_data_manager_definition} defines a basic data manager, that gets as input the schema factory and the schema of a state machine. 
-The schema in these case has been already loaded, this processes is described in \ref{sec:Schema Loading}.
-Next, the line \ref{line:basic_data_manager_schema_factory_definition} creates a new schema factory that builds managed objects with the specification that are attached from the basic data manager.
-Finally, line \ref{line:basic_data_manager_definition_instance} shows how those managed object instances with those specification can be built.
-
-% During parsing or interpretation of the textual presentation of the schema, the named must be looked up to find the corresponding Class.
+An example presented in Chapter \ref{Example Application} is shown in listing \ref{lst:Basic data Manager Example}, the Line \ref{line:basic_data_manager_definition} defines a basic data manager, that gets as input the schema factory and the schema of a state machine. 
+The schema in these case has been already loaded, this processes is described in Section \ref{sec:Schema Loading}.
+Next, in Line \ref{line:basic_data_manager_schema_factory_definition} a new schema factory is created that builds managed objects with the specification that are attached from the basic data manager.
+Finally, Line \ref{line:basic_data_manager_definition_instance} shows how those managed object instances with those specification can be built.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -136,16 +136,15 @@ final Machine stateMachineInstance = stateMachineFactory.Machine(); |\label{line
 \end{sourcecode}
 
 \subsubsection{Basic Data Manager}
-As described, we use Java interfaces to define schemas that include fields. 
-Those fields is only know dynamically and a data manager has to be able to determine the fields and methods of the managed data object dynamically.
+As described, we use Java interfaces to define schema Klasses that include fields. 
+Those fields are know only dynamically and a data manager has to be able to determine the fields and methods of the managed data object during runtime.
 In addition, when a data manager adds functionality on a managed object then it delegates the calls to the fields of an instance, to its specifications first.
-In order to dynamically interpret a schema inside a data manager and delegate functionality we used Java Reflection and Dynamic Proxies.
+In order to dynamically interpret a schema inside a data manager and delegate functionality, we used Java Reflection and Dynamic Proxies.
 
-In our implementation we have separated the Proxy factory (data managers) from the Invocation Handlers (MObjects).
-This way, the \texttt{DataManager} Classes are responsible for creating proxied instances of managed data, while the \texttt{MObject} instances are responsible for interpreting the schema and delegate actions with their invocation handling mechanisms. 
-Figure \ref{fig:DataManager_and_MObject} shows how their structure.
-As it can be seen the data manager is a \textit{factory} that has only one method \texttt{make()}, which it uses to build \texttt{MObject}s.
-More specifically \texttt{SchemaFactories} which in turn create \texttt{MObject} instances.
+In our implementation we have separated the Proxy factory (\texttt{DataManager}) from the Invocation Handlers (\texttt{MObjects}).
+This way, the \texttt{DataManager} class is responsible for creating proxied instances of managed data, while the \texttt{MObject} instances are responsible for interpreting the schema and delegate actions with their invocation handling mechanisms. 
+Figure \ref{fig:DataManager_and_MObject} illustrates their structure.
+As it can be seen the data manager is a \textit{factory} that has only one exposed method, \texttt{make()} that it is used to build an \texttt{SchemaFactory}, which in turn builds \texttt{MObject} instances.
 
 \begin{figure}[H]
 	\centering
@@ -155,37 +154,38 @@ More specifically \texttt{SchemaFactories} which in turn create \texttt{MObject}
 \end{figure}
 
 \subsubsection{Stacking Data Managers}
-In order to create a stack of data managers which they combine the behavior and specification of all, we can use inheritance.
-As it can be seen in figure \ref{fig:DataManager_and_MObject}, the stacking of multiple data managers works with inheritance.
-The \texttt{AnotherDataManager} data manager extends the \texttt{BasicDataManager} and implements only the \texttt{createManagedObject()}. 
+In order to create a stack of data managers that they combine the behavior and specifications, we can use inheritance.
+Figure \ref{fig:DataManager_and_MObject} show how this works.
+In detail, the \texttt{AnotherDataManager} data manager extends the \texttt{BasicDataManager} and overrides only the \texttt{createManagedObject()} method. 
 This method is responsible for creating a new instance of an \texttt{MObject}.
 In the case of \texttt{AnotherDataManager} implementation the \texttt{createManagedObject()} method will create a new \texttt{AnotherMObject} instance.
-Additionally,  constructor of data managers needs to accept a dictionary of initialization parameters for overriding data managers that require different inputs.
-Note that It's important that the data managers inherit from a base one this leads to a \textbf{modular aspect} of the data managers.
+Additionally, the constructor of data managers needs to accept a dictionary of initialization parameters for overriding data managers that require different inputs.
+Note that it is important that the data managers inherit from a base one, this leads to the \textbf{modular aspect} of the data managers.
 As it can be seen for stacking data managers we used \textit{Decorator Pattern} \cite{gamma1995design} which is mentioned also in Loh et al. \cite{loh2012managed} as a strategy for static \ac{oop} languages.
 
 \subsection{Managed Objects}\label{sec:Managed Objects}
-As it is mentioned the \textbf{Managed Object} (\texttt{MObject}), is an implementation of the \texttt{InvocationHandler} interface.
-Thus, the \texttt{MObject}'s \texttt{invoke()} method is called in every field access of an \texttt{MObject}'s instance.
-This object uses two methods, \texttt{\_set()} and \texttt{\_get()} to manipulate the underlying data.
-In the implementation of these methods additional checks perform to ensure the correctness of types and structure of the values.
-A type checking mechanism is performed when the \texttt{\_set()} method is called. 
-Those methods can be overridden from derived \texttt{MObject}s in order to \textit{Decorate} the basic \texttt{MObject} with their functionality.
+As it is mentioned the \texttt{MObject}, is an implementation of the \texttt{InvocationHandler} interface.
+Thus, the \texttt{MObject}'s \texttt{invoke()} method is called in every field access of an managed object's instance.
+To manipulate the its fields values this object has two methods, \texttt{\_set()} and \texttt{\_get()}.
+In the implementation of these methods additional checks are performed to ensure the correctness of types and structure of the values.
+Those methods can be overridden from derived \texttt{MObject}s in order to \textit{Decorate} the basic \texttt{MObject} with their functionality, of course they require to call their \texttt{supers} for running all the checks.
 
 The fields of the \texttt{MObject} are specified by its the \texttt{schemaKlass}.
-An \texttt{MObject} is the \textit{backing object} that stores a reference to the \texttt{schemaKlass}.
-That \texttt{schemaKlass} is a meta class that describes the layout of an \texttt{MObject}. 
-\texttt{schemaKlass} is a \texttt{Klass} that is used to keep the \texttt{Field}s and their \texttt{Types} of the \texttt{MObject}.
-The \texttt{MObject} implementation is an instance of that \texttt{schema}.
+The \texttt{MObject} is the \textit{backing object} that stores a reference to the \texttt{schemaKlass}.
+That \texttt{schemaKlass} is a meta class that describes the layout of the \texttt{MObject}. 
+The \texttt{schemaKlass} is a \texttt{Klass} that keeps the \texttt{Field}s and their \texttt{Types} of the \texttt{MObject}.
+The \texttt{MObject} implementation is an instance of that \texttt{schemaKlass}.
 During construction, the \texttt{MObject} setups all the fields based on its \texttt{schemaKlass}.
-Then whenever a check has t be performed for fields, the \texttt{MObject} uses its \texttt{schemaKlass}.
-The usage of the \texttt{schemaKlass} for setup the fields is shown in listing \ref{lst:setup_fields}.
-During the \texttt{MObject}s construction the \texttt{schemaKlass} is given by the \texttt{DataManager} that creates it.
-Using this \texttt{schemaKlass} it setups the \texttt{Fields} of that \texttt{Klass}, Line \ref{line:setup_fields}, as described previously.
+Then whenever a field check has to be performed, the \texttt{MObject} uses its \texttt{schemaKlass}.
+The usage of the \texttt{schemaKlass} for setup the fields is shown in Listing \ref{lst:setup_fields}.
+
+The \texttt{schemaKlass} is given to the \texttt{MObject} by the \texttt{DataManager} that  is responsible for creating it.
+Using this \texttt{schemaKlass} the \texttt{MObject} setups the \texttt{Fields} of the Klass, Line \ref{line:setup_fields}.
 Inside the \texttt{setupField} method the interpretation of the schema is performed.
 More specifically, in Line \ref{line:setup_field_many_check} we check if that field is a multi-value field, if it is not we just setup it as a \texttt{Primitive} or a \texttt{Klass} accordingly. 
-In the case that it many-value then we first check if it is \texttt{Primitive} because we do not support Set of \texttt{Primitive}s.
-Otherwise, we check if a \texttt{Key} field exists on that field's type, and if it is that field is consequently a Set other wise is a List.
+Consider that the \texttt{field.type().schemaKlass().name()} is used like a common \texttt{instanceof} in Line \ref{line:instanceof}.
+In the case that the field has many values, then we first check if it is \texttt{Primitive} because we do not support Set of \texttt{Primitive}s.
+If not, we check if a \texttt{Key} field exists on that field's type and if it is that field is therefore a Set otherwise is a List.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -200,7 +200,7 @@ public MObject(Klass schemaKlass, Object... initializers) {
 protected void setupField(Field field) {
 	if (!field.many()) { |\label{line:setup_field_many_check}|
 		// if it is a primitive make it a Primitive field, otherwise a reference (managed object)
-		if (field.type().schemaKlass().name().equals("Primitive")) {
+		if (field.type().schemaKlass().name().equals("Primitive")) {|\label{line:instanceof}|
 			this.props.put(field.name(), new MObjectFieldSinglePrimitive(this, field));
 		} else {
 			this.props.put(field.name(), new MObjectFieldSingleMObj(this, field));
@@ -226,22 +226,22 @@ protected void setupField(Field field) {
 \end{sourcecode}
 
 \section{Self-Describing Schemas}\label{Self-Describing Schemas}
-As it is described be Loh et al. \cite{loh2012managed}, a self-describing schema is a schema that can be used to define schemas including itself.
-In order to allow schemas to be managed data themselves we need a ``'self-describing schema mechanism'', lets name it \textit{SchemaSchema}.
+As it is described by Loh et al. \cite{loh2012managed}, a self-describing schema is a schema that can be used to define schemas, including itself.
+To allow schemas to be managed data we need a ``self-describing schema mechanism'' or \textit{SchemaSchema}.
 Through the \textit{SchemaSchema} the approach of managed data can be applied at the meta level as well.
 
 \subsection{SchemaSchema}\label{sec:SchemaSchema}
-Since we want to decouple from Java reflection, then we need our own \textit{Klass system}. 
-In order to be self-describing we want that \textit{Klass system} to be represented as managed objects as well. 
-In order to model the structure of a \texttt{Schema} itself we need to be able to describe a record type as a collection of \texttt{Fields}, each of which having a \texttt{name} and a \texttt{Type} \cite{loh2012managed}. 
+Since we want to decouple from Java reflection we need our own \textit{Klass system}. 
+In order to be self-describing we want this Klass system to be represented as managed data as well. 
+To model the structure of a \texttt{Schema} itself we need to be able to describe a class as a collection of \texttt{Fields}, each of which it has a \texttt{name} and a \texttt{Type} \cite{loh2012managed}. 
 Thus, for our \textit{SchemaSchema} definition we need a \texttt{Type}, a \texttt{Field} and a \texttt{Schema} as a collection of \texttt{Type}s. 
-Although a \texttt{Type} could be both \texttt{Primitive}, no \texttt{Fields} and \texttt{Klass}, has a set of \texttt{Fields}.
-Additionally, those \texttt{Fields} can have may have some extra attributes which are the ones explained in Section \ref{Schema Definition}.
+A \texttt{Type} could be both a \texttt{Primitive}, no \texttt{Fields} and a \texttt{Klass}, has a set of \texttt{Fields}.
+Additionally, those \texttt{Fields} may have some extra meta data attributes that explained in Section \ref{Schema Definition}.
 
-A schema like this could describe itself since every concept used in the explanation is included in the definition.
-In order to make our implementation to be self-describing we needed to describe our own SchemaSchema. 
+A schema like this can describe itself since every concept used in the explanation is included in the definition.
+For a self-describing implementation we need to describe our own SchemaSchema. 
 
-The Figure \ref{fig:SchemaSchema_definition} shows the modeling of the definition.
+Figure \ref{fig:SchemaSchema_definition} illustrates the modeling of this definition.
 
 \begin{figure}[H]
 	\centering
@@ -251,9 +251,9 @@ The Figure \ref{fig:SchemaSchema_definition} shows the modeling of the definitio
 \end{figure}
 
 \subsection{SchemaFactory}\label{sec:SchemaFactory}
-Since we have the schema of our schema, \textit{SchemaSchema} we need a way to create instances of those \textit{schemaSchemaKlasses}.
+Considering that we have the schema of our schema (\textit{SchemaSchema}) we need a way to create instances of those \textit{schemaSchemaKlasses}.
 In this case, as we do in the normal schemas, we use a schema factory. 
-However, this time the is a schema schema factory and it defines constructors of all the schema klasses that need to describe our \textit{SchemaSchema}.
+However, this time it is a \textit{schemaSchemaFactory} that defines constructors of all the schema klasses that need to describe our \textit{SchemaSchema}.
 Listing \ref{lst:SchemaSchemaFactory} shows its definition.
 
 \begin{sourcecode} [H]
@@ -271,13 +271,13 @@ public interface SchemaFactory {
 \end{sourcecode}
 
 \subsection{Schema Loading}\label{sec:Schema Loading}
-To construct the Klass system we need to analyze the Java interfaces using reflection mechanisms and build actual instances of the Schema, Klass, Field etc. using an appropriate factory.
-The \texttt{SchemaLoader} is responsible of doing it.
+To construct the Klass system we need to analyze the Java interfaces, using reflection, and then build actual instances of the Schema, Klass, Field etc. using the appropriate factory.
+The \texttt{SchemaLoader} is responsible of this process.
 
-The \texttt{SchemaLoader} has as input a Set of interfaces which are the schema definitions, a \texttt{SchemaSchemaFactory} that includes constructor definitions of the \texttt{SchemaSchema} and a instance of \texttt{SchemaSchema}.
+\texttt{SchemaLoader}'s \texttt{load} static method takes as input a Set of interfaces, which are the schema definitions, a \texttt{SchemaSchemaFactory} that includes constructor definitions of the \texttt{SchemaSchema} and a instance of the \texttt{SchemaSchema}.
 During the reflective analysis of the input interfaces the \texttt{SchemaLoader} builds the corresponding \texttt{Types} and \texttt{Fields} of those interfaces using the \texttt{SchemaSchemaFactory}.
-The Set of these \texttt{Types} construct a \texttt{Schema}.
-An example is shown in listing \ref{lst:SchemaLoader Example}.
+A \texttt{Schema} consists of the Set of these \texttt{Types}.
+An example taken from Chapter \ref{Example Application}, is shown in listing \ref{lst:SchemaLoader Example}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -295,14 +295,13 @@ final Schema stateMachineSchema = SchemaLoader.load(
 	\label{lst:SchemaLoader Example}
 \end{sourcecode}
 
-This \texttt{SchemaLoader} gets as input a \texttt{SchemaSchemaFactory} and a \texttt{SchemaSchema}, which are not important how they have created yet.
-Moreover, it gets a set of interfaces that describe the state machine schema, example Chapter \ref{Example Application}.
-This schema consists of a set of interfaces namely, \texttt{Machine.class}, \texttt{State.class} and \texttt{Transition.class}.
-Next, the \texttt{SchemaLoader} analysis the definition of those schemas using reflection and consequently makes a \texttt{Schema} by using the \texttt{SchemaFactory} that has been given.
-A simple description of that process is shown in Listing \ref{lst:SchemaLoader}\footnote{
-	Most of the implementation has been excluded for the sake of simplicity.}
-. It can be seen that first we implement the instances and after we use setters to wire them up.
-The reason for that is not everything exists the time that we need to set it.
+In the code, the \texttt{SchemaLoader} gets as input a \texttt{SchemaSchemaFactory} and a \texttt{SchemaSchema}, which are not important how they have created yet.
+Moreover, it gets a set of interfaces that describe the state machine schema.
+This schema consists of a set of schema Klasses that are described by interfaces, namely \texttt{Machine.class}, \texttt{State.class} and \texttt{Transition.class}.
+Next, the \texttt{SchemaLoader} analyzes the definition of those schemas using reflection and then makes a \texttt{Schema} by using the \texttt{SchemaFactory} that has been given.
+A simple description of that process is shown in Listing\footnote{
+	Most of the implementation has been excluded for brevity.} \ref{lst:SchemaLoader}.
+It can be seen that first we implement the instances and after we use setters to wire them up and the reason for is that not everything exists the time that needs to be set.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -352,20 +351,21 @@ public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>..
 	\label{lst:SchemaLoader}
 \end{sourcecode}
 
-In \ref{lst:SchemaLoader} can be seen the usage of Java reflection in our implementation.
-However, because Java reflection capabilities are limited, that limited us as well in some parts of the implementation.
+Listing \ref{lst:SchemaLoader} shows the usage of Java reflection in our implementation.
+However, because Java reflection capabilities are limited, this restricted us in our implementation as well.
 
 \section{Bootstrapping}\label{sec:Bootstrapping}
-Since the SchemaSchema is itself managed data with its own data manager we can use the SchemaLoader in build to load a new SchemaSchema.
-However, we need a description of that SchemaSchema, which will be used during the loading process to build its models.
-Therefore, we need a \textit{Bootstrap Schema} to jumpstart this process.
+Considering that SchemaSchema is itself managed data, we can use the SchemaLoader to build a new SchemaSchema.
+Nonetheless, we need a description of that SchemaSchema, which will be used during the loading process to build the schema Klasses.
+As a result, we need a \textit{Bootstrap Schema} to jumpstart this process.
 The \textit{Bootstrap Schema} is necessarily self-describing as it must manage itself \cite{loh2012managed} and it is hardcoded in its own class \texttt{BootSchema}.
 
 \subsection{Cutting the umbilical cord}\label{subsec:Cutting the umbilical cord}
-Having a \texttt{BootSchema} in place we can create ``real'' \texttt{SchemaSchema}s, we call them real because they are managed data.
-For Consistency, we use those ``real'' \texttt{SchemaSchema}s in order to build other schemas.
-After building a ``real'' \texttt{SchemaSchema} we do not need the \texttt{BootSchema} anymore, which leads to a process that is called ``Cutting the umbilical cord''.
-An example of ``Cutting the umbilical cord'' is shown in Listing \ref{subsec:Cutting the umbilical cord}, in which we use the \texttt{BootSchema} to build the \texttt{realSchemaSchema} and then the real \texttt{realSchemaSchema} to build another \texttt{realSchemaSchema}.
+Having a \texttt{BootSchema} in place we can now create ``real'' \texttt{SchemaSchema}s \footnote{
+	We call them real because they are managed data and not hard-coded.}.
+For Consistency, we use those ``real'' \texttt{SchemaSchema}s in order to build other schemas, this way everything is managed data.
+After building a real SchemaSchema we do not need the \texttt{BootSchema} anymore, which leads to a process that we can call ``Cutting the umbilical cord''.
+An example of ``Cutting the umbilical cord'' is shown in Listing \ref{subsec:Cutting the umbilical cord}, in which we use the \texttt{BootSchema} to build the \texttt{realSchemaSchema} and then we use this \texttt{realSchemaSchema} to build another \texttt{realSchemaSchema} (\texttt{realSchemaSchema2}).
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -409,41 +409,39 @@ final Schema realSchemaSchema2 =
 The fact that we use Java reflection and dynamic proxies, along with the fact that everything is managed data, even the schemaSchema, introduces some issues including the methods ordering problem described in Section \ref{Methods ordering}.
 
 \subsection{Equivalence}\label{Managed Object equivalence}
-The \texttt{bootstrapSchema}, \texttt{realSchemaSchema} and \texttt{realSchemaSchema2} managed objects form the Listing \ref{subsec:Cutting the umbilical cord} should be equal since they describe the same \textit{Schema}.
-However, since they are managed data and not normal objects, we need to define a way that will check for equality on managed objects.
-We have implemented the equivalence functionality for managed objects, using the equality Equality Checking for Trees and Graphs
-algorithm from Michael D. Adams and R. Kent Dybvig \cite{adams2008efficient}.
+The \texttt{bootstrapSchema}, \texttt{realSchemaSchema} and \texttt{realSchemaSchema2} managed objects from the Listing \ref{subsec:Cutting the umbilical cord} should be equal because they ultimately describe the same \textit{Schema}.
+However, since they are managed data and not normal Java objects, at least the real SchemaSchemas, we need a to check for equality on managed objects.
+We have implemented the equivalence functionality for managed objects, using the \textit{Equality Checking for Trees and Graphs
+algorithm} by Michael D. Adams and R. Kent Dybvig \cite{adams2008efficient}.
 
 \subsection{The classOf field}\label{The classOf field}
-As it has be presented in \ref{Dynamic Proxies}, in order for a proxy object to conform with interfaces and casted to any of them, it needs those interfaces during its initialization.
-In order to support that, we have added the \texttt{classOf} field in the \texttt{Type} schema Klass, which is of type \texttt{java.lang.Class} and is a reference of the Java Class that this schema Klass is described to.
+As it has be presented in Section \ref{Dynamic Proxies}, for a proxy object to conform with interfaces and be casted to any of them, it needs these interfaces during its initialization.
+To support that, we have added the \texttt{classOf} field in the \texttt{Type} schema Klass, which is of type \texttt{java.lang.Class} and is a reference of the Java class that this schema Klass is described to.
 
 \subsection{Hash-code of Managed Objects}\label{Hashcode of Managed Objects}
-In order to avoid any unpredictable circumstances that a \texttt{hashCode} invocation would bring in case of managed object, we have omitted it. 
-We do not depend on ordinary \texttt{hashCode} for managed objects, we have not implemented it and we never call it. 
-In the case of a collection field type the field has to have a \texttt{Key} field.
-Therefore, we obtain the value of the key field to index into a \texttt{HashMap}. 
-Using the \texttt{Key} field as the key of the hashmap work either it is a primitive or not since we get \texttt{Object.hashCode} of that key.
-However, that suggests that the key is always not of our schema Klass system but a Java type.
-Finally, the \texttt{Mobject} invocation handler delegates the call of \texttt{hashCode} method to the real object so that would not fail, although this is not suggested since it may lead to unpredictable results.
+To avoid any unpredictable activities that a \texttt{hashCode} invocation would bring in case of its invocation in managed objects, we have omitted it. 
+We do not depend on the ordinary \texttt{hashCode} for managed objects, we have not implemented it and we do not call it. 
+If it is a collection field type, then the field has to have a \texttt{Key} field, thus, we obtain the value of the key field and index into a \texttt{HashMap}. 
+Using the \texttt{Key} field as the key of the hashmap work either it is a primitive or not, since we get the \texttt{Object.hashCode()} of that key.
+However, that suggests that the key is not of our schema Klass system but a Java type.
+Finally, the \texttt{Mobject} invocation handler delegates the call of \texttt{hashCode} method to the real object so that would never fail fail, although this is not suggested because it may lead to unpredictable results.
 
 \section{Benefits and Limitations}\label{Benefits and Limitations}
 One of the advantages of this language is the simplicity of its usage. 
-A programmer just needs to define the schemas and the data managers and easily can write a program with them.
-The language takes care of the dependencies, references and any other underline mechanism.
-Moreover, it uses Java concepts, which it makes it safer in terms of type checking and definitions. 
-Additionally, this makes Java developers easier to integrate.
+A programmer just needs to define the schemas followed by the data managers and can easily write a program using them.
+The language takes care of the dependencies, references and any other underline mechanisms.
+Moreover, it uses Java concepts, which it makes it safer in terms of type checking and definitions it is easier for Java developers to adapt.
 Furthermore, by being a self-describing language it is no longer bounded to the Java constructs and everything now is managed data.
-Finally, the effortless mechanisms of stacking data managers make it very modular on every level.
+Finally, the effortless mechanism of stacking data managers makes it significantly modular on every level, meta or not.
 
-On the other hand, in addition to the implementation issues which described in the previous section, since we use Java reflection and dynamic proxies, the performance of an application in managed data is significantly low. 
-This makes it undesirable for application which focus on performance and are based JVM optimizations.
-Another issue that arises is that it is hard to be used in existing systems because in order to make it consistent every model has to redefined as schema, and every functionality to reimplemented in data managers.
+On the other hand, in addition to the implementation issues which described in the previous section, there are significant performance implications since we use Java reflection and dynamic proxies to dynamically interpret schemas. 
+This makes it undesirable for applications that focus on performance and are based on \ac{jvm} optimizations.
+Another issue that arises is that it is hard to be used in existing systems because to make a consistent integration, every model has to redefined as schema and every functionality to reimplemented in data managers.
 However, an existing system integration is presented in Chapter \ref{AspectRefactoring}.
 
 % TODO: Rephrase
 \section{Claims}\label{Implementation Claims}
 We claim that managed data leads to a powerful data abstraction that gives the programmers control over fundamental mechanisms of creation and manipulation of data \cite{loh2012managed}.
-Those mechanisms are used to be predefined by the programming languages, and managed data give control over them using data managers.
-Moreover, we claim that managed data introduces a modular way to define data and aspects of data. 
-We are going to present it this next by showing how can we \textit{aspect refactor} an application using managed data.
+Those mechanisms are used to be predefined by the programming languages and managed data gives control over them using data managers.
+Moreover, we claim that managed data introduces a modular way to define data and aspects of them. 
+We are going to present it in Chapter \ref{AspectRefactoring}, by showing how can we \textit{aspect refactor} an existing application using managed data.
