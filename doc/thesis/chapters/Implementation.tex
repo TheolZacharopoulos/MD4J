@@ -18,10 +18,12 @@ Using a data description language the programmer can define \textit{Schemas} tha
 The \textit{Schemas} and the \textit{Data Managers} are the essential components of managed data along with the \textit{Integration} with the programming language which in our case is Java.
 
 \subsection{Data description with Schemas}\label{Schema Definition}
+To create instances of data, we first need to define their structure.
+\textit{Schemas} describe the outline structure of our data.
 In order to define \textit{Schemas} in managed data we need a data description language that allows to define records as collections of fields. 
 This language can be anything, e.g. XML, JSON or a different formalism like in Enso.
-However, in our implementation we chose to use \textbf{Java Interfaces} for data description language that allows to define records of managed data.
-By using Java interfaces the \textit{Schema} classes are tightly coupled structurally to the Java interface we use to define them. 
+For our implementation we chose to use \textbf{Java Interfaces} for data description language that allows to define records of managed data.
+By using Java interfaces we use Java's semantics for our definitions.
 Moreover, Java interfaces use several conventions to encode semantics, for instance Java annotations, which are very useful for meta data definition on \textit{Schema}s.
 
 Consequently, to define a \textit{Schema} we first need to define a set of classes that describe that schema.
@@ -231,7 +233,8 @@ To allow schemas to be managed data we need a ``self-describing schema mechanism
 Through the \textit{SchemaSchema} the approach of managed data can be applied at the meta level as well.
 
 \subsection{SchemaSchema}\label{sec:SchemaSchema}
-Since we want to decouple from Java reflection we need our own \textit{Klass system}. 
+By using Java interfaces the \textit{Schema} classes are tightly coupled structurally to the Java interface we use to define them.
+Since we want to decouple from Java interfaces and reflection we need our own \textit{Klass system}.
 In order to be self-describing we want this Klass system to be represented as managed data as well. 
 To model the structure of a \texttt{Schema} itself we need to be able to describe a class as a collection of \texttt{Fields}, each of which it has a \texttt{name} and a \texttt{Type} \cite{loh2012managed}. 
 Thus, for our \textit{SchemaSchema} definition we need a \texttt{Type}, a \texttt{Field} and a \texttt{Schema} as a collection of \texttt{Type}s. 

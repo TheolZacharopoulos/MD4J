@@ -90,7 +90,7 @@ Managed data has not been practically implemented in a static language before, t
 Based on the previous argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve \ac{ccc} and to what extend does it improve the software evolution problems that \ac{aop} introduces in a modular solution?''}. 
 Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
 we evaluate the implementation of managed data on an inventory of aspects and design patterns. 
-As a result the third research question states \textit{``To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, compared to the original and the \ac{aop} implementation.''}.
+As a result the third research question states \textit{``To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, compared to the original and the \ac{aop} implementation?''}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Solution Outline}\label{Solution Outline}
@@ -111,19 +111,21 @@ In order to see if managed data solves the problems that \ac{aop} introduces, we
   \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
   More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
 
-  % TODO: include this?
-  \item[The Singleton Pattern,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, can easily be abstracted as an aspect and replace the \ac{oop} usage in JHotDraw. 
+  % TODO: include persistence?
 
-  % TODO: include this?
-  \item[The Template Method,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, scatters code by introducing roles such as those of \textit{AbstractClass} and \textit{ConcreteClass}.
+  % % TODO: include this?
+  % \item[The Singleton Pattern,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, can easily be abstracted as an aspect and replace the \ac{oop} usage in JHotDraw. 
+
+  % % TODO: include this?
+  % \item[The Template Method,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, scatters code by introducing roles such as those of \textit{AbstractClass} and \textit{ConcreteClass}.
 
 \end{description}
-
+% TODO: Include TestJHotDraw?
 This inventory is implemented using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
 We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
 Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. However, JHotDraw comes with no tests. 
 Thus, we use TestJHotDraw, which is a subproject of the AJHotDraw development team, and is developed in order to contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications allowing for a better assessment of aspect orientation.
-Since we use our JHotDraw implementation for the functional evaluation of our solution, we can use some already researched criteria \cite{hannemann2002design}, which consist of \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
+Considering that we use our JHotDraw implementation for the functional evaluation of our solution, we can use some already researched criteria \cite{hannemann2002design}, which consist of \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Method}\label{Research Method}
