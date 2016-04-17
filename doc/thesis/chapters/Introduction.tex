@@ -32,7 +32,7 @@ Additionally, our work focuses on the aspects perspective and it provides a solu
 and their data managers.
 
 The most famous implementation of \ac{aop} is the one provided by Kiczales et al. called AspectJ \cite{kiczales2001overview}. 
-Although AspectJ has been used by a number of projects, some of them with significant research results \cite{hannemann2002design} \cite{marinajhotdraw}, it includes all the trade-offs of \ac{aop}, which are presented in detail in section \ref{Problem statement}. 
+Although AspectJ has been used by a number of projects, some of them with significant research results \cite{hannemann2002design} \cite{marinajhotdraw}, it includes all the trade-offs of \ac{aop}, which are presented in detail in Section \ref{Problem statement}. 
 In this thesis we show how we use managed data in order to tame aspects and compare the results with an AspectJ show case, the AJHotDraw.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +49,7 @@ The common characteristic of these definitions is that they are all predefined.
 Thus, they do not allow the developers to take control on the data structuring and management mechanisms, but only to create data of these types \cite{loh2012managed}.
 
 The problem with this approach is that the predefined data structuring mechanisms can not implement \acrlong{ccc} and other ``common requirements'' for data management. 
-More specifically, those requirements are not properties that belong to a data structure definition, since, although it is easy to define them individually for every data type, that introduces a significant amount of duplicated and scattered code through the program.
+In particular, those requirements are not properties that belong to a data structure definition, since, although it is easy to define them individually for every data type, that introduces a significant amount of duplicated and scattered code through the program.
 
 Consequently, in this thesis we implement managed data, which gives the programmers control over the data structuring mechanisms.
 
@@ -94,7 +94,8 @@ As a result the third research question states \textit{``To what extent can mana
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Solution Outline}\label{Solution Outline}
-Our solution consists of an implementation of managed data in Java. More specifically, we have implemented a framework that can be used in order to create managed data in Java.
+Our solution consists of an implementation of managed data in Java. 
+In particular, we have implemented a framework that can be used in order to create managed data in Java.
 This framework provides all the mechanisms of managed data using Java reflection and dynamic proxies. Additionally, one can use the framework in order to refactor the \ac{ccc} of an application.
 
 As it has been already mentioned, to validate our hypotheses we have implemented managed data in Java using the Java Reflection API and Dynamic Proxies. 
@@ -176,13 +177,13 @@ In order to answer our research questions we studied the theoretical background,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Related Work}\label{Related Work}
 In this section we discuss the related work of research that inspired this thesis.
-More specifically, we discuss points that we followed and points that we've tried to improve as well as the reason of doing it.
+In particular, we discuss points that we followed and points that we've tried to improve as well as the reason of doing it.
 
 \begin{description}
 
   \item[Meta-Object Protocol]~\\
   Managed data can be implemented using reflection and the \ac{mop}. 
-  The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and more specifically, the \textbf{method\_missing} mechanism. 
+  The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and in particular, the \textbf{method\_missing} mechanism. 
   In other languages (such as Java, JavaScript or C\#) that support dynamic proxies, they can be used for the managed data implementation, which is the way we've implemented it.
   The \ac{mop} \cite{kiczales1991art} was first implemented for simple \ac{oop} capabilities of the Lisp language in order to satisfy some developer demands including compatibility, extensibility and developers experimentation. 
   The idea was that the languages have been designed to be viewed as black box abstractions without giving the programmers the control over semantics or the implementation of those abstractions. 

@@ -243,7 +243,7 @@ The corresponding proxy class extends the class \texttt{Proxy} and implements al
 Thus, conforming to all those interfaces, a proxy can be casted to any of them and any method defined in those interfaces can be invoked on the proxy object \cite{eugster2006uniform}.
 
 \subsubsection{Invocation Handlers}\label{Invocation Handlers}
-All the proxy objects have an associated object of type \texttt{InvocationHandler}, which handles the method invocations performed on the proxy, and its interface is shown in listing \ref{lst:The Invocation Handler Interface}.
+All the proxy objects have an associated object of type \texttt{InvocationHandler}, which handles the method invocations performed on the proxy, and its interface is shown in Listing \ref{lst:The Invocation Handler Interface}.
 
 \begin{sourcecode}
 	\begin{lstlisting}[language=Java]
@@ -270,7 +270,7 @@ Other methods defined in \texttt{Object} are not overridden by proxy classes, as
 Previously we mentioned the \textit{logging} \ac{ccc} \ref{Cross Cutting Concerns}.
 Image that every method invocation of an object has to be logged into the console, in that case we would need to write logging code on each of the methods of that class.
 This would lead to scattered logging code through the methods.
-This is problem can be solved with dynamic proxies and a simple solution is presented in listing \ref{lst:Logging in dynamic proxies}.
+This is problem can be solved with dynamic proxies and a simple solution is presented in Listing \ref{lst:Logging in dynamic proxies}.
 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java]
@@ -324,7 +324,7 @@ JHotDraw's  design relies heavily on some well-known design patterns\cite{gamma1
 
 The fact that JHotDraw is appraised as a so well-designed application makes it an ideal candidate as a showcase for an aspect oriented migration. 
 Marin and Moonen \cite{marinajhotdraw} use this showcase for adoption of aspect-oriented techniques in existing systems. 
-More specifically, they present AJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/AJHotDraw}}, which is an aspect-oriented version of JHotDraw developed in Java and AspectJ. 
+In particular, they present AJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/AJHotDraw}}, which is an aspect-oriented version of JHotDraw developed in Java and AspectJ. 
 The goal of AJHotDraw is to take the existing JHotDraw and migrate it to a functionally equivalent aspect-oriented version. 
 According to the authors the contributions of AJHotDraw include: 
 
@@ -369,7 +369,7 @@ Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into ty
 
 During AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors propose a type-based refactoring on the same \textit{Observer} instance, \texttt{SelectionListener}, in JHotDraw. 
 
-The legacy code architecture of JHotDraw is displayed in figure \ref{fig:Selection_Listener}.
+The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
@@ -388,7 +388,7 @@ The aspect refactoring could be described as the aspect construct comprising bot
 The type-based refactoring\cite{marin2005approach} distinguishes several crosscutting elements that occur in an implementation of the \textit{Observer} pattern: role superimposition, applied twice, for each of the two roles and consistent behavior to notify the observers of the changes in the \textit{Subject} object.
 The \texttt{GenericRole} (empty) interface documents the crosscutting type of role superimposition. 
 Specific roles, like \textit{Observer} and \textit{Subject} (\texttt{SelectionSubject}) extend the interface.
-These elements are shown in figure \ref{fig:Concerns_Selection_Listener}.
+These elements are shown in Figure \ref{fig:Concerns_Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
@@ -403,7 +403,7 @@ After a fan-in analysis of JHotDraw \cite{marin2004identifying}, Marin identifie
 He uses the \textit{(un)pluggability} property of a concern as an estimate of its refactoring cost. 
 The author proposes the refactoring of the ``Undo'' concern in JHotDraw using AspectJ with the implementation of AJHotDraw. 
 During the fan-in analysis \cite{marin2004identifying}, the results have shown about 30 undo activities defined for various elements of JHotDraw. 
-A representation of the elements in the JHotDraw implementation of the ``Undo'' concern can be seen in figure \ref{fig:Participants_for_undo_in_JHotDraw}.
+A representation of the elements in the JHotDraw implementation of the ``Undo'' concern can be seen in Figure \ref{fig:Participants_for_undo_in_JHotDraw}.
 
 \begin{figure}[H]
 	\centering

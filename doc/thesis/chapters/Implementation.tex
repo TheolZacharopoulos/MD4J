@@ -184,7 +184,7 @@ The usage of the \texttt{schemaKlass} for setup the fields is shown in Listing \
 The \texttt{schemaKlass} is given to the \texttt{MObject} by the \texttt{DataManager} that  is responsible for creating it.
 Using this \texttt{schemaKlass} the \texttt{MObject} setups the \texttt{Fields} of the Klass, Line \ref{line:setup_fields}.
 Inside the \texttt{setupField} method the interpretation of the schema is performed.
-More specifically, in Line \ref{line:setup_field_many_check} we check if that field is a multi-value field, if it is not we just setup it as a \texttt{Primitive} or a \texttt{Klass} accordingly. 
+In particular, in Line \ref{line:setup_field_many_check} we check if that field is a multi-value field, if it is not we just setup it as a \texttt{Primitive} or a \texttt{Klass} accordingly. 
 Consider that the \texttt{field.type().schemaKlass().name()} is used like a common \texttt{instanceof} in Line \ref{line:instanceof}.
 In the case that the field has many values, then we first check if it is \texttt{Primitive} because we do not support Set of \texttt{Primitive}s.
 If not, we check if a \texttt{Key} field exists on that field's type and if it is that field is therefore a Set otherwise is a List.
@@ -280,7 +280,7 @@ The \texttt{SchemaLoader} is responsible of this process.
 \texttt{SchemaLoader}'s \texttt{load} static method takes as input a Set of interfaces, which are the schema definitions, a \texttt{SchemaSchemaFactory} that includes constructor definitions of the \texttt{SchemaSchema} and a instance of the \texttt{SchemaSchema}.
 During the reflective analysis of the input interfaces the \texttt{SchemaLoader} builds the corresponding \texttt{Types} and \texttt{Fields} of those interfaces using the \texttt{SchemaSchemaFactory}.
 A \texttt{Schema} consists of the Set of these \texttt{Types}.
-An example taken from Chapter \ref{Example Application}, is shown in listing \ref{lst:SchemaLoader Example}.
+An example taken from Chapter \ref{Example Application}, is shown in Listing \ref{lst:SchemaLoader Example}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
