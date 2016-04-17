@@ -314,6 +314,8 @@ public class TracingIH implements InvocationHandler {
 \end{sourcecode}
 
 % TODO: Reread - Recheck
+% TODO: Mention their aspect mining process
+% TODO: Mention their AspectJ's limitations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: JHotDraw
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -344,6 +346,7 @@ According to the authors the contributions of AJHotDraw include:
 	\item Addressing the challenges risen by testing aspect oriented systems.
 \end{enumerate}
 
+% TODO: Remove TestJHotDraw???
 In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, which is called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}} in order to ensure behavioral equivalence between the original and the refactored solution. 
 Refactoring implies preserving the observable behavior of an application\cite{fowler2009refactoring} and since the original JHotDraw comes without tests, TestJHotDraw was created. 
 There are several contributions of the aspect-oriented implementation approach\cite{marinajhotdraw}. 
@@ -367,13 +370,15 @@ Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into ty
 	\item An associated (desired) aspect language mechanism to support the modularization of the type's concerns (e.g., \texttt{pointcut} and \texttt{advice}, introduction, composition models).
 \end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Figure Selection Observer of JHotDraw}\label{The Undo Concern of JHotDraw}
 During AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors propose a type-based refactoring on the same \textit{Observer} instance, \texttt{SelectionListener}, in JHotDraw. 
 
 The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.55\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
+  	\fbox{\includegraphics[width=.50\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
   	\caption{Observer pattern: Selection Listener \cite{marin2005approach}}
   	\label{fig:Selection_Listener}
 \end{figure}
@@ -392,7 +397,7 @@ These elements are shown in Figure \ref{fig:Concerns_Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.55\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
+  	\fbox{\includegraphics[width=.50\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
   	\caption{The concern types in Selection Listener \cite{marin2005approach}}
   	\label{fig:Concerns_Selection_Listener}
 \end{figure}
@@ -440,6 +445,8 @@ Given this implementation, it is obvious that the primary decomposition of \text
 	
 	\item The references to the before enumerated elements from non-undo related members.
 \end{itemize}
+
+% TODO: Two cases (simple, complex)
 
 The implementation of AJHotDraw succeeded in refactoring this concern in JHotDraw through the following steps \cite{marin2004refactoring}:
 

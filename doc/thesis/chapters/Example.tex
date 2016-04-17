@@ -273,7 +273,7 @@ final StateMachineFactory observableStateMachineFactory = observableDataManager.
 // Door State Machine definition, with observable data manager
 final Machine doorStateMachine = observableStateMachineFactory.Machine();
 
-// Add monitoring and notofication concerns
+// Add monitoring and notification concerns
 ((Observable) doorStateMachine).observe(StateMachineMonitoring::monitor); |\label{line:state_machine_monitor}|
 ((Observable) doorStateMachine).observe(StateMachineMonitoring::notify);  |\label{line:state_machine_notify}|
 ...

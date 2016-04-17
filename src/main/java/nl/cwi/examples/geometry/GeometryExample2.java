@@ -1,6 +1,5 @@
-package nl.cwi;
+package nl.cwi.examples.geometry;
 
-import nl.cwi.examples.geometry.PointFactory;
 import nl.cwi.examples.geometry.schemas.Line;
 import nl.cwi.examples.geometry.schemas.Point;
 import nl.cwi.examples.geometry.schemas.Point2D;
@@ -22,7 +21,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class Main {
+public class GeometryExample2 {
 
     public static void main(String[] args) {
         PropertyConfigurator.configure("src/main/resources/logger.properties");
