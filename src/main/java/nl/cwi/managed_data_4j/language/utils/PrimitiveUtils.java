@@ -1,5 +1,7 @@
 package nl.cwi.managed_data_4j.language.utils;
 
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -84,6 +86,19 @@ public class PrimitiveUtils {
         if (Class.class.isAssignableFrom(typeClass)) return true;
 
         return false;
+    }
+
+    public static Object getDefaultValueForPrimitive(Class<?> typeClass) throws UnknownTypeException {
+        if (String.class.isAssignableFrom(typeClass)) return "";
+        if (Integer.class.isAssignableFrom(typeClass)) return 0;
+        if (int.class.isAssignableFrom(typeClass)) return 0;
+        if (Boolean.class.isAssignableFrom(typeClass)) return false;
+        if (boolean.class.isAssignableFrom(typeClass)) return false;
+        if (Float.class.isAssignableFrom(typeClass)) return 0.0;
+        if (Double.class.isAssignableFrom(typeClass)) return 0.0;
+        if (Class.class.isAssignableFrom(typeClass)) return null;
+
+        throw new UnknownTypeException("Unknown primitive type: " + typeClass.getSimpleName());
     }
 
     public static Comparator<Object> orderBasedOnClass(Class<?> typeClass) {

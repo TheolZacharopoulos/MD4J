@@ -31,27 +31,6 @@ public class MObjectFieldSinglePrimitive extends MObjectFieldSingle {
 
     @Override
     protected Object defaultValue() throws UnknownTypeException {
-        switch (field.type().name()) {
-            case "String":
-                return "";
-
-            case "Integer":
-            case "int":
-                return 0;
-
-            case "Boolean":
-            case "bool":
-                return false;
-
-            case "Float":
-            case "Double":
-                return 0.0;
-
-            case "Class":
-                return null;
-
-            default:
-                throw new UnknownTypeException("Unknown primitive type: " + field.type().name());
-        }
+        return PrimitiveUtils.getDefaultValueForPrimitive(field.type().classOf());
     }
 }
