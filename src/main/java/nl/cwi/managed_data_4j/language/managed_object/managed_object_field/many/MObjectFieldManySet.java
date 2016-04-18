@@ -82,7 +82,7 @@ public class MObjectFieldManySet extends MObjectFieldMany {
         final Field newValueKeyField = mObjectNewValue.schemaKlass().key();
 
         if (newValueKeyField == null) {
-            throw new NoKeyFieldException("No key when adding " + mObjectNewValue + " to #{self}");
+            throw new NoKeyFieldException("No key when adding " + mObjectNewValue.schemaKlass().name() + " to " + this.field.name());
         }
         return ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type().classOf());
     }
