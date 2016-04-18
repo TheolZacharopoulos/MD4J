@@ -58,6 +58,7 @@ A list of the available structure concepts that are supported in our language is
 	\item [@Contain] When a field is annotated with the \texttt{@Contain} annotation, then this field is considered as \textit{traversal}. 
 	In general, traversals describe a minimum spanning tree that is called \textit{spine} and ensures reachability of values.
 	The spine is used in implementations that need a depth-first search by distinguishing between the actual information and the cross-references of the spanning tree.
+	If a spanning tree is defined, then all nodes in a model must be uniquely reachable by following just the spine fields \cite{storm2012object}.
 	An example of such functionality is the equivalence between managed objects that is presented in Section \ref{Managed Object equivalence}.
 	Sometimes traversal fields describe composition, or ``is a part of'', relationships \cite{loh2012managed}.
 
@@ -229,8 +230,14 @@ protected void setupField(Field field) {
 
 \section{Self-Describing Schemas}\label{Self-Describing Schemas}
 As it is described by Loh et al. \cite{loh2012managed}, a self-describing schema is a schema that can be used to define schemas, including itself.
+% TODO: add more from kurtev2006model
+Our framework is fully self-described, the schemas are also described by schemas which are both models \cite{kurtev2006model}. 
 To allow schemas to be managed data we need a ``self-describing schema mechanism'' or \textit{SchemaSchema}.
 Through the \textit{SchemaSchema} the approach of managed data can be applied at the meta level as well.
+
+The reason that a self-describing schema is important is because schema schemas can be used from schema factories to create schemas.
+The schema of schemas is just a schema that allows the creation of schemas, including its own schema \cite{storm2012object}.
+Additionally, by presenting the schema as the first-class model\cite{kurtev2006model}, they can be extended in the same way just like ordinary models.
 
 \subsection{SchemaSchema}\label{sec:SchemaSchema}
 By using Java interfaces the \textit{Schema} classes are tightly coupled structurally to the Java interface we use to define them.

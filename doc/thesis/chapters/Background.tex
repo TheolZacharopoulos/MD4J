@@ -104,23 +104,6 @@ The modularity properties implemented in this thesis are\cite{hannemann2002desig
 	\item [(Un)pluggability:] Because \textit{Subjects} and \textit{Observers} don't need to be aware of their role in any pattern instance, it is possible to switch between using a pattern and not using it in the system. 
 \end{description}
 
-% TODO: Too much detail???
-% \subsubsection{More design pattens in \acrlong{aop}}\label{More design pattens in Aspect Oriented Programming}
-% Other patterns that are presented in the paper \cite{hannemann2002design} are clustered based on common features. 
-% In case of the \textit{Composite}, \textit{Command}, \textit{Mediator}, \textit{Chain of responsibility}, the roles only used within pattern aspect. 
-% More specifically, these patterns introduce roles that need no client-accessible interface and are only used within the pattern, e.g. in Composite pattern, to allow walking the tree structure inherent to the parents, the authors define facilities to have visitor traverse and/or change the structure. 
-
-% There visitors are defined in the concrete aspect.
-% The patterns \textit{Singleton}, \textit{Prototype}, \textit{Memento}, \textit{Iterator}, \textit{Flyweight} have aspects as object factories. 
-% They administrate access to specific object instances. 
-% All of them offer factory methods to clients and share a create-on-demand strategy. 
-% The patterns are abstracted with code for the factory in the aspect. 
-% Participants no longer need to have pattern code in them, the otherwise close coupling between an original object and its representation or accessors is removed from the participants.
-
-% In case of the patterns \textit{Adapter}, \textit{Decorator}, \textit{Strategy}, \textit{Visitor} and \textit{Proxy}, using AspectJ the implementation of some patterns completely disappear because AspectJ language constructs implement them directly. This applies to these patterns in varying degrees. Next, the patterns \textit{Abstract Factory}, \textit{Factory Method}, \textit{Template Method}, \textit{Builder} and \textit{Bridge} can be implemented using multiple inheritance, AspectJ provides a solution to implement multiple inheritance in Java. The patterns \textit{State} and \textit{Interpreter} introduce high coupling between their participants. In the AspectJ implementations, parts of the scattered code can be modularized. Finally, the Facade pattern shows no benefit from AspectJ because there is no significant difference between the AspectJ and the Java implementation of this pattern. 
-
-% As it has been presented above, Hannemann et al. \cite{hannemann2002design} evaluate their solutions by using the following criteria: \textit{Locality}, \textit{Reusability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}.
-
 In general an object or a class that is not coupled to its role in a pattern can be used in different contexts without modifications and the reusability of participants can be increased. 
 The locality also means that existing classes can be incorporated into a pattern instance without the need to adapt them with extra effort. All the changes are made in the pattern instance. 
 This makes the pattern implementations themselves relatively (un)pluggable. 
@@ -371,7 +354,7 @@ Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into ty
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{The Figure Selection Observer of JHotDraw}\label{The Undo Concern of JHotDraw}
+\subsection{The Figure Selection Observer of JHotDraw}\label{The Figure Selection Observer of JHotDraw}
 During AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors propose a type-based refactoring on the same \textit{Observer} instance, \texttt{SelectionListener}, in JHotDraw. 
 
 The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selection_Listener}.

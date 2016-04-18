@@ -6,8 +6,9 @@
 \chapter{Example Application: State Machine Monitoring}\label{Example Application}
 In order to show how our managed data implementation works, in terms aspect refactoring, we to present a showcase in this chapter.
 The example consists of a very simple state machines application, which is inspired by Martin Fowler \cite{fowler2010domain}.
+The same example is also presented in Enso as a use case for its Object Grammar capabilities \cite{storm2012object}.
 
-The requirements of a state machine are the following: 
+Consider the requirements of the state machine are the following: 
 \begin{itemize}
 	\item A state \texttt{Machine} consists of a number of named \texttt{State} declarations.
 
@@ -16,8 +17,8 @@ The requirements of a state machine are the following:
 	\item A \texttt{Transition} is identified by a certain \texttt{event}.
 \end{itemize}
 
-For simplicity, this example will be a very basic \textit{door state machine}, which includes two states \textbf{Open} and \textbf{Closed} along with two transitions for them; \textbf{open\_door} and \textbf{close\_door} respectively.
-Figure \ref{fig:State_machine} illustrates our door state machine.
+For simplicity, this example will be a very basic \textit{door state machine}, which includes three states \textbf{Open}, \textbf{Close} and \textbf{Locked} accompanied by their transitions: \textbf{open\_door}, \textbf{close\_door}, \textbf{lock\_door} and \textbf{unlock\_door} respectively.
+Figure \ref{fig:State_machine} illustrates the door state machine.
 
 \begin{figure}[H]
 	\centering
@@ -31,7 +32,16 @@ In order to implement the above we first need to define the models, next interpr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schemas definition}
 First, we need to define all the models of the state machine program. 
-In our implementation this is done using Java interfaces for the definition, with some additional meta-data described with Java annotation.
+The object diagram is illustrated in Figure \ref{fig:State_machine_object}.
+
+\begin{figure}[H]
+	\centering
+  	\fbox{\includegraphics[width=.50\textwidth]{figures/State_machine_object_diagram.png}}
+  	\caption{Basic door state machine object diagram}
+  	\label{fig:State_machine_object}
+\end{figure}
+
+In our implementation we can define schemas using Java interfaces with a set of meta-data described with Java annotation.
 Thus, as extracted from the requirements, we need \texttt{Machine} \ref{lst:Machine_Schema}, \texttt{State} \ref{lst:State_Schema}, and \texttt{Transition} \ref{lst:Transition_Schema} models (schemas).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,7 +85,7 @@ public interface State extends M {
 \end{sourcecode}
 
 For the \texttt{State} definition, Listing \ref{lst:State_Schema}, we need a \texttt{name} field, which is representing name of the state. 
-The \texttt{name} field has been annotated with the \texttt{@Key} annotation, which indicates that this field will be used as a key in case of a \texttt{Set} instance of this schema.
+The \texttt{name} field has been annotated with the \texttt{@Key} annotation, which indicates that state names must be unique and the states field of Machine can be indexed by name.
 Moreover, the schema includes a set of \texttt{in} and \texttt{out} \texttt{Transition}s.
 Since those two fields are of type \texttt{Set}, that means that a field of the \texttt{Transition} schema has to be marked as key.
 In this case is the name (line \ref{line:transition_key} Listing \ref{lst:Transition_Schema}).
@@ -125,25 +135,22 @@ public interface StateMachineFactory {
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Basic Data Manager}
-As it is mentioned previously \ref{Managed Data}, in order to interpret and manage the defined data we need data managers. 
+As it is mentioned, in order to interpret and manage the defined data we need data managers. 
 Our implementation includes the definition of a \texttt{Basic data manager} that is responsible of making a schema definition to an instance of \textit{managed object}.
 However, in order to make the \textit{managed object} it needs its schema definition (the interfaces that define the schemas) and the schema factory (the interface that defines the constructors of the schemas).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A simple without concerns program}
 In the case of a simple program without any concerns, we have to use our managed data to define the state machine and then interpret it.
-Listing \ref{lst:Door_state_machine} presents the program of the door state machine.
-In this code, we focus after line \ref{line:state_meaning_full_code} since lines \ref{line:state_schemaSchema} and \ref{line:state_schemaMachineSchema} are not relevant, for now, but they are going to be explained in Chapter \ref{Implementation}.
+The definition of the door state machine is given in Listing \ref{lst:Door_state_machine} in Java.
 
-Since there is a \texttt{stateMachineSchema}, we need the basic data manager in order to have a mechanisms that interprets the managed objects, line \ref{line:state_meaning_full_code}.
-The definition of the door state machine is given in Listing \ref{lst:Door_state_machine} with a simple interpreter in line \ref{line:state_machine_interpreter}.
+In practice, we need the basic data manager to have a mechanisms that interprets the managed object that comply the \texttt{stateMachineSchema}, shown in Line \ref{line:state_meaning_full_code}.
+A a simple interpreter for the state machine is shown in Line \ref{line:state_machine_interpreter}.
 As it can be seen, the schemas factory is used to create managed objects and the \textit{wiring} of the fields is done automatically by the data manager who is responsible for the managed object interpretation.
 
-\begin{sourcecode} [H]
+\begin{sourcecode}
 	\begin{lstlisting}[language=Java, escapechar=|]
 public class StateMachineExample {
-	// ... static constants definitions
-
 	public static void main(String[] args) {
 		final Schema schemaSchema = ...; |\label{line:state_schemaSchema}|
 		final Schema stateMachineSchema = ....; |\label{line:state_schemaMachineSchema}|
@@ -152,32 +159,38 @@ public class StateMachineExample {
 				new BasicDataManager(StateMachineFactory.class, stateMachineSchema);  |\label{line:state_meaning_full_code}|
 		final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make();
 
-		// Door State Machine definition
 		final Machine doorStateMachine = stateMachineFactory.Machine(); |\label{line:state_machine_creation_basic}|
 
-		// Open State definition
 		final State openState = stateMachineFactory.State(OPEN_STATE);
 		openState.machine(doorStateMachine);
 
-		// Closed State definition
 		final State closedState = stateMachineFactory.State(CLOSED_STATE);
 		closedState.machine(doorStateMachine);
 
-		// Close Transition
+		final State lockedState = stateMachineFactory.State(LOCKED_STATE);
+		lockedState.machine(doorStateMachine);
+
 		final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
 		closeTransition.from(openState);
 		closeTransition.to(closedState);
 
-		// Open Transition
 		final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
 		openTransition.from(closedState);
 		openTransition.to(openState);
 
-		// State machine starting state
-		doorStateMachine.start(openState);
+		final Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
+		lockTransition.from(closedState);
+		lockTransition.to(lockedState);
+
+		final Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
+		unlockTransition.from(lockedState);
+		unlockTransition.to(closedState);
+
+		doorStateMachine.start(closedState);
 
 		interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-		        CLOSE_TRANSITION,
+		        LOCK_TRANSITION,
+		        UNLOCK_TRANSITION,
 		        OPEN_TRANSITION)));
 	}
 }
@@ -200,14 +213,13 @@ private static void interpretStateMachine(Machine stateMachine, List<String> com
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Monitoring and notification concerns}
-What about the case in which we want to add some concerns at the previous door state machine implementation?
+Consider now the case which we want to add some concerns at the previous door state machine implementation.
 A simple concern would be a \textit{monitoring} concern, which will log every change in the current state of the state machine.
-In this case 
-Another concern would be the \textit{notification} specify state that the machine is current at.
+Another concern would be a \textit{notification} which would be enabled when a specific state is set to the machine.
 
-More specifically, for this example, the case is a system that the door has to stay open for safety reasons. 
-In the case that the door closes, \textbf{Closed} state, then we want to notify someone responsible by e-mail.
-That looks similar to the \textit{monitoring} concern but in this case the notification is a specific action, send an e-mail in case the door is closed.
+Suppose, for this example, the system has to notify someone in case the door is opened.
+In the case that the door opens, the \textbf{Open} state has set to the current state to the machine, then we want to notify someone by e-mail.
+That looks similar to the \textit{monitoring} concern yet, in this case the notification is a specific action; send an e-mail in case the door is open.
 
 \begin{figure}[H]
 	\centering
@@ -218,7 +230,7 @@ That looks similar to the \textit{monitoring} concern but in this case the notif
 
 In order to implement those concerns we need a mechanism that continuously monitors the changes (transitions) of the machine's \texttt{current} state and react accordingly.
 In a traditional way this would lead to scattered \textit{monitoring} and \textit{notification} code inside the interpretation method or the models themselves (the machine model).
-However, in managed data there are data managers for that.
+However, in managed data there are data managers for that purpose.
 A data manager can implement concerns as modular aspects without crosscut code to the components.
 Therefore, by implementing our concerns with data managers we can keep the interpretation and model definition code, shown in Listing \ref{lst:Door_state_machine}, modular.
 
@@ -230,7 +242,7 @@ This data manager creates concrete managed objects, namely \textit{observable ma
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Monitor and notify concerns}
-In the example, the observers are the concerns, which are \textit{monitoring} and \textit{notification} by e-mail in case of closed door. 
+In the example, the observers are the concerns, which are \textit{monitoring} and \textit{notification} by e-mail in case of opened door. 
 The definition of those concerns is given in Listing \ref{lst:StateMachineMonitoring}.
 
 \begin{sourcecode} [H]
@@ -243,9 +255,9 @@ public class StateMachineMonitoring {
     }
 
     public static void notify(Object obj, String field, Object value) {
-        if (field.equals("current") && ((State) value).name().equals(CLOSED_STATE)) {
-            if (EmailSender.send("Danger!", "Someone just closed the door!")) {
-            	logger.log(" > Danger e-mail sent!.");
+        if (field.equals("current") && ((State) value).name().equals(OPEN_STATE)) {
+            if (EmailSender.send("Danger!", "Someone just opened the door!")) {
+            	logger.notify(" > Danger e-mail sent!.");
             }
         }
     }
@@ -282,7 +294,7 @@ final Machine doorStateMachine = observableStateMachineFactory.Machine();
 	\label{lst:StateMachineMonitoringConcerns}
 \end{sourcecode}
 
-By running the program with the two commands \texttt{OPEN\_TRANSITION} and \texttt{CLOSE\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput} along with an e-mail sent.
+By running the program with the three commands \texttt{LOCK\_TRANSITION}, \texttt{UNLOCK\_TRANSITION} and \texttt{OPEN\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput} along with an e-mail sent.
 \lstdefinestyle{Bash} {
     backgroundcolor=\color{white},
     basicstyle=\scriptsize\color{black}\ttfamily
@@ -291,10 +303,10 @@ By running the program with the two commands \texttt{OPEN\_TRANSITION} and \text
 \begin{sourcecode} [H]
 	\lstset{numbers=none}
 	\begin{lstlisting}[style=Bash]
-> Current state changed to Open
 > Current state changed to Closed
-> Danger e-mail sent!
+> Current state changed to Locked
 > Current state changed to Open
+> Danger e-mail sent!
 	\end{lstlisting}
 	\caption{Door state machine with concerns: output}
 	\label{lst:StateMachineMonitoringConcernsOutput}

@@ -21,9 +21,12 @@ public class StateMachineExampleMonitoring {
 
     public final static String OPEN_STATE       = "Open";
     public final static String CLOSED_STATE     = "Closed";
+    public final static String LOCKED_STATE     = "Locked";
 
     public final static String OPEN_TRANSITION  = "open_door";
     public final static String CLOSE_TRANSITION = "close_door";
+    public final static String LOCK_TRANSITION  = "lock_door";
+    public final static String UNLOCK_TRANSITION = "unlock_door";
 
     public static void main(String[] args) {
         PropertyConfigurator.configure("src/main/resources/logger.properties");
@@ -57,6 +60,10 @@ public class StateMachineExampleMonitoring {
         final State closedState = stateMachineFactory.State(CLOSED_STATE);
         closedState.machine(doorStateMachine);
 
+        // Locked State definition
+        final State lockedState = stateMachineFactory.State(LOCKED_STATE);
+        lockedState.machine(doorStateMachine);
+
         // Close Transition
         final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
         closeTransition.from(openState);
@@ -67,14 +74,23 @@ public class StateMachineExampleMonitoring {
         openTransition.from(closedState);
         openTransition.to(openState);
 
+        // Lock Transition
+        final Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
+        lockTransition.from(closedState);
+        lockTransition.to(lockedState);
+
+        // Unlock Transition
+        final Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
+        unlockTransition.from(lockedState);
+        unlockTransition.to(closedState);
+
         // State machine start
-        doorStateMachine.start(openState);
+        doorStateMachine.start(closedState);
 
-        final List<String> commands = new LinkedList<>(Arrays.asList(
-                CLOSE_TRANSITION,
-                OPEN_TRANSITION));
-
-        interpretStateMachine(doorStateMachine, commands);
+        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
+                LOCK_TRANSITION,
+                UNLOCK_TRANSITION,
+                OPEN_TRANSITION)));
     }
 
     private static void interpretStateMachine(Machine stateMachine, List<String> commands) {
