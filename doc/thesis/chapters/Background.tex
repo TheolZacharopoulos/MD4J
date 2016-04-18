@@ -355,7 +355,9 @@ Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into ty
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Figure Selection Observer of JHotDraw}\label{The Figure Selection Observer of JHotDraw}
-During AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors propose a type-based refactoring on the same \textit{Observer} instance, \texttt{SelectionListener}, in JHotDraw. 
+As it is mentioned previously design patterns introduce \ac{ccc} by scattering ``pattern code'' through an application.
+Hannemann et al. \cite{hannemann2005role} presented an approach for the \textit{Observer} design pattern refactoring in JHotDraw.
+Later, during the AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors propose a type-based refactoring on the same \textit{Observer} instance, the \texttt{SelectionListener}.
 
 The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selection_Listener}.
 
@@ -366,14 +368,17 @@ The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selecti
   	\label{fig:Selection_Listener}
 \end{figure}
 
-The \texttt{FigureSelectionListener} interface defines the \textit{Observer} role as its primary concern. 
-The interface is implemented by all classes interested in changes of the selection of figures in a drawing view. 
-The \texttt{DrawingView} interface partially defines the \textit{Subject} role. 
-The \textit{Subject} role is a secondary concern for the \texttt{DrawingView} interface. 
-Two classes implement this interface and only one, \texttt{StandardDrawingView}, contains a non-empty implementation of the \textit{Subject} role.
+The \texttt{FigureSelectionListener} has the \textit{Observer} role in the pattern implementation. 
+Any class that is interested in changes of the selection of figures in a \texttt{DrawingView} implements this interface. 
+The \texttt{DrawingView} interface partially defines the \textit{Subject} role by including two methods \texttt{addViewChangeListener} and \texttt{removeViewChangeListener}.
+From the classes that implement this interface only one, the \texttt{StandardDrawingView}, contains a non-empty implementation of the \textit{Subject} role in the \texttt{fireSelectionChanged} method.
+Not that this method is only defined in the concrete class, which deviates from the standard Observer pattern implementation.
 
-The aspect refactoring could be described as the aspect construct comprising both the \textit{Subject} and \textit{Observer} roles definition and maintaining a list of associations between each \textit{Subject} and its \textit{Observer} objects.
-The type-based refactoring\cite{marin2005approach} distinguishes several crosscutting elements that occur in an implementation of the \textit{Observer} pattern: role superimposition, applied twice, for each of the two roles and consistent behavior to notify the observers of the changes in the \textit{Subject} object.
+In their aspect refactoring they described an aspect that is constructed comprising both the \textit{Subject} and \textit{Observer} roles definition and maintaining a list of associations between each \textit{Subject} and its \textit{Observer} objects.
+Their type-based refactoring\cite{marin2005approach} distinguishes several crosscutting elements in JHotDraw's \textit{Observer} pattern. 
+First, the role superimposition, applied twice, for each of the two roles. 
+Second, consistent behavior to notify the observers of the changes in the \textit{Subject} object.
+Where superimposition is defined as the aspect implementation of a specific role and consistent behavior as the aspect implementation of a consistent behavior for a number of method elements that can be captured by a natural pointcut.
 The \texttt{GenericRole} (empty) interface documents the crosscutting type of role superimposition. 
 Specific roles, like \textit{Observer} and \textit{Subject} (\texttt{SelectionSubject}) extend the interface.
 These elements are shown in Figure \ref{fig:Concerns_Selection_Listener}.
@@ -429,8 +434,6 @@ Given this implementation, it is obvious that the primary decomposition of \text
 	\item The references to the before enumerated elements from non-undo related members.
 \end{itemize}
 
-% TODO: Two cases (simple, complex)
-
 The implementation of AJHotDraw succeeded in refactoring this concern in JHotDraw through the following steps \cite{marin2004refactoring}:
 
 \begin{enumerate}
@@ -467,7 +470,3 @@ This is a weaker connection than the one provided by the original solution.
 Another drawback that is observed is the change of the visibility of the methods introduced from the aspects, for example the inter-type declarations. 
 The visibility declared in the aspect refers to the aspect and not to the target class. 
 Such drawbacks could be overcome by a better aspect language support, which will be further discussed in this thesis.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{The ``Persistence'' Concern of JHotDraw}
-

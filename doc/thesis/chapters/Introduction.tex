@@ -112,16 +112,8 @@ In order to see if managed data solves the problems that \ac{aop} introduces, we
   \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
   More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
 
-  % TODO: include persistence?
-
-  % % TODO: include this?
-  % \item[The Singleton Pattern,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, can easily be abstracted as an aspect and replace the \ac{oop} usage in JHotDraw. 
-
-  % % TODO: include this?
-  % \item[The Template Method,] which as presented \cite{hannemann2005role} \cite{hannemann2002design}, scatters code by introducing roles such as those of \textit{AbstractClass} and \textit{ConcreteClass}.
-
 \end{description}
-% TODO: Include TestJHotDraw?
+% TODO: Remove TestJHotDraw?
 This inventory is implemented using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
 We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
 Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. However, JHotDraw comes with no tests. 
@@ -167,7 +159,6 @@ In order to answer our research questions we studied the theoretical background,
   \item[Contribution 3: Managed data Evaluation in JHotDraw.]
   We implemented a new version of the JHotDraw application using our framework in order to evaluate our refactoring of \ac{ccc}.
   More specifically, we focused on the \textit{Undo} concern, which is a \textit{Command Pattern} and it is scattered around the modules of the JHotDraw, as well as the \textit{Observer Pattern} which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
-  % TODO: more concerns will be added here? (Persistence?)
 
   \item[Contribution 4: JHotDraw implementation results assessment and comparison with AJHotDraw.]
   Finally, we present the results of our evaluation and we compare them with AJHotDraw which implements \ac{aop} using the AspectJ language, again in Java.
