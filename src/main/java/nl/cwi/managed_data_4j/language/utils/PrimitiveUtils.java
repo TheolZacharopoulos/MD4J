@@ -18,11 +18,9 @@ public class PrimitiveUtils {
      * @return true if it is an array class that is supported, false otherwise
      */
     public static boolean isMany(Class<?> clazz) {
-        if (clazz.isArray()) return true;
-        if (Set.class.isAssignableFrom(clazz)) return true;
-        if (List.class.isAssignableFrom(clazz)) return true;
-
-        return false;
+        return  (clazz.isArray()) ||
+                (Set.class.isAssignableFrom(clazz)) ||
+                (List.class.isAssignableFrom(clazz));
     }
 
     public static boolean isPrimitiveValue(String typeName, Object value) {
@@ -76,16 +74,14 @@ public class PrimitiveUtils {
      * @return true if it is a primitive class that is supported, false otherwise
      */
     public static boolean isPrimitiveClass(Class<?> typeClass) {
-        if (String.class.isAssignableFrom(typeClass)) return true;
-        if (Integer.class.isAssignableFrom(typeClass)) return true;
-        if (int.class.isAssignableFrom(typeClass)) return true;
-        if (Boolean.class.isAssignableFrom(typeClass)) return true;
-        if (boolean.class.isAssignableFrom(typeClass)) return true;
-        if (Float.class.isAssignableFrom(typeClass)) return true;
-        if (Double.class.isAssignableFrom(typeClass)) return true;
-        if (Class.class.isAssignableFrom(typeClass)) return true;
-
-        return false;
+        return  (String.class.isAssignableFrom(typeClass))  ||
+                (Integer.class.isAssignableFrom(typeClass)) ||
+                (int.class.isAssignableFrom(typeClass))     ||
+                (Boolean.class.isAssignableFrom(typeClass)) ||
+                (boolean.class.isAssignableFrom(typeClass)) ||
+                (Float.class.isAssignableFrom(typeClass))   ||
+                (Double.class.isAssignableFrom(typeClass))  ||
+                (Class.class.isAssignableFrom(typeClass));
     }
 
     public static Object getDefaultValueForPrimitive(Class<?> typeClass) throws UnknownTypeException {

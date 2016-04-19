@@ -150,7 +150,7 @@ Of course, since a data definition model is also data, it requires a meta-defini
 \subsection{Schemas}\label{Schemas}
 The schemas are the way to describe the structure of the data to be managed. 
 They can be just a simple data description language which programmers can use to describe simple kind of data. 
-For example Loh et al. \cite{loh2012managed} used Ruby hash for the data description on a simple example where the hash was an object that represented a mapping from values to values. 
+For example Cook et al. \cite{loh2012managed} used Ruby hash for the data description on a simple example where the hash was an object that represented a mapping from values to values. 
 However, a simple schema format like this can not be used to describe itself because it is not a record. 
 
 A self-describing schema would allow schemas to be managed data themselves. 
@@ -166,7 +166,7 @@ Data managers are the mechanisms that interpret \textit{schemas} with defined ma
 The input to a data manager is a schema, which describes the structure of the data to be managed.
 Since the schema is only known dynamically, the data managers must be able to determine the fields and methods of the managed data object dynamically as well.
 In order to implement such an operation we need a meta-programming mechanism that dynamically analyses the structure of a schema and applies to it the functionality of the data managers.
-In their implementation Loh et al. \cite{loh2012managed} used the ``missing\_method'' implementation in order to succeed that.
+In their implementation Cook et al. \cite{loh2012managed} used the ``missing\_method'' implementation in order to succeed that.
 In out case we will use Java's reflection API and dynamic proxies.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -164,7 +164,7 @@ This method is responsible for creating a new instance of an \texttt{MObject}.
 In the case of \texttt{AnotherDataManager} implementation the \texttt{createManagedObject()} method will create a new \texttt{AnotherMObject} instance.
 Additionally, the constructor of data managers needs to accept a dictionary of initialization parameters for overriding data managers that require different inputs.
 Note that it is important that the data managers inherit from a base one, this leads to the \textbf{modular aspect} of the data managers.
-As it can be seen for stacking data managers we used \textit{Decorator Pattern} \cite{gamma1995design} which is mentioned also in Loh et al. \cite{loh2012managed} as a strategy for static \ac{oop} languages.
+As it can be seen for stacking data managers we used \textit{Decorator Pattern} \cite{gamma1995design} which is mentioned also in Cook et al. \cite{loh2012managed} as a strategy for static \ac{oop} languages.
 
 \subsection{Managed Objects}\label{sec:Managed Objects}
 As it is mentioned the \texttt{MObject}, is an implementation of the \texttt{InvocationHandler} interface.
@@ -229,7 +229,7 @@ protected void setupField(Field field) {
 \end{sourcecode}
 
 \section{Self-Describing Schemas}\label{Self-Describing Schemas}
-As it is described by Loh et al. \cite{loh2012managed}, a self-describing schema is a schema that can be used to define schemas, including itself.
+As it is described by Cook et al. \cite{loh2012managed}, a self-describing schema is a schema that can be used to define schemas, including itself.
 % TODO: add more from kurtev2006model
 Our framework is fully self-described, the schemas are also described by schemas which are both models \cite{kurtev2006model}. 
 To allow schemas to be managed data we need a ``self-describing schema mechanism'' or \textit{SchemaSchema}.
@@ -256,7 +256,7 @@ Figure \ref{fig:SchemaSchema_definition} illustrates the modeling of this defini
 \begin{figure}[H]
 	\centering
   	\fbox{\includegraphics[width=.85\textwidth]{figures/SchemaSchema_definition.png}}
-  	\caption{SchemaSchema Definition Model}
+  	\caption{The schema of schemas}
   	\label{fig:SchemaSchema_definition}
 \end{figure}
 
