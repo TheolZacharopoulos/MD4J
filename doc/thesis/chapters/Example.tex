@@ -4,9 +4,9 @@
 % Chapter: Example Application
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Example Application: State Machine Monitoring}\label{Example Application}
-In order to show how our managed data implementation works in practice, and in particular in terms aspect refactoring, we present a showcase in this Chapter.
-The showcase consists of a very simple state machine application, which is inspired by Martin Fowler \ac{dsl}s book \cite{fowler2010domain}.
-The same example is also presented in Enso papers as a showcase for its Object Grammar capabilities \cite{storm2012object}.
+In this chapter in order to show how our managed data implementation works in practice, and in particular in terms aspect refactoring, we present a showcase.
+The showcase consists of a very simple state machine application.
+Similar example is presented in Enso papers as a showcase for its Object Grammar capabilities \cite{storm2012object}.
 
 Consider the requirements of the state machine are the following: 
 \begin{itemize}
@@ -27,12 +27,12 @@ Figure \ref{fig:State_machine} illustrates the door state machine.
   	\label{fig:State_machine}
 \end{figure}
 
-In order to implement the above we first need to define the models, next interpret the definition given a list of event and finally add any additional functionality (\textit{concern}) needed, for instance monitor the state of the door.
+In order to implement this, first it is needed to define the models, next to interpret the definition given a list of event and finally add any additional functionality (\textit{concern}) needed, for instance monitor the state of the door.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schemas definition}
 First, we need to define all the models of the state machine program. 
-The object diagram is illustrated in Figure \ref{fig:State_machine_object}.
+An object diagram is illustrated in Figure \ref{fig:State_machine_object}.
 
 \begin{figure}[H]
 	\centering
@@ -41,8 +41,8 @@ The object diagram is illustrated in Figure \ref{fig:State_machine_object}.
   	\label{fig:State_machine_object}
 \end{figure}
 
-In our implementation we can define schemas using Java interfaces with a set of meta-data described with Java annotation.
-Thus, as extracted from the requirements, we need \texttt{Machine} \ref{lst:Machine_Schema}, \texttt{State} \ref{lst:State_Schema}, and \texttt{Transition} \ref{lst:Transition_Schema} models (schemas).
+In our implementation we define schemas using Java interfaces with a set of meta-data described with Java annotations.
+Therefore, as extracted from the requirements we need \texttt{Machine} (Listing \ref{lst:Machine_Schema}), \texttt{State} (Listing \ref{lst:State_Schema}) and \texttt{Transition} (Listing \ref{lst:Transition_Schema}) schemas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}[H]
@@ -61,7 +61,7 @@ public interface Machine extends M {
 \end{sourcecode}
 
 As it can be seen in Listing \ref{lst:Machine_Schema}, for the \texttt{Machine} schema definition we need a \texttt{start}ing state, the \texttt{current} state of the machine and a set of \texttt{states} that the machine can be into at each time.
-Note that, the \texttt{@Contain} annotation defines that the \texttt{states} field of this schema is part of the spine tree and it is not a cross-reference, but more about it in the implementation Chapter \ref{Schema Definition}.
+Note that the \texttt{@Contain} annotation defines that the \texttt{states} field of this schema is part of the spine tree and it is not a cross-reference, this will be exampled in detail in Chapter \ref{Schema Definition}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}[H]
@@ -85,12 +85,12 @@ public interface State extends M {
 \end{sourcecode}
 
 For the \texttt{State} definition, Listing \ref{lst:State_Schema}, we need a \texttt{name} field, which is representing name of the state. 
-The \texttt{name} field has been annotated with the \texttt{@Key} annotation, which indicates that state names must be unique and the states field of Machine can be indexed by name.
+The \texttt{name} field has been annotated with the \texttt{@Key} annotation, which indicates uniqueness, the states field of Machine can be indexed by name.
 Moreover, the schema includes a set of \texttt{in} and \texttt{out} \texttt{Transition}s.
 Since those two fields are of type \texttt{Set}, that means that a field of the \texttt{Transition} schema has to be marked as key.
-In this case is the name (line \ref{line:transition_key} Listing \ref{lst:Transition_Schema}).
+In this case is the \texttt{name} field (Line \ref{line:transition_key} Listing \ref{lst:Transition_Schema}).
 Finally, the field \texttt{machine} represents which is the state machine that the current state part of. 
-As it can be seen in the schema definition, listing \ref{lst:State_Schema}, the \texttt{machine} field has been annotated with \texttt{@Inverse}, which indicates that this field is a \textit{reference} to a field of an other schema, in this case this schema is the \texttt{Machine} schema and the field is the \texttt{states} field.
+As it can be seen in the schema definition, Listing \ref{lst:State_Schema}, the \texttt{machine} field has been annotated with \texttt{@Inverse}, which indicates that this field is a reference to a field of an other schema Klass.
 Thus, the \texttt{machine} field of \texttt{State} schema is a reference to \texttt{states} field of \texttt{Machine} schema.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,22 +111,22 @@ public interface Transition extends M {
 	\label{lst:Transition_Schema}
 \end{sourcecode}
 
-Finally, for the \texttt{Transition} schema definition, Listing \ref{lst:Transition_Schema}, all we need is an \texttt{event} which represents the event of the transition and it is also the \textbf{key}.
-Additionally, the \texttt{from} and \texttt{to} states represent the state that the machine changes from and to respectively.
-However, those are just reference to the \texttt{State} schema, Listing \ref{lst:State_Schema}, to the \texttt{in} and \texttt{out} fields respectively, since they are defined with the \texttt{@Inverse} annotation.
+Finally, in the \texttt{Transition} schema definition, Listing \ref{lst:Transition_Schema}, all we need is an \texttt{event} that represents the event of the transition which is also the \textbf{key} of that schema Klass.
+Additionally, the \texttt{from} and \texttt{to} fields represent the state that the machine changes from and to respectively.
+However, these are just reference to the \texttt{State} schema (Listing \ref{lst:State_Schema}) to the \texttt{in} and \texttt{out} fields since they are defined with the \texttt{@Inverse} annotation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Factory definition}
-Since we have our schemas now we need a way to build instances of managed objects of those schemas. 
-For Java to create the three schemas as managed data we need to define a factory, which will be the one that creates managed data instances (managed objsects) for each of these schemas \ref{lst:StateMachineFactory}.
-Note that those definitions work as \texttt{Constructors} of managed objects.
+Since we have our schemas we need a way to build instances of managed objects that these schemas describe. 
+In Java to create the three schemas as managed data we need to define a factory, which creates managed data instances (managed objsects) for each of these schemas \ref{lst:StateMachineFactory}.
+Note that the method definitions work as \texttt{Constructors} of managed objects.
 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface StateMachineFactory {
-	Machine Machine();  // builds a Machine managed object
-	State State(); 			// builds a State managed object
-	Transition Transition(); // builds a Transition managed object
+	Machine Machine();  	// constructor for Machine managed objects
+	State State(); 				// constructor for State managed objects
+	Transition Transition(); // constructor for Transition managed objects
 }
 	\end{lstlisting}
 	\caption{The StateMachine Factory}
@@ -144,9 +144,11 @@ However, in order to make the \textit{managed object} it needs its schema defini
 In the case of a simple program without any concerns, we have to use our managed data to define the state machine and then interpret it.
 The definition of the door state machine is given in Listing \ref{lst:Door_state_machine} in Java.
 
-In practice, we need the basic data manager to have a mechanisms that interprets the managed object that comply the \texttt{stateMachineSchema}, shown in Line \ref{line:state_meaning_full_code}.
-A a simple interpreter for the state machine is shown in Line \ref{line:state_machine_interpreter}.
-As it can be seen, the schemas factory is used to create managed objects and the \textit{wiring} of the fields is done automatically by the data manager who is responsible for the managed object interpretation.
+In practice, the basic data manager needs to provide us with mechanisms that interprets the managed object that comply the \texttt{stateMachineSchema}, shown in Line \ref{line:state_meaning_full_code}.
+The basic data manager supports also the field accessors of those data, namely, set and get their values.
+A simple interpreter for the state machine is shown in Line \ref{line:state_machine_interpreter}.
+As it can be seen, the schemas factory is used to create managed objects.
+The \textit{setup} of the fields is done automatically by the data manager who is responsible for the managed object interpretation.
 
 \begin{sourcecode}
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -213,13 +215,14 @@ private static void interpretStateMachine(Machine stateMachine, List<String> com
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Monitoring and notification concerns}
-Consider now the case which we want to add some concerns at the previous door state machine implementation.
-A simple concern would be a \textit{monitoring} concern, which will log every change in the current state of the state machine.
-Another concern would be a \textit{notification} which would be enabled when a specific state is set to the machine.
+Consider a case in which we want to add concerns at the previous door state machine implementation.
+A simple concern would be a \textit{monitoring}, which would log every change in the current state of the state machine.
+Another concern would be the \textit{notification}, which would be fire an action when a specific state is set to the machine.
 
-Suppose, for this example, the system has to notify someone in case the door is opened.
-In the case that the door opens, the \textbf{Open} state has set to the current state to the machine, then we want to notify someone by e-mail.
-That looks similar to the \textit{monitoring} concern yet, in this case the notification is a specific action; send an e-mail in case the door is open.
+Suppose that the system has to notify someone in case the door is opened.
+In the case that the door opens, the \textbf{Open} state will set to the current state of the machine.
+In that case, a notification has to be sent by e-mail.
+That looks similar to the \textit{monitoring} concern; however, in this case the notification is a specific action: send an e-mail in case the door has opened.
 
 \begin{figure}[H]
 	\centering
@@ -229,21 +232,25 @@ That looks similar to the \textit{monitoring} concern yet, in this case the noti
 \end{figure}
 
 In order to implement those concerns we need a mechanism that continuously monitors the changes (transitions) of the machine's \texttt{current} state and react accordingly.
-In a traditional way this would lead to scattered \textit{monitoring} and \textit{notification} code inside the interpretation method or the models themselves (the machine model).
-However, in managed data there are data managers for that purpose.
+In a traditional way this would lead to scattered \textit{monitoring} and \textit{notification} code in the interpretation method or the models themselves (the machine model).
+However, in managed data this is the role of the data managers.
 A data manager can implement concerns as modular aspects without crosscut code to the components.
-Therefore, by implementing our concerns with data managers we can keep the interpretation and model definition code, shown in Listing \ref{lst:Door_state_machine}, modular.
+The programmer can define a manipulation mechanism of his/her data that includes an aspect of preference.
+Therefore, by implementing our concerns with data managers we can keep the component and aspect code separate.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Observable Data Manager}
-In order to \textit{observe} for changes in the current state of our door state machine we need a data manager that observes changes in the managed object.
-In particular, the \texttt{Machine}'s current \texttt{State}.
-This data manager creates concrete managed objects, namely \textit{observable managed object} with which one attach observers that will be notified in case of changes.
+Towards to the \textit{observation} of changes in the current state of our door state machine, we need a data manager that observes those changes in the managed object.
+In particular, the \texttt{Machine}'s current \texttt{State} field.
+This data manager creates concrete managed objects, namely \textit{observable managed object}, with which one attach observers that will be notified in case of changes.
+It is important to mention that this new data manager has to inherit the basic one in order to include the basic functionality of schema interpretation and field access.
+This leads to a stack of two data managers each of which adds a new aspect of data in a modular way.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Monitor and notify concerns}
-In the example, the observers are the concerns, which are \textit{monitoring} and \textit{notification} by e-mail in case of opened door. 
-The definition of those concerns is given in Listing \ref{lst:StateMachineMonitoring}.
+In the example the \textit{observers} are the concerns, which are \textit{monitoring} and \textit{notification} by e-mail in case of opened door. 
+Accordingly, the \texttt{current} state of the state machine is the \textit{subject} that informs the observers of its change.
+The definition of the concerns is given in Listing \ref{lst:StateMachineMonitoring}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -294,7 +301,7 @@ final Machine doorStateMachine = observableStateMachineFactory.Machine();
 	\label{lst:StateMachineMonitoringConcerns}
 \end{sourcecode}
 
-By running the program with the three commands \texttt{LOCK\_TRANSITION}, \texttt{UNLOCK\_TRANSITION} and \texttt{OPEN\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput} along with an e-mail sent.
+By running the program with the commands \texttt{LOCK\_TRANSITION}, \texttt{UNLOCK\_TRANSITION} and \texttt{OPEN\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
 \lstdefinestyle{Bash} {
     backgroundcolor=\color{white},
     basicstyle=\scriptsize\color{black}\ttfamily
@@ -312,5 +319,5 @@ By running the program with the three commands \texttt{LOCK\_TRANSITION}, \textt
 	\label{lst:StateMachineMonitoringConcernsOutput}
 \end{sourcecode}
 
-The basic data manager allows to just build managed object, but the observable data manager provided with the functionality of attaching concerns in the managed objects after an specified observed event.
+The basic data manager allows to just build managed object but the observable data manager came in hand with the functionality of attaching concerns in the managed objects after an specified event.
 Concluding, that example just presented a modular solution of \ac{ccc} without scattering and tangling code in the components.
