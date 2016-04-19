@@ -250,7 +250,7 @@ public class SchemaLoader {
             if (key != null) {
                 logger.debug(" > Wire Key for " + type.name() + " = " + key.name());
             }
-            type.key(key);
+            ((Klass) type).key(key);
         }
     }
 
