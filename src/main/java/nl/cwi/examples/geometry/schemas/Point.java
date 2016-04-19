@@ -9,12 +9,5 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.M;
  * allowing the objects (points) to be created with starting props.
  */
 public interface Point extends M {
-    default void testVoid(String message) {
-        System.out.println(message);
-    }
-
-    default Integer testInt() {
-        System.out.println(333);
-        return 333;
-    }
+    
 }
