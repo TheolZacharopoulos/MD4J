@@ -381,13 +381,12 @@ An example of ``Cutting the umbilical cord'' is shown in Listing \ref{subsec:Cut
 	\begin{lstlisting}[language=Java, escapechar=|]
 final Schema bootstrapSchema = new BootSchema();
 
-final BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
+BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
 
 // Create a schema Factory which creates Schema instances.
 final SchemaFactory schemaFactory = basicFactory.make();
 
-// The schemas are described by the SchemaSchema.
-// This schemaSchema is also self-describing.
+// The schemas are described by the SchemaSchema, this schemaSchema is also self-describing.
 final Schema realSchemaSchema =
         SchemaLoader.load(
         	schemaFactory, 
@@ -398,8 +397,7 @@ final Schema realSchemaSchema =
         	Klass.class, 
         	Field.class);
 
-final BasicDataManager basicFactory2 = 
-		new BasicDataManager(SchemaFactory.class, realSchemaSchema);
+BasicDataManager basicFactory2 = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
 final SchemaFactory schemaFactory2 = basicFactory2.make();
 final Schema realSchemaSchema2 =
         SchemaLoader.load(
@@ -435,6 +433,13 @@ If it is a collection field type, then the field has to have a \texttt{Key} fiel
 Using the \texttt{Key} field as the key of the hashmap work either it is a primitive or not, since we get the \texttt{Object.hashCode()} of that key.
 However, that suggests that the key is not of our schema Klass system but a Java type.
 Finally, the \texttt{Mobject} invocation handler delegates the call of \texttt{hashCode} method to the real object so that would never fail fail, although this is not suggested because it may lead to unpredictable results.
+
+\subsection{Java 8 Default Methods}\label{Java 8 Default Methods}
+Java 8 supports the definition of default methods in interfaces.
+According to the specification\footnote{\url{https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html}}, default methods enable you to add new functionality to the interfaces and they can be used as method implementation in abstract classes.
+We use Java 8 default methods in order to add default functionality in our schemas. 
+In particular, methods that are defined as \textit{default} are ignored during the interpretation and no fields are created for them.
+We consider this as a helpful mechanism for defining functionality inside the schemas.
 
 \section{Benefits and Limitations}\label{Benefits and Limitations}
 One of the advantages of this language is the simplicity of its usage. 
