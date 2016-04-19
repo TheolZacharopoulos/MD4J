@@ -215,7 +215,7 @@ public class SchemaLoader {
 
         wireFieldTypes(factory, schema, allFieldsWithReturnType);
         wireFieldInverse(allFieldsWithReturnType);
-        wireFieldTypeKeys(allFieldsWithReturnType);
+        wireFieldTypeKeys(types);
 
         wireSchemaKlasses(schemaSchema);
 
@@ -225,6 +225,33 @@ public class SchemaLoader {
 
         typesCache.clear();
         return types.keySet();
+    }
+
+    /**
+     * From all the created types that are type of Klass,
+     * get their field and set as key the first field found as KEY.
+     *
+     * We dont need that for primitives since it is done during the type assignment.
+     * @param types all the created types
+     */
+    private static void wireFieldTypeKeys(Map<Type, TypeWithClass> types) {
+        for (Type type : types.keySet()) {
+            Field key = null;
+
+            if (!type.schemaKlass().name().equals("Klass")) continue;
+
+            for (Field field : ((Klass) type).fields()) {
+                if (field.key()) {
+                    key = field;
+                    break;
+                }
+            }
+
+            if (key != null) {
+                logger.debug(" > Wire Key for " + type.name() + " = " + key.name());
+            }
+            type.key(key);
+        }
     }
 
     /**
@@ -265,6 +292,11 @@ public class SchemaLoader {
         for (Method schemaKlassField : fields) {
             final String fieldName = schemaKlassField.getName();
             final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
+
+            if (schemaKlassField.isDefault()) {
+                logger.debug("  > SchemaFactory: DEFAULT field " + fieldName + " <" + fieldReturnClass.getSimpleName() + "> - SKIP");
+                 continue;
+            }
 
             logger.debug("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
 
@@ -413,39 +445,6 @@ public class SchemaLoader {
                 }
             }
         }
-    }
-
-    /**
-     * From all the created fields that are type of Klass,
-     * get their klasses and set as key the first field found as KEY.
-     *
-     * We dont need that for primitives since it is done during the type assignment.
-     * @param allFieldsWithReturnType all the created fields
-     */
-    private static void wireFieldTypeKeys(Map<String, FieldWithMethod> allFieldsWithReturnType) {
-
-        // from all the fields created
-        allFieldsWithReturnType.keySet().stream()
-            .map(classNameFieldNameCombo -> allFieldsWithReturnType.get(classNameFieldNameCombo).field)
-
-            // get only the many
-            .filter(Field::many)
-
-            // get their type
-            .map(Field::type)
-
-            // get only those of type klass
-            .filter(type -> type.schemaKlass().name().equals("Klass"))
-            .map(Klass.class::cast)
-
-            // for each klass, set key as the first field that is a Key otherwise null
-            .forEach(fieldTypeKlass ->
-                fieldTypeKlass.key(
-                    fieldTypeKlass.fields().stream()
-                        .filter(Field::key)
-                        .findFirst()
-                        .orElse(null))
-            );
     }
 
     /**
