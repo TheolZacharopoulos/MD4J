@@ -414,6 +414,17 @@ final Schema realSchemaSchema2 =
 	\label{lst:Cutting the umbilical cord}
 \end{sourcecode}
 
+Figure \ref{fig:schema_schema_models} illustrates the models during a bootstrapping process.
+As it can be seen, the Boot Schema is used in order to describe the Schema Schema, after that the Schema Schema is independent and managed data it self.
+Thus, it can be used to create other schemas like the Machine schema or even itself.
+
+\begin{figure}[H]
+	\centering
+  	\fbox{\includegraphics[width=.55\textwidth]{figures/schema_schema_models.png}}
+  	\caption{Boot Schema models}
+  	\label{fig:schema_schema_models}
+\end{figure}
+
 \section{Implementation Issues}\label{Implementation Issues}
 The fact that we use Java reflection and dynamic proxies, along with the fact that everything is managed data, even the schemaSchema, introduces some issues including the methods ordering problem described in Section \ref{Methods ordering}.
 
