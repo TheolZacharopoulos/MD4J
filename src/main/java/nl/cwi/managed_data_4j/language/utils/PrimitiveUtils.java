@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class PrimitiveUtils {
 
-    private static final List<AbstractPrimitive> primitives = new LinkedList<>(Arrays.asList(
+    private static final Set<AbstractPrimitive> primitives = new LinkedHashSet<>(Arrays.asList(
             new StringPrimitive(),
             new IntegerPrimitive(),
             new FloatPrimitive(),
