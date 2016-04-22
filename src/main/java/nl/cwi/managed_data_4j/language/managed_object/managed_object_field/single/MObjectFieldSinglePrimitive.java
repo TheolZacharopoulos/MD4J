@@ -4,7 +4,7 @@ import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
-import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
+import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
 
 /**
  * Represents a single value field which is a Primitive.
@@ -20,7 +20,7 @@ public class MObjectFieldSinglePrimitive extends MObjectFieldSingle {
 
     @Override
     public void check(Object value) throws InvalidFieldValueException {
-        boolean ok = PrimitiveUtils.isPrimitiveValue(this.field.type().name(), value);
+        boolean ok = PrimitiveManager.getInstance().isPrimitiveValue(this.field.type().name(), value);
 
         if (!ok) {
             throw new InvalidFieldValueException(
@@ -31,6 +31,6 @@ public class MObjectFieldSinglePrimitive extends MObjectFieldSingle {
 
     @Override
     protected Object defaultValue() throws UnknownTypeException {
-        return PrimitiveUtils.getDefaultValueForPrimitive(field.type().classOf());
+        return PrimitiveManager.getInstance().getDefaultValueForPrimitive(field.type().classOf());
     }
 }

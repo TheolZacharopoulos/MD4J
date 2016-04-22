@@ -1,7 +1,6 @@
-package nl.cwi.managed_data_4j.language.utils;
+package nl.cwi.managed_data_4j.language.primitives;
 
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
-import nl.cwi.managed_data_4j.language.primitives.*;
 
 import java.util.*;
 
@@ -9,9 +8,10 @@ import java.util.*;
  * Utilities needed for the Java primitives
  * @author Theoogos Zacharopoulos
  */
-public class PrimitiveUtils {
+public class PrimitiveManager {
 
-    private static final Set<AbstractPrimitive> primitives = new LinkedHashSet<>(Arrays.asList(
+    // initial primitives.
+    private final Set<AbstractPrimitive> primitives = new LinkedHashSet<>(Arrays.asList(
             new StringPrimitive(),
             new IntegerPrimitive(),
             new FloatPrimitive(),
@@ -20,18 +20,33 @@ public class PrimitiveUtils {
             new ClassPrimitive()
     ));
 
+    private static PrimitiveManager instance = null;
+
+    public static PrimitiveManager getInstance() {
+        if (instance == null) {
+            instance = new PrimitiveManager();
+        }
+        return instance;
+    }
+
+    private PrimitiveManager() {}
+
+    public void addPrimitive(AbstractPrimitive primitive) {
+        primitives.add(primitive);
+    }
+
     /**
      * Checks if a given class is instance of one of the supported Array classes
      * @param clazz the class to be checked
      * @return true if it is an array class that is supported, false otherwise
      */
-    public static boolean isMany(Class<?> clazz) {
+    public boolean isMany(Class<?> clazz) {
         return  (clazz.isArray()) ||
                 (Set.class.isAssignableFrom(clazz)) ||
                 (List.class.isAssignableFrom(clazz));
     }
 
-    public static boolean isPrimitiveValue(String typeName, Object value) {
+    public boolean isPrimitiveValue(String typeName, Object value) {
         for (AbstractPrimitive primitive : primitives) {
             if (primitive.getSimpleName().equals(typeName) &&
                 value.getClass().isAssignableFrom(primitive.getTypeClass()))
@@ -47,7 +62,7 @@ public class PrimitiveUtils {
      * @param typeClass the class to check
      * @return true if it is a primitive class that is supported, false otherwise
      */
-    public static boolean isPrimitiveClass(Class<?> typeClass) {
+    public boolean isPrimitiveClass(Class<?> typeClass) {
         for (AbstractPrimitive primitive : primitives) {
             if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
                 return true;
@@ -56,7 +71,7 @@ public class PrimitiveUtils {
         return false;
     }
 
-    public static Object getDefaultValueForPrimitive(Class<?> typeClass) throws UnknownTypeException {
+    public Object getDefaultValueForPrimitive(Class<?> typeClass) throws UnknownTypeException {
         for (AbstractPrimitive primitive : primitives) {
             if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
                 return primitive.getDefaultValue();
@@ -66,7 +81,7 @@ public class PrimitiveUtils {
         throw new UnknownTypeException("Unknown primitive type: " + typeClass.getSimpleName());
     }
 
-    public static Comparator<Object> orderBasedOnClass(Class<?> typeClass) {
+    public Comparator<Object> orderBasedOnClass(Class<?> typeClass) {
         for (AbstractPrimitive primitive : primitives) {
             if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
                 return primitive.getComparator();

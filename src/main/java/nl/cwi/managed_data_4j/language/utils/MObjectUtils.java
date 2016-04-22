@@ -1,5 +1,6 @@
 package nl.cwi.managed_data_4j.language.utils;
 
+import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.M;
@@ -10,6 +11,7 @@ import java.util.*;
 
 public class MObjectUtils {
     private static final org.apache.log4j.Logger logger = LogManager.getLogger(MObjectUtils.class.getName());
+    private static final PrimitiveManager primitiveManager = PrimitiveManager.getInstance();
 
     public static boolean equals(M x, M y) {
 
@@ -61,8 +63,8 @@ public class MObjectUtils {
         }
 
         // primitive leaf, just compare values
-        if (PrimitiveUtils.isPrimitiveClass(x.getClass()) &&
-            PrimitiveUtils.isPrimitiveClass(y.getClass()) &&
+        if (primitiveManager.isPrimitiveClass(x.getClass()) &&
+            primitiveManager.isPrimitiveClass(y.getClass()) &&
             x.getClass().equals(y.getClass()))
         {
             logger.debug(" << Primitive >> : (x = " + x + " | y = " + y + ")");
@@ -71,7 +73,7 @@ public class MObjectUtils {
         }
 
         // vector leaf
-        if (PrimitiveUtils.isMany(x.getClass()) && PrimitiveUtils.isMany(y.getClass())) {
+        if (primitiveManager.isMany(x.getClass()) && primitiveManager.isMany(y.getClass())) {
             logger.debug(" << Vector >> ");
 
             final Collection<Object> xCollection = (Collection<Object>) x;
@@ -134,9 +136,9 @@ public class MObjectUtils {
 
         // If it is primitive,
         // then order based on the primitive type
-        if (xVector.size() > 0 && PrimitiveUtils.isPrimitiveClass(xVector.get(0).getClass())) {
-            Collections.sort(xVector, PrimitiveUtils.orderBasedOnClass(xVector.get(0).getClass()));
-            Collections.sort(yVector, PrimitiveUtils.orderBasedOnClass(yVector.get(0).getClass()));
+        if (xVector.size() > 0 && primitiveManager.isPrimitiveClass(xVector.get(0).getClass())) {
+            Collections.sort(xVector, primitiveManager.orderBasedOnClass(xVector.get(0).getClass()));
+            Collections.sort(yVector, primitiveManager.orderBasedOnClass(yVector.get(0).getClass()));
         }
 
         // continue

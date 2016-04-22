@@ -5,7 +5,7 @@ import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
+import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class TypeFactory {
         Map<String, Type> cache) throws UnknownTypeException
     {
 
-        if (PrimitiveUtils.isPrimitiveClass(typeClass)) {
+        if (PrimitiveManager.getInstance().isPrimitiveClass(typeClass)) {
             Primitive primitive = factory.Primitive();
             primitive.name(typeClass.getSimpleName());
             primitive.schema(schema);

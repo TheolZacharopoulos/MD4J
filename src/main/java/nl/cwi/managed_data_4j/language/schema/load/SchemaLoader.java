@@ -7,7 +7,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
-import nl.cwi.managed_data_4j.language.utils.PrimitiveUtils;
+import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
 import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Method;
@@ -25,6 +25,7 @@ import java.util.*;
 public class SchemaLoader {
 
     private static final org.apache.log4j.Logger logger = LogManager.getLogger(SchemaLoader.class.getName());
+    private static final PrimitiveManager primitiveManager = PrimitiveManager.getInstance();
 
     /**
      * Helper private class to keep Fields with their Method which define them.
@@ -280,8 +281,8 @@ public class SchemaLoader {
 
             // Order only the primitives and non-many,
             // the rest put them at the end.
-            boolean isM1Comparable = ((!PrimitiveUtils.isMany(o1.getReturnType())) && PrimitiveUtils.isPrimitiveClass(o1.getReturnType()));
-            boolean isM2Comparable = ((!PrimitiveUtils.isMany(o2.getReturnType())) && PrimitiveUtils.isPrimitiveClass(o2.getReturnType()));
+            boolean isM1Comparable = ((!primitiveManager.isMany(o1.getReturnType())) && primitiveManager.isPrimitiveClass(o1.getReturnType()));
+            boolean isM2Comparable = ((!primitiveManager.isMany(o2.getReturnType())) && primitiveManager.isPrimitiveClass(o2.getReturnType()));
 
             if ((!isM1Comparable) && (!isM2Comparable)) return 0;
             if (!isM1Comparable) return 1;
@@ -301,7 +302,7 @@ public class SchemaLoader {
             logger.debug("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
 
             // check for many
-            final boolean many = PrimitiveUtils.isMany(fieldReturnClass);
+            final boolean many = primitiveManager.isMany(fieldReturnClass);
             logger.debug("    > isMany: " + many);
 
             // check for optional
