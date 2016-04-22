@@ -1,16 +1,24 @@
 package nl.cwi.managed_data_4j.language.utils;
 
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.language.primitives.*;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Utilities needed for the Java primitives
  * @author Theoogos Zacharopoulos
  */
 public class PrimitiveUtils {
+
+    private static final List<AbstractPrimitive> primitives = new LinkedList<>(Arrays.asList(
+            new StringPrimitive(),
+            new IntegerPrimitive(),
+            new FloatPrimitive(),
+            new DoublePrimitive(),
+            new BooleanPrimitive(),
+            new ClassPrimitive()
+    ));
 
     /**
      * Checks if a given class is instance of one of the supported Array classes
@@ -24,48 +32,14 @@ public class PrimitiveUtils {
     }
 
     public static boolean isPrimitiveValue(String typeName, Object value) {
-        boolean ok = false;
-
-        switch (typeName) {
-            case "String":
-                if (value instanceof String) ok = true;
-                break;
-
-            case "Integer":
-            case "int":
-                if (value instanceof Integer) ok = true;
-                break;
-
-            case "Boolean":
-            case "boolean":
-                if (value instanceof Boolean) ok = true;
-                break;
-
-            case "Float":
-                if (value instanceof Float) ok = true;
-                break;
-
-            case "Double":
-                if (value instanceof Double) ok = true;
-                break;
-
-            case "Class":
-                if (value instanceof Class) ok = true;
-                break;
-
-            case "Object":
-                if (value instanceof String  ||
-                    value instanceof Integer ||
-                    value instanceof Boolean ||
-                    value instanceof Float   ||
-                    value instanceof Double)
-                {
-                    ok = true;
-                }
-                break;
+        for (AbstractPrimitive primitive : primitives) {
+            if (primitive.getSimpleName().equals(typeName) &&
+                value.getClass().isAssignableFrom(primitive.getTypeClass()))
+            {
+                return true;
+            }
         }
-
-       return ok;
+        return false;
     }
 
     /**
@@ -74,52 +48,29 @@ public class PrimitiveUtils {
      * @return true if it is a primitive class that is supported, false otherwise
      */
     public static boolean isPrimitiveClass(Class<?> typeClass) {
-        return  (String.class.isAssignableFrom(typeClass))  ||
-                (Integer.class.isAssignableFrom(typeClass)) ||
-                (int.class.isAssignableFrom(typeClass))     ||
-                (Boolean.class.isAssignableFrom(typeClass)) ||
-                (boolean.class.isAssignableFrom(typeClass)) ||
-                (Float.class.isAssignableFrom(typeClass))   ||
-                (Double.class.isAssignableFrom(typeClass))  ||
-                (Class.class.isAssignableFrom(typeClass));
+        for (AbstractPrimitive primitive : primitives) {
+            if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Object getDefaultValueForPrimitive(Class<?> typeClass) throws UnknownTypeException {
-        if (String.class.isAssignableFrom(typeClass)) return "";
-        if (Integer.class.isAssignableFrom(typeClass)) return 0;
-        if (int.class.isAssignableFrom(typeClass)) return 0;
-        if (Boolean.class.isAssignableFrom(typeClass)) return false;
-        if (boolean.class.isAssignableFrom(typeClass)) return false;
-        if (Float.class.isAssignableFrom(typeClass)) return 0.0;
-        if (Double.class.isAssignableFrom(typeClass)) return 0.0;
-        if (Class.class.isAssignableFrom(typeClass)) return null;
+        for (AbstractPrimitive primitive : primitives) {
+            if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
+                return primitive.getDefaultValue();
+            }
+        }
 
         throw new UnknownTypeException("Unknown primitive type: " + typeClass.getSimpleName());
     }
 
     public static Comparator<Object> orderBasedOnClass(Class<?> typeClass) {
-        if (String.class.isAssignableFrom(typeClass)) {
-            return (o1, o2) -> ((String) o1).compareTo((String) o2);
-        }
-
-        if (Integer.class.isAssignableFrom(typeClass) || int.class.isAssignableFrom(typeClass)) {
-            return (o1, o2) -> ((Integer) o1).compareTo((Integer) o2);
-        }
-
-        if (Boolean.class.isAssignableFrom(typeClass) || boolean.class.isAssignableFrom(typeClass)) {
-            return (o1, o2) -> ((Boolean) o1).compareTo((Boolean) o2);
-        }
-
-        if (Float.class.isAssignableFrom(typeClass)) {
-            return (o1, o2) -> ((Float) o1).compareTo((Float) o2);
-        }
-
-        if (Double.class.isAssignableFrom(typeClass)) {
-            return (o1, o2) -> ((Double) o1).compareTo((Double) o2);
-        }
-
-        if (Class.class.isAssignableFrom(typeClass)) {
-            return (o1, o2) -> ((Class) o1).getSimpleName().compareTo(((Class) o2).getSimpleName());
+        for (AbstractPrimitive primitive : primitives) {
+            if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
+                return primitive.getComparator();
+            }
         }
 
         return null;
