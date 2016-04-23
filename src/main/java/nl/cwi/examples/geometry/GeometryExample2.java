@@ -15,7 +15,6 @@ import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.utils.DebugUtils;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
-import org.apache.log4j.PropertyConfigurator;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -24,7 +23,6 @@ import java.util.Set;
 public class GeometryExample2 {
 
     public static void main(String[] args) {
-        PropertyConfigurator.configure("src/main/resources/logger.properties");
 
         // ================================ Schema Schema ========================================
 

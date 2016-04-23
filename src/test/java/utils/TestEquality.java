@@ -6,7 +6,6 @@ import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
 import org.junit.Test;
 import test_definition.PersonFactory;
@@ -25,8 +24,6 @@ public class TestEquality {
 
     @Before
     public void setup() {
-        PropertyConfigurator.configure("src/test/resources/logger.properties");
-
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class, Car.class);

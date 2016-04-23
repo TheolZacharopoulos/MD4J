@@ -14,9 +14,11 @@ public class PrimitiveManager {
     private final Set<AbstractPrimitive> primitives = new LinkedHashSet<>(Arrays.asList(
             new StringPrimitive(),
             new IntegerPrimitive(),
+            new intPrimitive(),
             new FloatPrimitive(),
             new DoublePrimitive(),
             new BooleanPrimitive(),
+            new boolPrimitive(),
             new ClassPrimitive()
     ));
 
@@ -48,12 +50,21 @@ public class PrimitiveManager {
 
     public boolean isPrimitiveValue(String typeName, Object value) {
         for (AbstractPrimitive primitive : primitives) {
-            if (primitive.getSimpleName().equals(typeName) &&
+            if (primitive.getSimpleName().equals(typeName) ||
                 value.getClass().isAssignableFrom(primitive.getTypeClass()))
             {
                 return true;
             }
         }
+
+        if (typeName.equals("Object")) {
+            for (AbstractPrimitive primitive : primitives) {
+                if (value.getClass().isAssignableFrom(primitive.getTypeClass())) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 

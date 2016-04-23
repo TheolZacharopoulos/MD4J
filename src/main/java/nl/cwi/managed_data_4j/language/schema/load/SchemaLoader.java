@@ -1,6 +1,7 @@
 package nl.cwi.managed_data_4j.language.schema.load;
 
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.language.primitives.AbstractPrimitive;
 import nl.cwi.managed_data_4j.language.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
@@ -8,7 +9,6 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Cont
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
-import org.apache.log4j.LogManager;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -24,8 +24,11 @@ import java.util.*;
  */
 public class SchemaLoader {
 
-    private static final org.apache.log4j.Logger logger = LogManager.getLogger(SchemaLoader.class.getName());
     private static final PrimitiveManager primitiveManager = PrimitiveManager.getInstance();
+
+    public static void addPrimitive(AbstractPrimitive primitive) {
+        primitiveManager.addPrimitive(primitive);
+    }
 
     /**
      * Helper private class to keep Fields with their Method which define them.
@@ -115,7 +118,7 @@ public class SchemaLoader {
      */
     public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
 
-        logger.debug("SchemaFactory: create schema");
+        System.out.println("SchemaFactory: create schema");
 
         setupCacheForSchemaKlass(schemaSchema, schemaKlassesDef);
 
@@ -195,7 +198,7 @@ public class SchemaLoader {
         for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
             final String klassName = schemaKlassDefinition.getSimpleName();
 
-            logger.debug("> SchemaFactory: create klass " + klassName);
+            System.out.println("> SchemaFactory: create klass " + klassName);
             final Map<String, Field> fieldsForKlass =
                 buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
 
@@ -249,7 +252,7 @@ public class SchemaLoader {
             }
 
             if (key != null) {
-                logger.debug(" > Wire Key for " + type.name() + " = " + key.name());
+                System.out.println(" > Wire Key for " + type.name() + " = " + key.name());
             }
             ((Klass) type).key(key);
         }
@@ -295,27 +298,27 @@ public class SchemaLoader {
             final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
 
             if (schemaKlassField.isDefault()) {
-                logger.debug("  > SchemaFactory: DEFAULT field " + fieldName + " <" + fieldReturnClass.getSimpleName() + "> - SKIP");
+                System.out.println("  > SchemaFactory: DEFAULT field " + fieldName + " <" + fieldReturnClass.getSimpleName() + "> - SKIP");
                  continue;
             }
 
-            logger.debug("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
+            System.out.println("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
 
             // check for many
             final boolean many = primitiveManager.isMany(fieldReturnClass);
-            logger.debug("    > isMany: " + many);
+            System.out.println("    > isMany: " + many);
 
             // check for optional
             final boolean optional = schemaKlassField.isAnnotationPresent(nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional.class);
-            logger.debug("    > isOptional: " + optional);
+            System.out.println("    > isOptional: " + optional);
 
             // check for key
             final boolean key = schemaKlassField.isAnnotationPresent(Key.class);
-            logger.debug("    > isKey: " + key);
+            System.out.println("    > isKey: " + key);
 
             // check for contain
             final boolean contain = schemaKlassField.isAnnotationPresent(Contain.class);
-            logger.debug("    > isContain: " + contain);
+            System.out.println("    > isContain: " + contain);
 
             // add its fields, the owner Klass will be added later
             final Field field = factory.Field();
@@ -369,7 +372,7 @@ public class SchemaLoader {
             final Type fieldType = getFieldType(fieldTypeClass, schema, factory);
             field.type(fieldType);
 
-            logger.debug(" > Wire type: " + field.name() + ".type(" + fieldType.name() + ")");
+            System.out.println(" > Wire type: " + field.name() + ".type(" + fieldType.name() + ")");
         }
     }
 
@@ -384,7 +387,7 @@ public class SchemaLoader {
 
             final Field fieldInverseField = buildInverse(method, allFieldsWithReturnType);
             if (fieldInverseField != null) {
-                logger.debug(" > Wire inverse:  " +
+                System.out.println(" > Wire inverse:  " +
                         field.owner().name() + "." + field.name() +
                         ".inverse(" + fieldInverseField.owner().name() + "." + fieldInverseField.name() + ")");
 
@@ -441,7 +444,7 @@ public class SchemaLoader {
                 if (type.schemaKlass().name().equals("Klass")) {
                     if (klassInterface.getSimpleName().equals(type.name())) {
                         ((Klass) type).classOf(klassInterface);
-                        logger.debug("> Wire " + type.name() + ".classOf(" + klassInterface.getName() + ")");
+                        System.out.println("> Wire " + type.name() + ".classOf(" + klassInterface.getName() + ")");
                     }
                 }
             }

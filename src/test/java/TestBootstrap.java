@@ -4,7 +4,6 @@ import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -13,7 +12,6 @@ public class TestBootstrap {
 
     @Before
     public void setup() {
-        PropertyConfigurator.configure("src/test/resources/logger.properties");
     }
 
     @Test
