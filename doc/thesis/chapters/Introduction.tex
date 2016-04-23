@@ -87,7 +87,7 @@ Finally, aspects invariably express non-functional requirements, but if the non-
 \subsection{Research Questions}\label{Research Questions}
 Managed data has not been practically implemented in a static language before, therefore our first research questions states 
 \textit{``Can managed data be implemented in a static language?''}.
-Based on the previous argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve \ac{ccc} and to what extend does it improve the software evolution problems that \ac{aop} introduces in a modular solution?''}. 
+Based on the previous argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve the problem of crosscutting concerns?''}. 
 Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
 we evaluate the implementation of managed data on an inventory of aspects and design patterns. 
 As a result the third research question states \textit{``To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, compared to the original and the \ac{aop} implementation?''}.
@@ -113,12 +113,13 @@ In order to see if managed data solves the problems that \ac{aop} introduces, we
   More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
 
 \end{description}
-% TODO: Remove TestJHotDraw?
 This inventory is implemented using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
 We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
-Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. However, JHotDraw comes with no tests. 
-Thus, we use TestJHotDraw, which is a subproject of the AJHotDraw development team, and is developed in order to contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications allowing for a better assessment of aspect orientation.
-Considering that we use our JHotDraw implementation for the functional evaluation of our solution, we can use some already researched criteria \cite{hannemann2002design}, which consist of \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
+Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. 
+% However, JHotDraw comes with no tests. 
+% Thus, we use TestJHotDraw, which is a subproject of the AJHotDraw development team, and is developed in order to contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications allowing for a better assessment of aspect orientation.
+% Considering that we use our JHotDraw implementation for the functional evaluation of our solution, we can use some already researched criteria \cite{hannemann2002design}, which consist of \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
+To archive that, we used JHotDraw test suite.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Method}\label{Research Method}

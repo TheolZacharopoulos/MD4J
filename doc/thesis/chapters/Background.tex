@@ -329,13 +329,14 @@ According to the authors the contributions of AJHotDraw include:
 	\item Addressing the challenges risen by testing aspect oriented systems.
 \end{enumerate}
 
-% TODO: Remove TestJHotDraw???
 In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, which is called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}} in order to ensure behavioral equivalence between the original and the refactored solution. 
-Refactoring implies preserving the observable behavior of an application\cite{fowler2009refactoring} and since the original JHotDraw comes without tests, TestJHotDraw was created. 
+Refactoring implies preserving the observable behavior of an application\cite{fowler2009refactoring} and since the developers of AJHotDraw ought to test their functionality, TestJHotDraw was created. 
 There are several contributions of the aspect-oriented implementation approach\cite{marinajhotdraw}. 
 The authors suggest that the project contributes to a gradual and safe adoption of aspect-oriented techniques in existing applications and allow for a better assessment of aspect orientation.
 
-In this thesis we have used JHotDraw and AJHotDraw as well as the test project, TestJHotDraw, in order to evaluate our \ac{ccc} refactoring in managed data.
+In this thesis we have used JHotDraw and AJHotDraw in order to evaluate our \ac{ccc} refactoring in managed data.
+We could not use the TestJHotDraw since is written in AspectJ and we wanted to be separate from it. 
+Thus we used the JHotDraw original test suite which includes a large number of cases, which include our refactoring.
 The detailed evaluation is described in Chapter \ref{Evaluation}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
