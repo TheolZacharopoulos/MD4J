@@ -269,6 +269,8 @@ public class MObject implements InvocationHandler, M {
 
         // ================
         // Managed Object
+        final MObjectField mObjectField = this.props.get(fieldName);
+        final boolean isMany = mObjectField.getField().many();
 
         // if no args given, then just return the field's value.
         if (args == null) {
@@ -280,6 +282,18 @@ public class MObject implements InvocationHandler, M {
 
         Object fieldArgs = args[0];
 
+        // If it is null and it is not many, then one sets the value to null
+        if (fieldArgs == null && !isMany) {
+            _set(fieldName, null);
+            return null;
+        }
+
+        // If it is null and it is not many, then empty it
+        if (fieldArgs == null && isMany) {
+            _set(fieldName, new Object[0]);
+            return null;
+        }
+
         // If there are arguments, then it is considered as assignment.
         if (fieldArgs.getClass().isArray() && ((Object [])fieldArgs).length > 0) {
             isAssignment = true;
@@ -287,9 +301,6 @@ public class MObject implements InvocationHandler, M {
 
         // If it is an assignment, then set the value to the field
         if (isAssignment) {
-
-            final MObjectField mObjectField = this.props.get(fieldName);
-            final boolean isMany = mObjectField.getField().many();
 
             // if it has one (1) argument, then means that it is a single field
             // At the same time, check always if the field is not many, for safety
