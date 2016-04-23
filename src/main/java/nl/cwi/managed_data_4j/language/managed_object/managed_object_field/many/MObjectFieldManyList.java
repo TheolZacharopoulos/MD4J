@@ -71,4 +71,9 @@ public class MObjectFieldManyList extends MObjectFieldMany {
     public Object get() {
         return this.values;
     }
+
+    @Override
+    public void clear() {
+        this.values.clear();
+    }
 }

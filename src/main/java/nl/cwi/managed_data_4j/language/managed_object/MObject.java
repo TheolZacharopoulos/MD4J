@@ -4,6 +4,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObje
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldMany;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldManyList;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldManySet;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSingleMObj;
@@ -189,6 +190,12 @@ public class MObject implements InvocationHandler, M {
 
             // it's an array since it's many
             Object [] inits = ((Object[]) value);
+
+            // in the case it initialized with a zero size array,
+            // then clear the values.
+            if (inits.length == 0) {
+                ((MObjectFieldMany) mObjectField).clear();
+            }
 
             // in case it is a Primitive, then is always a List
             // Sets of Primitives are not supported (yet)

@@ -86,4 +86,9 @@ public class MObjectFieldManySet extends MObjectFieldMany {
         }
         return ReflectionUtils.getValueFromFieldSafe(value, newValueKeyField.name(), newValueKeyField.type().classOf());
     }
+
+    @Override
+    public void clear() {
+        this.values.clear();
+    }
 }

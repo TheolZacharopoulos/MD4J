@@ -43,4 +43,6 @@ public abstract class MObjectFieldMany extends MObjectField implements Iterable 
     public abstract void __delete(Object value) throws NoKeyFieldException;
 
     public abstract boolean isEmpty();
+
+    public abstract void clear();
 }

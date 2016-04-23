@@ -48,17 +48,6 @@ public class TestSchemaDefinition {
     }
 
     @Test
-    public void initial_null_values_Test() {
-        Person person = personFactory.Person();
-
-        person.name(null);
-        assertEquals(null, person.name());
-
-        person.grades(null);
-        assertEquals(0, person.grades().size());
-    }
-
-    @Test
     public void initialize_name_Test() {
         Person person = personFactory.Person();
         person.name("Alex");
@@ -250,4 +239,22 @@ public class TestSchemaDefinition {
 
         assertEquals(2, person.cars().size());
     }
+
+    @Test
+    public void initial_null_values_Test() {
+        Person person = personFactory.Person();
+
+        person.name("Alex");
+        assertEquals("Alex", person.name());
+
+        person.name(null);
+        assertEquals(null, person.name());
+
+        person.grades(1, 2);
+        assertEquals(2, person.grades().size());
+
+        person.grades(null);
+        assertEquals(0, person.grades().size());
+    }
+
 }
