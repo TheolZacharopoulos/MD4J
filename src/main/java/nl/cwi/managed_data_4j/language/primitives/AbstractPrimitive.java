@@ -8,6 +8,10 @@ public abstract class AbstractPrimitive {
     protected String simpleName;
     protected Comparator<Object> comparator;
 
+    public AbstractPrimitive() {
+        this(null, null, null, null);
+    }
+
     public AbstractPrimitive(Object defaultValue, Class<?> typeClass, String simpleName, Comparator<Object> comparator) {
         this.defaultValue = defaultValue;
         this.typeClass = typeClass;

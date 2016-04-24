@@ -9,6 +9,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Cont
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.NotManagedData;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -25,10 +26,6 @@ import java.util.*;
 public class SchemaLoader {
 
     private static final PrimitiveManager primitiveManager = PrimitiveManager.getInstance();
-
-    public static void addPrimitive(AbstractPrimitive primitive) {
-        primitiveManager.addPrimitive(primitive);
-    }
 
     /**
      * Helper private class to keep Fields with their Method which define them.
@@ -299,7 +296,24 @@ public class SchemaLoader {
 
             if (schemaKlassField.isDefault()) {
                 System.out.println("  > SchemaFactory: DEFAULT field " + fieldName + " <" + fieldReturnClass.getSimpleName() + "> - SKIP");
-                 continue;
+                continue;
+            }
+
+            if (schemaKlassField.isAnnotationPresent(NotManagedData.class)) {
+                Class<?> notManagedDataType = schemaKlassField.getReturnType();
+
+                if (primitiveManager.isMany(notManagedDataType)) {
+                    // The type in this case will be Set or List,
+                    // but the Generic Return Type will be the actual type.
+                    final ParameterizedType fieldManyType = (ParameterizedType) schemaKlassField.getGenericReturnType();
+                    notManagedDataType = (Class<?>) fieldManyType.getActualTypeArguments()[0];
+                }
+
+                primitiveManager.addPrimitive(
+                    new AbstractPrimitive(null, notManagedDataType, notManagedDataType.getSimpleName(), null){});
+
+                System.out.println("  > SchemaFactory: NOT MANAGED DATA field " +
+                        fieldName + " <" + notManagedDataType.getSimpleName() + ">");
             }
 
             System.out.println("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
