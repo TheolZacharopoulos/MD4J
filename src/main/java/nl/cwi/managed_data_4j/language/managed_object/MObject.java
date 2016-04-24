@@ -234,7 +234,10 @@ public class MObject implements InvocationHandler, M {
      * @return any return values of the method, null if none
      * @throws Throwable in case of error during invocation
      */
-    protected Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
+    private Object _invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
+
+        defaultMethodInvocation(method.getName(), args);
+
         final Class<?> declaringClass = method.getDeclaringClass();
 
         // declare MethodHandles.Lookup constructor accessible
@@ -256,13 +259,23 @@ public class MObject implements InvocationHandler, M {
             .invokeWithArguments(args);
     }
 
+    /**
+     * It can be used from the derived data managers in order to implement functionality
+     * when a default method is called.
+     *
+     * @param methodName the default method's name
+     * @param args any arguments of the method
+     */
+    protected void defaultMethodInvocation(String methodName, Object[] args) {
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 
         // if the method is default, invoke this one
         if (method.isDefault()) {
-            return invokeDefaultMethod(proxy, method, args);
+            return _invokeDefaultMethod(proxy, method, args);
         }
 
         // This is a way to execute the "attached" methods of the derived Managed Objects,
