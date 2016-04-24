@@ -3,24 +3,135 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Aspect refactoring 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Aspect refactoring of JHotDraw in managed data}\label{AspectRefactoring}
+\chapter{Taming Aspects of JHotDraw with managed data}\label{AspectRefactoring}
 
-\section{Introduction}
+To put our implementation and practice and evaluate the ability of managed data to tame aspects, we have refactor some of the \ac{ccc} of JHotDraw.
+More specifically, in this chapter is presented the refactoring of the \textit{FigureSelectionListener} observer pattern as well as the \textit{Undo} concerns of JHotDraw.
+For their refactoring we used our implementation of managed data in Java that presented in the previous chapter.
+However, to do that, we have migrated JHotDraw in managed data.
+The result of this migration is available to an open-source project called ManagedDataJHotDraw\footnote{\url{https://github.com/TheolZacharopoulos/ManagedDataJHotDraw}}.
+Additionally, we claim that this is the first aspect refactoring of an application using managed data to date.
 
-\section{Aspect Refactoring}
+\section{Refactoring Process}
+The refactoring of such application like JHotDraw required a significant amount of time to study and familiarizing with the existing system.
+In particular, we tried to focus only on the parts that we were going to refactor since we wanted to assess the same refactorings that AJHotDraw developers \cite{marinajhotdraw} did.
+Thanks to their fan-in analysis \cite{marin2004identifying}, with which identified a number of aspects in the legacy system, we also emphasize on them in order to make a fair comparison.
+Furthermore, while the AJHotDraw focused on a completely new version of JHotDraw written using AspectJ, we implemented ManagedDataJHotDraw maintaining the coherence and the original design.
 
-\subsection{Aspect Solution Templates}
+We first need to migrate ....
+
+\section{Migration of JHotDraw to Managed Data}
+
+Everything as managed data?
+
+\subsection{The MDStandardDrawingView}
+% Add the dependencies as primitives
+% Change every Drawing view to MDStdDrawingView
+% Can not extend JPanel 
+% MyJPanel wrapper
+% Wrapper for JPanel, we need it for having access into the MDStandardDrawingView
+
+\subsubsection{MDStandardDrawingView Factory}
+% Initialization
+
+\subsection{Issues}
+% Pure managed data
+
+\subsection{Limitations}
+% Public access to all methods (default)
+% Not private class
+% Transient
+% Synchronized
+% Can use annotations for that though???
 
 \section{Aspect Refactoring of JHotDraw}
+Aspect refactoring refers to the refactoring of legacy in aspect oriented code. 
+However, here we present an aspect refactoring of legacy code in managed data.
 
-\subsection{Observer Pattern in JHotDraw}\label{Observer Pattern in JHotDraw}
+\subsection{FigureSelectionListener}
+The \texttt{FigureSelectionListener} observer pattern of JHotDraw is a case that first presented by Hannemann et al. \cite{hannemann2005role} in their tole-based refactoring of design patterns in AspectJ. 
+Later Marin et al. picked the same aspect and migrated it to their AJHotDraw implementation.
+Likewise, we have also considered the same aspect for our refactoring in order to assess our concern solution with the existing one.
 
-\subsubsection{FigureSelectionListener}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{FigureSelectionListener in JHotDraw}
+The original observer pattern of the \texttt{FigureSelectionListener} functionality in JHotDraw is illustrated in Figure \ref{fig:JHotDraw_FigureSelectionListener_OOP}.
 
-\subsection{Undo Concern of JHotDraw}\label{Undo JHotDraw}
+\begin{figure}[H]
+	\centering
+  	\fbox{\includegraphics[width=1\textwidth]{figures/JHotDraw_FigureSelectionListener_OOP.png}}
+  	\caption{FigureSelectionListener in JHotDraw}
+  	\label{fig:JHotDraw_FigureSelectionListener_OOP}
+\end{figure}
 
-\subsubsection{Current Undo Implementation}
-% A number of activities in JHOTDRAW, such as handling font sizes and colors, image rotation, or inserting the clipboard's content into a drawing, support the undo functionality. 
+As the figure illustrates, 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Refactoring FigureSelectionListener in AJHotDraw}
+
+\begin{figure}[H]
+	\centering
+  	\fbox{\includegraphics[width=.8\textwidth]{figures/JHotDraw_FigureSelectionListener_AOP.png}}
+  	\caption{FigureSelectionListener in AJHotDraw}
+  	\label{fig:JHotDraw_FigureSelectionListener_AOP}
+\end{figure}
+
+\subsubsection{Role Superimposition}
+
+\subsubsection{Consistent Behavior}
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=AspectJ, escapechar=|]
+public aspect SelectionChangedNotification {
+	pointcut invalidateSelFigure(StandardDrawingView sdw) :
+		(   withincode(boolean StandardDrawingView.addToSelectionImpl(Figure)) 
+		 || withincode(void StandardDrawingView.removeFromSelection(Figure)))
+		&& call(void Figure.invalidate()) 
+		&& this(sdw);
+
+	pointcut clear_toggleSelection(StandardDrawingView sdw):
+		(execution(void StandardDrawingView.clearSelection()) ||
+		 execution(void StandardDrawingView.toggleSelection(Figure)))
+		&& this(sdw);
+
+	after(StandardDrawingView sdw): invalidateSelFigure(sdw) {
+		sdw.fireSelectionChanged();
+	}
+
+	after(StandardDrawingView sdw): clear_toggleSelection(sdw) {
+		sdw.fireSelectionChanged();
+	}
+}
+	\end{lstlisting}
+	\caption{AJHotDraw: Consistent Behavior in FigureSelectionListener}
+	\label{lst:Consistent Behavior in FigureSelectionListener}
+\end{sourcecode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Refactoring FigureSelectionListener in ManagedDataJHotDraw}
+
+\begin{figure}[H]
+	\centering
+  	\fbox{\includegraphics[width=1\textwidth]{figures/JHotDraw_FigureSelectionListener_MD.png}}
+  	\caption{FigureSelectionListener in ManagedDataJHotDraw}
+  	\label{fig:JHotDraw_FigureSelectionListener_MD}
+\end{figure}
+
+\subsection{SubjectRole Data Manager}
+\subsubsection{Data manager}
+\subsubsection{MObject}
+\subsubsection{Predicate}
+\subsubsection{Action}
+
+\subsection{SubjectRole Integration}
+\subsubsection{Consistent Behavior Predicate}
+\subsubsection{FigureSelectionChanged Action}
+
+% \subsection{Undo Concern}
+% \subsubsection{Undo Concern in JHotDraw}
+% \subsubsection{Refactoring Undo in AJHotDraw}
+% \subsubsection{Refactoring Undo in ManagedDataJHotDraw}
+
+\section{Claims}
 
 \section{Threads to Validity}
 % all study designs have flaws. By acknowledging them explicitly, the researchers show that they are aware of the flaws and have taken reasonable steps to minimize their effects.

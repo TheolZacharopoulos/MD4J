@@ -154,39 +154,34 @@ The \textit{setup} of the fields is done automatically by the data manager who i
 	\begin{lstlisting}[language=Java, escapechar=|]
 public class StateMachineExample {
 	public static void main(String[] args) {
-		final Schema schemaSchema = ...; |\label{line:state_schemaSchema}|
-		final Schema stateMachineSchema = ....; |\label{line:state_schemaMachineSchema}|
-
-		final BasicDataManager basicDataManagerForStateMachines = 
+		Schema schemaSchema = ...; |\label{line:state_schemaSchema}|
+		Schema stateMachineSchema = ....; |\label{line:state_schemaMachineSchema}|
+		BasicDataManager basicDataManager = 
 				new BasicDataManager(StateMachineFactory.class, stateMachineSchema);  |\label{line:state_meaning_full_code}|
-		final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make();
+		StateMachineFactory stateMachineFactory = basicDataManager.make();
 
-		final Machine doorStateMachine = stateMachineFactory.Machine(); |\label{line:state_machine_creation_basic}|
+		Machine doorStateMachine = stateMachineFactory.Machine(); |\label{line:state_machine_creation_basic}|
 
-		final State openState = stateMachineFactory.State(OPEN_STATE);
+		State openState = stateMachineFactory.State(OPEN_STATE);
 		openState.machine(doorStateMachine);
 
-		final State closedState = stateMachineFactory.State(CLOSED_STATE);
+		State closedState = stateMachineFactory.State(CLOSED_STATE);
 		closedState.machine(doorStateMachine);
 
-		final State lockedState = stateMachineFactory.State(LOCKED_STATE);
+		State lockedState = stateMachineFactory.State(LOCKED_STATE);
 		lockedState.machine(doorStateMachine);
 
-		final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
-		closeTransition.from(openState);
-		closeTransition.to(closedState);
+		Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
+		closeTransition.from(openState); closeTransition.to(closedState);
 
-		final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
-		openTransition.from(closedState);
-		openTransition.to(openState);
+		Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
+		openTransition.from(closedState); openTransition.to(openState);
 
-		final Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
-		lockTransition.from(closedState);
-		lockTransition.to(lockedState);
+		Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
+		lockTransition.from(closedState); lockTransition.to(lockedState);
 
-		final Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
-		unlockTransition.from(lockedState);
-		unlockTransition.to(closedState);
+		Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
+		unlockTransition.from(lockedState); unlockTransition.to(closedState);
 
 		doorStateMachine.start(closedState);
 
@@ -197,7 +192,9 @@ public class StateMachineExample {
 	}
 }
 
-private static void interpretStateMachine(Machine stateMachine, List<String> commands) { |\label{line:state_machine_interpreter}|
+private static void interpretStateMachine(
+		Machine stateMachine, List<String> commands) 
+{ |\label{line:state_machine_interpreter}|
     stateMachine.current(stateMachine.start());
     for (String event : commands) {
         for (Transition trans : stateMachine.current().out()) {
@@ -284,13 +281,13 @@ Additionally, the concerns are attached to the machine object very easily, as ca
 	\begin{lstlisting}[language=Java, escapechar=|]
 ...
 // State Machine monitoring
-final ObservableDataManager observableDataManager = 
+ObservableDataManager observableDataManager = 
 			new ObservableDataManager(StateMachineFactory.class, stateMachineSchema);
 
-final StateMachineFactory observableStateMachineFactory = observableDataManager.make();
+StateMachineFactory observableStateMachineFactory = observableDataManager.make();
 
 // Door State Machine definition, with observable data manager
-final Machine doorStateMachine = observableStateMachineFactory.Machine();
+Machine doorStateMachine = observableStateMachineFactory.Machine();
 
 // Add monitoring and notification concerns
 ((Observable) doorStateMachine).observe(StateMachineMonitoring::monitor); |\label{line:state_machine_monitor}|

@@ -12,6 +12,7 @@ As a result, we implement managed data to allow the developer to define the mech
 This chapter describes our managed data implementation in Java, which consists of our first research question, which is \textit{``Can managed data be implemented in a static language?''}.
 It is important to mention that our implementation is inspired by Enso\footnote{\url{https://github.com/enso-lang/enso}}, which is written in Ruby. 
 Although Ruby is a dynamic language, Enso significantly contributed on our implementation's structure.
+In this chapter we preset the implementation of managed data in Java, which is available also online as an open-source project called JavaMD (Java Managed Data)\footnote{\url{https://github.com/TheolZacharopoulos/JavaMD}}.
 
 \section{Managed Data Implementation}\label{sec:Managed Data Implementation}
 Managed data provides the programmer to handle the fundamental data manipulation mechanisms using \textit{Data Managers} and emphasizes strongly on modularity.
@@ -126,14 +127,15 @@ Finally, Line \ref{line:basic_data_manager_definition_instance} shows how those 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 // Create a basic data manager for state machines
-final BasicDataManager basicDataManagerForStateMachines = 
+BasicDataManager basicDataManagerForStateMachines = 
 				new BasicDataManager(StateMachineFactory.class, stateMachineSchema); |\label{line:basic_data_manager_definition}|
 
-// Create a schema factory that makes managed objects with the specifications of the basic data manager.
-final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make(); |\label{line:basic_data_manager_schema_factory_definition}|
+// Create a schema factory that makes managed objects 
+// with the specifications of the basic data manager.
+StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make(); |\label{line:basic_data_manager_schema_factory_definition}|
 
 // Build an instance of managed object with those specifications.
-final Machine stateMachineInstance = stateMachineFactory.Machine(); |\label{line:basic_data_manager_definition_instance}|
+Machine stateMachineInstance = stateMachineFactory.Machine(); |\label{line:basic_data_manager_definition_instance}|
 	\end{lstlisting}
 	\caption{Basic data Manager Example}
 	\label{lst:Basic data Manager Example}
@@ -204,19 +206,23 @@ public MObject(Klass schemaKlass, Object... initializers) {
 
 protected void setupField(Field field) {
 	if (!field.many()) { |\label{line:setup_field_many_check}|
-		// if it is a primitive make it a Primitive field, otherwise a reference (managed object)
+
+		// if it is a primitive make it a Primitive field, 
+		// otherwise a reference (managed object)
 		if (field.type().schemaKlass().name().equals("Primitive")) {|\label{line:instanceof}|
 			this.props.put(field.name(), new MObjectFieldSinglePrimitive(this, field));
 		} else {
 			this.props.put(field.name(), new MObjectFieldSingleMObj(this, field));
 		}
 	} else {
+
 		// in case it is a Primitive, then is always a List
 		// Sets of Primitives are not supported (yet)
 		if (field.type().schemaKlass().name().equals("Primitive")) {
 			this.props.put(field.name(), new MObjectFieldManyList(this, field));
 		} else {
-			final Klass klassType = (Klass) field.type();
+
+			Klass klassType = (Klass) field.type();
 			if (klassType.key()!= null) {
 				this.props.put(field.name(), new MObjectFieldManySet(this, field));
 			} else {
@@ -370,7 +376,8 @@ public interface SchemaFactory {
     Primitive Primitive();
     Klass Klass();
     Field Field();
-    Field Field(Boolean contain, Boolean key, Boolean many, String name, Boolean optional);
+    Field Field(
+    	Boolean contain, Boolean key, Boolean many, String name, Boolean optional);
 }
 	\end{lstlisting}
 	\caption{Schema SchemaFactory}
@@ -412,8 +419,9 @@ It can be seen that first we implement the instances and after we use setters to
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
-
+public static Schema load(
+	SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) 
+{
 	// create an empty schema using the factory, will wire it later
 	final Schema schema = factory.Schema();
 
@@ -438,17 +446,17 @@ public static Schema load(SchemaFactory factory, Schema schemaSchema, Class<?>..
 
             fieldsForKlass.add(field);
 		}
-    
+   
 		// create a new klass
 		final Klass klass = factory.Klass();
 		klass.name(klassName);
 		klass.schema(schema);
-
 		// wire the owner klass in fields,
 		fieldsForKlass.values().forEach(field -> field.owner(klass));
 	}
 
-	// wire the types on schema, it is inverse so it will refer to schema.types() directly
+	// wire the types on schema, 
+	// it is inverse so it will refer to schema.types() immediately
 	types.forEach(type -> type.schema(schema));
 
 	return schema;
@@ -477,13 +485,14 @@ An example of ``Cutting the umbilical cord'' is shown in Listing \ref{subsec:Cut
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 final Schema bootstrapSchema = new BootSchema();
-
-BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
+BasicDataManager basicFactory = 
+	new BasicDataManager(SchemaFactory.class, bootstrapSchema);
 
 // Create a schema Factory which creates Schema instances.
 final SchemaFactory schemaFactory = basicFactory.make();
 
-// The schemas are described by the SchemaSchema, this schemaSchema is also self-describing.
+// The schemas are described by the SchemaSchema, 
+// this schemaSchema is also self-describing.
 final Schema realSchemaSchema =
         SchemaLoader.load(
         	schemaFactory, 
@@ -494,7 +503,8 @@ final Schema realSchemaSchema =
         	Klass.class, 
         	Field.class);
 
-BasicDataManager basicFactory2 = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
+BasicDataManager basicFactory2 = 
+	new BasicDataManager(SchemaFactory.class, realSchemaSchema);
 final SchemaFactory schemaFactory2 = basicFactory2.make();
 final Schema realSchemaSchema2 =
         SchemaLoader.load(
