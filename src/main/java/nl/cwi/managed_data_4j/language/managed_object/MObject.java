@@ -225,13 +225,16 @@ public class MObject implements InvocationHandler, M {
      * Check if the object has defined any default methods in its schema
      * The default method has already been overridden by the proxy and it can't be invoked directly.
      * In this case we invoke the default method with the given args.
+     *
+     * it is protected in order to be overridden from the sub data managers
+     *
      * @param proxy the proxy instance
      * @param method the method that has been called
      * @param args any arguments of the method
      * @return any return values of the method, null if none
      * @throws Throwable in case of error during invocation
      */
-    private Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
+    protected Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
         final Class<?> declaringClass = method.getDeclaringClass();
 
         // declare MethodHandles.Lookup constructor accessible

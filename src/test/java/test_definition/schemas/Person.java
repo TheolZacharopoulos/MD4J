@@ -25,4 +25,12 @@ public interface Person extends M {
 
     @Contain
     Set<Car> cars(Car... cars);
+
+    default String getNameWithFormat() {
+        return "__" + name() + "__";
+    }
+
+    default String justReturnWhatYouGet(String message) {
+        return message;
+    }
 }

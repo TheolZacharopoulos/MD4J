@@ -257,4 +257,12 @@ public class TestSchemaDefinition {
         assertEquals(0, person.grades().size());
     }
 
+    @Test
+    public void default_method_invocation_Test() {
+        Person person = personFactory.Person();
+        person.name("Alex");
+
+        assertEquals("__Alex__", person.getNameWithFormat());
+        assertEquals("Hello", person.justReturnWhatYouGet("Hello"));
+    }
 }

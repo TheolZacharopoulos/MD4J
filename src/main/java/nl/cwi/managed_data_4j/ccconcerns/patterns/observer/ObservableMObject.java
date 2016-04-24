@@ -35,6 +35,6 @@ public class ObservableMObject extends MObject implements Observable {
         super._set(_name, _value);
 
         // Run the observe function for each of the observers on every "set"
-        observers.forEach(observer -> observer.observe(this, _name, _value));
+        observers.forEach(observer -> observer.observe(this.getProxy(), _name, _value));
     }
 }
