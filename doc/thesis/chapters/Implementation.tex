@@ -167,6 +167,7 @@ Additionally, the constructor of data managers needs to accept a dictionary of i
 Note that it is important that the data managers inherit from a base one, this leads to the \textbf{modular aspect} of the data managers.
 As it can be seen for stacking data managers we used \textit{Decorator Pattern} \cite{gamma1995design} which is mentioned also in Cook et al. \cite{loh2012managed} as a strategy for static \ac{oop} languages.
 
+
 \subsection{Managed Objects}\label{sec:Managed Objects}
 As it is mentioned the \texttt{MObject}, is an implementation of the \texttt{InvocationHandler} interface.
 Thus, the \texttt{MObject}'s \texttt{invoke()} method is called in every field access of an managed object's instance.
@@ -227,6 +228,101 @@ protected void setupField(Field field) {
 	\end{lstlisting}
 	\caption{MObject: setup fields}
 	\label{lst:setup_fields}
+\end{sourcecode}
+
+\subsection{Implementing a Data Manager}\label{Implementing a Data Manager}
+The implementation and the integration of a new data manager is straight forward in our framework.
+As it can be seen in Figure \ref{fig:DataManager_and_MObject}, the basic ingredients of a new data manager implementation is the \texttt{Data Manager} class (proxy) and the \texttt{MObject} class (invocation handler).
+
+First, to follow the modularity aspect and the ability to stack data managers together combining their specifications, we need to inherit from, at least, the \texttt{BasicDataManager} and \texttt{MObject} respectively.
+A simple data manager that could be proved useful, is a data manager that introduces immutability of its managed objects.
+A \texttt{Lockable} data manager should first inherit the \texttt{BasicDataManager} to get its field access specification.
+The implementation of the \texttt{LockableDataManager} is illustrated in \ref{lst:Lockable Data Manager}.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public class LockableDataManager extends BasicDataManager {
+
+	public LockableDataManager(Class<?> moSchemaFactoryClass, Schema schema) {
+		// Add the Lockable class in order to use it in the managed object.
+		super(moSchemaFactoryClass, schema, Lockable.class);
+	}
+
+	@Override
+	protected MObject createManagedObject(Klass klass, Object... _inits) {
+		return new LockableMObject(klass, _inits);
+	}
+}
+	\end{lstlisting}
+	\caption{Lockable Data Manager}
+	\label{lst:Lockable Data Manager}
+\end{sourcecode}
+
+Additionally it should add some \textit{locking} mechanism to ensure immutability of its objects.
+This is defined in the \texttt{Lockable} interface which is responsible of ensuring the implementation of the specifications. Figure \ref{lst:Lockable Interface} shows the specification of the interface.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public interface Lockable {
+	void lock();
+}
+	\end{lstlisting}
+	\caption{Lockable Interface}
+	\label{lst:Lockable Interface}
+\end{sourcecode}
+
+Since we have the specifications and the data manager that creates the \textit{Lockable} managed object, we still need the implementation.
+The implementation is located in the MObject and in this case the \texttt{LockableMObject}, Figure \ref{lst:Lockable Managed Object}.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public class LockableMObject extends MObject implements Lockable {
+	private boolean isLocked = false;
+
+	public LockableMObject(Klass schemaKlass, Object... initializers) {
+		super(schemaKlass, initializers);
+	}
+
+	public void lock() {
+		isLocked = true;
+	}
+
+	@Override
+	public void _set(String name, Object value) 
+	throws NoSuchFieldError, InvalidFieldValueException, NoKeyFieldException {
+		if (isLocked) {
+	    	throw new IllegalAccessError(
+	    		"Cannot change " + name + " of locked object " + schemaKlass.name() + ".");
+		}
+		super._set(name, value);
+	}
+}
+	\end{lstlisting}
+	\caption{Lockable Managed Object}
+	\label{lst:Lockable Managed Object}
+\end{sourcecode}
+
+The \texttt{LockableMObject} by extending the \texttt{MObject} and implementing the \texttt{Lockable} interface it inherits the basic functionality of a managed object in and gets a specification description respectively.
+Its role is to implement the logic of the immutability, which is as simple as it looks.
+In order to use this functionality, one needs to create managed objects using this data manager.
+An example is shown in Figure \ref{lst:Immutability Example}.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+final PointFactory lockablePointFactory = lockableFactory.make();
+final Point2D lockablePoint = lockablePointFactory.Point2D(1, 2);
+
+// It was mutable until now, now it is locked (immutable).
+((Lockable)lockablePoint).lock();
+
+try {
+	lockablePoint.x(2); // Should throw here since its immutable.
+} catch (IllegalAccessError e) {
+	System.out.println("IllegalAccessError: " + e.getMessage());
+}
+	\end{lstlisting}
+	\caption{Immutability Example}
+	\label{lst:Immutability Example}
 \end{sourcecode}
 
 \section{Self-Describing Schemas}\label{Self-Describing Schemas}
@@ -452,6 +548,7 @@ According to the specification\footnote{\url{https://docs.oracle.com/javase/tuto
 We use Java 8 default methods in order to add default functionality in our schemas. 
 In particular, methods that are defined as \textit{default} are ignored during the interpretation and no fields are created for them.
 We consider this as a helpful mechanism for defining functionality inside the schemas.
+A notable feature is that make the default method invocation in the MObject is \texttt{protected}, which makes possible to the derived data managers to ``monitor'' when a default method is invoked and use it.
 
 \section{Benefits and Limitations}\label{Benefits and Limitations}
 One of the advantages of this language is the simplicity of its usage. 
