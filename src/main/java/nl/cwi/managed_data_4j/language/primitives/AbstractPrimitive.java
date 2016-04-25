@@ -1,22 +1,18 @@
 package nl.cwi.managed_data_4j.language.primitives;
 
-import java.util.Comparator;
-
 public abstract class AbstractPrimitive {
     protected Object defaultValue;
     protected Class<?> typeClass;
     protected String simpleName;
-    protected Comparator<Object> comparator;
 
     public AbstractPrimitive() {
-        this(null, null, null, null);
+        this(null, null, null);
     }
 
-    public AbstractPrimitive(Object defaultValue, Class<?> typeClass, String simpleName, Comparator<Object> comparator) {
+    public AbstractPrimitive(Object defaultValue, Class<?> typeClass, String simpleName) {
         this.defaultValue = defaultValue;
         this.typeClass = typeClass;
         this.simpleName = simpleName;
-        this.comparator = comparator;
     }
 
     public Object getDefaultValue() {
@@ -29,9 +25,5 @@ public abstract class AbstractPrimitive {
 
     public String getSimpleName() {
         return simpleName;
-    }
-
-    public Comparator<Object> getComparator() {
-        return comparator;
     }
 }

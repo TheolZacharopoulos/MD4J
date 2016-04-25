@@ -45,9 +45,8 @@ public class PrimitivesManager {
             }
 
             final Object defaultValue = getDefaultValue(primitiveClass);
-            final Comparator<Object> comparator = getComparator(primitiveClass);
 
-            primitives.add(new AbstractPrimitive(defaultValue, primitiveClass, primitiveName, comparator) {});
+            primitives.add(new AbstractPrimitive(defaultValue, primitiveClass, primitiveName) {});
             System.out.println("    > Primitives Manager: primitive added " + primitiveName);
         }
     }
@@ -58,28 +57,6 @@ public class PrimitivesManager {
         if (primitiveClass.isAssignableFrom(Float.class))   return 0.f;
         if (primitiveClass.isAssignableFrom(Double.class))  return 0.;
         if (primitiveClass.isAssignableFrom(Boolean.class)) return false;
-        return null;
-    }
-
-    private Comparator<Object> getComparator(Class<?> primitiveClass) {
-        if (primitiveClass.isAssignableFrom(String.class))
-            return (o1, o2) -> ((String) o1).compareTo((String) o2);
-
-        if (primitiveClass.isAssignableFrom(Integer.class))
-            return (o1, o2) -> ((Integer) o1).compareTo((Integer) o2);
-
-        if (primitiveClass.isAssignableFrom(Float.class))
-            return (o1, o2) -> ((Float) o1).compareTo((Float) o2);
-
-        if (primitiveClass.isAssignableFrom(Double.class))
-            return (o1, o2) -> ((Double) o1).compareTo((Double) o2);
-
-        if (primitiveClass.isAssignableFrom(Boolean.class))
-            return (o1, o2) -> ((Boolean) o1).compareTo((Boolean) o2);
-
-        if (primitiveClass.isAssignableFrom(Class.class))
-            return (o1, o2) -> ((Class) o1).getSimpleName().compareTo(((Class) o2).getSimpleName());
-
         return null;
     }
 
@@ -136,15 +113,5 @@ public class PrimitivesManager {
         }
 
         throw new UnknownTypeException("Unknown primitive type: " + typeClass.getSimpleName());
-    }
-
-    public Comparator<Object> orderBasedOnClass(Class<?> typeClass) {
-        for (AbstractPrimitive primitive : primitives) {
-            if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
-                return primitive.getComparator();
-            }
-        }
-
-        return null;
     }
 }

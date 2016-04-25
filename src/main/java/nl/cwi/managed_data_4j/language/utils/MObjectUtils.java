@@ -132,13 +132,6 @@ public class MObjectUtils {
             Collections.sort(yVector, ReflectionUtils.fieldNameComparison());
         }
 
-        // If it is primitive,
-        // then order based on the primitive type
-        if (xVector.size() > 0 && primitiveManager.isPrimitiveClass(xVector.get(0).getClass())) {
-            Collections.sort(xVector, primitiveManager.orderBasedOnClass(xVector.get(0).getClass()));
-            Collections.sort(yVector, primitiveManager.orderBasedOnClass(yVector.get(0).getClass()));
-        }
-
         // continue
         return e(equalityMap, crossReferences, xVector.get(n), yVector.get(n)) &&
             areVectorsEqual(equalityMap, crossReferences, xVector, yVector, n + 1);
