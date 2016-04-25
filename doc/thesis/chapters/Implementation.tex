@@ -331,6 +331,7 @@ try {
 	\label{lst:Immutability Example}
 \end{sourcecode}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Self-Describing Schemas}\label{Self-Describing Schemas}
 As it is described by Cook et al. \cite{loh2012managed}, a self-describing schema is a schema that can be used to define schemas, including itself.
 % TODO: add more from kurtev2006model
@@ -501,7 +502,8 @@ final Schema realSchemaSchema =
         	Type.class, 
         	Primitive.class, 
         	Klass.class, 
-        	Field.class);
+        	Field.class,
+        	Primitives.class); |\label{line:Primitives}|
 
 BasicDataManager basicFactory2 = 
 	new BasicDataManager(SchemaFactory.class, realSchemaSchema);
@@ -531,6 +533,53 @@ Thus, it can be used to create other schemas like the Machine schema or even its
   	\label{fig:schema_schema_models}
 \end{figure}
 
+\subsection{Primitives Definition}\label{Primitives Definition}
+Although the bootstrap schema defines the primitives types for its description, the real schema schema needs a way to include them as well.
+These initial Java primitives that are supported on our implementation are shown in Table \ref{tbl:primivites_table}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{c|ccc}
+	\cline{2-4}
+	\multicolumn{1}{l|}{\textbf{}}         & \multicolumn{1}{c|}{\textbf{Class\textless?\textgreater}} & \multicolumn{1}{c|}{\textbf{Name}} & \multicolumn{1}{c|}{\textbf{Default Value}} \\ \hline
+	\multicolumn{1}{|c|}{\textbf{Integer}} & Integer.class                                             & ``Integer''                          & 0                                           \\ \cline{1-1}
+	\multicolumn{1}{|c|}{\textbf{int}}     & int.class                                                 & ``int''                              & 0                                           \\ \cline{1-1}
+	\multicolumn{1}{|c|}{\textbf{Boolean}} & Boolean.class                                             & ``Boolean''                          & false                                       \\ \cline{1-1}
+	\multicolumn{1}{|c|}{\textbf{boolean}} & boolean.class                                             & ``boolean''                          & false                                       \\ \cline{1-1}
+	\multicolumn{1}{|c|}{\textbf{String}}  & String.class                                              & ``String''                           & ``''                                          \\ \cline{1-1}
+	\multicolumn{1}{|c|}{\textbf{Double}}  & Double.class                                              & ``Double''                           & 0.                                          \\ \cline{1-1}
+	\multicolumn{1}{|c|}{\textbf{Float}}   & Float.class                                               & ``Float''                            & 0.f                                         \\ \cline{1-1}
+	\multicolumn{1}{|c|}{\textbf{Class}}   & Class.class                                               & ``Class''                            & null                                        \\ \cline{1-1}
+	\end{tabular}
+	\caption{Primitives Table}
+	\label{tbl:primivites_table}
+\end{table}
+
+To define those primitives we use also an interface called \textit{Primitives} and it is included during the loading of the real schema as can be seen at Line \ref{line:Primitives} of Listing \ref{lst:Cutting the umbilical cord}.
+The definition of this interface is shown in Listing \ref{Primitives Definition} which is a simple \texttt{Class/Name} mapping \footnote{Note that we use the ``\_'' prefix convention in order to define names of primitives that are reserved words in Java.}. 
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public interface Primitives {
+	Integer Integer();
+	int _int();
+
+	Boolean Boolean();
+	boolean _boolean();
+
+	String String();
+	Class Class();
+	Float Float();
+	Double Double();
+}
+	\end{lstlisting}
+	\caption{Primitives Definition}
+	\label{lst:Primitives Definition}
+\end{sourcecode}
+
+The benefits of such definition is that the \texttt{Primitives} interface is extensible, by extending it one can add more primitives in the schema as long as is included during the schema loading.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation Issues}\label{Implementation Issues}
 The fact that we use Java reflection and dynamic proxies, along with the fact that everything is managed data, even the schemaSchema, introduces some issues including the methods ordering problem described in Section \ref{Methods ordering}.
 
