@@ -306,28 +306,28 @@ JHotDraw\footnote{\url{http://www.jhotdraw.org/}} is a Java GUI framework for te
 It is an open-source, well-designed and flexible drawing framework of around 18,000 non-comment lines of Java code. 
 JHotDraw's  design relies heavily on some well-known design patterns\cite{gamma1995design} and it is considered as a showcase for software quality techniques provided to the \ac{oop} community. 
 
-The fact that JHotDraw is appraised as a so well-designed application makes it an ideal candidate as a showcase for an aspect oriented migration. 
+The fact that JHotDraw is praised for its design makes it an ideal candidate as a showcase for an aspect oriented migration. 
 Marin and Moonen \cite{marinajhotdraw} use this showcase for adoption of aspect-oriented techniques in existing systems. 
 In particular, they present AJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/AJHotDraw}}, which is an aspect-oriented version of JHotDraw developed in Java and AspectJ. 
-The goal of AJHotDraw is to take the existing JHotDraw and migrate it to a functionally equivalent aspect-oriented version. 
+The goal of AJHotDraw is to take JHotDraw and migrate it to a functionally equivalent aspect-oriented version. 
 
 The authors presented a fan-in analysis of JHotDraw \cite{marin2004identifying} and implemented an idiom-driven approach to aspect-mining. 
 This way they could extract a number of aspects in JHotDraw. 
-Next, they perform a concern exploration in order to expand their mining results leading to concern sorts.
+Next, they performed a concern exploration in order to expand their mining results, leading to concern sorts.
 Concern sorts is a consistent way to address crosscutting concerns in source code.
-That led to the identification and documentation of crosscutting concerns in JHotDraw, which helps to aware the developers of the existence of \ac{ccc} in JHotDraw.
-To tame the aspects in a more consistent and formal way, Marin et al. defined a list of \textit{template aspect} solution their concern sorts.
+This led to the identification and documentation of crosscutting concerns in JHotDraw, which helps the developers to identify \ac{ccc} in JHotDraw.
+In order to tame the aspects in a more consistent and formal way, Marin et al. provided a list of \textit{template aspect} solutions for their concern sorts.
 Finally, they performed aspect refactoring of JHotDraw by presenting the AJHotDraw, which according to them, was the largest migration to aspects available to date.
 Their refactoring aimed at maintaining the conceptual integrity of the original design.
 
-In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, which is called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}} in order to ensure behavioral equivalence between the original and the refactored solution. 
+In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}}, which ensures behavioral equivalence between the original and the refactored solution. 
 Refactoring implies preserving the observable behavior of an application\cite{fowler2009refactoring} and since the developers of AJHotDraw ought to test their functionality, TestJHotDraw was created. 
 There are several contributions of the aspect-oriented implementation approach\cite{marinajhotdraw}. 
-The authors suggest that the project contributes to a gradual and safe adoption of aspect-oriented techniques in existing applications and allow for a better assessment of aspect orientation.
+The authors suggest that the project contributes to a gradual and safe adoption of aspect-oriented techniques in existing applications and allows for a better assessment of aspect orientation.
 
 In this thesis we have used JHotDraw and AJHotDraw in order to evaluate our \ac{ccc} refactoring in managed data.
-We could not use the TestJHotDraw since is written in AspectJ and we wanted to be separate from it. 
-Thus we used the JHotDraw original test suite which includes a large number of cases, which include our refactoring.
+TestJHotDraw is written in AspectJ, a language we did not want include in our project, and therefore it is not used.
+Instead, we used the JHotDraw original test suite which consists of a large number of cases, included in our refactoring.
 The detailed evaluation is described in Chapter \ref{Evaluation}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -349,12 +349,12 @@ Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into ty
 \subsection{The Observer Pattern}\label{The Observer Pattern}
 Design patterns introduce \ac{ccc} by scattering ``pattern code'' through an application.
 Hannemann et al. \cite{hannemann2005role} discuss this with an example of \ac{ccc} refactoring of the observer pattern.
-The observer pattern is by its nature not-modularized. 
-The pattern crosscuts a large number of modules, tangling the scattered concern implementation with other code, making changes very complex. 
+The observer pattern is by nature not-modularized. 
+The pattern crosscuts a large number of modules, tangling the scattered concern implementation with the component code and complicating changes.
 
 \subsubsection{Role-based Refactoring}
-The authors present a \textit{role-based} refactoring, which consist of separating the roles of the pattern to different aspects.
-The role-based refactoring approach helps the developer to transform a scattered implementation of a \ac{ccc} into an equivalent but modular \ac{aop} implementation. 
+The authors present a \textit{role-based} refactoring, which consists of classifying the roles of the pattern in different aspects.
+The role-based refactoring approach helps the developer to transform a scattered implementation of \ac{ccc} into an equivalent but modular \ac{aop} implementation. 
 Both \ac{ccc} and refactoring are described in terms of roles. 
 
 According to the authors\cite{hannemann2005role}, the steps of role-based refactoring are the following:
@@ -384,10 +384,10 @@ However the authors have shown an abstract and reusable way of describing those 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Figure Selection Observer of JHotDraw}\label{The Figure Selection Observer of JHotDraw}
-As it can be seen from the previous paragraph, Hannemann et al. \cite{hannemann2005role} presented an approach for the \textit{Observer} design pattern refactoring in JHotDraw.
-Likewise, during the AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors propose a type-based refactoring on the same \textit{Observer} instance, the \texttt{SelectionListener}.
+As mentioned above, Hannemann et al. \cite{hannemann2005role} presented a refactoring of the \textit{Observer} design pattern in JHotDraw.
+Likewise, during the AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors proposed a type-based refactoring on the same \textit{Observer} instance, the \texttt{FigureSelectionListener}.
 
-The concern sorts that identified in this case are; the \textit{Role Superimposition} which is similar to the role-based refactoring described previously and the \textit{Consistent Behavior}, which describes a set of methods consistently invoke a specific action as a step in their execution.
+The concern sorts identified in this case are: the \textit{Role Superimposition}, which is similar to the role-based refactoring described previously and the \textit{Consistent Behavior}, which describes a set of methods consistently invoking a specific action as a step in their execution.
 
 The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selection_Listener}.
 
@@ -399,12 +399,12 @@ The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selecti
 \end{figure}
 
 The \texttt{FigureSelectionListener} has the \textit{Observer} role in the pattern implementation. 
-Any class that is interested in changes of the selection of figures in a \texttt{DrawingView} implements this interface. 
+Any class that is subject to changes of the selection of figures in a \texttt{DrawingView}, implements this interface. 
 The \texttt{DrawingView} interface partially defines the \textit{Subject} role by including two methods \texttt{addViewChangeListener} and \texttt{removeViewChangeListener}.
 From the classes that implement this interface only one, the \texttt{StandardDrawingView}, contains a non-empty implementation of the \textit{Subject} role in the \texttt{fireSelectionChanged} method.
-Not that this method is only defined in the concrete class, which deviates from the standard Observer pattern implementation.
+Note that this method is only defined in the concrete class, which deviates from the standard Observer pattern implementation.
 
-In their aspect refactoring they described an aspect that is constructed comprising both the \textit{Subject} and \textit{Observer} roles definition and maintaining a list of associations between each \textit{Subject} and its \textit{Observer} objects.
+In their aspect refactoring, they described an aspect that is constructed comprising both the \textit{Subject} and \textit{Observer} roles definition and maintaining a list of associations between each \textit{Subject} and its \textit{Observer} objects.
 Their type-based refactoring\cite{marin2005approach} distinguishes several crosscutting elements in JHotDraw's \textit{Observer} pattern. 
 First, the role superimposition, applied twice, for each of the two roles. 
 Second, consistent behavior to notify the observers of the changes in the \textit{Subject} object.
