@@ -5,7 +5,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
-import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
 
 import java.util.*;

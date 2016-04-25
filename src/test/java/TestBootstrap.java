@@ -1,4 +1,5 @@
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
@@ -26,14 +27,14 @@ public class TestBootstrap {
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         final Schema realSchemaSchema = SchemaLoader.load(
-                schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+                schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
         // =======================
         // Test equality
         final BasicDataManager basicFactory2 = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
         final SchemaFactory schemaFactory2 = basicFactory2.make();
         final Schema realSchemaSchema2 = SchemaLoader.load(
-                schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+                schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
         assertTrue(MObjectUtils.equals(bootstrapSchema, realSchemaSchema));
         assertTrue(MObjectUtils.equals(realSchemaSchema, realSchemaSchema2));

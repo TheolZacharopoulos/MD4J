@@ -31,8 +31,20 @@ public class BootSchema extends SchemaImpl {
         final Primitive booleanPrimitive = new PrimitiveImpl("Boolean", schemaSchema, Boolean.class);
 
         // ========================
+        // * Integer Primitive
+        final Primitive integerPrimitive = new PrimitiveImpl("Integer", schemaSchema, Integer.class);
+
+        // ========================
         // * Class Primitive
         final Primitive classPrimitive = new PrimitiveImpl("Class", schemaSchema, Class.class);
+
+        // ========================
+        // * Float Primitive
+        final Primitive floatPrimitive = new PrimitiveImpl("Float", schemaSchema, Float.class);
+
+        // ========================
+        // * Double Primitive
+        final Primitive doublePrimitive = new PrimitiveImpl("Double", schemaSchema, Double.class);
 
         // ========================
         // * Schema Klass
@@ -47,8 +59,9 @@ public class BootSchema extends SchemaImpl {
         schemaKlassSchemaKlassField.owner(schemaKlass);
 
         schemaKlass.fields(
-            schemaKlassSchemaKlassField,
-            schemaKlassTypesField);
+            schemaKlassTypesField,
+            schemaKlassSchemaKlassField
+            );
 
         // ========================
         // * Type Klass
@@ -244,6 +257,9 @@ public class BootSchema extends SchemaImpl {
         // - primitives
         stringPrimitive.schemaKlass(primitiveKlass);
         booleanPrimitive.schemaKlass(primitiveKlass);
+        integerPrimitive.schemaKlass(primitiveKlass);
+        floatPrimitive.schemaKlass(primitiveKlass);
+        doublePrimitive.schemaKlass(primitiveKlass);
         classPrimitive.schemaKlass(primitiveKlass);
 
         // - klasses

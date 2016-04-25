@@ -1,6 +1,7 @@
 package nl.cwi.managed_data_4j.framework;
 
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
@@ -25,7 +26,7 @@ public class SchemaFactoryProvider {
             final SchemaFactory bootStrapSchemaFactory = basicFactory.make();
 
             schemaSchema = SchemaLoader.load(
-                    bootStrapSchemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+                bootStrapSchemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
         }
         return schemaSchema;
     }

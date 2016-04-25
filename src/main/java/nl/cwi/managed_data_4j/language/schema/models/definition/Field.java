@@ -1,5 +1,6 @@
 package nl.cwi.managed_data_4j.language.schema.models.definition;
 
+import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional;

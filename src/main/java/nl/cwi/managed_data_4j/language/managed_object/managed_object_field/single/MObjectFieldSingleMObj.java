@@ -7,7 +7,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldMany;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.M;
 
 import java.lang.reflect.Proxy;
 

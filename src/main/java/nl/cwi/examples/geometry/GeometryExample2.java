@@ -10,6 +10,7 @@ import nl.cwi.managed_data_4j.ccconcerns.patterns.lockable.LockableDataManager;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.Observable;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableDataManager;
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
@@ -42,7 +43,7 @@ public class GeometryExample2 {
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         final Schema realSchemaSchema = SchemaLoader.load(
-            schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+            schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
         DebugUtils.debugSchema(bootstrapSchema);
         System.out.println("=======================================");
@@ -55,7 +56,7 @@ public class GeometryExample2 {
         final BasicDataManager basicFactory2 = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
         final SchemaFactory schemaFactory2 = basicFactory2.make();
         final Schema realSchemaSchema2 = SchemaLoader.load(
-            schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+            schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
         System.out.println(" Check boot and real schema equality");
         boolean equalBootReal = MObjectUtils.equals(bootstrapSchema, realSchemaSchema);
@@ -84,7 +85,7 @@ public class GeometryExample2 {
         // (points) to be created with starting props.
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
         final Schema pointSchema = SchemaLoader.load(
-                schemaFactory2, realSchemaSchema2, Point.class, Point2D.class, Point3D.class, Line.class);
+                schemaFactory2, realSchemaSchema2, Point.class, Point2D.class, Point3D.class, Line.class, Primitives.class);
         final BasicDataManager basicFactoryForPoints = new BasicDataManager(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 

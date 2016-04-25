@@ -11,7 +11,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.singl
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSinglePrimitive;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.M;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;

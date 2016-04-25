@@ -1,15 +1,15 @@
 package nl.cwi.managed_data_4j.language.utils;
 
-import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
+import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 
 import java.util.*;
 
 public class MObjectUtils {
-    private static final PrimitiveManager primitiveManager = PrimitiveManager.getInstance();
+    private static final PrimitivesManager primitiveManager = PrimitivesManager.getInstance();
 
     public static boolean equals(M x, M y) {
 

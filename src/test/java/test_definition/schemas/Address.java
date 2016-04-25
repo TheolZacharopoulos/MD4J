@@ -1,6 +1,6 @@
 package test_definition.schemas;
 
-import nl.cwi.managed_data_4j.language.schema.models.definition.M;
+import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 
 public interface Address extends M {

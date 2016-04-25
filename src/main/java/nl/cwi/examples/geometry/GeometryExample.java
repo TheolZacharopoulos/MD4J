@@ -11,6 +11,7 @@ import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.Observable;
 import nl.cwi.managed_data_4j.ccconcerns.patterns.observer.ObservableDataManager;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
@@ -30,7 +31,7 @@ public class GeometryExample {
         // (points) to be created with starting props.
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
         final Schema pointSchema = SchemaLoader.load(
-                schemaFactory, schemaSchema, Point.class, Point2D.class, Point3D.class, Line.class);
+                schemaFactory, schemaSchema, Point.class, Point2D.class, Point3D.class, Line.class, Primitives.class);
         final BasicDataManager basicFactoryForPoints = new BasicDataManager(PointFactory.class, pointSchema);
         final PointFactory pointFactory = basicFactoryForPoints.make();
 

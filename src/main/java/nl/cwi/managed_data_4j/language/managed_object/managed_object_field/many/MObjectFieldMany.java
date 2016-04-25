@@ -6,7 +6,7 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
-import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
+import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 
 /**
  * Represents a multi value field.
@@ -20,7 +20,7 @@ public abstract class MObjectFieldMany extends MObjectField implements Iterable 
 
     @Override
     public void init(Object values) throws InvalidFieldValueException, NoKeyFieldException {
-        if (!PrimitiveManager.getInstance().isMany(values.getClass())) {
+        if (!PrimitivesManager.getInstance().isMany(values.getClass())) {
             throw new InvalidFieldValueException("Non-array value passed to many-field");
         }
     }

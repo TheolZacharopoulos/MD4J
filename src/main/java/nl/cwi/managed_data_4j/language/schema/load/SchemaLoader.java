@@ -1,15 +1,14 @@
 package nl.cwi.managed_data_4j.language.schema.load;
 
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
-import nl.cwi.managed_data_4j.language.primitives.AbstractPrimitive;
+import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.BootSchema;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
-import nl.cwi.managed_data_4j.language.primitives.PrimitiveManager;
-import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.NotManagedData;
+import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -25,7 +24,7 @@ import java.util.*;
  */
 public class SchemaLoader {
 
-    private static final PrimitiveManager primitiveManager = PrimitiveManager.getInstance();
+    private static final PrimitivesManager primitiveManager = PrimitivesManager.getInstance();
 
     /**
      * Helper private class to keep Fields with their Method which define them.
@@ -78,12 +77,12 @@ public class SchemaLoader {
      * @param schemaSchema the schemaSchema
      * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
      */
-    private static void setupCacheForSchemaKlass(Schema schemaSchema, Class<?>... schemaKlassesDef) {
-        boolean includesSchemaDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Schema"));
-        boolean includesTypeDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Type"));
-        boolean includesPrimitiveDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Primitive"));
-        boolean includesKlassDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Klass"));
-        boolean includesFieldDef = Arrays.stream(schemaKlassesDef).anyMatch(aClass -> aClass.getSimpleName().equals("Field"));
+    private static void setupCacheForSchemaKlass(Schema schemaSchema, List<Class<?>> schemaKlassesDef) {
+        boolean includesSchemaDef    = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Schema"));
+        boolean includesTypeDef      = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Type"));
+        boolean includesPrimitiveDef = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Primitive"));
+        boolean includesKlassDef     = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Klass"));
+        boolean includesFieldDef     = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Field"));
 
         if (!includesSchemaDef) {
             typesCache.put("Schema", schemaSchema.types().stream().filter(type -> type.name().equals("Schema")).findFirst().get());
@@ -117,13 +116,25 @@ public class SchemaLoader {
 
         System.out.println("SchemaFactory: create schema");
 
-        setupCacheForSchemaKlass(schemaSchema, schemaKlassesDef);
+        // Filter out primitives
+        // load them separately
+        final List<Class<?>> schemaKlasses = new LinkedList<>();
+        for (Class<?> schemaClass : schemaKlassesDef) {
+            if (Primitives.class.isAssignableFrom(schemaClass)) {
+                primitiveManager.loadPrimitives(schemaClass);
+            } else {
+                schemaKlasses.add(schemaClass);
+            }
+        }
+
+        // setup the cache for classes
+        setupCacheForSchemaKlass(schemaSchema, schemaKlasses);
 
         // create an empty schema using the factory, will wire it later
         final Schema schema = factory.Schema();
 
         // build the types from the schema klasses definition
-        final Set<Type> types = buildTypesFromClasses(factory, schema, schemaSchema, schemaKlassesDef);
+        final Set<Type> types = buildTypesFromClasses(factory, schema, schemaSchema, schemaKlasses);
 
         // wire the types on schema
         // it is inverse so it will refer to schema.types() directly
@@ -179,7 +190,7 @@ public class SchemaLoader {
             SchemaFactory factory,
             Schema schema,
             Schema schemaSchema,
-            Class<?>... schemaKlassesDefinition)
+            List<Class<?>> schemaKlassesDefinition)
     {
         final Map<Type, TypeWithClass> types = new LinkedHashMap<>();
 
@@ -297,23 +308,6 @@ public class SchemaLoader {
             if (schemaKlassField.isDefault()) {
                 System.out.println("  > SchemaFactory: DEFAULT field " + fieldName + " <" + fieldReturnClass.getSimpleName() + "> - SKIP");
                 continue;
-            }
-
-            if (schemaKlassField.isAnnotationPresent(NotManagedData.class)) {
-                Class<?> notManagedDataType = schemaKlassField.getReturnType();
-
-                if (primitiveManager.isMany(notManagedDataType)) {
-                    // The type in this case will be Set or List,
-                    // but the Generic Return Type will be the actual type.
-                    final ParameterizedType fieldManyType = (ParameterizedType) schemaKlassField.getGenericReturnType();
-                    notManagedDataType = (Class<?>) fieldManyType.getActualTypeArguments()[0];
-                }
-
-                primitiveManager.addPrimitive(
-                    new AbstractPrimitive(null, notManagedDataType, notManagedDataType.getSimpleName(), null){});
-
-                System.out.println("  > SchemaFactory: NOT MANAGED DATA field " +
-                        fieldName + " <" + notManagedDataType.getSimpleName() + ">");
             }
 
             System.out.println("  > SchemaFactory: create field " + fieldName + " <" + fieldReturnClass.getSimpleName() + ">");
@@ -452,7 +446,7 @@ public class SchemaLoader {
      * @param types all the types
      * @param schemaKlassesDefinition the class Of the Klass
      */
-    public static void wireKlassClassOf(Map<Type, TypeWithClass> types, Class<?>[] schemaKlassesDefinition) {
+    public static void wireKlassClassOf(Map<Type, TypeWithClass> types, List<Class<?>> schemaKlassesDefinition) {
         for (Type type : types.keySet()) {
             for (Class klassInterface : schemaKlassesDefinition) {
                 if (type.schemaKlass().name().equals("Klass")) {
