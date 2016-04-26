@@ -234,9 +234,7 @@ public class MObject implements InvocationHandler, M {
      * @return any return values of the method, null if none
      * @throws Throwable in case of error during invocation
      */
-    private Object _invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
-
-        defaultMethodInvocation(method.getName(), args);
+    protected Object _invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
 
         final Class<?> declaringClass = method.getDeclaringClass();
 
@@ -257,16 +255,6 @@ public class MObject implements InvocationHandler, M {
             .unreflectSpecial(method, declaringClass)
             .bindTo(proxy)
             .invokeWithArguments(args);
-    }
-
-    /**
-     * It can be used from the derived data managers in order to implement functionality
-     * when a default method is called.
-     *
-     * @param methodName the default method's name
-     * @param args any arguments of the method
-     */
-    protected void defaultMethodInvocation(String methodName, Object[] args) {
     }
 
     @Override
