@@ -194,7 +194,7 @@ Consider that the \texttt{field.type().schemaKlass().name()} is used like a comm
 In the case that the field has many values, then we first check if it is \texttt{Primitive} because we do not support Set of \texttt{Primitive}s.
 If not, we check if a \texttt{Key} field exists on that field's type and if it is that field is therefore a Set otherwise is a List.
 
-\begin{sourcecode} [H]
+\begin{sourcecode}
 	\begin{lstlisting}[language=Java, escapechar=|]
 public MObject(Klass schemaKlass, Object... initializers) {
 	this.schemaKlass = schemaKlass;
@@ -556,7 +556,7 @@ These initial Java primitives that are supported on our implementation are shown
 \end{table}
 
 To define those primitives we use also an interface called \textit{Primitives} and it is included during the loading of the real schema as can be seen at Line \ref{line:Primitives} of Listing \ref{lst:Cutting the umbilical cord}.
-The definition of this interface is shown in Listing \ref{Primitives Definition} which is a simple \texttt{Class/Name} mapping \footnote{Note that we use the ``\_'' prefix convention in order to define names of primitives that are reserved words in Java.}. 
+The definition of this interface is shown in Listing \ref{Primitives Definition} which is a simple \texttt{Class/Name} mapping \footnote{We use the ``\_'' prefix convention in order to define names of primitives that are reserved words in Java.}. 
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]

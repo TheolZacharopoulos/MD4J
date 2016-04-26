@@ -112,14 +112,14 @@ In order to see if managed data solves the problems that \ac{aop} introduces, we
   \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
   More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
 
+  % TODO: More patterns?
+
 \end{description}
+
 This inventory is implemented using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
 We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
-Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}. 
-% However, JHotDraw comes with no tests. 
-% Thus, we use TestJHotDraw, which is a subproject of the AJHotDraw development team, and is developed in order to contribute to a gradual and safe adoption of aspect-oriented techniques in existing applications allowing for a better assessment of aspect orientation.
-% Considering that we use our JHotDraw implementation for the functional evaluation of our solution, we can use some already researched criteria \cite{hannemann2002design}, which consist of \textit{Locality},\textit{Re-usability}, \textit{Composition Transparency}, and \textit{(Un)pluggability}, in order to present metrics of our solution. 
-To archive that, we used JHotDraw test suite.
+Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}.
+To archive that, we used the original JHotDraw test suite that consists of 1218 executable tests in total.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Method}\label{Research Method}
@@ -160,6 +160,7 @@ In order to answer our research questions we studied the theoretical background,
   \item[Contribution 3: Managed data Evaluation in JHotDraw.]
   We implemented a new version of the JHotDraw application using our framework in order to evaluate our refactoring of \ac{ccc}.
   More specifically, we focused on the \textit{Undo} concern, which is a \textit{Command Pattern} and it is scattered around the modules of the JHotDraw, as well as the \textit{Observer Pattern} which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
+  % TODO: More patterns?
 
   \item[Contribution 4: JHotDraw implementation results assessment and comparison with AJHotDraw.]
   Finally, we present the results of our evaluation and we compare them with AJHotDraw which implements \ac{aop} using the AspectJ language, again in Java.

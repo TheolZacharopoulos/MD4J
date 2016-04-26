@@ -295,9 +295,6 @@ public class TracingIH implements InvocationHandler {
 	\label{lst:Logging in dynamic proxies}
 \end{sourcecode}
 
-% TODO: Reread - Recheck
-% TODO: Mention their aspect mining process
-% TODO: Mention their AspectJ's limitations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: JHotDraw
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -327,7 +324,7 @@ The authors suggest that the project contributes to a gradual and safe adoption 
 
 In this thesis we have used JHotDraw and AJHotDraw in order to evaluate our \ac{ccc} refactoring in managed data.
 TestJHotDraw is written in AspectJ, a language we did not want include in our project, and therefore it is not used.
-Instead, we used the JHotDraw original test suite which consists of a large number of cases, included in our refactoring.
+Instead, we used the JHotDraw original test suite which consists of 1218 test cases, included in our refactoring.
 The detailed evaluation is described in Chapter \ref{Evaluation}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -500,3 +497,5 @@ This is a weaker connection than the one provided by the original solution.
 Another drawback that is observed is the change of the visibility of the methods introduced from the aspects, for example the inter-type declarations. 
 The visibility declared in the aspect refers to the aspect and not to the target class. 
 Such drawbacks could be overcome by a better aspect language support, which will be further discussed in this thesis.
+
+% TODO: More patterns?
