@@ -142,7 +142,7 @@ Our implementation includes the definition of a \texttt{Basic data manager} that
 Conclusively, in order to make a \textit{managed object}, the data manager needs its schema definition (the interfaces that define the schemas) and the schema factory (the interface that defines the constructors of the schemas).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{A simple without concerns program}
+\subsection{A simple program}
 In the case of a simple program without any concerns, we have to use our managed data to define the state machine and then interpret it.
 The definition of the door state machine is given in Listing \ref{lst:Door_state_machine} in Java.
 
@@ -186,7 +186,6 @@ public class StateMachineExample {
 		unlockTransition.from(lockedState); unlockTransition.to(closedState);
 
 		doorStateMachine.start(closedState);
-
 		interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
 		        LOCK_TRANSITION,
 		        UNLOCK_TRANSITION,

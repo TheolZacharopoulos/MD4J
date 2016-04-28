@@ -257,15 +257,11 @@ This is problem can be solved with dynamic proxies and a simple solution is pres
 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java]
-import java.lang.reflect.*;
-import java.io.PrintWriter;
-
 public class TracingIH implements InvocationHandler {
 	public static Object createProxy(Object obj, PrintWriter out) {
 		return Proxy.newProxyInstance(
-				obj.getClass().getClassLoader(),
-				obj.getClass().getInterfaces(),
-				new TracingIH( obj, out));
+			obj.getClass().getClassLoader(), 
+			obj.getClass().getInterfaces(), new TracingIH( obj, out));
 	}
 
 	private Object target;

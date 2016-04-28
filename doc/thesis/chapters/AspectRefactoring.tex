@@ -5,54 +5,248 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Taming Aspects of JHotDraw \newline with managed data}\label{AspectRefactoring}
 
-In order to put our implementation and practice and evaluate the ability of managed data to tame aspects, we have refactored some of the \ac{ccc} of JHotDraw.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Crosscutting Concerns Identification}
+Our managed data framework can address the problem of \ac{ccc} by capturing them in modular data managers.
+But solving the problem of \ac{ccc} requires to identify them first in the source code.
+\textit{Aspect mining} is a reverse engineering process that aims at finding \ac{ccc} in existing systems \cite{marin2004identifying}.
+The aspect mining topic has been addressed from several research contribution including methods like machine learning \cite{shepherd2004design}, clone detection \cite{bruntink2005use}, IDE tools \cite{robillard2002concern} and more. 
+Marin et al. \cite{marin2004identifying} introduced a technique based on spotting methods that are invoked from many different places (high fan-in) in order to identify candidate aspects in open-source Java systems.
+One of these projects included the JHotDraw.
+Consequently, we chose their findings as our main focus in \ac{ccc} of JHotDraw.
+In particular, we focused on two main concerns, the \textit{FigureSelection}, which is an observer pattern implementation and the \textit{Undo} concern that is part of the command pattern.
+
+\section{Aspect Refactoring in Managed Data}
+In order to evaluate the ability of managed data to tame aspects, we have refactored aforementioned concerns of JHotDraw.
 More specifically, in this chapter is present the refactoring of the \textit{FigureSelectionListener} observer pattern as well as the \textit{Undo} concerns.
 For their refactoring we used our implementation of managed data in Java that presented in the previous chapter.
-The choice of those concerns has been made on purpose since those are the concerns that AJHotDraw refactors with \ac{aop}.
-Therefore, having three versions of the same application solving the same concerns, will provide us with better assessment methods on their comparison.
+The choice of those concerns has been made on purpose since those are the concerns that AJHotDraw refactors using AspectJ and \ac{aop} techniques.
+Therefore, having three versions of the same application (JHotDraw) solving the same concerns, will provide us with better assessment methods on their comparison.
+The three systems that participate our assessment are: \textbf{JHotDraw}\footnote{\url{http://www.jhotdraw.org/}}, the original \ac{oop} version, \textbf{AJHotDraw}\footnote{\url{https://sourceforge.net/projects/ajhotdraw/}}, the \ac{aop} refactored version and our \textbf{ManagedDataJHotDraw}\footnote{\url{https://github.com/TheolZacharopoulos/ManagedDataJHotDraw}}, the managed data aspect refactored version.
+We focus on those concerns because those are the ones identified, solved, analyzed and presented in AJHotDraw.
+Note that, for reasons of reliable comparison and compatibility, we used the version \textit{JHotDraw v.5.4b1} because AJHotDraw is also based on the same version.
 
-However, to do that, we first had to migrate JHotDraw in managed data.
-The result of this migration is available to an open-source project the ManagedDataJHotDraw\footnote{\url{https://github.com/TheolZacharopoulos/ManagedDataJHotDraw}}.
+However, to refactor JHotDraw, we first had to migrate in managed data.
+The result of this migration is available to an open-source project the ManagedDataJHotDraw.
 We claim that this is the first aspect refactoring of an application using managed data to date since this project aims on showing how managed data can deal with \ac{ccc}.
 
 \section{Migration Process}
-The refactoring of such application like JHotDraw required a significant amount of time to study and familiarizing with the existing system.
+The refactoring of an application with the size of JHotDraw required a significant amount of time to study and familiarizing with, yet, its well-designed \ac{oop} code, made it easy to grasp.
 In particular, we tried to focus only on the parts that we were going to refactor since we wanted to assess the same refactorings that AJHotDraw developers \cite{marinajhotdraw} did.
 Thanks to their fan-in analysis \cite{marin2004identifying} that identified a number of aspects in the legacy system, we emphasize on them in order to make a fair comparison.
 Furthermore, while the AJHotDraw focused on a completely new version of JHotDraw written using AspectJ, we implemented ManagedDataJHotDraw maintaining the coherence and the original design.
 
-% Add the dependencies as primitives
+\subsection{DrawingView}
+One of main components of the JHotDraw architecture is the \textit{DrawingView} interface.
+As Figure \ref{fig:JHotDraw_DrawingView} illustrates, the drawing \textit{DrawingView} is responsible of rendering \texttt{Drawings} and listens to its changes.
+It is also responsible of receiving the user input and delegate it to the current tool.
 
-\subsubsection{JHotDraw Primitives Definition}
+\begin{figure}[H]
+	\centering
+  	\fbox{\includegraphics[width=1\textwidth]{figures/JHotDraw_DrawingView.png}}
+  	\caption{DrawingView of JHotDraw}
+  	\label{fig:JHotDraw_DrawingView}
+\end{figure}
 
-% Change every Drawing view to MDStdDrawingView
-% Can not extend JPanel 
-% MyJPanel wrapper
-% Wrapper for JPanel, we need it for having access into the MDStandardDrawingView
+The fact that \texttt{DrawingView} plays such a significant role along with the subject / observer properties, makes it a good candidate for manage data migration.
+The reason is that the specifications of that class can be implemented as data managers and added dynamically to it.
 
-\subsubsection{MDStandardDrawingView Factory}
-% Initialization
+\subsection{Managed Data DrawingView}
+To support the type reference capabilities of the \texttt{DrawingView} interface, we first implemented an \texttt{MDDrawingView}, namely Managed Data DrawingView, which is used for substituting the \texttt{DrawingView} in whole JHotDraw.
+Having this super interface for type reference, we needed the actual managed data schemas.
+As Figure \ref{fig:JHotDraw_DrawingView} shows, there are two implementations of the \texttt{DrawingView}, particularly the \texttt{StandardDrawingView}, which is the implementation that is used when a new drawing view is created in the application, and the \texttt{NullDrawingView}, which represents a null drawing view of the \textit{null-object} pattern.
 
-\subsection{Issues}
-% Pure managed data
+Following their original design, we have implemented two schemas, one for the \texttt{StandardDrawingView} and one for the \texttt{NullDrawingView}, namely, \texttt{MDStandardDrawingView} and \texttt{MDNullDrawingView} respectively.
+The instances of those schemas has been used in the same way their normal counterparts used in JHotDraw.
+A snippet of the \texttt{MDStandardDrawingView} is shown in Listing \ref{lst:MDStandardDrawingView schema}.
+Most of the implementation has been omitted for brevity.
 
-\subsection{Limitations}
-% Public access to all methods (default)
-% Not private class
-% Transient
-% Synchronized
-% Can use annotations for that though???
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public interface MDStandardDrawingView extends M, MDDrawingView { |\label{line:MDStandardDrawingView extends M, MDDrawingView}|
+	...
+	// Composition over inheritance, the original inherits the JPanel
+	JPanel panel(JPanel... panel); |\label{line:jpanel composition}|
 
-\section{Aspect Refactoring of JHotDraw}
-Aspect refactoring refers to the refactoring of legacy in aspect oriented code. 
-However, here we present an aspect refactoring of legacy code in managed data.
+	default JPanel getPanel() { |\label{line:jpanel getter}|
+	    return panel();
+	}
 
-\subsection{FigureSelectionListener}
-The \texttt{FigureSelectionListener} observer pattern of JHotDraw is a case that first presented by Hannemann et al. \cite{hannemann2005role} in their tole-based refactoring of design patterns in AspectJ. 
-Later Marin et al. picked the same aspect and migrated it to their AJHotDraw implementation.
-Likewise, we have also considered the same aspect for our refactoring in order to assess our concern solution with the existing one.
+	default void setPanel(JPanel _panel) {|\label{line:jpanel setter}|
+	    panel(_panel);
+	}
+	...
+	Rectangle damage(Rectangle... damage);
+	Drawing drawing(Drawing... drawing);
+	...
+	default FigureEnumeration selectionZOrdered() { |\label{line:selectionZOrdered}|
+		List result = CollectionsFactory.current().createList(selectionCount());
+		FigureEnumeration figures = drawing().figures();
+
+		while (figures.hasNextFigure()) {
+			Figure f= figures.nextFigure();
+			if (isFigureSelected(f)) {
+				result.add(f);
+			}
+		}
+		return new ReverseFigureEnumerator(result);
+	}
+	...
+	default void repairDamage() { |\label{line:repairDamage}|
+		if (getDamage() != null) {
+			panel().repaint(damage().x, damage().y, damage().width, damage().height);
+			setDamage(null);
+		}
+	}
+	...
+}
+	\end{lstlisting}
+	\caption{MDStandardDrawingView schema}
+	\label{lst:MDStandardDrawingView schema}
+\end{sourcecode}
+
+From Listing \ref{lst:MDStandardDrawingView schema} it can be seen that the \texttt{MDStandardDrawingView} interface extends both \texttt{M}, defining that this is a schema definition, and \texttt{MDDrawingView} for sub-type support.
+Additionally, all the functionality implemented in methods in the original \texttt{DrawingView}, now is implemented default methods in the schema interface.
+As state for these methods is used the fields of this schema.
+As Lines \ref{line:selectionZOrdered} and \ref{line:repairDamage} show, the fields of the schema can be used to query their values inside the default methods.
+Note that the code in those defaults methods is identical to the original \texttt{DrawingView}.
+Furthermore, for consistency with the legacy code, we have implemented setters and getters, Lines \ref{line:jpanel setter} and \ref{line:jpanel getter}, for the field values accessors.
+This way we kept consistent the way the other classes access values of this class.
+
+An notably issue is that the original \texttt{StandardDrawingView} extends the \texttt{javax.swing.jpanel} class as Figure \ref{fig:JHotDraw_DrawingView} shows.
+However, such a structure is not supported in managed data. 
+One can not extend classes for schema definitions in managed data.
+To overcome this issue we favored \textit{composition over inheritance} in this case, making the \texttt{JPanel} a field, named \textit{panel} of the schema.
+To support the \texttt{JPanel} as a type of a field though, it needs also to be defined as managed data.
+The same holds for the rest of the fields such as \texttt{Rectangle} and \texttt{Drawing}.
+
+As explained in Section \ref{Primitives Definition} our framework allow us to define primitives externally by inheriting the \texttt{Primitives} interface.
+The JHotDraw primitives definition is showed in Listing \ref{lst:JHotDraw Primitives Definition}.
+
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public interface JHotDrawPrimitives extends Primitives {
+	javax.swing.JPanel JPanel();
+
+	java.awt.Color Color();
+	java.awt.Cursor Cursor();
+	java.awt.Point Point();
+	java.awt.Dimension Dimension();
+	java.awt.Rectangle Rectangle();
+
+	CH.ifa.draw.framework.DrawingEditor DrawingEditor();
+	CH.ifa.draw.framework.Drawing Drawing();
+	CH.ifa.draw.framework.Painter Painter();
+	CH.ifa.draw.framework.PointConstrainer PointConstrainer();
+
+	CH.ifa.draw.framework.Handle Handle();
+	CH.ifa.draw.framework.Figure Figure();
+}
+	\end{lstlisting}
+	\caption{JHotDraw Primitives Definition}
+	\label{lst:JHotDraw Primitives Definition}
+\end{sourcecode}
+
+This proved very helpful since we do not need to reimplement everything as managed data during refactoring of big application. 
+Especially classes that are provided by libraries such as \texttt{javax.swing} and \texttt{java.awt}.
+
+\subsubsection{Limitations}
+However, extending tour framework's primitives with the JHotDrawPrimitives we lose the ``pureness'' of managed data.
+That led to an application that is part of it managed data part of it not.
+But this is something that can happen in cases of refactoring of bug applications like JHotDraw.
+
+Another limitation that arises from the previous implementation is that some keywords like ``Transient'' or ``Synchronized'' can not be supported on default methods.
+Instead, we could use annotations that add these properties to the methods as future work.
+Moreover, privacy is also an issue.
+All default methods are \texttt{public}, which means that the encapsulation is violated.
+Finally, private classes definition is not possible in schemas, although this is not the point of them since they can be defined outside as managed data.
+
+\subsection{MDDrawingView Schema Factories}
+Having the \texttt{MDStandardDrawingView} and \texttt{MDNullDrawingView} schemas in place we still needed their factories as to create instances of them.
+Besides the schema factories, which is as simple as Listing \ref{lst:DrawingViewSchemaFactory} shows, we still needed a way to give initialization values to the schema instances the same way that the original \texttt{DrawingView} does.
+Additionally, this factory should be used exactly like the \texttt{new} Java keyword inside the source code.
+This factory just replicates the original \texttt{DrawingView} constructor and is used from the program to create new instances of the schemas.
+The code of the \texttt{MDStandardDrawingView} instances factory is illustrated in Listing \ref{lst:MDStandardDrawingView Instances Factory}, in comparison with the original constructor illustrated in Listing \ref{lst:DrawingView Constructor}.
+
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public interface DrawingViewSchemaFactory {
+	MDStandardDrawingView DrawingView();
+	MDNullDrawingView NullDrawingView();
+}
+	\end{lstlisting}
+	\caption{DrawingView Schema Factory}
+	\label{lst:DrawingViewSchemaFactory}
+\end{sourcecode}
+
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public StandardDrawingView(DrawingEditor editor, int width, int height) {
+	setAutoscrolls(true);
+	fEditor = editor;
+	fViewSize = new Dimension(width,height);
+	setSize(width, height);
+	fSelectionListeners = CollectionsFactory.current().createList();
+	addFigureSelectionListener(editor());
+	setLastClick(new Point(0, 0));
+	fConstrainer = null;
+	fSelection = CollectionsFactory.current().createList();
+
+	setDisplayUpdate(createDisplayUpdate());
+	setBackground(Color.lightGray);
+
+	addMouseListener(createMouseListener());
+	addMouseMotionListener(createMouseMotionListener());
+	addKeyListener(createKeyListener());
+}
+	\end{lstlisting}
+	\label{lst:DrawingView Constructor}
+	\caption{StandardDrawingView Constructor}
+\end{sourcecode}
+
+\begin{sourcecode}[H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public static MDDrawingView newDrawingView(
+	DrawingEditor editor, int width, int height) {
+	final MDStandardDrawingView drawingView = drawingViewSchemaFactory.DrawingView();
+	MyJPanel jPanel = new MyJPanel();
+	jPanel.setAutoscrolls(true);
+ 	jPanel.setSize(width, height);
+	jPanel.setBackground(Color.lightGray);
+	drawingView.panel(jPanel);
+	jPanel.setDrawingView(drawingView);
+	drawingView.editor(editor);
+	drawingView.size(new Dimension(width, height));
+	jPanel.setSize(width, height);
+	drawingView.lastClick(new Point(0, 0));
+	drawingView.constrainer(null);
+	drawingView.setDisplayUpdate(new SimpleUpdateStrategy());
+	drawingView.setBackground(Color.lightGray);
+	drawingView.drawing(new StandardDrawing());
+	jPanel.addMouseListener(...);
+	jPanel.addMouseMotionListener(...);
+	jPanel.addKeyListener(...);
+	return drawingView;
+}
+	\end{lstlisting}
+	\label{lst:MDStandardDrawingView Instances Factory}
+	\caption{MDStandardDrawingView Instances Factory}
+\end{sourcecode}
+
+\subsection{MDDrawingView Integration}
+Finally, to integrate the MDDrawingView managed objects in the existing system we had first to replace every instance of \texttt{DrawingView} with \texttt{MDDrawingView}, every \texttt{StandardDrawingView} with \texttt{MDStandardDrawingView} and every \texttt{NullDrawingView} with \texttt{MDNullDrawingView} accordingly.
+In addition in each place that a new instance of these is created we placed it with our instances factory, like the once presented in Listing \ref{lst:MDStandardDrawingView Instances Factory}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aspect Refactoring of JHotDraw}
+Aspect refactoring usually refers to the refactoring of legacy in aspect oriented code (\ac{aop}). 
+However, in this section we present an aspect refactoring of legacy code in managed data.
+
+\subsection{FigureSelectionListener}
+The \texttt{FigureSelectionListener} observer pattern of JHotDraw is a case that first presented by Hannemann et al. \cite{hannemann2005role} in their role-based refactoring of design patterns in AspectJ. 
+Later Marin et al. used the same aspect and migrated it to their AJHotDraw implementation.
+Likewise, we have also implemented the same aspect for our refactoring in order to assess our concern solution with the existing one.
+
 \subsection{FigureSelectionListener in JHotDraw}
 The original observer pattern of the \texttt{FigureSelectionListener} functionality in JHotDraw is illustrated in Figure \ref{fig:JHotDraw_FigureSelectionListener_OOP}.
 
@@ -63,10 +257,19 @@ The original observer pattern of the \texttt{FigureSelectionListener} functional
   	\label{fig:JHotDraw_FigureSelectionListener_OOP}
 \end{figure}
 
-As the figure illustrates, 
+As the figure illustrates, the \texttt{FigureSelectionListener} interface defined the \textit{Observer} role.
+The classes that are interested in the changes of selection of figures in a \texttt{DrawingView} implement this interface.
+Accordingly, the \texttt{DrawingView} defines the \textit{Subject} role providing methods for adding and removing figure selection listeners.
+The only class that implements this is the \texttt{StandardDrawingView} which the \texttt{NullDrawingView} has an empty implementation.
+
+The \texttt{StandardDrawingView} keeps the selection listeners in a list, the \texttt{fSelectionListeners}, and notifies the listeners by calling the method \texttt{fireSelectionChanged}.
+This method is invoked after the call of the methods: \texttt{addToSelection}, \texttt{removeFromSelection}, \texttt{toggleSelection} and \texttt{clearSelection}, which indicate the change of figure selection.
+On the observers side, the figure selection listeners implement the \texttt{figureSelectionChanged} method that is executed in the case of notification from the subject.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Refactoring FigureSelectionListener in AJHotDraw}
+Marin et al. present a refactoring of this concern in AJHotDraw \cite{marin2005approach}. 
+Their refactoring can be seen in Figure \ref{fig:JHotDraw_FigureSelectionListener_AOP}. 
 
 \begin{figure}[H]
 	\centering
@@ -74,10 +277,19 @@ As the figure illustrates,
   	\caption{FigureSelectionListener in AJHotDraw}
   	\label{fig:JHotDraw_FigureSelectionListener_AOP}
 \end{figure}
+The type-based refactoring they proposed they have used two crosscut sorts, namely \textit{role superimposition} and \textit{consistent behavior}.
 
 \subsubsection{Role Superimposition}
+As defined by the authors \cite{marin2005classification}, the role superimposition refers to the implementation of a specific secondary role or responsibility.
+In the \texttt{FigureSelectionListener} case, they used it twice, one for each of the roles.
+More specifically, they abstract the role in a \texttt{GenericRole} interface and specific roles, observer and subject extend this interface.
 
-\subsubsection{Consistent Behavior Pointcut}
+\subsubsection{Consistent Behavior}
+According to the authors\cite{marin2005classification}, the consistent behavior sort implements a consistent behavior for a number of method elements that can be captured by a natural pointcut.
+In this case it is used to notify the observers of the changes in the subject object.
+More specifically, the methods \texttt{addToSelection}, \texttt{removeFromSelection}, \texttt{toggleSelection} and \texttt{clearSelection} are consisted behavior.
+The definition of the pointcuts that describes the consisted behavior is illustrated in Listing \ref{lst:Consistent Behavior in FigureSelectionListener}.
+
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=AspectJ, escapechar=|]
 public aspect SelectionChangedNotification {
@@ -105,8 +317,39 @@ public aspect SelectionChangedNotification {
 	\label{lst:Consistent Behavior in FigureSelectionListener}
 \end{sourcecode}
 
+\subsubsection{Benefits and Consistent Behavior}
+According to the authors \cite{marin2005approach}, such refactoring has the benefit that the crosscutting elements are addressed individually, which leads to a modular solution and any deviations from the pattern implementation can be addressed separately.
+
+However, as they also mention \cite{marin2005approach}, the definition of pointcuts to capture the calls to the notifier, as for many consistent behavior instances, is difficult. 
+As Listing \ref{lst:StandardDrawingView clearSelection Method} shows, the original \texttt{clearSelection} method in JHotDraw calls \texttt{fireSelectionChanged} under conditions.
+However, considering the \ac{aop} solution of AJHotDraw, Listing \ref{lst:Consistent Behavior in FigureSelectionListener}, this is not the case.
+Their pointcut definition, the pattern refactoring solution notifies the observers independently of the condition in the caller.
+This implementation deviates from the behavior conservation of the original JHotDraw leading to a harmful for the functionality implementation.
+Although, according to Marin et al. it is potentially harmless in this case.
+Finally, the problem of the unconditional call of the a method in a pointcut is clearly a problem of the language, \ac{aop} current mechanisms of AspectJ does not support such functionality.
+
+\begin{sourcecode}
+	\begin{lstlisting}[language=AspectJ, escapechar=|]
+public void clearSelection() {
+	if (selectionCount() == 0) {
+		// avoid unnecessary selection changed event when nothing has to be cleared
+		return;
+	}
+	FigureEnumeration fe = selection();
+	while (fe.hasNextFigure()) {
+		fe.nextFigure().invalidate();
+	}
+	...
+	fireSelectionChanged();
+}
+	\end{lstlisting}
+	\caption{StandardDrawingView clearSelection Method}
+	\label{lst:StandardDrawingView clearSelection Method}
+\end{sourcecode}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Refactoring FigureSelectionListener in ManagedDataJHotDraw}
+That leads us to our managed data refactoring of the \texttt{FigureSelectionListener} concern.
 
 \begin{figure}[H]
 	\centering
@@ -123,6 +366,56 @@ public aspect SelectionChangedNotification {
 
 \subsection{SubjectRole Integration}
 \subsubsection{Consistent Behavior Pointcut}
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public interface FigureSelectionPointcut {
+	void addToSelection(Figure figure);
+	void removeFromSelection(Figure figure);
+	void toggleSelection(Figure figure);
+	void clearSelection();
+}
+	\end{lstlisting}
+	\caption{FigureSelectionPointcut interface}
+	\label{lst:FigureSelectionPointcut}
+\end{sourcecode}
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public class FigureSelectionListenerSubjectRoleMObject extends MObject 
+	implements FigureSelectionPointcut, SubjectRole {
+	...	
+	private void executeListenerActions() {
+		listeners.values().forEach(Action::execute);
+	}
+
+	@Override
+	public void addToSelection(Figure figure) {
+		executeListenerActions();
+	}
+
+	@Override
+	public void removeFromSelection(Figure figure) {
+		executeListenerActions();
+	}
+
+	@Override
+	public void toggleSelection(Figure figure) {
+		executeListenerActions();
+	}
+
+	@Override
+	public void clearSelection() {
+		if (((MDStandardDrawingView) this.getProxy()).selectionCount() > 0) {
+		executeListenerActions();
+		}
+	}
+}
+	\end{lstlisting}
+	\caption{FigureSelectionListenerSubjectRoleMObject}
+	\label{lst:FigureSelectionListenerSubjectRoleMObject}
+\end{sourcecode}
+
 
 % Conditions in point cuts, 
 % Something that it is not in the AJHotDraw version.
