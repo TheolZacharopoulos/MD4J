@@ -198,6 +198,7 @@ Following that, we check if a \texttt{Key} field exists on that field's type and
 	\begin{lstlisting}[language=Java, escapechar=|]
 public MObject(Klass schemaKlass, Object... initializers) {
 	this.schemaKlass = schemaKlass;
+
 	this.schemaKlass.fields().forEach(this::safeSetupField);|\label{line:setup_fields}|
 	if (initializers != null) {
 		this.safeInitializeProps(initializers);
@@ -206,18 +207,12 @@ public MObject(Klass schemaKlass, Object... initializers) {
 
 protected void setupField(Field field) {
 	if (!field.many()) { |\label{line:setup_field_many_check}|
-
-		// if it is a primitive make it a Primitive field, 
-		// otherwise a reference (managed object)
 		if (field.type().schemaKlass().name().equals("Primitive")) {|\label{line:instanceof}|
 			this.props.put(field.name(), new MObjectFieldSinglePrimitive(this, field));
 		} else {
 			this.props.put(field.name(), new MObjectFieldSingleMObj(this, field));
 		}
 	} else {
-
-		// in case it is a Primitive, then is always a List
-		// Sets of Primitives are not supported (yet)
 		if (field.type().schemaKlass().name().equals("Primitive")) {
 			this.props.put(field.name(), new MObjectFieldManyList(this, field));
 		} else {
@@ -334,7 +329,6 @@ try {
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Self-Describing Schemas}\label{Self-Describing Schemas}
 As explained by Cook et al. \cite{loh2012managed}, a self-describing schema is a schema that can be used to define schemas, including itself.
-% TODO: add more from kurtev2006model
 Our framework is fully self-described, the schemas are also described by schemas which are both models \cite{kurtev2006model}. 
 To allow schemas to be managed data we need a ``self-describing schema mechanism'' or \textit{SchemaSchema}.
 Through the \textit{SchemaSchema} the approach of managed data can be applied at the meta level as well.
@@ -449,7 +443,6 @@ public static Schema load(
 
             fieldsForKlass.add(field);
 		}
-   
 		// create a new klass
 		final Klass klass = factory.Klass();
 		klass.name(klassName);
@@ -457,11 +450,9 @@ public static Schema load(
 		// wire the owner klass in fields,
 		fieldsForKlass.values().forEach(field -> field.owner(klass));
 	}
-
 	// wire the types on schema, 
 	// it is inverse so it will refer to schema.types() immediately
 	types.forEach(type -> type.schema(schema));
-
 	return schema;
 }
 	\end{lstlisting}
@@ -530,7 +521,7 @@ Thus, it can be used to create other schemas like the Machine schema or even its
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.55\textwidth]{figures/schema_schema_models.png}}
+  	\fbox{\includegraphics[width=.45\textwidth]{figures/schema_schema_models.png}}
   	\caption{Boot Schema models}
   	\label{fig:schema_schema_models}
 \end{figure}
@@ -564,10 +555,8 @@ The definition of this interface is shown in Listing \ref{Primitives Definition}
 public interface Primitives {
 	Integer Integer();
 	int _int();
-
 	Boolean Boolean();
 	boolean _boolean();
-
 	String String();
 	Class Class();
 	Float Float();

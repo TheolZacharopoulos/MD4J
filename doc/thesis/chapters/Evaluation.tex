@@ -5,48 +5,171 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Evaluation}\label{Evaluation}
 
+Having presented evidence that our framework is able to solve the problem of \ac{ccc}, Chapters \ref{Example Application} and \ref{AspectRefactoring}, we will now evaluate our claims.
+In this chapter we evaluate of our contributions in taming aspects with managed data, in relation to our research questions.
+
 \section{Research Questions and Answers}\label{Research Questions and Answers}
-In Chapter \ref{Introduction} we stated three research questions that were the main focus of this thesis.
-Up to this point we must be able to answer all of them as follows:
+In Chapter \ref{Introduction} we stated three research questions which were the main focus of this thesis.
+These are answered as follows:
 
-\paragraph{Can managed data be implemented in a static language?}\mbox{}\\
-...
+\paragraph{Can managed data be implemented in a static language?}
+From our managed data implementation in Java, presented in Chapter \ref{Implementation}, we conclude that it is possible to implement managed data in a static programming language.
+For the static implementation of managed data in Java, we used Java's reflection capabilities and Dynamic Proxies.
 
-\paragraph{Can managed data solve the problem of crosscutting concerns?}\mbox{}\\
-...
+\paragraph{Can managed data solve the problem of crosscutting concerns?}
+We argue that by using data managers, managed data can implement aspects of data in a modular way.
+As presented in both Chapters \ref{Example Application} and \ref{AspectRefactoring}, managed data can tame aspects and solve the problem of \acrlong{ccc}.
 
-\paragraph{To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, compared to the original and the \ac{aop} implementation?}\mbox{}\\
-...
+\paragraph{To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, compared to the original and the \acrlong{aop} implementation?}
+The results of our aspect refactoring in Chapter \ref{AspectRefactoring} show that managed data can tame aspects of JHotDraw. 
+In addition, we claim that our solution extends the capabilities of the AJHotDraw implementation.
+However, in this chapter, we provide further evaluation of our aspect refactoring and we compare it with the \acrlong{aop} solution.
 
-\section{Evidence}\label{Evidence}
+\section{Modularity Properties}\label{Eval Modularity Properties}
 
-\section{Results}\label{Results}
+In order to make a reliable assessment of our research, we apply the same software quality metrics presented by Hannemann et al. \cite{hannemann2002design} in their design patterns refactoring.
+More specifically, the authors refer to those metrics as ``closely-related modularity properties'' and use them to analyze and evaluate their design pattern solutions in AspectJ.
 
-\subsection{Locality}
-\subsection{Reusability}
-\subsection{Composition transparency}
-\subsection{(Un)pluggability}
+Since our solution of the observer pattern concern in JHotDraw refers to the same issue that Hannemann et al. \cite{hannemann2005role} describes, we concluded that using the same modularity metrics will lead to a more reliable assessment of our solution and a more definitive assessment of our designs.
+The focal modularity properties are: \textit{Locality}, \textit{Reusability}, \textit{Composition transparency} and \textit{(Un)pluggability}. 
 
-\section{Claims}\label{Evaluation Claims}
+\subsection{Modularity Properties in the Observer Pattern}
+
+In their \textit{Observer} pattern refactoring in AspectJ, Hannemann et al. \cite{hannemann2005role}, along with Marin et al. \cite{marin2005approach} who used the same refactoring method in AJHotDraw, assess their results using these four modularity properties.
+
+\subsubsection{Locality}
+The \textit{locality} property refers to the ability of an existing class to be incorporated into a pattern instance with effortless adaptation. 
+In this case, all the changes have to be made in the pattern instance.
+
+As shown in the \ac{aop} solution, the code that implements the observer pattern is in concrete observer aspects, nothing is scattered in the participant classes. 
+Thus, all the participants are free of the pattern context and there is no coupling between the participants \cite{hannemann2005role}.
+However, as the \ac{aop} evolution paradox suggests \cite{tourwe2003existence}, the aspects themselves are strongly coupled to the application's components.
+
+Likewise, in the \textit{managed data} version, \textit{Subject} and \textit{Observer} classes are pattern agnostic.
+Those classes are not aware of their pattern properties since they have been attached later by a subject role data manager.
+
+\subsubsection{Reusability}
+\textit{Reusability} holds when a class is not coupled to its role in a pattern.
+Therefore, it can be used in different contexts without modifications and the reusability of participants can be increased.
+
+In the \ac{aop} version, the core pattern code is abstracted and reusable. 
+They have implemented abstract aspect code that explicitly refers to an observer pattern generalized implementation.
+This has been defined as an abstract aspect and it can be reused and shared across multiple observer pattern instances \cite{hannemann2005role}.
+That leads to a modular solution, although the concrete aspects have high-coupling with the application's components.
+
+Similarly, in the \textit{managed data} version, we have implemented the observer pattern as a reusable data manager.
+Moreover, the definition of this data manager is independent from the object's structure.
+No coupling between the application and the observer pattern implementation exists.
+The only ``case-specific'' functionality is the consistent behavior, which is similar to the one presented in the \ac{aop} solution, although, our solution supports conditional pointcuts.
+Additionally, the managed data version defines the pointcut in an explicit interface, separating the general observer from the specific consistent behavior.
+
+\subsubsection{(Un)pluggability}
+Both the \textit{locality} and the \textit{reusability} properties of a system make the pattern implementations \textit{(un)pluggable}.
+
+In the \ac{aop} version, since \textit{Subjects} and \textit{Observers} do not need to be aware of their role in any pattern instance, it is possible to switch between using a pattern and not using it in the system \cite{hannemann2005role}. 
+
+The \textit{managed data} version, takes this a step further.
+It allows the programmer to ``plug'' or ``unplug'' specifications of the pattern by simply creating managed objects, using the preferable data manager with or without the specifications for the pattern.
+One can switch to the pattern implementation by creating objects provided by the subject role data manager, or simply by the basic data manager, which would lead to a non-observable object.
+
+\subsubsection{Composition transparency}
+Finally, having achieved \textit{locality} and \textit{reusability}, we have obtained an \textit{(un)pluggable} system.
+This suggests that we can reuse generalized pattern code and localize the code for a particular pattern instance.
+Thus, creating multiple instances of the same pattern in one application, it is easier to understand (\textit{composition transparency}).
+This way the problem of having multiple instances of a design pattern in one application is solved.
+
+In the \ac{aop} version, a pattern's participants are not coupled to the pattern, neither to the abstract aspects.
+Therefore, if a \textit{Subject} or an \textit{Observer} takes part in multiple observing relationships, their code does not become more complicated \cite{hannemann2005role}.
+However, the composition becomes more complicated in the join-points, since such an aspect implementation has to include multiple roles.
+
+In the \textit{managed data} version, we can implement such a thing in various ways.
+First, we can choose the \ac{aop} approach, by implementing a generalized data manager for the pattern and concrete data managers for each implementation.
+Alternatively, we could implement a data manager which implements a set of specifications that result to the composition of patterns.
+Such solution would lead to a separate specification definition that describes a composition of patterns.
+Consequently, the final system will be simple and (un)pluggable since the composition is transparent in a data manager.
+
+% TODO: Undo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{(Un)pluggability of the Undo concern}
+% In order to evaluate the \ac{ccc} refactoring of ``Undo'' Marin \cite{marin2004refactoring} used the (Un)pluggability property. The author groups the complexity of the commands based two criteria.
+% First, on the degree of \textit{tangling} of the undo setup in the command's logic, particularly the activity's \texttt{execute()}method. 
+% Second, on the impact of removing the undo-related part from its original site, which can be estimated by the number of references to the factory method and to the methods of the nested undo activity.
+% Thus, the (un)pluggability property gives a measure of how clearly the concern is distinguished in the original code and is a good estimate of the refactoring costs.
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{AspectJ Drawbacks and Limitations}
+% By executing aspect-refactoring the two concerns are separated, modularized and the secondary concern of undo is no longer tangled into the implementation of the primary one.
+
+% However, there are certain drawbacks to this approach.
+% For instance, AspectJ's mechanisms do not allow introduction of nested classes, the post-refactoring association will only be an indirect one, based on naming conventions (``\texttt{UndoActivity}''). 
+% This is a weaker connection than the one provided by the original solution. 
+% Another drawback that is observed is the change of the visibility of the methods introduced from the aspects, for example the inter-type declarations. 
+% The visibility declared in the aspect refers to the aspect and not to the target class. 
+% Such drawbacks could be overcome by a better aspect language support, which will be further discussed in this thesis.
 
 \section{Discussion}\label{Evaluation Discussion}
-\subsection{In Practice}\label{Evaluation Practice}
+Conclusively, managed data is able to successfully tame aspects in a system.
+However, the following issues should be acknowledged:
 
-\subsection{Benefits and Pitfalls}\label{Benefits and Pitfalls}
+\subsection{Modularity}
+First, the modularity of data managers and their abstract way of data manipulation makes the implementation of aspects very simple and extensible.
+More specifically, implementing \textit{components} (non-crosscutting concerns) as managed data and \textit{aspects} (crosscutting concerns) by using specific data managers, one completely separates the two concepts.
+Contrary to the \ac{aop} version, managed data does not couple the aspects with the application's components code.
+The aspects are reusable data managers that can be plugged / unplugged and used in various concerns.
+Certainly, there are application specific parts, such as pointcut definitions; however, by \textit{stacking} data managers we can support the application specific pointcuts at the lowest level.
+As a result, we can claim that managed data does not entirely solve the \textbf{evolution paradox} \cite{tourwe2003existence}, but it exceeds \ac{aop} system in modularity.
 
-\subsubsection{Modularity}\label{Evaluation Modularity}
+\subsection{Flexibility}
+Managed data can be used similarly to \ac{aop}; however, the flexibility of the language takes it a step further.
+The design of the application is not bounded by the language, like in AspectJ's case.
 
-\subsubsection{Encapsulation Problem}
-% no encapsulation / default methods
+AspectJ has many limitations that can be one overcome by using managed data.
+In particular, as shown, data managers allow to access the current object's state, while AspectJ's aspects implementation do not.
+An object's state can be used for implementing functionalities depending on the current state of an object, for instance conditions in pointcuts.
 
-\subsubsection{Performance}\label{Evaluation Performance}
+Furthermore, \ac{aop} tries to discriminate methods based on some common structural properties such as particular coding conventions. 
+This is understandable; however, what happens in case the conventions followed do not agree with the rules, or in case developers do not follow the desired conventions?
+In other words, it is very difficult to capture the required join-points for the aspect weaver in a general and extensible way.
+Managed data on the other hand do not require such conventions.
+Since we have defined our data, its structure is accessible via the \texttt{schemaKlass} of the \texttt{MObject}, therefore we do not need any kind of conventions to determine the structure of properties.
 
-\section{Remarks}\label{Evaluation Remarks}
+\subsection{Performance}
+In practice, since managed data has been implemented using Java reflection and Dynamic Proxies, it is unfavorable for applications that need performance to use it.
+\ac{aop}, and specifically the \textit{aspect weaving} process, provides an oblivious way of dealing with aspects.
+The weaver produces static Java code, which is then compiled in \ac{jvm} and can be optimized.
+On the contrary, data managers dynamically analyze the schemas through reflection, which makes it a lot harder for the compiler to optimize. 
+More specifically, even though the HotSpot \ac{jvm} has one of the best just-in-time compilers, Java's dynamic proxies introduce 6.5x overhead \cite{marr2015zero}.
+Thus, \ac{aop} performance is much higher than managed data.
 
+\subsection{Migration and Integration}
+Finally, both the migration and the integration of an existing application in the two cases has some trade-offs.
+
+On one hand, the integration of an \ac{aop} version requires a whole new language (e.g. AspectJ) in line with the new concepts of the \ac{aop} paradigm.
+A developer has to implement \textit{aspects}, \textit{advices}, \textit{join-points} and \textit{pointcuts}. 
+In addition, the programmer has to setup AspectJ to the IDE of preference along with the programming environment.
+After the environment has been set up, the migration of an existing application to the \ac{aop} paradigm is relatively easy.
+Finally, a developer has to simply migrate the application using the aspect oriented language's concepts and the weaver will do the job.
+
+On the other hand, the integration of managed data is very simple since it is pure Java.
+No new language is required, no any additional IDE setup nor programming environment.
+Additionally, although managed data introduces new concepts, it still uses the Java syntax, e.g. interfaces and annotations; therefore, the integration is a lot simpler.
+It is relatively easy for a developer, who is familiar with Java, to learn the managed data concepts.
+However, the migration of an existing application to managed data can be time consuming since a programmer has to migrate it from normal Java class definition  to managed data schemas definition (interfaces).
+Additionally, some limitations arise from this migration because interfaces and classes do not explicitly support the same functionalities.
+As seen in Chapter \ref{AspectRefactoring}, the framework has some limitations such as Java keywords and encapsulation of the methods in interfaces.
+However, such definitions could be defined using annotations in future work.
+
+% TODO: 
 \section{Threads to Validity}
-% all study designs have flaws. By acknowledging them explicitly, the researchers show that they are aware of the flaws and have taken reasonable steps to minimize their effects.
-
-% Construct Validity: Efficient intepretation of the results 
+Definitely, all study designs have flaws.
+% Construct Validity: Efficient interpretation of the results 
+First, our construct validity may include misleading interpretation of the results.
+Even though, we followed the same assessment model as other did in the past, we may still miss some points in which \ac{aop} can be proven more strong than managed data.
+Such results may have been omitted because of limited experience with AspectJ and its features.
 % Internal validity: Study design
 % External validity: Justified results (is it the right case?)
+We consider our internal and external validity of this thesis satisfactorily since our focus was narrowed to a specific case and predefined metrics.
 % Reliability validity: same results on replication?
+Finally, the reliability validity is something that can always be questioned.
+In particular, by repeating the refactoring one could come up with different design and therefore, conclude on different assessment.
+

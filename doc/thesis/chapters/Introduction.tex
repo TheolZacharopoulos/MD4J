@@ -103,18 +103,20 @@ More specifically we define \textit{schemas} using Java interfaces and dynamic p
 Furthermore, we provide a proof of concept the examples given in \cite{loh2012managed} but this time developed in Java using our framework. 
 To stack data managers\cite{loh2012managed}, we use the \textit{Decorator Pattern} \cite{gamma1995design}. 
 
-In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented an inventory of the following aspects and design patterns from JHotDraw using data managers:
-\begin{description}
+In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented the \textit{Observer Pattern}, which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters pattern code through the classes. 
+This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
 
-  \item[The Observer Pattern,] which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters pattern code through the classes. 
-  This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
+% TODO: Undo
+% In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented an inventory of the following aspects and design patterns from JHotDraw using data managers:
+% \begin{description}
 
-  \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
-  More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
+%   \item[The Observer Pattern,] which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters pattern code through the classes. 
+%   This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
 
-  % TODO: More patterns?
+%   \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
+%   More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
 
-\end{description}
+% \end{description}
 
 This inventory is implemented using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
 We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
@@ -159,11 +161,12 @@ In order to answer our research questions we studied the theoretical background,
 
   \item[Contribution 3: Managed data Evaluation in JHotDraw.]
   We implemented a new version of the JHotDraw application using our framework in order to evaluate our refactoring of \ac{ccc}.
-  More specifically, we focused on the \textit{Undo} concern, which is a \textit{Command Pattern} and it is scattered around the modules of the JHotDraw, as well as the \textit{Observer Pattern} which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
-  % TODO: More patterns?
+  More specifically, we focused on the \textit{Observer Pattern}, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
+  % TODO: Undo
+  % More specifically, we focused on the \textit{Observer Pattern}, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules, as well as the \textit{Undo} concern, which is part of a \textit{Command Pattern} and it is scattered around the modules that use this functionality.
 
-  \item[Contribution 4: JHotDraw implementation results assessment and comparison with AJHotDraw.]
-  Finally, we present the results of our evaluation and we compare them with AJHotDraw which implements \ac{aop} using the AspectJ language, again in Java.
+  \item[Contribution 4: JHotDraw refactoring results assessment and comparison with AJHotDraw.]
+  Finally, we present the results of our evaluation and we compare them with AJHotDraw which is implemented in \ac{aop}, using the AspectJ language, again in Java.
 
 \end{description}
 
@@ -176,7 +179,7 @@ In particular, we discuss points that we followed and points that we've tried to
 
   \item[Meta-Object Protocol]~\\
   Managed data can be implemented using reflection and the \ac{mop}. 
-  The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and in particular, the \textbf{method\_missing} mechanism. 
+  The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and in particular, the \textit{method\_missing} mechanism. 
   In other languages (such as Java, JavaScript or C\#) that support dynamic proxies, they can be used for the managed data implementation, which is the way we've implemented it.
   The \ac{mop} \cite{kiczales1991art} was first implemented for simple \ac{oop} capabilities of the Lisp language in order to satisfy some developer demands including compatibility, extensibility and developers experimentation. 
   The idea was that the languages have been designed to be viewed as black box abstractions without giving the programmers the control over semantics or the implementation of those abstractions. 
@@ -224,6 +227,7 @@ In Chapter \ref{Example Application} we demonstrate an example to show the capab
 In Chapter \ref{Implementation} the implementation of managed data in Java is presented and discussed, providing detailed explanation of our issues and implementation details.
 Next, in Chapter \ref{AspectRefactoring} a showcase is presented, by applying our implementation to refactor aspects in JHotDraw.
 In Chapter \ref{Evaluation} an evaluation of the aspect refactoring is illustrated.
-Additionally, some metrics, claims and results are presented.
-Finally, a conclusion is given in Chapter \ref{Conclusion} followed by further work in Chapter \ref{Further Work}.
+% Additionally, some metrics, claims and results are presented.
+Finally, a conclusion is given in Chapter \ref{Conclusion}. 
+% followed by further work in Chapter \ref{Further Work}.
 
