@@ -57,6 +57,8 @@ public class PrimitivesManager {
         if (primitiveClass.isAssignableFrom(Float.class))   return 0.f;
         if (primitiveClass.isAssignableFrom(Double.class))  return 0.;
         if (primitiveClass.isAssignableFrom(Boolean.class)) return false;
+        if (primitiveClass.isAssignableFrom(Object.class))  return null;
+        if (primitiveClass.isAssignableFrom(Class.class))   return null;
         return null;
     }
 
@@ -98,7 +100,8 @@ public class PrimitivesManager {
      */
     public boolean isPrimitiveClass(Class<?> typeClass) {
         for (AbstractPrimitive primitive : primitives) {
-            if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
+            if (primitive.getTypeClass().isAssignableFrom(typeClass) ||
+                typeClass.equals(Object.class)) {
                 return true;
             }
         }
@@ -110,6 +113,10 @@ public class PrimitivesManager {
             if (primitive.getTypeClass().isAssignableFrom(typeClass)) {
                 return primitive.getDefaultValue();
             }
+        }
+
+        if (typeClass.equals(Object.class)) {
+            return null;
         }
 
         throw new UnknownTypeException("Unknown primitive type: " + typeClass.getSimpleName());

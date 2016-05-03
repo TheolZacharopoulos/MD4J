@@ -26,6 +26,8 @@ public interface Person extends M {
     @Contain
     Set<Car> cars(Car... cars);
 
+    Object value(Object... val);
+
     default String getNameWithFormat() {
         return "__" + name() + "__";
     }
