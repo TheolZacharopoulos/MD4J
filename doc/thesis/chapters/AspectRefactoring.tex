@@ -144,8 +144,7 @@ public interface JHotDrawPrimitives extends Primitives {
 	CH.ifa.draw.framework.Painter Painter();
 	CH.ifa.draw.framework.PointConstrainer PointConstrainer();
 
-	CH.ifa.draw.framework.Handle Handle();
-	CH.ifa.draw.framework.Figure Figure();
+	...
 }
 	\end{lstlisting}
 	\caption{JHotDraw Primitives Definition}
@@ -365,7 +364,7 @@ In JHotDraw's original code, the \textit{observer} \texttt{DrawApplication} crea
 During the construction the \texttt{DrawApplication} passes itself to the constructor of the \texttt{StandardDrawingView} and this in turn adds it to its listeners list, using the \texttt{addFigureSelectionListener} method.
 This is shown in Line \ref{line:addFigureSelectionListener_contructor} of Listing \ref{lst:DrawingView Constructor}.
 Likewise, the rest of the classes that implement the \texttt{FigureSelectionListener} interface, perform the same mechanism, adding or removing themselves from the \texttt{DrawingView} \textit{Subject}.
-Consequently, the pattern code is scattered among all of its participants.
+Consequently, the pattern code is scattered among its participants.
 
 In this section we present our managed data refactoring of the \texttt{FigureSelectionListener} concern.
 Managed data implements aspects using data managers, by adding specifications to the data.
@@ -384,24 +383,24 @@ More specifically, we needed a data manager that performs the following:
 
 	\item Enables the \textit{Subject} to \textit{add} and \textit{remove} listener objects to and from itself. 
 	\newline
-	In this case the \texttt{FigureSelectionListeners}.
+	In this case the \texttt{FigureSelectionListener} instances.
 
 	\item Defines an \textit{Action} that will be executed on the listeners in case of the \textit{Subject}'s notification.
 	\newline
-	In this case the code in the \texttt{figureSelectionChanged()} method.
+	In this case the \texttt{figureSelectionChanged} method.
 
 	\item Finally, it defines a pointcut for the consistent behavior that executes the actions on the listeners. 
 	In this case the \texttt{addToSelection}, \texttt{removeFromSelection}, \texttt{toggleSelection} and \texttt{clearSelection} methods.
 \end{enumerate}
 
 \subsubsection{Data manager}
+First, we can abstract the \textit{Subject} role concern code in a separate data manager.
 As it is mentioned in Chapter \ref{Implementation}, the role of a data manager class is to create a \texttt{MObject}, which interprets and handles a managed object instance.
-First, this \texttt{MObject} namely FigureSelectionListenerSubjectRole MObject had to implement our specifications.
-In this case the specification was the \textit{Subject} role.
+Therefore, we first need this \texttt{MObject}, namely \texttt{SubjectRoleMObject}, to implement our subject role specifications.
 
-\subsubsection{SubjectRole specification}
+\subsubsection{SubjectRole specifications}
 We define the functionality of the \textit{SubjectRole} in an interface, shown in Figure \ref{lst:SubjectRole Interface}.
-The subject role simply needs to add and remove listener object to and from a managed object.
+The subject role simply needs to add and remove listener objects to and from a managed object.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -430,10 +429,52 @@ public interface Action {
 	\label{lst:Action Interface}
 \end{sourcecode}
 
-\subsubsection{Consistent Behavior Pointcut}
-Next, as with the \ac{aop} version, we also needed to define the pointcut for the consistent behavior concern sort.
-For practical reasons, we used an interface to define them.
-As Figure \ref{lst:FigureSelectionPointcut} shows, a list of the methods that execute the \texttt{Action} for each listener, are defined in the \texttt{FigureSelectionPointcut} interface. 
+\subsubsection{SubjectRole MObject}
+Having the specifications of a Subject in place we need a data manager that implements them.
+This data manager defines a ``role superimposition'' of the subject role.
+
+\paragraph{Role Superimposition}\mbox{}\\
+The implementation of the \texttt{SubjectRoleMObject} is presented in Listing \ref{lst:SubjectRoleMObject}.
+First, the SubjectRoleMObject extends the MObject, inheriting the functionalities of the base data manager, followed by the implementation of the \texttt{SubjectRole} specifications.
+By implementing the \texttt{SubjectRole} interface, the MObject has to implement the \texttt{addListener} and \texttt{removeListener} methods that have been provided by the subject role specifications.
+Having added a listener object along with its \texttt{Action} to be executed on each notification, the method \texttt{executeListenerActions} executes all the actions for each of the listeners.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public class SubjectRoleMObject extends MObject implements SubjectRole { |\label{line:subj_mobj_extends}|
+
+	protected Map<Object, Action> listeners;
+
+	public SubjectRoleMObject(Klass schemaKlass, Object... initializers) {
+		super(schemaKlass, initializers);
+		listeners = new HashMap<>();
+	}
+
+	protected void executeListenerActions() {
+		listeners.values().forEach(Action::execute); |\label{line:subj_mobj_execute}|
+	}
+
+	@Override
+	public void addListener(Object listener, Action action) {
+		listeners.put(listener, action);
+	}
+
+	@Override
+	public void removeListener(Object listener) {
+		listeners.remove(listener);
+	}
+	...
+}
+	\end{lstlisting}
+	\caption{SubjectRoleMObject}
+	\label{lst:SubjectRoleMObject}
+\end{sourcecode}
+
+\subsubsection{Consistent Behavior}
+Since we have implemented a form of \textit{role superimposition} what is left is the \textit{consistent behavior} pointcut.
+However, this functionality is application specific, therefore we can extend the abstract \texttt{SubjectRole} data manager with an application specific data manager that implements the consistent behavior.
+For practical reasons, we used an interface to define these specifications.
+As Listing \ref{lst:FigureSelectionPointcut} shows, a list of the methods that execute the \texttt{Action} for each listener are defined in the \texttt{FigureSelectionPointcut} interface. 
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -449,15 +490,11 @@ public interface FigureSelectionPointcut {
 \end{sourcecode}
 
 \subsubsection{FigureSelectionListenerSubjectRole MObject}
-Finally, having all of our specifications in place, we needed to implement the actual MObject that uses them.
+Finally, having all of our specifications in place, we need to implement the actual MObject that uses them.
+Of course we need a new data manager that is application specific, namely FigureSelectionListenerSubjectRole.
 In particular, the FigureSelectionListenerSubjectRole MObject implements those specifications and provides its managed objects with the ability to use them.
-
-\paragraph{Role Superimposition}\mbox{}\\
-The implementation of the FigureSelectionListenerSubjectRole MObject is presented in Listing \ref{lst:FigureSelectionListenerSubjectRoleMObject}.
-First, the FigureSelectionListenerSubjectRoleMObject extends the MObject, inheriting the functionalities of the base data manager, followed by the implementation of the \texttt{SubjectRole} specifications.
-By implementing the \texttt{SubjectRole} interface, the MObject has to implement the \texttt{addListener} and \texttt{removeListener} methods that provide the subject role specifications.
-Having added a listener object along with its \texttt{Action} to be executed on each notification, the method \texttt{executeListenerActions} executes all the actions for each of the listeners.
-Since we have implemented a form of \textit{role superimposition} what is left is the \textit{consistent behavior} pointcut.
+Additionally, this data manager extends the \texttt{SubjectRole} data manager, creating a stack of data managers.
+By stacking the data managers we have separated the application specific code, the consistent behavior in this case, from the more general subject role code.
 
 \paragraph{Consistent Behavior Pointcut}\mbox{}\\
 Considering that an MObject is an Invocation Handler, every method invocation passes through that object first.
@@ -466,6 +503,7 @@ This allows the programmer to add functionalities in these methods which in othe
 Similarly to the \ac{aop} solution, the pointcut includes the three methods that call the \texttt{fireSelectionChanged} method.
 However, in managed data, we are not limited to a specific method of a class but to an \texttt{Action} passed for the specific listener.
 Invoking the \texttt{executeListenerActions} method on each of the methods defined by the pointcut, we have implemented the concern as a modular aspect.
+Listing \ref{lst:FigureSelectionListenerSubjectRoleMObject} illustrates the code of the FigureSelectionListenerSubjectRole data manager.
 
 \paragraph{Conditions in Pointcuts}\mbox{}\\
 As it has been seen from the \ac{aop} solution, during the pointcut definition, the language did not allow to add any kind of conditions or other functionalities based on the state of the object.
@@ -476,37 +514,34 @@ In this case, the execution of the action on the listener is performed under a s
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public class FigureSelectionListenerSubjectRoleMObject 
-	extends MObject implements FigureSelectionPointcut, SubjectRole { |\label{line:fig_lis_mobj_extends}|
-	private Map<Object, Action> listeners;
-	...
-	private void executeListenerActions() { |\label{line:fig_lis_mobj_execute}|
-		listeners.values().forEach(Action::execute);
+	extends SubjectRoleMObject implements FigureSelectionPointcut {
+
+	public FigureSelectionListenerSubjectRoleMObject(
+		Klass schemaKlass, Object... initializers) 
+	{
+		super(schemaKlass, initializers);
 	}
 
+	@Override
 	public void addToSelection(Figure figure) {
 		executeListenerActions();
 	}
 
+	@Override
 	public void removeFromSelection(Figure figure) {
 		executeListenerActions();
 	}
 
+	@Override
 	public void toggleSelection(Figure figure) {
 		executeListenerActions();
 	}
 
-	public void clearSelection() { |\label{line:fig_lis_mobj_clear}|
-		if (((MDStandardDrawingView) this.getProxy()).selectionCount() > 0) {
+	@Override
+	public void clearSelection() {
+		if (((MDStandardDrawingView) this.getProxy()).selectionCount() > 0) { |\label{line:fig_lis_mobj_clear}|
 			executeListenerActions();
 		}
-	}
-
-	public void addListener(Object listener, Action action) {
-		listeners.put(listener, action);
-	}
-
-	public void removeListener(Object listener) {
-		listeners.remove(listener);
 	}
 }
 	\end{lstlisting}
@@ -514,7 +549,7 @@ public class FigureSelectionListenerSubjectRoleMObject
 	\label{lst:FigureSelectionListenerSubjectRoleMObject}
 \end{sourcecode}
 
-\begin{figure}
+\begin{figure} [H]
 	\centering
   	\fbox{\includegraphics[width=1\textwidth]{figures/JHotDraw_FigureSelectionListener_MD.png}}
   	\caption{FigureSelectionListener in ManagedDataJHotDraw}
@@ -531,6 +566,7 @@ Finally, conditions on the pointcuts have been defined, something that is not su
 The integration of the data manager was executed simply by using our schema factories and adding the listeners during construction.
 Most importantly, the behavior of the application remained equivalent to the original.
 ManagedDataJHotDraw conserved the behavior of JHotDraw, which we evaluated through its own test suite along with manual tests.
+Interestingly, by stacking data managers we manage to define aspects of our data in a modular way.
 
 % TODO: Undo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

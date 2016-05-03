@@ -20,7 +20,7 @@ For the static implementation of managed data in Java, we used Java's reflection
 We argue that by using data managers, managed data can implement aspects of data in a modular way.
 As presented in both Chapters \ref{Example Application} and \ref{AspectRefactoring}, managed data can tame aspects and solve the problem of \acrlong{ccc}.
 
-\paragraph{To what extent can managed data tame an inventory of aspects and design patterns in the JHotDraw framework, compared to the original and the \acrlong{aop} implementation?}
+\paragraph{To what extent can managed data tame an inventory of aspects in the JHotDraw framework, compared to the original and the \acrlong{aop} implementation?}
 The results of our aspect refactoring in Chapter \ref{AspectRefactoring} show that managed data can tame aspects of JHotDraw. 
 In addition, we claim that our solution extends the capabilities of the AJHotDraw implementation.
 However, in this chapter, we provide further evaluation of our aspect refactoring and we compare it with the \acrlong{aop} solution.
@@ -38,45 +38,47 @@ The focal modularity properties are: \textit{Locality}, \textit{Reusability}, \t
 In their \textit{Observer} pattern refactoring in AspectJ, Hannemann et al. \cite{hannemann2005role}, along with Marin et al. \cite{marin2005approach} who used the same refactoring method in AJHotDraw, assess their results using these four modularity properties.
 
 \subsubsection{Locality}
-The \textit{locality} property refers to the ability of an existing class to be incorporated into a pattern instance with effortless adaptation. 
-In this case, all the changes have to be made in the pattern instance.
+% The \textit{locality} property refers to the ability of an existing class to be incorporated into a pattern instance with effortless adaptation. 
+% In this case, all the changes have to be made in the pattern instance.
 
 As shown in the \ac{aop} solution, the code that implements the observer pattern is in concrete observer aspects, nothing is scattered in the participant classes. 
 Thus, all the participants are free of the pattern context and there is no coupling between the participants \cite{hannemann2005role}.
-However, as the \ac{aop} evolution paradox suggests \cite{tourwe2003existence}, the aspects themselves are strongly coupled to the application's components.
+However, as the \ac{aop} evolution paradox suggests \cite{tourwe2003existence}, the aspects themselves are strongly coupled to the application's code.
 
 Likewise, in the \textit{managed data} version, \textit{Subject} and \textit{Observer} classes are pattern agnostic.
 Those classes are not aware of their pattern properties since they have been attached later by a subject role data manager.
 
 \subsubsection{Reusability}
-\textit{Reusability} holds when a class is not coupled to its role in a pattern.
-Therefore, it can be used in different contexts without modifications and the reusability of participants can be increased.
+% \textit{Reusability} holds when a class is not coupled to its role in a pattern.
+% Therefore, it can be used in different contexts without modifications and the reusability of participants can be increased.
 
 In the \ac{aop} version, the core pattern code is abstracted and reusable. 
 They have implemented abstract aspect code that explicitly refers to an observer pattern generalized implementation.
 This has been defined as an abstract aspect and it can be reused and shared across multiple observer pattern instances \cite{hannemann2005role}.
-That leads to a modular solution, although the concrete aspects have high-coupling with the application's components.
+That leads to a modular solution, although the concrete aspects have high-coupling with the application's code.
 
 Similarly, in the \textit{managed data} version, we have implemented the observer pattern as a reusable data manager.
+More specifically, the \texttt{SubjectRole} data manager is an abstract observer pattern that can be reused in any case.
 Moreover, the definition of this data manager is independent from the object's structure.
 No coupling between the application and the observer pattern implementation exists.
 The only ``case-specific'' functionality is the consistent behavior, which is similar to the one presented in the \ac{aop} solution, although, our solution supports conditional pointcuts.
 Additionally, the managed data version defines the pointcut in an explicit interface, separating the general observer from the specific consistent behavior.
 
 \subsubsection{(Un)pluggability}
-Both the \textit{locality} and the \textit{reusability} properties of a system make the pattern implementations \textit{(un)pluggable}.
+% Both the \textit{locality} and the \textit{reusability} properties of a system make the pattern implementations \textit{(un)pluggable}.
 
 In the \ac{aop} version, since \textit{Subjects} and \textit{Observers} do not need to be aware of their role in any pattern instance, it is possible to switch between using a pattern and not using it in the system \cite{hannemann2005role}. 
 
 The \textit{managed data} version, takes this a step further.
 It allows the programmer to ``plug'' or ``unplug'' specifications of the pattern by simply creating managed objects, using the preferable data manager with or without the specifications for the pattern.
 One can switch to the pattern implementation by creating objects provided by the subject role data manager, or simply by the basic data manager, which would lead to a non-observable object.
+Furthermore, this (un)pluggability can be enabled in data managers composition level, by stacking data managers, something we have applied in the subject role and pointcut case.
 
 \subsubsection{Composition transparency}
-Finally, having achieved \textit{locality} and \textit{reusability}, we have obtained an \textit{(un)pluggable} system.
-This suggests that we can reuse generalized pattern code and localize the code for a particular pattern instance.
-Thus, creating multiple instances of the same pattern in one application, it is easier to understand (\textit{composition transparency}).
-This way the problem of having multiple instances of a design pattern in one application is solved.
+% Finally, having achieved \textit{locality} and \textit{reusability}, we have obtained an \textit{(un)pluggable} system.
+% This suggests that we can reuse generalized pattern code and localize the code for a particular pattern instance.
+% Thus, creating multiple instances of the same pattern in one application, it is easier to understand (\textit{composition transparency}).
+% This way the problem of having multiple instances of a design pattern in one application is solved.
 
 In the \ac{aop} version, a pattern's participants are not coupled to the pattern, neither to the abstract aspects.
 Therefore, if a \textit{Subject} or an \textit{Observer} takes part in multiple observing relationships, their code does not become more complicated \cite{hannemann2005role}.

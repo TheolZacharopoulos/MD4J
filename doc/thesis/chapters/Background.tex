@@ -14,12 +14,12 @@ The most significant, among the many, advantage of modular systems is the extens
 
 However, during the development of a system there is a number of concerns that have to be considered and implemented into the system. 
 In order to follow the modularity principles, those concerns have to be implemented in separate modules, this way the program will be extensible and its evolution will be easier.
-Nonetheless, many of those concerns can not fit into the existing modular mechanisms in any of the existing programming paradigms including both \acrlong{oop} and \acrlong{pp}. 
+Nonetheless, many of those concerns can not fit into the existing modular mechanisms in any of the existing programming paradigms including both \ac{oop} and \ac{pp} \cite{kiczales1997aspect}. 
 In those cases, the concerns are scattered through the modules of the system, resulting to scattered and tangled code. 
 Those concerns are called \acrlong{ccc} \cite{hannemann2005role}.
 \ac{ccc} are considered a serious issue for the evolution of a system and their effects of tangled and scattered code can be disastrous for a system's extensibility.
 
-The reason is that the code which is related to a concern is scattered in multiple modules, while the concern code is tangled with the each module's logic resulting in a system, which does not follow the \textit{Single Responsibility Principle} and consequently is hard to maintain.
+The reason is that the code which is related to a concern is scattered in multiple modules, while the concern code is tangled with the each module's logic resulting in a system, which does not follow the \textit{Single Responsibility Principle} and consequently is hard to maintain and evolve.
 
 Among many examples of those \ac{ccc} are persistence, caching, logging, error handling \cite{lippert2000study} and access control. 
 Additionally, some design patterns scatter ``design pattern code'' through the application, for instance the \textit{Observer Pattern}, \textit{Template Pattern}, \textit{Command Pattern} etc. \cite{hannemann2002design} \cite{marin2004refactoring}.
@@ -33,11 +33,11 @@ In other words, refactorings of \ac{ccc} should replace all the scattered and ta
 \section{Aspect Oriented Programming}\label{Aspect Oriented Programming}
 
 Kiczales et al. present \ac{aop} \cite{kiczales1997aspect} by using an example of a very simple image processing application. 
-In that system, as in every system, whenever two properties which are being programmed must compose different tasks and yet be coordinated (in the example filters and loop-fusion), they \textbf{crosscut} each other.
+In that system, as in every system, whenever two properties that are being programmed must compose different tasks and yet be coordinated (in the example filters and loop-fusion), they \textbf{crosscut} each other.
 Because general purposes languages provide only one composition mechanism, which leads to complexity and tangling, the programmer must do the co-composition manually.
-According to their theory, a system's property can be either a \textit{component}, if it can be clearly encapsulated in a generalized procedure, otherwise it is an \textit{aspect}.
-\ac{aop} supports the programmer in separating components and aspects from each other by providing mechanisms that make it possible to abstract and compose them together when producing the whole system (\textit{aspect weaving}).
-Alternatively to the common programming paradigms, \ac{oop} and \ac{pp} that allow programmers to only separate the \textit{components} from each other but crosscut the concerns.
+According to their theory, a system's property can be either a \textit{component}, if it can be clearly encapsulated in a generalized procedure, or it is an \textit{aspect}, which is the opposite.
+\ac{aop} supports the programmer in separating components and aspects from each other, by providing mechanisms that make it possible to abstract and compose them together when producing the whole system, a process called \textit{aspect weaving}.
+Alternatively to the common programming paradigms, \ac{oop} and \ac{pp}, that allow programmers to only separate the \textit{components} from each other but crosscut the concerns.
 
 However, implementing \ac{aop} programs is not that easy since several tools are needed in order to succeed. 
 More specifically, a general purpose language needs only a language, a \textit{compiler} and a \textit{program} written in the language that implements the application.
@@ -70,54 +70,60 @@ Hannemann et al. \cite{hannemann2002design} provide some example implementations
 As they mention, in an observer pattern implementation, both the \textit{Subject} and the \textit{Observer} have to know about their roles and have ``pattern related code'' in them. 
 As a result, adding or removing code from a class requires changes of code in that class. 
 
-In their implementation \cite{hannemann2002design} of the observer pattern in AspectJ, they separate abstract aspects for: 
+% In their implementation \cite{hannemann2002design} of the observer pattern in AspectJ, they separate abstract aspects for: 
 
-\begin{itemize}
-	\item The \textit{Subject} and \textit{Observer} roles in classes.
+% \begin{itemize}
+% 	\item The \textit{Subject} and \textit{Observer} roles in classes.
 
-	\item Maintenance of a mapping from \textit{Subjects} to \textit{Observers}.
+% 	\item Maintenance of a mapping from \textit{Subjects} to \textit{Observers}.
 
-	\item The trigger of \textit{Subjects} that update \textit{Observers}.
-\end{itemize}
+% 	\item The trigger of \textit{Subjects} that update \textit{Observers}.
+% \end{itemize}
 
-And concrete aspects for each instance of the pattern fills in the specific parts:
-\begin{itemize}
-	\item Which classes can be \textit{Subjects} and which \textit{Observers}.
+% And concrete aspects for each instance of the pattern fills in the specific parts:
+% \begin{itemize}
+% 	\item Which classes can be \textit{Subjects} and which \textit{Observers}.
 
-	\item A set of changes on the \textit{Subjects} that triggers the \textit{Observers}.
+% 	\item A set of changes on the \textit{Subjects} that triggers the \textit{Observers}.
 
-	\item The specific means of updating each kind of \textit{Observer} when the update logic requires it.
-\end{itemize}
+% 	\item The specific means of updating each kind of \textit{Observer} when the update logic requires it.
+% \end{itemize}
 
 \subsubsection{Modularity Properties}\label{BG Modularity Properties}
 During the assessment of their findings, the authors used four \textit{modularity properties}.
 In this thesis we used the same properties to assess our results.
-The properties are the following:
+The modularity properties are the following:
 
-\begin{itemize}
-	\item Locality
-	\item Reusability
-	\item Composition transparency
-	\item (Un)pluggability
-\end{itemize}
+\begin{description}
+	\item [Locality]
+	The \textit{locality} property refers to the ability of an existing class to be incorporated into a pattern instance with effortless adaptation. 
+	In this case, all the changes have to be made in the pattern instance.
 
-In general an object or a class that is not coupled to its role in a pattern can be used in different contexts without modifications and the reusability of participants can be increased. 
-The locality also means that existing classes can be incorporated into a pattern instance without the need to adapt them with extra effort. All the changes are made in the pattern instance. 
-This makes the pattern implementations themselves relatively (un)pluggable. 
-If we can reuse generalized pattern code and localize the code for a particular pattern instance, this can result in multiple instances of the same pattern in one application, making it easy to understand (composition transparency). 
-This solves the common problem of having multiple instances of a design pattern in one application \cite{hannemann2002design}.
+	\item [Reusability]
+	\textit{Reusability} holds when a class is not coupled to its role in a pattern.
+	Therefore, it can be used in different contexts without modifications and the reusability of participants can be increased.
+
+	\item [(Un)pluggability]
+	Both the \textit{locality} and the \textit{reusability} properties of a system make the pattern implementations \textit{(un)pluggable}.
+
+	\item [Composition transparency]
+	Having achieved \textit{locality} and \textit{reusability}, we have obtained an \textit{(un)pluggable} system.
+	This suggests that we can reuse generalized pattern code and localize the code for a particular pattern instance.
+	Thus, creating multiple instances of the same pattern in one application, it is easier to understand (\textit{composition transparency}).
+	This way the problem of having multiple instances of a design pattern in one application is solved.
+\end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evolvability issues}\label{Aspect Oriented Programming Evolvability}
 Since modularization and separation of concerns make the evolution of an application a lot easier and \ac{aop} provides mechanisms for modularization and system decomposition, aspect-oriented programs should be easier to be evolved and maintained.
-Paradoxically, this is not the case \cite{tourwe2003existence} since \ac{aop} technologies deliver applications that are as hard, and sometimes even harder, as non-\ac{aop}.
+Paradoxically, this is not the case since \ac{aop} technologies deliver applications that are as hard, and sometimes even harder, as non-\ac{aop}.
 
 According to Tourwe et al. \cite{tourwe2003existence} the problem is that aspects have to include a crosscut description of all places in the application.
 Thus, it is much harder to make such crosscuts oblivious to the application and most importantly to the rest of the modules. 
-Additionally, current means for specifying concerns rely heavily in the existing structure of the application, therefore the aspects are tightly coupled to the application (and its structure) and of course this affects negatively the evolvability of a system since it makes it hard to change it's structural.
-As Tourwe \cite{tourwe2003existence} proposes, a solution for this problem would be the creation of a new, more sophisticated crosscut language. 
+Additionally, current means for specifying concerns rely heavily in the existing structure of the application, therefore the aspects are tightly coupled to the application (and its structure) and consequently this affects negatively the evolvability of a system since it makes it hard to change its structural.
+As Tourwe et al. propose, a solution for this problem would be the creation of a new, more sophisticated crosscut language. 
 A language that enables the developer to discriminate between methods based on what they actually do instead of what they look like, in a more intentional way.
-This new language that implements \ac{ccc} in a modular way is something try to realize in our thesis.
+This new language that implements aspects in a modular way is something try to realize in our thesis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Managed Data 
@@ -149,22 +155,23 @@ The schemas are the way to describe the structure of the data to be managed.
 They can be just a simple data description language which programmers can use to describe simple kind of data. 
 For example Cook et al. \cite{loh2012managed} used Ruby hash for the data description on a simple example where the hash was an object that represented a mapping from values to values. 
 However, a simple schema format like this can not be used to describe itself because it is not a record. 
+Therefore, we need a more descriptive language that defines records and fields of records.
 
-A self-describing schema would allow schemas to be managed data themselves. 
-We therefore need a self-describing schema that can be used to describe schemas, namely the ``Schema-Schema''. 
-A Schema-Schema is also managed data with its own data manager.
-This process is called \textit{Bootstrapping} and it is needed in order to ``jumpstart'' the process. 
-This extends the benefits of programmable data structuring to their own implementation.
-Schemas can be interpreted in many different ways to create different kinds of records based on the manipulation provided by the data managers.
+% A self-describing schema would allow schemas to be managed data themselves. 
+% We therefore need a self-describing schema that can be used to describe schemas, namely the ``Schema-Schema''. 
+% A Schema-Schema is also managed data with its own data manager.
+% This process is called \textit{Bootstrapping} and it is needed in order to ``jumpstart'' the process. 
+% This extends the benefits of programmable data structuring to their own implementation.
+% Schemas can be interpreted in many different ways to create different kinds of records based on the manipulation provided by the data managers.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Managers}\label{Data Managers}
 Data managers are the mechanisms that interpret \textit{schemas} with defined manipulation strategies set by the programmers. 
 The input to a data manager is a schema, which describes the structure of the data to be managed.
-Since the schema is only known dynamically, the data managers must be able to determine the fields and methods of the managed data object dynamically as well.
+Since the schema is only known dynamically, the data managers must be able to determine the fields of the managed data object dynamically as well.
 In order to implement such an operation we need a meta-programming mechanism that dynamically analyses the structure of a schema and applies to it the functionality of the data managers.
 In their implementation Cook et al. \cite{loh2012managed} used the ``missing\_method'' implementation in order to succeed that.
-In out case we will use Java's reflection API and dynamic proxies.
+In our case we will use the reflection API and dynamic proxies.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Reflection
@@ -178,12 +185,11 @@ Additionally, Java comes with an implementation of Dynamic Proxies\footnote{\url
 
 Reflection is the ability of a running program to examine itself and its environment and to change what it does depending on what it finds \cite{forman2004java}.
 
-In order for this self-examination to be successful, the program needs to have a representation of itself, which is called \textit{metadata}.
-In a \ac{oop} language this metadata is organized into objects, hence they are called \textit{metaobjects}. 
+In order for this self-examination to be successful, the program needs to have a representation of itself as \textit{metadata}.
+In a \ac{oop} language this metadata are organized into objects, hence they are called \textit{metaobjects}. 
 Finally, the process of the runtime self-examination of these metaobjects is called \textit{introspection}.
 
-Java supports reflection with its reflection API since the version 1.1.
-Java provides many operations for using metaobjects performing intercession.
+Java supports reflection through its reflection API since the version 1.1.
 Using Java reflection a running program can learn a lot about itself. 
 This information may derive from classes (the \texttt{Class} metaobject), class name, class methods, a class super and sub classes, methods (the \texttt{Method} metaobject), method name, method parameters, method type, variables, variables handlers and more. 
 Querying information from these metaobjects is called introspection.
@@ -209,7 +215,7 @@ Although reflection is considered helpful for developing flexible software, it h
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dynamic Proxies}\label{Dynamic Proxies}
 Since 1.3 version Java supports the concept of \textit{Dynamic Proxies}.
-A \textit{proxy} is an object that supports the interface of another object (\textit{target}), so that the proxy can substitute for the target for all practical purposes\cite{forman2004java}.
+A \textit{proxy} is an object that supports the interface of another object (\textit{target}), so that the proxy can substitute for the target for all practical purposes \cite{forman2004java}.
 A proxy has to have the same interface as the \textit{target} so that it can be used in exactly the same way. 
 Additionally it \textit{delegates} some or all of the calls that it receives to its target and thus acts as either an intermediary or a substitute object.
 As a result, a programmer has the capability to add behavior to objects dynamically. 
@@ -223,7 +229,8 @@ The corresponding proxy class extends the class \texttt{Proxy} and implements al
 Thus, conforming to all those interfaces, a proxy can be casted to any of them and any method defined in those interfaces can be invoked on the proxy object \cite{eugster2006uniform}.
 
 \subsubsection{Invocation Handlers}\label{Invocation Handlers}
-All the proxy objects have an associated object of type \texttt{InvocationHandler}, which handles the method invocations performed on the proxy, and its interface is shown in Listing \ref{lst:The Invocation Handler Interface}.
+All the proxy objects have an associated object of type \texttt{InvocationHandler}, which handles the method invocations performed on the proxy. 
+Its interface is shown in Listing \ref{lst:The Invocation Handler Interface}.
 
 \begin{sourcecode}
 	\begin{lstlisting}[language=Java]
@@ -247,8 +254,8 @@ If they are proxied then they are also overridden by the proxy classes and invoc
 Other methods defined in \texttt{Object} are not overridden by proxy classes, as they are \texttt{final} \cite{eugster2006uniform}.
 
 \subsubsection{Logging Example}
-Previously we mentioned the \textit{logging} \ac{ccc} \ref{Cross Cutting Concerns}.
-Image that every method invocation of an object has to be logged into the console, in that case we would need to write logging code on each of the methods of that class.
+Previously, Section \ref{Cross Cutting Concerns}, we mentioned the \textit{logging} \ac{ccc}.
+Imagine that every method invocation of an object has to be logged into the console, in that case we would need to write logging code on each of the methods of that class.
 This would lead to scattered logging code through the methods.
 This is problem can be solved with dynamic proxies and a simple solution is presented in Listing \ref{lst:Logging in dynamic proxies}.
 
@@ -296,7 +303,7 @@ public class TracingIH implements InvocationHandler {
 \section{JHotDraw And AJHotDraw}\label{JHotDraw And AJHotDraw}
 JHotDraw\footnote{\url{http://www.jhotdraw.org/}} is a Java GUI framework for technical and structured graphics. 
 It is an open-source, well-designed and flexible drawing framework of around 18,000 non-comment lines of Java code. 
-JHotDraw's  design relies heavily on some well-known design patterns\cite{gamma1995design} and it is considered as a showcase for software quality techniques provided to the \ac{oop} community. 
+JHotDraw's  design relies heavily on some well-known design patterns \cite{gamma1995design} and it is considered as a showcase for software quality techniques provided to the \ac{oop} community. 
 
 The fact that JHotDraw is praised for its design makes it an ideal candidate as a showcase for an aspect oriented migration. 
 Marin and Moonen \cite{marinajhotdraw} use this showcase for adoption of aspect-oriented techniques in existing systems. 
@@ -306,21 +313,21 @@ The goal of AJHotDraw is to take JHotDraw and migrate it to a functionally equiv
 The authors presented a fan-in analysis of JHotDraw \cite{marin2004identifying} and implemented an idiom-driven approach to aspect-mining. 
 This way they could extract a number of aspects in JHotDraw. 
 Next, they performed a concern exploration in order to expand their mining results, leading to concern sorts.
-Concern sorts is a consistent way to address crosscutting concerns in source code.
-This led to the identification and documentation of crosscutting concerns in JHotDraw, which helps the developers to identify \ac{ccc} in JHotDraw.
+Concern sorts is a consistent way to address crosscutting concerns in source code \cite{marin2005classification}.
+This led to the identification and documentation of \ac{ccc} in JHotDraw, which helps the developers to identify \ac{ccc} in it.
 In order to tame the aspects in a more consistent and formal way, Marin et al. provided a list of \textit{template aspect} solutions for their concern sorts.
 Finally, they performed aspect refactoring of JHotDraw by presenting the AJHotDraw, which according to them, was the largest migration to aspects available to date.
 Their refactoring aimed at maintaining the conceptual integrity of the original design.
 
 In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}}, which ensures behavioral equivalence between the original and the refactored solution. 
-Refactoring implies preserving the observable behavior of an application\cite{fowler2009refactoring} and since the developers of AJHotDraw ought to test their functionality, TestJHotDraw was created. 
-There are several contributions of the aspect-oriented implementation approach\cite{marinajhotdraw}. 
+Refactoring implies preserving the observable behavior of an application \cite{fowler2009refactoring} and since the developers of AJHotDraw ought to test their functionality, TestJHotDraw was created. 
+There are several contributions of the aspect-oriented implementation approach \cite{marinajhotdraw}. 
 The authors suggest that the project contributes to a gradual and safe adoption of aspect-oriented techniques in existing applications and allows for a better assessment of aspect orientation.
 
-In this thesis we have used JHotDraw and AJHotDraw in order to evaluate our \ac{ccc} refactoring in managed data.
-TestJHotDraw is written in AspectJ, a language we did not want include in our project, and therefore it is not used.
-Instead, we used the JHotDraw original test suite which consists of 1218 test cases, included in our refactoring.
-The detailed evaluation is described in Chapter \ref{Evaluation}.
+In this thesis we have used JHotDraw and AJHotDraw in order to evaluate our aspect refactoring in managed data.
+However, TestJHotDraw is written in AspectJ, a language we did not want include in our project, and therefore it is not used.
+Instead, we used the JHotDraw original test suite, which consists of 1218 test cases, for our refactoring behavioral preservation.
+The aspect refactoring process is described in Chapter \ref{AspectRefactoring}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Refactoring of Crosscutting Concerns}\label{Refactoring of ccc}
@@ -339,17 +346,17 @@ Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into ty
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Observer Pattern}\label{The Observer Pattern}
-Design patterns introduce \ac{ccc} by scattering ``pattern code'' through an application.
+As discussed, design patterns introduce \ac{ccc} by scattering ``pattern code'' through an application.
 Hannemann et al. \cite{hannemann2005role} discuss this with an example of \ac{ccc} refactoring of the observer pattern.
-The observer pattern is by nature not-modularized. 
-The pattern crosscuts a large number of modules, tangling the scattered concern implementation with the component code and complicating changes.
+% The observer pattern is by nature not-modularized. 
+% The pattern crosscuts a large number of modules, tangling the scattered concern implementation with the component code and complicating changes.
 
 \subsubsection{Role-based Refactoring}
 The authors present a \textit{role-based} refactoring, which consists of classifying the roles of the pattern in different aspects.
 The role-based refactoring approach helps the developer to transform a scattered implementation of \ac{ccc} into an equivalent but modular \ac{aop} implementation. 
 Both \ac{ccc} and refactoring are described in terms of roles. 
 
-According to the authors\cite{hannemann2005role}, the steps of role-based refactoring are the following:
+According to the authors \cite{hannemann2005role}, the steps of role-based refactoring are the following:
 \begin{description}
 
 	\item [Selecting a \ac{ccc} refactoring:] The refactoring includes an abstract description of the \ac{ccc} it targets and a set of instructions to produce a modular AOP implementation of the refactoring (e.g. the Observer pattern \ac{ccc} refactoring).
@@ -362,7 +369,7 @@ According to the authors\cite{hannemann2005role}, the steps of role-based refact
 \end{description}
 
 Thus, to refactor \ac{ccc} it is required a mapping from the abstract \ac{ccc} description to programming components that explicitly describe the \ac{ccc} implementation.
-This mapping for the case of the observer pattern is presented by Hannemann et al. \cite{hannemann2005role} in Figure \ref{fig:Observer_Role_Mapping}.
+This mapping for the case of the observer pattern is presented in Figure \ref{fig:Observer_Role_Mapping}.
 
 \begin{figure}[H]
 	\centering
@@ -376,12 +383,12 @@ However the authors have shown an abstract and reusable way of describing those 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Figure Selection Observer of JHotDraw}\label{The Figure Selection Observer of JHotDraw}
-As mentioned above, Hannemann et al. \cite{hannemann2005role} presented a refactoring of the \textit{Observer} design pattern in JHotDraw.
-Likewise, during the AJHotDraw implementation\cite{marin2005approach} \cite{hannemann2005role}, the authors proposed a type-based refactoring on the same \textit{Observer} instance, the \texttt{FigureSelectionListener}.
+% As mentioned above, Hannemann et al. \cite{hannemann2005role} presented a refactoring of the \textit{Observer} design pattern in JHotDraw.
+During the AJHotDraw implementation\cite{marin2005approach}, the authors proposed a type-based refactoring on the same \textit{Observer} instance, as Hannemann did \cite{hannemann2005role}, the \texttt{FigureSelectionListener}.
 
 The concern sorts identified in this case are: the \textit{Role Superimposition}, which is similar to the role-based refactoring described previously and the \textit{Consistent Behavior}, which describes a set of methods consistently invoking a specific action as a step in their execution.
 
-The legacy code architecture of JHotDraw is displayed in Figure \ref{fig:Selection_Listener}.
+The legacy design of JHotDraw is displayed in Figure \ref{fig:Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
