@@ -25,14 +25,14 @@ import java.util.*;
  */
 public class MObject implements InvocationHandler, M {
 
-    private Object proxy = null;
+    protected Object thisObject = null;
 
     public void setProxy(Object proxy) {
-        this.proxy = proxy;
+        this.thisObject = proxy;
     }
 
     public Object getProxy() {
-        return proxy;
+        return thisObject;
     }
 
     @Override
