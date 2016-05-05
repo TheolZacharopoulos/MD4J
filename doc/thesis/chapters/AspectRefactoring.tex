@@ -35,7 +35,7 @@ In order to refactor JHotDraw, we first had to migrate it in managed data.
 The result of this migration is available on an open-source project, the ManagedDataJHotDraw.
 We claim that this is the first aspect refactoring of an application using managed data to date, since this project aims on showing how managed data can deal with \ac{ccc} in existing systems.
 
-\section{Migration Process}
+\section{Migration Process}\label{Migration}
 The refactoring of an application of JHotDraw's size required a significant amount of time to study and familiarize with, yet, its well-designed \ac{oop} code, made it easy to grasp.
 We solely focused on the parts that were going to be refactored, based on refactorings that AJHotDraw developers \cite{marinajhotdraw} performed.
 Thanks to their fan-in analysis \cite{marin2004identifying}, we targeted the same concerns in order to make a fair comparison.
@@ -161,7 +161,7 @@ Generally, this may be the case when refactoring big applications like JHotDraw.
 
 Another limitation is that some Java keywords such as ``synchronized'' can not be supported on default methods.
 Instead, as future work, we could use annotations that define these properties to the default methods and add them during the interpretation of the schemas.
-Moreover, privacy is another an issue.
+Moreover, privacy and visibility is another an issue.
 All default methods are \texttt{public}, which means that the encapsulation is violated.
 Finally, private classes definition is not possible inside schemas, although they can be defined outside as managed data.
 
@@ -249,7 +249,7 @@ However, in this section we present an aspect refactoring of JHotDraw legacy cod
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FigureSelectionListener
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{FigureSelectionListener}
+\section{FigureSelectionListener: Observer Pattern}
 The \texttt{FigureSelectionListener} observer pattern of JHotDraw is a concern first presented by Hannemann et al. \cite{hannemann2005role} in their role-based refactoring of design patterns in AspectJ. 
 Later, Marin et al. used the same concern and migrated it into their AJHotDraw implementation \cite{marin2005approach}.
 Likewise, we have also implemented the same aspect for our refactoring in order to compare our aspect solution with the existing one.
@@ -539,7 +539,7 @@ public class FigureSelectionListenerSubjectRoleMObject
 
 	@Override
 	public void clearSelection() {
-		if (((MDStandardDrawingView) this.getProxy()).selectionCount() > 0) { |\label{line:fig_lis_mobj_clear}|
+		if (((MDStandardDrawingView) thisObject).selectionCount() > 0) { |\label{line:fig_lis_mobj_clear}|
 			executeListenerActions();
 		}
 	}
@@ -556,7 +556,7 @@ public class FigureSelectionListenerSubjectRoleMObject
   	\label{fig:JHotDraw_FigureSelectionListener_MD}
 \end{figure}
 
-\subsection{Results}
+\subsection{FigureSelectionListener Results}
 Figure \ref{fig:JHotDraw_FigureSelectionListener_MD} illustrates the refactored version of the FigureSelectionListener concern in ManagedDataJHotDraw.
 Comparing it to the original, Figure \ref{fig:JHotDraw_FigureSelectionListener_OOP}, it can be seen that, first, the list of listeners has been removed from the \texttt{DrawingView}. 
 Next, the \texttt{addListener} and \texttt{removeListener} methods have also been removed from the class.
@@ -568,69 +568,186 @@ Most importantly, the behavior of the application remained equivalent to the ori
 ManagedDataJHotDraw conserved the behavior of JHotDraw, which we evaluated through its own test suite along with manual tests.
 Interestingly, by stacking data managers we manage to define aspects of our data in a modular way.
 
-% TODO: Undo
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Undo Concern
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{Undo Concern}
-% The ``Undo'' functionality is used in several places in the original JHotDraw.
-% Marin's fan-in analysis \cite{marin2004identifying}, identified about 30 undo activities defined for various elements of JHotDraw. 
-% For our assessment we focused on the refactoring of the undo concern in the \textit{ChangeAttributeCommand} class.
-% We choose the specific case since is the same that is used by Marin et al. on their Undo refactoring in AJHotDraw \cite{marin2004refactoring}.
+\section{ChangeAttributeCommand: Undo Concern}
+The ``Undo'' functionality is used in several places in the original JHotDraw.
+Marin's fan-in analysis \cite{marin2004identifying}, identified about 30 undo activities defined for various elements of JHotDraw. 
+For our assessment we focused on the refactoring of the undo concern in the \textit{ChangeAttributeCommand} class.
+We choose the specific case since is the same that is used by Marin et al. on their undo refactoring in AJHotDraw \cite{marin2004refactoring}.
 
-% \subsubsection{Undo Concern in JHotDraw}
-% The original Undo concern in \textit{ChangeAttributeCommand} of JHotDraw is illustrated in Figure \ref{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_OOP}.
+\subsection{ChangeAttributeCommand in JHotDraw}
+The original Undo concern in \textit{ChangeAttributeCommand} of JHotDraw is illustrated in Figure \ref{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_OOP}.
 
-% \begin{figure} [H]
-% 	\centering
-%   	\fbox{\includegraphics[width=0.8\textwidth]{figures/JHotDraw_Undo_Command_ChangeAttributeCommand_OOP.png}}
-%   	\caption{Undo in JHotDraw}
-%   	\label{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_OOP}
-% \end{figure}
+\begin{figure} [H]
+	\centering
+  	\fbox{\includegraphics[width=0.6\textwidth]{figures/JHotDraw_Undo_Command_ChangeAttributeCommand_OOP.png}}
+  	\caption{ChangeAttributeCommand in JHotDraw}
+  	\label{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_OOP}
+\end{figure}
 
-% As this figure illustrates, the Undo concern is used through an implementation of the \textit{Command} design pattern.
-% More specifically, every activity in the application is executed though a command.
-% This command is represented by the \texttt{Command} interface in the figure. 
-% Some of the activities support the undo functionality, which in JHotDraw is implemented in nested (undo) classes.
+A command of the \textit{Command} pattern is represented by the \texttt{Command} interface in the figure. 
+Some of the activities support the undo functionality, which is implemented in nested \texttt{UndoActivity} classes.
 
-% In the case of the \textit{ChangeAttributeCommand}, the command is called when an attribute is applied to a figure.
-% An attribute can be a color, a font, a url etc.
-% When an attribute has been applied using an \textit{ChangeAttributeCommand} object, the object defines its \texttt{UndoActivity} through the \textit{UndoActivity} private class.
-% JHotDraw supports repeated undo operations by recording the last executed commands in reversed order. 
+In the case of the \textit{ChangeAttributeCommand}, the command is called when an attribute is applied to a figure.
+An attribute can be a color, a font, a url etc.
+When an attribute has been applied using a \textit{ChangeAttributeCommand} object, the object defines its \texttt{UndoActivity} through the \textit{UndoActivity} private class.
 
-% This is the role of the  \texttt{UndoableCommand} class, which wraps the commands that can be undone.
-% In particular, this class first gets the the request to execute the command, then, it delegates the command's execution to the wrapped command, and last, acquires a reference to the undo activity associated with the wrapped command and it pushes it into a stack managed by an \texttt{UndoManager} \cite{marin2004refactoring}.
+The role of the \texttt{UndoableCommand} wrapper class is to support repeated undo operations since it records the last executed commands of the wrapper class, in reverse order.
+In particular, this class acquires a reference to the undo activity associated with the wrapped command and it pushes it into a stack managed by an \texttt{UndoManager} \cite{marin2004refactoring}.
 
-% Therefore, as Marin et al. extracted \cite{marin2004identifying} the Undo concern code is scattered in several places of the Command classes.
-% First, the \texttt{myUndoableActivity} field in the \texttt{AbstractCommandClass} along with its accessors, \texttt{getUndoActivity} and \texttt{setUndoActivity} accordingly.
-% Next, the private nested classes that are implemented by the most of the concrete commands that support undo.
-% In addition, the factory methods, \texttt{createUndoActivity},which create instances of the private classes.
-% Finally, the references to the before enumerated elements from non-undo related members.
+Therefore, as Marin et al. concluded \cite{marin2004identifying} the ``Undo'' concern code is scattered in several places of the Command classes.
+First, the \texttt{myUndoableActivity} field in the \texttt{AbstractCommandClass} along with its accessors, \texttt{getUndoActivity} and \texttt{setUndoActivity}.
+Next, the private nested classes are implemented by the concrete commands that support undo.
+Moreover, the factory method, \texttt{createUndoActivity} creates instances of the private classes.
+Finally, the references to the before enumerated elements from non-undo related members.
 
-% \subsubsection{Refactoring Undo in AJHotDraw}
-% The refactoring that Marin et al. proposed can be seen in Figure \ref{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_AOP}.
+\subsection{Refactoring ChangeAttributeCommand in AJHotDraw}
+The refactoring that Marin et al. proposed can be seen in Figure \ref{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_AOP}.
 
-% \begin{figure} [H]
-% 	\centering
-%   	\fbox{\includegraphics[width=0.65\textwidth]{figures/JHotDraw_Undo_Command_ChangeAttributeCommand_AOP.png}}
-%   	\caption{Undo in AJHotDraw}
-%   	\label{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_AOP}
-% \end{figure}
+\begin{figure} [H]
+	\centering
+  	\fbox{\includegraphics[width=0.65\textwidth]{figures/JHotDraw_Undo_Command_ChangeAttributeCommand_AOP.png}}
+  	\caption{ChangeAttributeCommand in AJHotDraw}
+  	\label{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_AOP}
+\end{figure}
 
-% As the figure shows, a new aspect is created for the \textit{ChangeAttributeCommand}.
-% In this aspect the entire undo functionality is implemented and the undo code is removed from the actual \textit{ChangeAttributeCommand} class. 
-% Additionally, the private class that implements the \textit{UndoActivity} has moved to this aspect along with its factory method (\textit{createUndoActivity}).
-% However, by convention, each aspect will consistently be named by appending ``UndoActivity'' to the name of its associated command class to enforce the relation between the two.
-% All the abstract undo functionality has been defined in a \textit{CommandUndo} aspect.
-% This aspect defined the undo as a role while it defines the \textit{Undoable} field and its accessors of the \textit{AbstractCommand}.
+As the figure shows, a new aspect is created for the \textit{ChangeAttributeCommand}.
+In this aspect the entire undo functionality is implemented and the undo code is removed from the actual \textit{ChangeAttributeCommand} class. 
+Additionally, the private class that implements the \textit{UndoActivity} has moved to this aspect along with its factory method (\textit{createUndoActivity}).
 
-% \subsubsection{Refactoring Undo in ManagedDataJHotDraw}
+However, by convention, each aspect will consistently be named by appending ``UndoActivity'' to the name of its associated command class, to enforce the relation between the two.
+All the abstract undo functionality has been defined in a \textit{CommandUndo} aspect.
+This aspect defines the undo as a role, the \textit{Undoable} field and its accessors of the \textit{AbstractCommand}.
+
+Additionally, the change of the visibility of the methods introduced from the aspects is an issue.
+The visibility declared in the aspect refers to the aspect and not to the target class. 
+However, the same problem occurs in managed data.
+
+\subsection{Refactoring ChangeAttributeCommand in ManagedDataJHotDraw}
+Finally, the aspect refactoring of the \texttt{ChangeAttributeCommand} undo concern in JHotDraw using managed data is presented in Figure \ref{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_MD}.
+
+\begin{figure} [H]
+	\centering
+  	\fbox{\includegraphics[width=1\textwidth]{figures/JHotDraw_Undo_Command_ChangeAttributeCommand_MD.png}}
+  	\caption{ChangeAttributeCommand in ManagedDataJHotDraw}
+  	\label{fig:JHotDraw_Undo_Command_ChangeAttributeCommand_MD}
+\end{figure}
+
+To implement aspects using data managers in the \texttt{ChangeAttributeCommand} we first needed to migrate the original class to a managed data definition, namely \textit{MDChangeAttrCmd}.
+The process was similar to the one described in Section \ref{Migration}.
+
+In order to refactor the undo concern in managed data we needed a number of specifications that define the functionalities of our managed objects.
+As the \ac{aop} solution shows we needed something similar to \textit{role superimposition}, but this time for the \textit{Undoable} role.
+Additionally, we needed a way to define executables since our participant, in particular \texttt{ChangeAttributeCommand}, is a command.
+
+In detail we needed a data manager that performs the following:
+\begin{enumerate}
+	
+	\item Attaches an \textit{UndoableRole} to command instances.
+	In this case the \texttt{MDChangeAttrCmd} instances.
+
+	\item Following the original design, this role should allow the objects to create their \texttt{UndoActivities} using a nested private class.
+	\textit{UndoableRole} should also provide accessors for its \textit{UndoActivity}.
+
+	\item It defines an \textit{Executable} specification, since every command has an \texttt{execute} method.
+
+	\item Finally, it defines a pointcut on the \texttt{execute} method since this is the place where the undo functionality for a specific command is implemented.
+
+\end{enumerate}
+
+\subsubsection{Data Manager}
+First, for abstraction's sake we have implemented the \texttt{UndoableRole} interface to an abstract class, namely \texttt{UndoableRoleMObject}.
+This data manager defines a \texttt{myUndoableActivity} field and implements its accessors given by the \texttt{UndoableRole} interface, including both \texttt{setUndoActivity} and \texttt{getUndoActivity}.
+However, no implementation for the \texttt{createUndoActivity} factory method is provided at this point.
+The reason is that this is a ``command-specific'' implementation and it has to be provided by the concrete classes.
+Since this is an abstract \texttt{MObject} no proxy factory is provided (data manager).
+
+Next, we needed a \texttt{MObject} for the concrete command, in this case the \texttt{UndoableChangeAttrCmdMObject}.
+Since this has to inherit the \texttt{UndoableMObject}, it also has to implement the \texttt{createUndoActivity} method.
+As mentioned, this is ``command-specific'' code, and following the original design, this functionality can be implemented in a nested class.
+As a result, an \texttt{UndoActivity} private nested class is defined in the \texttt{UndoableChangeAttrCmdMObject} class file.
+Instances of this class can be created using the \texttt{createUndoActivity} method.
+
+Furthermore, the command is an executable object; therefore, this \texttt{MObject} has to implement the \texttt{Executable} interface.
+By doing so, the pointcut of the specific undo functionality can be implemented inside this \texttt{execute} method of the \texttt{UndoableChangeAttrCmdMObject}.
+A comparison of the \texttt{execute} method between the original and the refactored code can be seen in Listings \ref{lst:original_execute_undo} and \ref{lst:refactored_execute_undo}.
+\newline
+\lstdefinestyle{smallJava}{
+  basicstyle={\scriptsize\ttfamily},
+  language=Java
+}
+
+\noindent\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[
+	style=smallJava,
+	caption=Original execute method,
+	frame=tlrb,
+	label=lst:original_execute_undo
+]
+public void execute() {
+	setUndoActivity(createUndoActivity());
+	getUndoActivity()
+		.setAffectedFigures(view().selection());
+	FigureEnumeration fe = 
+	  	getUndoActivity().getAffectedFigures();
+	while (fe.hasNextFigure()) {
+		fe.nextFigure().setAttribute(fAttribute, fValue);
+	}
+	view().checkDamage();
+}
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[
+	style=smallJava,
+	caption=Refactored execute method,
+	frame=tlrb,
+	label=lst:refactored_execute_undo
+]
+default void execute() {
+	FigureEnumeration fe = view().selection();
+	while (fe.hasNextFigure()) {
+		fe.nextFigure().setAttribute(attribute(),value());
+	}
+	view().checkDamage();
+}
+	\end{lstlisting}
+\label{lst:execute_undo}
+\end{minipage}
+
+As the two listings show, all of the \textit{Undo} related functionalities of the \texttt{ChangeAttributeCommand} command have been removed from the \texttt{execute} method.
+This code is located at \texttt{UndoableChangeAttrCmdMObject} and more specifically at its execute pointcut.
+Listing \ref{lst:The execute Undo pointcut} shows the pointcut code.
+
+\begin{sourcecode}
+	\begin{lstlisting}[language=Java]
+public void execute() {
+	setUndoActivity(createUndoActivity());
+	getUndoActivity().setAffectedFigures(thisObj.view().selection());
+}
+public Undoable createUndoActivity() {
+	return new UndoActivity(thisObj.view(), thisObj.attribute(), thisObj.value());
+}
+    \end{lstlisting}
+	\caption{The execute Undo pointcut}
+	\label{lst:The execute Undo pointcut}
+\end{sourcecode}
+
+\subsection{ChangeAttributeCommand Managed Data Refactoring Overall}
+Comparing the original version with our refactored version several improved points can be observed.
+First, all of the \textit{Undo} related functionalities of a command have been removed from the command's code and they have been externally attached by the \textit{UndoRole} data manager.
+Next, following the original design, the creation of an \texttt{UndoActivity} instance is again defined inside a nested class; however, this time it is not in the command itself but it is inside a ``command-specific'' data manager.
+Finally, the \texttt{execute} method of a command is not aware of its undo functionality since it has been extracted to an undo dedicated pointcut inside a data manager.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Claims
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Claims}
 We claim that our framework successfully performed aspect refactoring of the \texttt{FigureSelectionListener} concern in JHotDraw.
-Further, it evolved the pointcut concept of \ac{aop} by adding conditions on them.
+Furthermore, it evolved the pointcut concept of \ac{aop} by adding conditions on them.
 This leads to a solution that focuses on behavior conservation, lost in the case of the \ac{aop} refactoring.
+Moreover, we claim that our framework also performed a successful aspect refactoring of the \texttt{ChangeAttributeCommand} undo concern in JHotDraw.
+Additionally, it solves the \ac{aop}'s problem of useing naming conventions for the nested classes.
 Finally, although it is moderately easy to migrate an existing application in managed data, it is still time consuming with a lot of boilerplate code if one wants to make everything managed data.

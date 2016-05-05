@@ -102,22 +102,20 @@ This framework provides all the mechanisms of managed data using Java reflection
 To validate our hypotheses we have implemented managed data in Java.
 More specifically we define \textit{schemas} using Java interfaces and dynamic proxies for the \textit{data managers}. 
 Furthermore, we provide as a proof of concept the an example given in Enso papers \cite{loh2012managed}, but this time developed in Java using our framework. 
-% To stack data managers\cite{loh2012managed}, we use the \textit{Decorator Pattern} \cite{gamma1995design}. 
 
-In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented the \textit{Observer Pattern}, which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters ``pattern code'' through the participant classes. 
-This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
+% In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented the \textit{Observer Pattern}, which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters ``pattern code'' through the participant classes. 
+% This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
 
-% TODO: Undo
-% In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented an inventory of the following aspects and design patterns from JHotDraw using data managers:
-% \begin{description}
+In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented an inventory of the following aspects from JHotDraw using data managers:
+\begin{description}
 
-%   \item[The Observer Pattern,] which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters pattern code through the classes. 
-%   This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
+  \item[The Observer Pattern,]  which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters ``pattern code'' through the participant classes. 
+  This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
 
-%   \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
-%   More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
+  \item[The Undo aspect,] which is analyzed extensively \cite{marin2004refactoring} and a solution is provided by AJHotDraw. 
+  More specifically, this aspect consists of aspect-oriented refactoring of the \textit{Command} pattern with \textit{Undo} actions.
 
-% \end{description}
+\end{description}
 
 We performed aspect refactoring using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
 We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
@@ -160,9 +158,8 @@ In order to answer our research questions we studied the theoretical background,
 
   \item[Contribution 3: Managed Data Refactoring of JHotDraw.]
   We implemented a new version of the JHotDraw application using our framework in order to evaluate our refactoring of \ac{ccc}.
-  More specifically, we focused on the \textit{Observer} pattern, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
-  % TODO: Undo
-  % More specifically, we focused on the \textit{Observer Pattern}, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules, as well as the \textit{Undo} concern, which is part of a \textit{Command Pattern} and it is scattered around the modules that use this functionality.
+  % More specifically, we focused on the \textit{Observer} pattern, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
+  More specifically, we focused on the \textit{Observer} pattern, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules, as well as the \textit{Undo} concern, which is part of a \textit{Command Pattern} and it is scattered through the modules that use this functionality.
 
   \item[Contribution 4: JHotDraw Refactoring Results and Comparison with AJHotDraw.]
   Finally, we present the results of our aspect refactoring and we compare them with AJHotDraw which is implemented in \ac{aop}, using the AspectJ language, again in Java.

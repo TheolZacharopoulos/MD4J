@@ -392,7 +392,7 @@ The legacy design of JHotDraw is displayed in Figure \ref{fig:Selection_Listener
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.50\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
+  	\fbox{\includegraphics[width=.65\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
   	\caption{Observer pattern: Selection Listener \cite{marin2005approach}}
   	\label{fig:Selection_Listener}
 \end{figure}
@@ -414,48 +414,50 @@ These elements are shown in Figure \ref{fig:Concerns_Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.50\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
-  	\caption{The concern types in Selection Listener \cite{marin2005approach}}
+  	\fbox{\includegraphics[width=.65\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
+  	\caption{AJHotDraw: The concern types in Selection Listener \cite{marin2005approach}}
   	\label{fig:Concerns_Selection_Listener}
 \end{figure}
 
-% TODO: Undo
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{The ``Undo'' Concern of JHotDraw}\label{The Undo Concern of JHotDraw}
-% After a fan-in analysis of JHotDraw \cite{marin2004identifying}, Marin et al. identified the  ``Undo'' concern in JHotDraw and he presents an approach to its aspect-oriented refactoring \cite{marin2004refactoring}. 
-% They used the \textit{(un)pluggability} modularity property as an estimate of its refactoring cost.
-% The authors propose the refactoring of the ``Undo'' concern in JHotDraw using AspectJ with the implementation of AJHotDraw. 
-% A representation of the elements in the JHotDraw implementation of the ``Undo'' concern can be seen in Figure \ref{fig:Participants_for_undo_in_JHotDraw}.
+\newpage
 
-% \begin{figure}[H]
-% 	\centering
-%   	\fbox{\includegraphics[width=.55\textwidth]{figures/BG_Participants_for_undo_in_JHOTDRAW.png}}
-%   	\caption{Participants for undo in JHotDraw \cite{marin2004refactoring}}
-%   	\label{fig:Participants_for_undo_in_JHotDraw}
-% \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The ``Undo'' Concern of JHotDraw}\label{The Undo Concern of JHotDraw}
+Marin et al. have also identified the  ``Undo'' concern in JHotDraw. 
+A number of activities use this functionality including font sizes and colors, image rotation and a lot more.
+The authors propose the refactoring of the undo concern and more specifically a specific case the \textit{Change Attribute Command} \cite{marin2004refactoring}.
 
-% The \texttt{Activity} component participates in the implementation of the \textit{Command} design pattern\cite{gamma1995design}. 
-% Many of these activities have support for undo functionality, which in JHotDraw is implemented by means of nested (undo) classes.
-% The nested class knows how to undo the given activity which maintains a list of affected figures whose state is also affected if the activity would be ``undone''. 
-% Whenever the activity modifies its state it also updates fields in its associated undo activity to actually perform the undo. 
+A general representation of the elements in the JHotDraw implementation of the ``Undo'' concern can be seen in Figure \ref{fig:Participants_for_undo_in_JHotDraw}.
 
-% The implementation of AJHotDraw succeeded in refactoring this concern in JHotDraw through the following steps \cite{marin2004refactoring}:
+\begin{figure}[H]
+	\centering
+  	\fbox{\includegraphics[width=.55\textwidth]{figures/BG_Participants_for_undo_in_JHOTDRAW.png}}
+  	\caption{Participants for undo in JHotDraw \cite{marin2004refactoring}}
+  	\label{fig:Participants_for_undo_in_JHotDraw}
+\end{figure}
 
-% \begin{enumerate}
+The \texttt{Activity} component participates in the implementation of the \textit{Command} design pattern\cite{gamma1995design}. 
+Many of these activities have support for undo functionality, which in JHotDraw is implemented by means of nested (undo) classes.
+The nested class knows how to undo the given activity which maintains a list of affected figures whose state is also affected if the activity would be ``undone''. 
+Whenever the activity modifies its state it also updates fields in its associated undo activity to actually perform the undo. 
 
-% 	\item An undo-dedicated aspect is associated to each of undo-able command. 
-% 	The aspect will implement the entire undo functionality for the given command, while the undo code is removed from the command class.
+The implementation of AJHotDraw succeeded in refactoring this concern in JHotDraw through the following steps \cite{marin2004refactoring}:
 
-%  	\item Each aspect will consistently be named by appending \texttt{UndoActivity} to the name of its associated command class to enforce the relation between the two.
+\begin{enumerate}
 
-% 	\item Next, the command's nested \texttt{UndoActivity} class moves to the aspect. 
-% 	The factory methods for the undo activities also move to the the aspect, from where are introduced back, into the associated command classes, using inter-type declarations.
+	\item An undo-dedicated aspect is associated to each of undo-able command. 
+	The aspect will implement the entire undo functionality for the given command, while the undo code is removed from the command class.
 
-% 	\item Finally, the undo setup is attached to those methods from which was previously removed, namely execute() method, by means of an AspectJ \texttt{advice}.
+ 	\item Each aspect will consistently be named by appending \texttt{UndoActivity} to the name of its associated command class to enforce the relation between the two.
 
-% \end{enumerate}
+	\item Next, the command's nested \texttt{UndoActivity} class moves to the aspect. 
+	The factory methods for the undo activities also move to the the aspect, from where are introduced back, into the associated command classes, using inter-type declarations.
 
-% This proposition \cite{marin2004refactoring} provides an easy migration to an aspect-based solution. 
-% The \ac{ccc} has been identified, then removed from the system, and finally re-added in an aspect-specific manner.
+	\item Finally, the undo setup is attached to those methods from which was previously removed, namely execute() method, by means of an AspectJ \texttt{advice}.
 
-% In this thesis we investigated both the \texttt{FigureSelectionListener} and the \texttt{Undo} concerns by refactor them in a new version of the JHotDraw and compare them to their \ac{aop} counterpart.
+\end{enumerate}
+
+In particular, this proposition is applied in the \texttt{ChangeAttributeCommand} \cite{marin2004refactoring}.
+The undo \ac{ccc} has been identified, then removed from the system, and finally re-added in an aspect-specific manner.
+
+In this thesis we investigated both the \texttt{FigureSelectionListener} and the \texttt{ChangeAttributeCommand} (\textit{Undo}) concerns by refactoring them in a new version of the JHotDraw and compare them to their \ac{aop} counterpart.
