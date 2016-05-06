@@ -219,6 +219,22 @@ public class MObject implements InvocationHandler, M {
     }
 
     /**
+     * This mechanism helps to create 'pointcuts' inside the MObjects.
+     * Therefore, a data manager can use local methods for pointcut definitions.
+     * @param method the default method
+     * @param args any arguments of the default method
+     * @throws Throwable
+     */
+    protected void invokeLocalMethod(Method method, Object[] args) throws Throwable {
+        for (Method objMethod : this.getClass().getMethods()) {
+            if (method.getName().equals(objMethod.getName())
+                && method.getReturnType().equals(objMethod.getReturnType())){
+                objMethod.invoke(this, args);
+            }
+        }
+    }
+
+    /**
      * The default method are forwarded to the InvocationHandler.
      * But we want to call the default implementation in case of existence.
      *
@@ -226,15 +242,13 @@ public class MObject implements InvocationHandler, M {
      * The default method has already been overridden by the proxy and it can't be invoked directly.
      * In this case we invoke the default method with the given args.
      *
-     * it is protected in order to be overridden from the sub data managers
-     *
      * @param proxy the proxy instance
      * @param method the method that has been called
      * @param args any arguments of the method
      * @return any return values of the method, null if none
      * @throws Throwable in case of error during invocation
      */
-    protected Object _invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
+    protected Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
 
         final Class<?> declaringClass = method.getDeclaringClass();
 
@@ -257,13 +271,32 @@ public class MObject implements InvocationHandler, M {
             .invokeWithArguments(args);
     }
 
+    /**
+     * Default method invocation in managed object.
+     *
+     * @param proxy the proxy instance
+     * @param method the method that has been called
+     * @param args any arguments of the method
+     * @return any return values of the method, null if none
+     * @throws Throwable in case of error during invocation
+     */
+    protected Object _callDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
+        // In the case that a method is defined in the MObject
+        // that is equal to the default method that has been called on the proxy
+        // then call first the local method.
+        invokeLocalMethod(method, args);
+
+        // next, call the default method from the proxied object.
+        return invokeDefaultMethod(proxy, method, args);
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String fieldName = method.getName();
 
         // if the method is default, invoke this one
         if (method.isDefault()) {
-            return _invokeDefaultMethod(proxy, method, args);
+            return _callDefaultMethod(proxy, method, args);
         }
 
         // This is a way to execute the "attached" methods of the derived Managed Objects,
