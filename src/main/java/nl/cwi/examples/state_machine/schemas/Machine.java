@@ -12,4 +12,8 @@ public interface Machine extends M {
 
     @Contain
     Set<State> states(State... states);
+
+    default void test() {
+        System.out.println("test");
+    }
 }
