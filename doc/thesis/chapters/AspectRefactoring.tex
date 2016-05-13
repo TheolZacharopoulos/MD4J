@@ -401,12 +401,14 @@ Therefore, we first need this \texttt{MObject}, namely \texttt{SubjectRoleMObjec
 \subsubsection{SubjectRole specifications}
 We define the functionality of the \textit{SubjectRole} in an interface, shown in Figure \ref{lst:SubjectRole Interface}.
 The subject role simply needs to add and remove listener objects to and from a managed object.
+Additionally, it defined a method \texttt{executeListenerActions} that allows the subjects to execute all the actions of their listeners.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public interface SubjectRole {
 	void addListener(Object listener, Action action);
 	void removeListener(Object listener);
+	void executeListenerActions();
 }
 	\end{lstlisting}
 	\caption{SubjectRole Interface}
@@ -450,7 +452,8 @@ public class SubjectRoleMObject extends MObject implements SubjectRole { |\label
 		listeners = new HashMap<>();
 	}
 
-	protected void executeListenerActions() {
+	@Override
+	public void executeListenerActions() {
 		listeners.values().forEach(Action::execute); |\label{line:subj_mobj_execute}|
 	}
 
@@ -463,7 +466,6 @@ public class SubjectRoleMObject extends MObject implements SubjectRole { |\label
 	public void removeListener(Object listener) {
 		listeners.remove(listener);
 	}
-	...
 }
 	\end{lstlisting}
 	\caption{SubjectRoleMObject}
