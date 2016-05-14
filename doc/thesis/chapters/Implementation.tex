@@ -417,8 +417,7 @@ The reason for this is that not everything exists at the time that it needs to b
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public static Schema load(
-	SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) 
-{
+	SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
 	// create an empty schema using the factory, will wire it later
 	final Schema schema = factory.Schema();
 
@@ -431,8 +430,7 @@ public static Schema load(
 		final Set<Field> fieldsForKlass = new LinkedHashMap<>();
 		for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
 
-			// field the field metadata though annotations
-			// ...
+			// collect the field metadata though annotations...
 			// add its fields, the owner Klass will be added later
             final Field field = factory.Field();
             field.name(fieldName);
@@ -481,12 +479,7 @@ An example of ``Cutting the umbilical cord'' is shown in Listing \ref{subsec:Cut
 final Schema bootstrapSchema = new BootSchema();
 BasicDataManager basicFactory = 
 	new BasicDataManager(SchemaFactory.class, bootstrapSchema);
-
-// Create a schema Factory which creates Schema instances.
 final SchemaFactory schemaFactory = basicFactory.make();
-
-// The schemas are described by the SchemaSchema, 
-// this schemaSchema is also self-describing.
 final Schema realSchemaSchema =
         SchemaLoader.load(
         	schemaFactory, 
@@ -521,7 +514,7 @@ Thus, it can be used to create other schemas like the Machine schema or even its
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.45\textwidth]{figures/schema_schema_models.png}}
+  	\fbox{\includegraphics[width=.4\textwidth]{figures/schema_schema_models.png}}
   	\caption{Boot Schema models}
   	\label{fig:schema_schema_models}
 \end{figure}
@@ -533,7 +526,7 @@ These initial Java primitives supported in our implementation are shown in Table
 \begin{table}[H]
 	\centering
 	\begin{tabular}{c|ccc}
-	\multicolumn{1}{l}{} & \textbf{Class\textless?\textgreater} & \textbf{Name} & \textbf{Default Value} \\ \midrule
+	\multicolumn{1}{l}{} & \textbf{Class} & \textbf{Name} & \textbf{Default Value} \\ \midrule
 	\textbf{Integer}     & Integer.class                        & ``Integer''   & 0                      \\
 	\textbf{int}         & int.class                            & ``int''       & 0                      \\
 	\textbf{Boolean}     & Boolean.class                        & ``Boolean''   & false                  \\

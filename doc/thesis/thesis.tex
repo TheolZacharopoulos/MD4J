@@ -1,3 +1,4 @@
+
 \documentclass{uvamscse}
 
 \input{program-listings}
@@ -10,7 +11,10 @@
 \graphicspath{ {figures/} }
 
 \usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{scrextend}
+
+% \usepackage[subtle]{savetrees}
 
 % ====== Listing Setup =======
 \usepackage{color}
@@ -84,13 +88,17 @@
 \include{./chapters/Evaluation}
 \include{./chapters/Conclusion}
 % \include{./chapters/Further}
+
 \chapter*{Acknowledgments}
 TODO
 
 \printglossary
 
-% \begin{appendix}
-% \end{appendix}
+\begin{appendix}
+	\include{./appendices/Migration}
+	\include{./appendices/ImplementingDataManager}
+	\include{./appendices/MetricsResults}
+\end{appendix}
 
 {%\tiny
   \bibliographystyle{alphaurl}

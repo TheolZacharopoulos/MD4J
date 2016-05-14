@@ -280,20 +280,13 @@ Additionally, the concerns are attached to the machine object very easily, as ca
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-...
-// State Machine monitoring
 ObservableDataManager observableDataManager = 
 			new ObservableDataManager(StateMachineFactory.class, stateMachineSchema);
-
 StateMachineFactory observableStateMachineFactory = observableDataManager.make();
-
-// Door State Machine definition, with observable data manager
 Machine doorStateMachine = observableStateMachineFactory.Machine();
-
 // Add monitoring and notification concerns
 ((Observable) doorStateMachine).observe(StateMachineMonitoring::monitor); |\label{line:state_machine_monitor}|
 ((Observable) doorStateMachine).observe(StateMachineMonitoring::notify);  |\label{line:state_machine_notify}|
-...
 	\end{lstlisting}
 	\caption{Door state machine with concerns}
 	\label{lst:StateMachineMonitoringConcerns}

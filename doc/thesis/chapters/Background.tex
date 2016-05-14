@@ -65,10 +65,10 @@ Pattern implementations are often binded to the instance of use resulting in the
 Even worse, in case of multiple patterns used in a system (pattern overlay and pattern composition), it can become difficult to trace particular instances of a design pattern. 
 Composition creates large clusters of mutually dependent classes\cite{sullivan2002advanced} and some design patterns explicitly use other patterns in their solution.
 
-\subsubsection{Observer pattern in Aspect Oriented Programming}\label{Observer pattern in Aspect Oriented Programming}
-Hannemann et al. \cite{hannemann2002design} provide some example implementations of several design patterns, including the \textit{Observer Pattern} in which they focus on a detailed implementation.
-As they mention, in an observer pattern implementation, both the \textit{Subject} and the \textit{Observer} have to know about their roles and have ``pattern related code'' in them. 
-As a result, adding or removing code from a class requires changes of code in that class. 
+% \subsubsection{Observer pattern in Aspect Oriented Programming}\label{Observer pattern in Aspect Oriented Programming}
+% Hannemann et al. \cite{hannemann2002design} provide some example implementations of several design patterns, including the \textit{Observer Pattern} in which they focus on a detailed implementation.
+% As they mention, in an observer pattern implementation, both the \textit{Subject} and the \textit{Observer} have to know about their roles and have ``pattern related code'' in them. 
+% As a result, adding or removing code from a class requires changes of code in that class. 
 
 % In their implementation \cite{hannemann2002design} of the observer pattern in AspectJ, they separate abstract aspects for: 
 
@@ -253,49 +253,49 @@ The methods \texttt{equals}, \texttt{hashCode}, and \texttt{toString} are inheri
 If they are proxied then they are also overridden by the proxy classes and invocations to them are forwarded to the invocation handler of the proxy. 
 Other methods defined in \texttt{Object} are not overridden by proxy classes, as they are \texttt{final} \cite{eugster2006uniform}.
 
-\subsubsection{Logging Example}
-Previously, Section \ref{Cross Cutting Concerns}, we mentioned the \textit{logging} \ac{ccc}.
-Imagine that every method invocation of an object has to be logged into the console, in that case we would need to write logging code on each of the methods of that class.
-This would lead to scattered logging code through the methods.
-This is problem can be solved with dynamic proxies and a simple solution is presented in Listing \ref{lst:Logging in dynamic proxies}.
+% \subsubsection{Logging Example}
+% Previously, Section \ref{Cross Cutting Concerns}, we mentioned the \textit{logging} \ac{ccc}.
+% Imagine that every method invocation of an object has to be logged into the console, in that case we would need to write logging code on each of the methods of that class.
+% This would lead to scattered logging code through the methods.
+% This is problem can be solved with dynamic proxies and a simple solution is presented in Listing \ref{lst:Logging in dynamic proxies}.
 
-\begin{sourcecode}[H]
-	\begin{lstlisting}[language=Java]
-public class TracingIH implements InvocationHandler {
+% \begin{sourcecode}[H]
+% 	\begin{lstlisting}[language=Java]
+% public class TracingIH implements InvocationHandler {
 	
-	public static Object createProxy(Object obj, PrintWriter out) {
-		return Proxy.newProxyInstance(
-			obj.getClass().getClassLoader(), 
-			obj.getClass().getInterfaces(), 
-			new TracingIH( obj, out));
-	}
+% 	public static Object createProxy(Object obj, PrintWriter out) {
+% 		return Proxy.newProxyInstance(
+% 			obj.getClass().getClassLoader(), 
+% 			obj.getClass().getInterfaces(), 
+% 			new TracingIH( obj, out));
+% 	}
 
-	private Object target;
-	private PrintWriter out;
+% 	private Object target;
+% 	private PrintWriter out;
 
-	private TracingIH(Object obj, PrintWriter out) {
-		target = obj;
-		this.out = out;
-	}
+% 	private TracingIH(Object obj, PrintWriter out) {
+% 		target = obj;
+% 		this.out = out;
+% 	}
 
-	public Object invoke(Object proxy, Method method,Object[] args) throws Throwable {
-		Object result = null;
+% 	public Object invoke(Object proxy, Method method,Object[] args) throws Throwable {
+% 		Object result = null;
 
-		try {
-			out.println(method.getName() + "(...) called" );
-			result = method.invoke( target, args );
-		} catch (InvocationTargetException e) {
-			out.println(method.getName() + " throws " + e.getCause());
-			throw e.getCause();
-		}
-		out.println(method.getName() + " returns" );
-		return result;
-	}
-}
-	\end{lstlisting}
-	\caption{An invocation handler for a proxy that traces calls \cite{forman2004java}}
-	\label{lst:Logging in dynamic proxies}
-\end{sourcecode}
+% 		try {
+% 			out.println(method.getName() + "(...) called" );
+% 			result = method.invoke( target, args );
+% 		} catch (InvocationTargetException e) {
+% 			out.println(method.getName() + " throws " + e.getCause());
+% 			throw e.getCause();
+% 		}
+% 		out.println(method.getName() + " returns" );
+% 		return result;
+% 	}
+% }
+% 	\end{lstlisting}
+% 	\caption{An invocation handler for a proxy that traces calls \cite{forman2004java}}
+% 	\label{lst:Logging in dynamic proxies}
+% \end{sourcecode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: JHotDraw
@@ -369,17 +369,17 @@ According to the authors \cite{hannemann2005role}, the steps of role-based refac
 \end{description}
 
 Thus, to refactor \ac{ccc} it is required a mapping from the abstract \ac{ccc} description to programming components that explicitly describe the \ac{ccc} implementation.
-This mapping for the case of the observer pattern is presented in Figure \ref{fig:Observer_Role_Mapping}.
+% This mapping for the case of the observer pattern is presented in Figure \ref{fig:Observer_Role_Mapping}.
 
-\begin{figure}[H]
-	\centering
-  	\fbox{\includegraphics[width=.50\textwidth]{figures/observer_pattern_role_mapping.png}}
-  	\caption{Observer pattern: Role Mapping \cite{hannemann2005role}}
-  	\label{fig:Observer_Role_Mapping}
-\end{figure}
+% \begin{figure}[H]
+% 	\centering
+%   	\fbox{\includegraphics[width=.50\textwidth]{figures/observer_pattern_role_mapping.png}}
+%   	\caption{Observer pattern: Role Mapping \cite{hannemann2005role}}
+%   	\label{fig:Observer_Role_Mapping}
+% \end{figure}
 
-This figure describes the roles mapping in a specific case on JHotDraw, the \textit{Figure Selection Listener}.
-However the authors have shown an abstract and reusable way of describing those roles.
+% This figure describes the roles mapping in a specific case on JHotDraw, the \textit{Figure Selection Listener}.
+% However the authors have shown an abstract and reusable way of describing those roles.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Figure Selection Observer of JHotDraw}\label{The Figure Selection Observer of JHotDraw}
@@ -392,7 +392,7 @@ The legacy design of JHotDraw is displayed in Figure \ref{fig:Selection_Listener
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.65\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
+  	\fbox{\includegraphics[width=.5\textwidth]{figures/BG_Observer_pattern_Selection_Listener.png}}
   	\caption{Observer pattern: Selection Listener \cite{marin2005approach}}
   	\label{fig:Selection_Listener}
 \end{figure}
@@ -414,12 +414,10 @@ These elements are shown in Figure \ref{fig:Concerns_Selection_Listener}.
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.65\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
+  	\fbox{\includegraphics[width=.5\textwidth]{figures/BG_The_concern_types_in_Selection_Listener.png}}
   	\caption{AJHotDraw: The concern types in Selection Listener \cite{marin2005approach}}
   	\label{fig:Concerns_Selection_Listener}
 \end{figure}
-
-\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The ``Undo'' Concern of JHotDraw}\label{The Undo Concern of JHotDraw}
@@ -461,3 +459,77 @@ In particular, this proposition is applied in the \texttt{ChangeAttributeCommand
 The undo \ac{ccc} has been identified, then removed from the system, and finally re-added in an aspect-specific manner.
 
 In this thesis we investigated both the \texttt{FigureSelectionListener} and the \texttt{ChangeAttributeCommand} (\textit{Undo}) concerns by refactoring them in a new version of the JHotDraw and compare them to their \ac{aop} counterpart.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section: Metrics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Metrics}\label{Background Metrics}
+There is a number of metrics that are used in empirical studies for software assessment. 
+However, most of those metrics refer to \ac{oop} systems \cite{chidamber1994metrics} and their basic abstractions such as class, object, methods and attributes.
+Since \ac{aop} introduces a new abstraction, the \textit{aspect}, the available metrics can not be applied to \ac{aop}.
+
+Sant'Anna et al. \cite{sant2003reuse} proposed a new framework for assessing reusability and maintainability qualities of \ac{aop} solutions.
+Those metrics are based on previous work from Chidamber and Kemerer \cite{chidamber1994metrics} and are an extension for measuring aspects as well.
+Their framework focuses on measurement of the \textit{separation of concerns}, the \textit{coupling}, the \textit{cohesion} and the \textit{size} criteria of an application.
+The goal of the framework is that software engineers can use it in order to assess design decisions in both \ac{oop} and \ac{aop} systems.
+In this thesis we are going to use this framework to assess and discuss the results of ManagedDataJHotDraw in relation to JHotDraw.
+
+The metrics proposed \cite{sant2003reuse} are grouped in four subsections (criteria) based on the attributes they measure:
+
+\paragraph{Separation Of Concerns}refers to the ability to identify, encapsulate and manipulate those parts of software that are relevant to a particular concern \cite{tarr1999n}.
+	\begin{itemize}
+		\item \ac{cdc}, counts the number of primary components whose main purpose is to contribute to the implementation of a concern.
+		This metric counts the degree of concern \textbf{scattering} in the level of components \cite{figueiredo2008maintainability}.
+
+		\item \ac{cdo}, counts the number of primary operations whose main purpose is to assist the implementation of a concern.
+		Constructors also are counted as operations.
+		This metric counts the degree of concern \textbf{scattering} in the level of methods \cite{figueiredo2008maintainability}.
+
+		\item \ac{cdloc}, counts the number of transition points for each concern through the lines of code.
+		To use this metric it is required a \textit{shadowing process} that partitions the code into shadowed areas and non-shadowed areas. 
+		The shadowed areas are lines of code that implement a given concern. 
+		Transition points are the points in the code where there is a transition from a non-shadowed area to a shadowed area and vice-versa \cite{garcia2003agents}.
+		Therefore, the higher the \ac{cdloc}, the more intermingled is the concern code within the implementation of the components; the lower the \ac{cdloc}, the more localized is the concern code.
+		This metrics aims to compute the degree of concern \textbf{tangling} \cite{figueiredo2008maintainability}.
+	\end{itemize}
+
+\paragraph{Coupling}is an indication of the strength of interconnections between the components in a system. Highly coupled systems have strong interconnections, with program units dependent on each other \cite{sommerville2004software}.
+	\begin{itemize}
+		\item \ac{cbc}, is defined for a component (class or aspect) as the number of other components to which it is coupled.
+
+		\item \ac{dit}, counts how far down the inheritance hierarchy a class (or aspect) is declared.
+	\end{itemize}
+
+\paragraph{Cohesion}of a component is a measure of the closeness of the relationship between its internal components \cite{sommerville2004software}.
+	\begin{itemize}
+		\item \ac{lcoo}, measures the lack of cohesion of a component.
+		The metric is an extension ofChidamber and Kemerer's \cite{chidamber1994metrics} \ac{lcom} metric.
+		More specifically, it measures the amount of method / advice pairs which do not access the same instance variable.
+	\end{itemize}
+
+\paragraph{Size}measures the length of a software system's design and code.
+	\begin{itemize}
+		\item \ac{vs}, counts the number of system components.
+		Those components are classes, in case of \ac{oop}, or classes and aspects, in case of \ac{aop}.
+		The component instances are not counted.
+
+		\item \ac{loc}, counts the number of code lines.
+		Documentation, comments and blanks are omitted.
+
+		\item \ac{noa}, counts the internal vocabulary of each component.
+		The metric counts the number of fields of each class or aspect.
+		Inherited attributes are not included in the count.
+
+		\item \ac{woc}, measures the complexity of a component in terms of its operations.
+		This metric extends the Chidamber and Kemerer's \cite{chidamber1994metrics} \ac{wmc} metric for \ac{aop}.
+	\end{itemize}
+
+Garcia et al. \cite{garcia2003agents} present an overview of these metrics in terms of the Goal / Question / Metric (GQM) approach \cite{wohlin2012experimentation} \ac{lcom} can be seen in Figure \ref{fig:metrics_questions}.
+
+\begin{figure}[H]
+	\centering
+  	\includegraphics[width=.9\textwidth]{figures/metrics_questions.png}
+  	\caption{Metrics and Goal/Question/Metric approach \cite{garcia2003agents}}
+  	\label{fig:metrics_questions}
+\end{figure}
+

@@ -91,7 +91,7 @@ Managed data has not been practically implemented in a static language before, w
 Based on the argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve the problem of crosscutting concerns?''}. 
 Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
 we evaluate the implementation of managed data on an inventory of aspects. 
-As a result the third research question states \textit{``To what extent can managed data tame an inventory of aspects in the JHotDraw framework, compared to the original and the \ac{aop} implementation?''}.
+As a result the third research question states \textit{``To what extent can managed data tame an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?''}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Solution Outline}\label{Solution Outline}
@@ -137,8 +137,9 @@ In order to answer our research questions we studied the theoretical background,
   In order to argue about the contribution of our implementation and managed data on taming aspects in general, we have used a use case application (JHotDraw) which is considered as a good design use case for \ac{oop}, along with its \ac{aop} implementation (AJHotDraw).
   Thus, we have built our version of the JHotDraw application (ManagedDataJHotDraw) using our managed data framework to refactor the \ac{ccc}.
 
-  \item[Use case evaluation.]
-  In order to show if our managed data solved the issues of \ac{aop} in terms of modularity, we have gathered a number of metrics for each of the three implementations the results are presented extensively in Chapter \ref{Evaluation}.
+  \item[Evaluation and Metrics.]
+  In order to evaluate our implementation we have collected a number of metrics presented extensively in Chapter \ref{Evaluation}.
+  In addition, we present a qualitative comparison between ManagedDataJHotDraw and AJHotDraw based on the modularity properties proposed by Hannemann et al. \cite{hannemann2005role}.
 
 \end{description}	
 
@@ -158,12 +159,11 @@ In order to answer our research questions we studied the theoretical background,
 
   \item[Contribution 3: Managed Data Refactoring of JHotDraw.]
   We implemented a new version of the JHotDraw application using our framework in order to evaluate our refactoring of \ac{ccc}.
-  % More specifically, we focused on the \textit{Observer} pattern, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules.
   More specifically, we focused on the \textit{Observer} pattern, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules, as well as the \textit{Undo} concern, which is part of a \textit{Command Pattern} and it is scattered through the modules that use this functionality.
 
-  \item[Contribution 4: JHotDraw Refactoring Results and Comparison with AJHotDraw.]
-  Finally, we present the results of our aspect refactoring and we compare them with AJHotDraw which is implemented in \ac{aop}, using the AspectJ language, again in Java.
-
+  \item[Contribution 4: JHotDraw Refactoring Evaluation.]
+  Finally, we evaluate our aspect refactoring by using a set of predefined metrics and comparing it in regard to the original version.
+  In addition we present a set of modularity properties, which we discuss in relation to the \ac{aop} version.
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -187,7 +187,8 @@ In particular, we discuss points that we followed and points that we have tried 
   One could conclude that managed data is a subset of the \ac{mop} approach since managed data have a more narrow scope.
 
   \item[Adaptive Object Model]~\\
-  Managed data \cite{loh2012managed} is closely related to the \ac{aom}. \ac{aom} \cite{yoder2002adaptive} is an architectural style that emphasizes flexibility and runtime dynamic configuration. 
+  Managed data \cite{loh2012managed} is closely related to the \ac{aom}. 
+  \ac{aom} \cite{yoder2002adaptive} is an architectural style that emphasizes flexibility and runtime dynamic configuration. 
   Architectures that are designed to adapt at runtime to new user requirements by retrieving descriptive information that can be interpreted at runtime, are sometimes called a ``reflective architecture'' or a ``meta architecture''. 
   An \ac{aom} system, is a system that represents classes, attributes, relationships and behavior as metadata, something that is closely related to the managed data.
   However, on one hand \ac{aom} style is more general than the managed data since it is described at a very high level as a pattern language and it covers business rules and user interfaces, in addition to data management. 

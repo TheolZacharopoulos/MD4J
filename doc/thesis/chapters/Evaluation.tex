@@ -6,7 +6,7 @@
 \chapter{Evaluation}\label{Evaluation}
 
 Having presented evidence that our framework is able to solve the problem of \ac{ccc}, Chapters \ref{Example Application} and \ref{AspectRefactoring}, we will now evaluate our claims.
-In this chapter we evaluate of our contributions in taming aspects with managed data, in relation to our research questions.
+In this chapter we present an evaluation of our contributions in taming aspects with managed data, in relation to our research questions.
 
 \section{Research Questions and Answers}\label{Research Questions and Answers}
 In Chapter \ref{Introduction} we stated three research questions which were the main focus of this thesis.
@@ -14,20 +14,80 @@ These are answered as follows:
 
 \paragraph{Can managed data be implemented in a static language?}
 From our managed data implementation in Java, presented in Chapter \ref{Implementation}, we conclude that it is possible to implement managed data in a static programming language.
-For the static implementation of managed data in Java, we used Java's reflection capabilities and Dynamic Proxies.
+For the implementation of managed data in Java, we used Java's reflection capabilities and Dynamic Proxies.
 
 \paragraph{Can managed data solve the problem of crosscutting concerns?}
 We argue that by using data managers, managed data can implement aspects of data in a modular way.
 As presented in both Chapters \ref{Example Application} and \ref{AspectRefactoring}, managed data can tame aspects and solve the problem of \acrlong{ccc}.
+Additionally, we have collected a set of metrics that assess our implementation in relation to the original.
+In this chapter we discuss the results of those metrics extensively.
 
-\paragraph{To what extent can managed data tame an inventory of aspects in the JHotDraw framework, compared to the original and the \acrlong{aop} implementation?}
+\paragraph{To what extent can managed data tame an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?}
 The results of our aspect refactoring in Chapter \ref{AspectRefactoring} show that managed data can tame aspects of JHotDraw. 
-In addition, we claim that our solution extends the capabilities of the AJHotDraw implementation.
-However, in this chapter, we provide further evaluation of our aspect refactoring and we compare it with the \acrlong{aop} solution.
+In addition, we claim that our solution extends some of the capabilities of the AJHotDraw implementation.
+However, in this chapter, we provide further evaluation of our aspect refactoring and we compare it with the \acrlong{aop} solution in terms of a list of ``modularity properties''.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Metrics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Assessment Framework}\label{Assessment Framework}
+In this section we discuss the summary of those results presented in Table \ref{tbl:metrics}.
+
+% #important
+\subsection{Metrics Interpretation}
+
+\paragraph{Coupling.} Although the numbers of \acrlong{dit} are similar in the two systems, the reasons are not the same.
+In the case of the JHotDraw the classes have higher \ac{dit} because they implement interfaces that define concerns.
+This is not the case in MDJHotDraw; however, the high number of \ac{dit} is due to the data managers stacking process.
+Additionally, the specifications are described in interfaces implemented by data managers which also increases the \ac{dit}.
+However, the coupling is between specifications and data managers and not \ac{ccc} and components.
+
+The \acrlong{cbc} metric is also similar in both versions.
+Again, the reasons differ for each case.
+\ac{cbc} in JHotDraw increased from the coupling between main components and \ac{ccc}.
+In the case of MDJHotDraw there is not such coupling but there is coupling between data managers and their specifications.
+
+The coupling overall number in MDJHotDraw is similar to JHotDraw; however, for totally different reasons.
+JHotDraw components are coupled with the \ac{ccc}, while MDJHotDraw data managers are coupled with their specifications.
+Therefore, data managers are not coupled with the application logic since they are abstract and reusable.
+This solved the evolution paradox \cite{tourwe2003existence} problem observed in \ac{aop}, where the aspects are closely coupled with the components since the aspects have to know about the components.
+
+\paragraph{Size.} The \acrlong{vs} metric is higher in the case of MDJHotDraw since, although the concern-related components have been removed, more components have been added for the managed data migration.
+Those components are schema factories and helpers that altogether migrate the system to managed data.
+
+As a result, the \acrlong{loc} metric is higher for the MDJHotDraw version since more components have been added.
+
+The \acrlong{woc} metric is similar in both cases.
+The reasons are that no significant changes have been made in terms of component complexity and the code remained similar to the original one.
+Small fluctuations on the numbers indicate that complexity increased or decreased by the data managers code in the MDJHotDraw case.
+
+Finally, the \acrlong{noa} metric is almost identical in both cases.
+The reason is that attributes that were related to the concern in JHotDraw have now moved to specifications and fields in low-level data managers in MDJHotDraw.
+
+In general, the size of the two systems is similar with a small increase in the MDJHotDraw owing to the fact that a few components have been added during the migration to managed data process.
+
+% TODO: not sure.
+\paragraph{Cohesion.} The \acrlong{lcom} metric values are lower on the MDJHotDraw case.
+Although the implementation of the point-cuts in managed data is performed using interfaces and this affects the \ac{lcom} metric of the concrete implementation classes, the value is still lower than JHotDraw.
+This is mainly because of the managed data migration.
+During this process we tried to improve the cohesion of the managed data definition by separating non-managed data from managed data as much as possible.
+
+\paragraph{Separation Of Concerns.} Finally, the following metrics measure the scattering and tangling of code in the two versions.
+First, both \acrlong{cdc} and \acrlong{cdo} metrics measure the code scattering in the systems.
+The differences in these two metrics are significant since the managed data version explicitly focuses on removing scattered code from the original and moving the concern code in data managers.
+Especially the \ac{cdo} metric, which measures the operations that assist the implementation of a \ac{ccc}, is notably lower because those operations are now located in data managers.
+Second, the \acrlong{cdloc} metric measures the code tangling of the systems.
+The MDJHotDraw has a remarkably lower number owing to the fact that every concern-related code has been removed completely from the application classes.
+The only place that \ac{cdloc} exists is in the integration points of the clients classes.
+More specifically, the places that define the usage of this concern by using the proper data manager.
+
+In general, scattering and tangling metrics are significantly low in the case of MDJHotDraw.
+This is because we have explicitly moved the concern-code from the classes to reusable data managers.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Modularity Properties}\label{Eval Modularity Properties}
 
-In order to make a reliable assessment of our research, we apply the same software quality metrics presented by Hannemann et al. \cite{hannemann2002design} in their design patterns refactoring.
+In order to make an assessment of our research in comparison with the \ac{aop} version, we applied the same software quality metrics presented by Hannemann et al. \cite{hannemann2002design} in their design patterns refactoring.
 More specifically, the authors refer to those metrics as ``closely-related modularity properties'' and use them to analyze and evaluate their design pattern solutions in AspectJ.
 
 Since our solution of the observer pattern concern in JHotDraw refers to the same issue that Hannemann et al. \cite{hannemann2005role} describes, we concluded that using the same modularity metrics will lead to a more reliable assessment of our solution and a more definitive assessment of our designs.
@@ -107,10 +167,10 @@ Certainly, there are application specific parts, such as pointcut definitions; h
 As a result, we can claim that managed data does not entirely solve the \textbf{evolution paradox} \cite{tourwe2003existence}, but it exceeds \ac{aop} system in modularity.
 
 \subsection{Flexibility}
-Managed data can be used similarly to \ac{aop}; however, the flexibility of the language takes it a step further.
+Managed data can be used similarly to \ac{aop}; however, the flexibility of the language takes it a step further in some cases.
 The design of the application is not bounded by the language, like in AspectJ's case.
 
-AspectJ has many limitations that can be one overcome by using managed data.
+AspectJ has limitations that can be one overcome by using managed data.
 In particular, as shown, data managers allow to access the current object's state, while AspectJ's aspects implementation do not.
 An object's state can be used for implementing functionalities depending on the current state of an object, for instance conditions in pointcuts.
 
@@ -150,6 +210,14 @@ Additionally, some limitations arise from this migration because interfaces and 
 As seen, the framework has some limitations such as Java keywords and encapsulation of the methods in interfaces.
 However, such definitions could be defined using annotations in future work.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Claims
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Claims}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Threads to validity
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Threads to Validity}
 In this section we present a set of validity criteria including \textit{Construct}, \textit{Internal}, \textit{External} validity and \textit{Reliability} \cite{easterbrook2008selecting}.
 % Construct Validity: Efficient interpretation of the results 
@@ -169,4 +237,3 @@ In our case we only refactored a part of the undo concern, in order to show how 
 Finally, the reliability of this research can be problematic.
 More specifically, the refactoring is strictly dependent on the programmer's design and unless our design is used when replicating this research, a different assessment could be reached.
 % by repeating the refactoring one could come up with different design and therefore, conclude on different assessment.
-
