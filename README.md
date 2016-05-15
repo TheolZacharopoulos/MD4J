@@ -145,7 +145,7 @@ public class LockableDataManager extends BasicDataManager {
 }
 ```
 
-Additionally, it should add some \textit{locking} mechanism to ensure immutability of its objects.
+Additionally, it should add some *locking* mechanism to ensure immutability of its objects.
 This is defined in the `Lockable` interface, which is responsible of ensuring the implementation of the specifications. 
 Bellow the `Lockable Interface` the specifications of the interface is showed:
 
