@@ -40,6 +40,7 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
      * Notify any dependencies for the change of that field.
      * @param oldValue the old value of the field
      * @param newValue the old value of the field
+     * @throws NoKeyFieldException if no field is found
      */
     private void notify(Object oldValue, Object newValue) throws NoKeyFieldException {
         // if the new value is the same as the old one, then nothing changes

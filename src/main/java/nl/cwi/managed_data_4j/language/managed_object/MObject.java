@@ -134,6 +134,7 @@ public class MObject implements InvocationHandler, M {
      * Initializes the object values.
      * @param initializers the initialization values
      * @throws InvalidFieldValueException in case of wrong type of the initialization value.
+     * @throws NoKeyFieldException if no key field found.
      */
     protected void initializeProps(Object... initializers) throws InvalidFieldValueException, NoKeyFieldException {
         final List<Field> fieldList = new LinkedList<>();
@@ -174,6 +175,7 @@ public class MObject implements InvocationHandler, M {
      * @param value the value of the field
      * @throws NoSuchFieldError in case there no field with this name.
      * @throws InvalidFieldValueException in case the value is not the right type.
+     * @throws NoKeyFieldException if no key field found.
      */
     public void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException, NoKeyFieldException {
         final MObjectField mObjectField = this.props.get(name);
@@ -223,7 +225,7 @@ public class MObject implements InvocationHandler, M {
      * Therefore, a data manager can use local methods for pointcut definitions.
      * @param method the default method
      * @param args any arguments of the default method
-     * @throws Throwable
+     * @throws Throwable in case of invocation error.
      */
     protected void invokeLocalMethod(Method method, Object[] args) throws Throwable {
         for (Method objMethod : this.getClass().getMethods()) {

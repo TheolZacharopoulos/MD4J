@@ -36,7 +36,8 @@ public abstract class MObjectField {
     /**
      * Initializes the field with a value
      * @param value the initialization value
-     * @throws InvalidFieldValueException when an invalid value for this field is given
+     * @throws InvalidFieldValueException when an invalid value for this field is given.
+     * @throws NoKeyFieldException if no key field found.
      */
     public abstract void init(Object value) throws InvalidFieldValueException, NoKeyFieldException;
 
@@ -58,6 +59,7 @@ public abstract class MObjectField {
      * Sets a value to the field.
      * @param value the initialization value
      * @throws InvalidFieldValueException when an invalid value for this field is given
+     * @throws NoKeyFieldException if no key field found.
      */
     public abstract void set(Object value) throws InvalidFieldValueException, NoKeyFieldException;
 

@@ -1,9 +1,11 @@
 
-nl.cwi
 nl.cwi.examples.geometry
-nl.cwi.examples.geometry.data_managers
 nl.cwi.examples.geometry.schemas
 nl.cwi.examples.schema_schema
+nl.cwi.examples.state_machine
+nl.cwi.examples.state_machine.concerns
+nl.cwi.examples.state_machine.schemas
+nl.cwi.managed_data_4j
 nl.cwi.managed_data_4j.ccconcerns.aspects
 nl.cwi.managed_data_4j.ccconcerns.patterns.lockable
 nl.cwi.managed_data_4j.ccconcerns.patterns.observer
@@ -14,10 +16,14 @@ nl.cwi.managed_data_4j.language.managed_object.managed_object_field
 nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors
 nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many
 nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single
+nl.cwi.managed_data_4j.language.primitives
 nl.cwi.managed_data_4j.language.schema.boot
 nl.cwi.managed_data_4j.language.schema.load
 nl.cwi.managed_data_4j.language.schema.models.definition
 nl.cwi.managed_data_4j.language.schema.models.definition.annotations
 nl.cwi.managed_data_4j.language.schema.models.implementation
 nl.cwi.managed_data_4j.language.utils
+test_definition
+test_definition.data_manager
+test_definition.schemas
 utils
