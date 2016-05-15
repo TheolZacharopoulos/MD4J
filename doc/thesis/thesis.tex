@@ -72,7 +72,19 @@
 \begin{document}
 
 \abstract{
-	TODO
+	The problem of crosscutting concerns results to code scattering and tangling.
+	This in turn significantly affects the modularity of a system, since the separation of concerns principle is violated.
+	Although Aspect Oriented Programming is created in order to solve this problem, several issues arise, the most important being the coupling between aspects and components.
+	This leads to an evolution paradox in Aspect Oriented Software Development.
+
+	In this thesis we implement managed data and use them in order to solve the problem of crosscutting concerns.
+	Managed data is a data abstraction mechanism that allows the programmer to define data in addition to their manipulation mechanisms, something that is hard-coded in the programming languages.
+	Defining crosscutting concerns in the manipulation mechanisms, namely data managers, results to a modular way of controlling aspects of data.
+	Therefore, managed data can be used to solve the crosscutting concerns problem and avoid the coupling problem of Aspect Oriented Programming.
+
+	Our work focuses on the implementation of managed data in Java, proving that managed data can be implemented in a static language.
+	Moreover, we demonstrate that managed data can tame aspects by refactoring an existing program's crosscutting concerns.
+	Finally, we provide an evaluation of our managed data refactoring in relation to an Aspect Oriented refactoring of the same use case application, in order to show how managed data can overcome Aspect Oriented Programming problems.
 }
 
 \maketitle
@@ -80,6 +92,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \include{./chapters/Introduction}
 \include{./chapters/Background}
 \include{./chapters/Example}
@@ -88,7 +101,6 @@
 \include{./chapters/Evaluation}
 \include{./chapters/Conclusion}
 % \include{./chapters/Further}
-
 \chapter*{Acknowledgments}
 TODO
 

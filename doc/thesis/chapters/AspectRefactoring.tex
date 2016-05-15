@@ -200,7 +200,7 @@ As it is mentioned in Chapter \ref{Implementation}, the role of a data manager c
 Therefore, we first need this \texttt{MObject}, namely \texttt{SubjectRoleMObject}, to implement our subject role specifications.
 
 \subsubsection{SubjectRole specifications}
-We define the functionality of the \textit{SubjectRole} in an interface, shown in Figure \ref{lst:SubjectRole Interface}.
+We define the functionality of the \textit{SubjectRole} in an interface, shown in Listing \ref{lst:SubjectRole Interface}.
 The subject role simply needs to add and remove listener objects to and from a managed object.
 Additionally, it defined a method \texttt{executeListenerActions} that allows the subjects to execute all the actions of their listeners.
 
@@ -359,7 +359,7 @@ public class FigureSelectionListenerSubjectRoleMObject
   	\label{fig:JHotDraw_FigureSelectionListener_MD}
 \end{figure}
 
-\subsection{FigureSelectionListener Results}
+\subsection{Managed Data Refactoring}
 Figure \ref{fig:JHotDraw_FigureSelectionListener_MD} illustrates the refactored version of the FigureSelectionListener concern in ManagedDataJHotDraw.
 Comparing it to the original, Figure \ref{fig:JHotDraw_FigureSelectionListener_OOP}, it can be seen that, first, the list of listeners has been removed from the \texttt{DrawingView}. 
 Next, the \texttt{addListener} and \texttt{removeListener} methods have also been removed from the class.
@@ -538,7 +538,7 @@ public Undoable createUndoActivity() {
 	\label{lst:The execute Undo pointcut}
 \end{sourcecode}
 
-\subsection{ChangeAttributeCommand Managed Data Refactoring Overall}
+\subsection{Managed Data Refactoring}
 Comparing the original version with our refactored version several improved points can be observed.
 First, all of the \textit{Undo} related functionalities of a command have been removed from the command's code and they have been externally attached by the \textit{UndoRole} data manager.
 Next, following the original design, the creation of an \texttt{UndoActivity} instance is again defined inside a nested class; however, this time it is not in the command itself but it is inside a ``command-specific'' data manager.
@@ -614,10 +614,10 @@ These results are discussed in the following chapter.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Claims
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Claims}
-We claim that our framework successfully performed aspect refactoring of the \texttt{FigureSelectionListener} concern in JHotDraw.
-Furthermore, it evolved the pointcut concept of \ac{aop} by adding conditions on them.
-This leads to a solution that focuses on behavior conservation, lost in the case of the \ac{aop} refactoring.
-Moreover, we claim that our framework also performed a successful aspect refactoring of the \texttt{ChangeAttributeCommand} undo concern in JHotDraw.
-Additionally, it solves the \ac{aop}'s problem of useing naming conventions for the nested classes.
-Finally, we have collected a set of metrics in order to assess our results and compare them with the original.
+% \section{Claims}
+% We claim that our framework successfully performed aspect refactoring of the \texttt{FigureSelectionListener} concern in JHotDraw.
+% Furthermore, it evolved the pointcut concept of \ac{aop} by adding conditions on them.
+% This leads to a solution that focuses on behavior conservation, lost in the case of the \ac{aop} refactoring.
+% Moreover, we claim that our framework also performed a successful aspect refactoring of the \texttt{ChangeAttributeCommand} undo concern in JHotDraw.
+% Additionally, it solves the \ac{aop}'s problem of useing naming conventions for the nested classes.
+% Finally, we have collected a set of metrics in order to assess our results and compare them with the original.

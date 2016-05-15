@@ -21,7 +21,7 @@ Furthermore, it is considered \cite{loh2012managed} that managed data cannot be 
 In this thesis we use the Java reflection API in order to implement managed data and focus on specific aspects and design patterns implementations using the data managers concept. 
 
 Finally, in order to evaluate the implementation of aspects and how we deal with \ac{ccc} in managed data, we have reimplemented a part of a well-known use case, the JHotDraw, and evaluated the results on a number of explicit criteria.
-Additionally, we compare our results with the \ac{aop} counterpart implementation of JHotDraw.
+Additionally, we present our results in relation with the original implementation and its \ac{aop} counterpart implementation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Initial Study}\label{Initial Study}
@@ -35,7 +35,7 @@ Additionally, our work focuses on the aspects perspective and it provides a solu
 
 The most famous language implementation of \ac{aop} is the one provided by Kiczales et al. called AspectJ \cite{kiczales2001overview}. 
 Although AspectJ has been used by a number of projects, some of them with significant research results \cite{hannemann2002design} \cite{marinajhotdraw}, it includes all the trade-offs of \ac{aop}, which are presented in detail in Section \ref{Problem statement}.
-In this thesis we show how we use managed data in order to tame aspects and compare the results with an AspectJ show case, the AJHotDraw.
+In this thesis we show how we use managed data in order to tame aspects and compare our findings with the original JHotDraw and an AspectJ show case, the AJHotDraw.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem statement}\label{Problem statement}
@@ -102,10 +102,6 @@ This framework provides all the mechanisms of managed data using Java reflection
 To validate our hypotheses we have implemented managed data in Java.
 More specifically we define \textit{schemas} using Java interfaces and dynamic proxies for the \textit{data managers}. 
 Furthermore, we provide as a proof of concept the an example given in Enso papers \cite{loh2012managed}, but this time developed in Java using our framework. 
-
-% In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented the \textit{Observer Pattern}, which as presented in literature \cite{tourwe2003existence} \cite{hannemann2005role} \cite{marin2005approach}, is by nature not modularized and the scatters ``pattern code'' through the participant classes. 
-% This pattern is considered as a difficult case because it is used a lot in the original JHotDraw source code but with multiple variations, thus it is difficult to extract an abstract version.
-
 In order to see if managed data solves the problems that \ac{aop} introduces, we have implemented an inventory of the following aspects from JHotDraw using data managers:
 \begin{description}
 
@@ -117,7 +113,7 @@ In order to see if managed data solves the problems that \ac{aop} introduces, we
 
 \end{description}
 
-We performed aspect refactoring using data managers that have modularity as a main characteristic and is evaluated in a new JHotDraw implementation.
+We performed aspect refactoring using data managers, that have modularity as a main characteristic, and is evaluated in a new JHotDraw implementation.
 We compared those aspects with the original version of JHotDraw, and the aspect version, AJHotDraw. 
 Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}.
 To archive that, we used the original JHotDraw test suite that consists of 1218 executable tests in total.
@@ -129,8 +125,7 @@ In order to answer our research questions we studied the theoretical background,
 \begin{description}
 
   \item[Managed data implementation in a static programming language.]
-  In order to answer the question if managed data could be implemented in a static language, we have implemented managed data in Java 
-  using Java's reflection capabilities\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}}. 
+  In order to answer the question if managed data could be implemented in a static language, we have implemented managed data in Java using Java's reflection API. 
   An extensive presentation of the implementation is given in Chapter \ref{Implementation}.
 
   \item[Use case implementation.] 
@@ -174,9 +169,9 @@ In particular, we discuss points that we followed and points that we have tried 
 \begin{description}
 
   \item[Meta-Object Protocol]~\\
-  Managed data can be implemented using reflection and the \ac{mop}. 
-  The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and in particular, the \textit{method\_missing} mechanism. 
-  In other languages (such as Java, JavaScript or C\#) that support dynamic proxies, they can be used for the managed data implementation, which is the way we have implemented it.
+  % Managed data can be implemented using reflection and the \ac{mop}. 
+  % The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and in particular, the \textit{method\_missing} mechanism. 
+  % In other languages (such as Java, JavaScript or C\#) that support dynamic proxies, they can be used for the managed data implementation, which is the way we have implemented it.
   The \ac{mop} \cite{kiczales1991art} was first implemented for simple \ac{oop} capabilities of the Lisp language in order to satisfy some developer demands including compatibility, extensibility and developers experimentation. 
   The idea was that the languages have been designed to be viewed as black box abstractions without giving the programmers the control over semantics or the implementation of those abstractions. 
   \ac{mop} opens up those abstractions to the programmer so he can adjust aspects of the implementation strategy. 
@@ -187,13 +182,13 @@ In particular, we discuss points that we followed and points that we have tried 
   One could conclude that managed data is a subset of the \ac{mop} approach since managed data have a more narrow scope.
 
   \item[Adaptive Object Model]~\\
-  Managed data \cite{loh2012managed} is closely related to the \ac{aom}. 
-  \ac{aom} \cite{yoder2002adaptive} is an architectural style that emphasizes flexibility and runtime dynamic configuration. 
-  Architectures that are designed to adapt at runtime to new user requirements by retrieving descriptive information that can be interpreted at runtime, are sometimes called a ``reflective architecture'' or a ``meta architecture''. 
+  Managed data \cite{loh2012managed} is closely related to the \ac{aom} \cite{yoder2002adaptive}. 
+  \ac{aom} is an architectural style that emphasizes flexibility and runtime dynamic configuration. 
+  % Architectures that are designed to adapt at runtime to new user requirements by retrieving descriptive information that can be interpreted at runtime, are sometimes called a ``reflective architecture'' or a ``meta architecture''. 
   An \ac{aom} system, is a system that represents classes, attributes, relationships and behavior as metadata, something that is closely related to the managed data.
   However, on one hand \ac{aom} style is more general than the managed data since it is described at a very high level as a pattern language and it covers business rules and user interfaces, in addition to data management. 
   On the other hand, \ac{aom} does not discuss issues of integration with programming languages, the representation of data schemas, or bootstrapping, which are important characteristics of managed data. 
-  \ac{aom} is also more focused on business systems implementation, not as a general programming or data abstraction technique \cite{loh2012managed}.
+  Finally, \ac{aom} is more focused on business systems implementation, not as a general programming or data abstraction technique \cite{loh2012managed}.
 
   \item[Model Driven Software Development]~\\
   \ac{mdsd} refers to a software development method which generates code from defined models. 

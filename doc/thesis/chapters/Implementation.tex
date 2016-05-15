@@ -235,7 +235,7 @@ protected void setupField(Field field) {
 The implementation and the integration of a new data manager is straight forward in our framework.
 As it can be seen in Figure \ref{fig:DataManager_and_MObject}, the basic components of a new data manager implementation are the \texttt{Data Manager} class (proxy) and the \texttt{MObject} class (invocation handler).
 
-First, to follow the modularity aspect and the ability to stack data managers together combining their specifications, we need to inherit from, at least, the \texttt{BasicDataManager} and \texttt{MObject} respectively.
+First, to follow the modularity aspect and the ability to stack data managers together combining their specifications, we need to inherit from, at least, the \texttt{BasicDataManager} and its \texttt{MObject} respectively.
 A simple data manager that could be useful is a data manager that introduces immutability to its managed objects.
 A \texttt{Lockable} data manager should first inherit the \texttt{BasicDataManager} to get its field access specification.
 The implementation of the \texttt{LockableDataManager} is illustrated in \ref{lst:Lockable Data Manager}.
@@ -259,8 +259,9 @@ public class LockableDataManager extends BasicDataManager {
 	\label{lst:Lockable Data Manager}
 \end{sourcecode}
 
-Additionally it should add some \textit{locking} mechanism to ensure immutability of its objects.
-This is defined in the \texttt{Lockable} interface which is responsible of ensuring the implementation of the specifications. Figure \ref{lst:Lockable Interface} shows the specifications of the interface.
+Additionally, it should add some \textit{locking} mechanism to ensure immutability of its objects.
+This is defined in the \texttt{Lockable} interface, which is responsible of ensuring the implementation of the specifications. 
+Listing \ref{lst:Lockable Interface} shows the specifications of the interface.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -273,7 +274,8 @@ public interface Lockable {
 \end{sourcecode}
 
 Since we have the specifications and the data manager that creates the \textit{Lockable} managed object, we still need the implementation.
-The implementation is located in the MObject and in this case the \texttt{LockableMObject}, Figure \ref{lst:Lockable Managed Object}.
+The implementation is located in the \texttt{MObject} and in this case the \texttt{LockableMObject}, 
+Listing \ref{lst:Lockable Managed Object}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -306,7 +308,7 @@ public class LockableMObject extends MObject implements Lockable {
 The \texttt{LockableMObject}, by extending the \texttt{MObject} and implementing the \texttt{Lockable} interface, inherits the basic functionality of a managed object and gets a specification description respectively.
 Its role is to implement the logic of the immutability, which is as simple as it looks.
 In order to use this functionality, one needs to create managed objects using this data manager.
-An example is shown in Figure \ref{lst:Immutability Example}.
+An example is shown in Listing \ref{lst:Immutability Example}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -476,12 +478,10 @@ An example of ``Cutting the umbilical cord'' is shown in Listing \ref{subsec:Cut
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-final Schema bootstrapSchema = new BootSchema();
-BasicDataManager basicFactory = 
-	new BasicDataManager(SchemaFactory.class, bootstrapSchema);
+final BasicDataManager basicFactory = 
+	new BasicDataManager(SchemaFactory.class, new BootSchema());
 final SchemaFactory schemaFactory = basicFactory.make();
-final Schema realSchemaSchema =
-        SchemaLoader.load(
+final Schema realSchemaSchema = SchemaLoader.load(
         	schemaFactory, 
         	bootstrapSchema, 
         	Schema.class, 
@@ -491,11 +491,10 @@ final Schema realSchemaSchema =
         	Field.class,
         	Primitives.class); |\label{line:Primitives}|
 
-BasicDataManager basicFactory2 = 
+final BasicDataManager basicFactory2 = 
 	new BasicDataManager(SchemaFactory.class, realSchemaSchema);
 final SchemaFactory schemaFactory2 = basicFactory2.make();
-final Schema realSchemaSchema2 =
-        SchemaLoader.load(
+final Schema realSchemaSchema2 = SchemaLoader.load(
         	schemaFactory2, 
         	realSchemaSchema, 
         	Schema.class, 
@@ -514,7 +513,7 @@ Thus, it can be used to create other schemas like the Machine schema or even its
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.4\textwidth]{figures/schema_schema_models.png}}
+  	\fbox{\includegraphics[width=.31\textwidth]{figures/schema_schema_models.png}}
   	\caption{Boot Schema models}
   	\label{fig:schema_schema_models}
 \end{figure}
@@ -525,17 +524,18 @@ These initial Java primitives supported in our implementation are shown in Table
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{c|ccc}
-	\multicolumn{1}{l}{} & \textbf{Class} & \textbf{Name} & \textbf{Default Value} \\ \midrule
-	\textbf{Integer}     & Integer.class                        & ``Integer''   & 0                      \\
-	\textbf{int}         & int.class                            & ``int''       & 0                      \\
-	\textbf{Boolean}     & Boolean.class                        & ``Boolean''   & false                  \\
-	\textbf{boolean}     & boolean.class                        & ``boolean''   & false                  \\
-	\textbf{String}      & String.class                         & ``String''    & ``''                   \\
-	\textbf{Double}      & Double.class                         & ``Double''    & 0.                     \\
-	\textbf{Float}       & Float.class                          & ``Float''     & 0.f                    \\
-	\textbf{Class}       & Class.class                          & ``Class''     & null 					 \\
-	\textbf{Object}      & Object.class                         & ``Object''    & null 
+	\begin{tabular}{@{}lccc@{}}
+	\toprule
+	                 & \textbf{Class} & \textbf{Name} & \textbf{Default Value} \\ \midrule
+	\textbf{Integer} & Integer.class  & ``Integer''   & 0                      \\
+	\textbf{int}     & int.class      & ``int''       & 0                      \\
+	\textbf{Boolean} & Boolean.class  & ``Boolean''   & false                  \\
+	\textbf{boolean} & boolean.class  & ``boolean''   & false                  \\
+	\textbf{String}  & String.class   & ``String''    & ``''                   \\
+	\textbf{Double}  & Double.class   & ``Double''    & 0.                     \\
+	\textbf{Float}   & Float.class    & ``Float''     & 0.f                    \\
+	\textbf{Class}   & Class.class    & ``Class''     & null                   \\
+	\textbf{Object}  & Object.class   & ``Object''    & null                   \\ \bottomrule
 	\end{tabular}
 	\caption{Primitives Table}
 	\label{tbl:primivites_table}
@@ -611,9 +611,9 @@ This makes it unfavorable for applications that focus on performance and are bas
 Another issue that arises is that integration in existing systems is complicated considering every model has to be redefined as a schema and every functionality has to be reimplemented in data managers.
 However, an existing system integration is presented in Chapter \ref{AspectRefactoring}.
 
-\section{Claims}\label{Implementation Claims}
-We claim that managed data leads to a powerful data abstraction that gives the programmer control over fundamental mechanisms of data creation and manipulation \cite{loh2012managed}.
-Those mechanisms are traditionally predefined by the programming languages. 
-Managed data gives control over them by using data managers.
-Moreover, we claim that managed data introduces a modular way to define data and aspects of data. 
-In Chapter \ref{AspectRefactoring} we present how to \textit{aspect refactor} an existing application using managed data.
+% \section{Claims}\label{Implementation Claims}
+% We claim that managed data leads to a powerful data abstraction that gives the programmer control over fundamental mechanisms of data creation and manipulation \cite{loh2012managed}.
+% Those mechanisms are traditionally predefined by the programming languages. 
+% Managed data gives control over them by using data managers.
+% Moreover, we claim that managed data introduces a modular way to define data and aspects of data. 
+% In Chapter \ref{AspectRefactoring} we present how to \textit{aspect refactor} an existing application using managed data.

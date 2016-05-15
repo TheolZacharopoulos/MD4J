@@ -4,20 +4,23 @@
 % Chapter: Conclusion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion}\label{Conclusion}
-% TODO:
-% In this research we have presented a managed data implementation in Java using its reflection API and dynamic proxies.
-% By doing that we allow the programmer to take control over the mechanisms of data creation and manipulation.
-% We defined our language using Java's syntax by using interfaces and annotations.
+In this research we have presented a Managed Data implementation in Java using its reflection API and dynamic proxies.
+By doing so, we provide a new, powerful approach to data abstraction that is otherwise hard-coded in the programming language.
+Our first contribution is the creation of a framework, the JavaMD, which is an open-source project of managed data implementation in Java.
 
-% Having the managed data implementation in place, we refactored an existing Object Oriented use case, the JHotDraw.
-% This use case is considered as a well-designed \ac{oop} system; however, it includes the problem of the \ac{ccc}.
-% Thus, we refactored this system using managed data in order to solve the \ac{ccc} problem.
-% More specifically, we have migrated some main components of JHotDraw to managed data, then we removed the \ac{ccc} and finally we used data managers to implement them.
-% This refactoring led to a new version of JHotDraw the ManagedDataJHotDraw which solves the problem of some main \ac{ccc} of the original application.
+Having the managed data implementation in place, we refactored an existing Object Oriented use case, the JHotDraw.
+Although this use case is considered as a well-designed \ac{oop} system, it faces the problem of the \ac{ccc}.
+Thus, this system was refactored using managed data in order to solve the \ac{ccc} problem.
+We migrated some main components of JHotDraw to managed data, removed the observer pattern and undo \ac{ccc} and, finally, used data managers to implement them.
+This refactoring led to a new version of JHotDraw, the ManagedDataJHotDraw, which solves the problem of some main \ac{ccc} of the original application.
+Our second contribution is the ManagedDataJHotDraw framework as an open-source project.
 
-% During the assessment of our refactoring we have collected a number of metrics that we used in order to evaluate our refactoring in comparison with the original application.
-% Moreover, we extensively presented the refactoring process of JHotDraw and compared with AJHotDraw, the Aspect Oriented implementation of JHotDraw.
-% Finally, by presenting a set of metrics and a number of modularity properties, we assessed our results comparing them in with the original and the Aspect Oriented version.
+During the assessment of our refactoring we collected a number of metrics that we used in order to evaluate our refactoring in regard to the original application.
+Moreover, we extensively presented the refactoring process of JHotDraw and compared with AJHotDraw, the Aspect Oriented implementation of JHotDraw.
+Finally, by presenting a set of metrics and a number of modularity properties, we assessed our results in relation to the original and the Aspect Oriented version.
+This extensive evaluation of our refactoring leads to our third contribution.
 
-% Overall, we showed that managed data can be implemented in a static language and it can tame aspects by using data managers for concern implementation.
-% Moreover, it extends some capabilities of AspectJ and deviates from the problem of the coupling between aspect definition and components.
+Overall, we showed that managed data can be implemented in a static language and it can tame aspects by using data managers for concern implementation.
+Moreover, it extends some capabilities of AspectJ and deviates from the problem of coupling between aspect definition and components, leading to a modular and flexible way of aspect implementation.
+Although there are several challenges to be solved, such as the significant performance overhead of reflection, our work shows how managed data gives the programmer control over the fundamental mechanisms for creation and manipulation of data.
+In addition, it demonstrates how managed data can be used to solve the problem of \ac{ccc} in existing or new systems.
