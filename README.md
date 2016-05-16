@@ -21,176 +21,6 @@ The project is built with maven.
 ### Build the (jar) library
 `mvn clean package`
 
-## How to use it
-
-In order to implement an application using managed data we first need to define your data and its manipulation mechanism.
-Lets show this through an example.
-Consider the requirements of a simple *door state machine* as the following: 
-* A state **Machine** consists of a number of named **State** declarations.
-* Each **State** contains **Transitions** to other states, which are identified by a **name**, when a certain event happens.
-* A **Transition** is identified by a certain **event**.
-
-For reasons of simplicity, this example will be a very basic *door state machine*, 
-which includes three states **Open**, **Close} and **Locked**, 
-accompanied by their transitions: **open_door**, **close_door**, 
-**lock_door** and **unlock_door** respectively.
-
-### Schemas definition
-As a first step, all the models of the state machine program need to be defined. 
-To do that we use JavaMD's schema definition language, Java interfaces.
-The definition of the schemas is shown bellow:
-
-Machine:
-```
-public interface Machine extends M {
-	State start(State... startingState);
-
-	State current(State... currentState);
-
-	@Contain
-	Set<State> states(State... states);
-}
-```
-
-State:
-```
-public interface State extends M {
-	@Key
-	String name(String... name);
-
-	@Inverse(other = Machine.class, field = "states")
-	Machine machine(Machine... machine);
-
-	@Contain
-	Set<Transition> out(Transition... transition);
-
-	@Contain
-	Set<Transition> in(Transition... transition);
-}
-```
-
-Transition:
-```
-public interface Transition extends M {
-	@Key 
-	String event(String... event);
-
-	@Inverse(other = State.class, field = "out")
-	State from(State... from);
-
-	@Inverse(other = State.class, field = "in")
-	State to(State... to);
-}
-```
-
-### Schemas Factories
-Now that we have our schemas, we need a way to build instances of managed objects that these schemas describe. 
-In Java to create these three schemas as managed data we need to define a factory, 
-which creates managed data instances (managed objects) for each of these schemas.
-
-```
-public interface StateMachineFactory {
-	Machine Machine();  	// constructor for Machine managed objects
-	State State(); 				// constructor for State managed objects
-	Transition Transition(); // constructor for Transition managed objects
-}
-```
-### Data managers
-
-### Basic Data Manager
-To interpret and manage the defined data we need data managers. 
-Our implementation includes the definition of a **Basic data manager** that is responsible of interpreting 
-a schema definition to instances of *managed objects*.
-Conclusively, in order to make a *managed object*, the data manager needs its schema definition 
-(the interfaces that define the schemas) and the schema factory (the interface that defines the constructors of the schemas).
-
-A basic interpreter for the state machine is given bellow:
-
-```
-public class StateMachineExample {
-
-    public final static String OPEN_STATE       = "Open";
-    public final static String CLOSED_STATE     = "Closed";
-    public final static String LOCKED_STATE     = "Locked";
-
-    public final static String OPEN_TRANSITION  = "open_door";
-    public final static String CLOSE_TRANSITION = "close_door";
-    public final static String LOCK_TRANSITION  = "lock_door";
-    public final static String UNLOCK_TRANSITION = "unlock_door";
-
-    public static void main(String[] args) {
-        final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
-        final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
-
-        final Schema stateMachineSchema =
-                SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
-        final BasicDataManager basicDataManagerForStateMachines = new BasicDataManager(StateMachineFactory.class, stateMachineSchema);
-        final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make();
-
-        // ========================================================
-        // Door State Machine definition
-        final Machine doorStateMachine = stateMachineFactory.Machine();
-
-        // Open State definition
-        final State openState = stateMachineFactory.State(OPEN_STATE);
-        openState.machine(doorStateMachine);
-
-        // Closed State definition
-        final State closedState = stateMachineFactory.State(CLOSED_STATE);
-        closedState.machine(doorStateMachine);
-
-        // Locked State definition
-        final State lockedState = stateMachineFactory.State(LOCKED_STATE);
-        lockedState.machine(doorStateMachine);
-
-        // Close Transition
-        final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
-        closeTransition.from(openState);
-        closeTransition.to(closedState);
-
-        // Open Transition
-        final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
-        openTransition.from(closedState);
-        openTransition.to(openState);
-
-        // Lock Transition
-        final Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
-        lockTransition.from(closedState);
-        lockTransition.to(lockedState);
-
-        // Unlock Transition
-        final Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
-        unlockTransition.from(lockedState);
-        unlockTransition.to(closedState);
-
-        // State machine start
-        doorStateMachine.start(closedState);
-
-        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-                LOCK_TRANSITION,
-                UNLOCK_TRANSITION,
-                OPEN_TRANSITION)));
-    }
-
-    private static void interpretStateMachine(Machine stateMachine, List<String> commands) {
-
-        stateMachine.current(stateMachine.start());
-
-        for (String event : commands) {
-            for (Transition trans : stateMachine.current().out()) {
-                if (trans.event().equals(event)) {
-                    stateMachine.current(trans.to());
-                    break;
-                }
-            }
-        }
-    }
-}
-```
-
-### Monitoring Data Manager
-TODO
-
 ## Overview
 
 It is important to mention that our implementation is inspired by Enso, which is written in Ruby. 
@@ -373,6 +203,176 @@ try {
 }
 ...
 ```
+
+## How to use it
+
+In order to implement an application using managed data we first need to define your data and its manipulation mechanism.
+Lets show this through an example.
+Consider the requirements of a simple *door state machine* as the following: 
+* A state **Machine** consists of a number of named **State** declarations.
+* Each **State** contains **Transitions** to other states, which are identified by a **name**, when a certain event happens.
+* A **Transition** is identified by a certain **event**.
+
+For reasons of simplicity, this example will be a very basic *door state machine*, 
+which includes three states **Open**, **Close} and **Locked**, 
+accompanied by their transitions: **open_door**, **close_door**, 
+**lock_door** and **unlock_door** respectively.
+
+### Schemas definition
+As a first step, all the models of the state machine program need to be defined. 
+To do that we use JavaMD's schema definition language, Java interfaces.
+The definition of the schemas is shown bellow:
+
+Machine:
+```
+public interface Machine extends M {
+	State start(State... startingState);
+
+	State current(State... currentState);
+
+	@Contain
+	Set<State> states(State... states);
+}
+```
+
+State:
+```
+public interface State extends M {
+	@Key
+	String name(String... name);
+
+	@Inverse(other = Machine.class, field = "states")
+	Machine machine(Machine... machine);
+
+	@Contain
+	Set<Transition> out(Transition... transition);
+
+	@Contain
+	Set<Transition> in(Transition... transition);
+}
+```
+
+Transition:
+```
+public interface Transition extends M {
+	@Key 
+	String event(String... event);
+
+	@Inverse(other = State.class, field = "out")
+	State from(State... from);
+
+	@Inverse(other = State.class, field = "in")
+	State to(State... to);
+}
+```
+
+### Schemas Factories
+Now that we have our schemas, we need a way to build instances of managed objects that these schemas describe. 
+In Java to create these three schemas as managed data we need to define a factory, 
+which creates managed data instances (managed objects) for each of these schemas.
+
+```
+public interface StateMachineFactory {
+	Machine Machine();  	// constructor for Machine managed objects
+	State State(); 				// constructor for State managed objects
+	Transition Transition(); // constructor for Transition managed objects
+}
+```
+### Data managers
+
+### Basic Data Manager
+To interpret and manage the defined data we need data managers. 
+Our implementation includes the definition of a **Basic data manager** that is responsible of interpreting 
+a schema definition to instances of *managed objects*.
+Conclusively, in order to make a *managed object*, the data manager needs its schema definition 
+(the interfaces that define the schemas) and the schema factory (the interface that defines the constructors of the schemas).
+
+A basic interpreter for the state machine is given bellow:
+
+```
+public class StateMachineExample {
+
+    public final static String OPEN_STATE       = "Open";
+    public final static String CLOSED_STATE     = "Closed";
+    public final static String LOCKED_STATE     = "Locked";
+
+    public final static String OPEN_TRANSITION  = "open_door";
+    public final static String CLOSE_TRANSITION = "close_door";
+    public final static String LOCK_TRANSITION  = "lock_door";
+    public final static String UNLOCK_TRANSITION = "unlock_door";
+
+    public static void main(String[] args) {
+        final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
+        final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
+
+        final Schema stateMachineSchema =
+                SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
+        final BasicDataManager basicDataManagerForStateMachines = new BasicDataManager(StateMachineFactory.class, stateMachineSchema);
+        final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make();
+
+        // ========================================================
+        // Door State Machine definition
+        final Machine doorStateMachine = stateMachineFactory.Machine();
+
+        // Open State definition
+        final State openState = stateMachineFactory.State(OPEN_STATE);
+        openState.machine(doorStateMachine);
+
+        // Closed State definition
+        final State closedState = stateMachineFactory.State(CLOSED_STATE);
+        closedState.machine(doorStateMachine);
+
+        // Locked State definition
+        final State lockedState = stateMachineFactory.State(LOCKED_STATE);
+        lockedState.machine(doorStateMachine);
+
+        // Close Transition
+        final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
+        closeTransition.from(openState);
+        closeTransition.to(closedState);
+
+        // Open Transition
+        final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
+        openTransition.from(closedState);
+        openTransition.to(openState);
+
+        // Lock Transition
+        final Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
+        lockTransition.from(closedState);
+        lockTransition.to(lockedState);
+
+        // Unlock Transition
+        final Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
+        unlockTransition.from(lockedState);
+        unlockTransition.to(closedState);
+
+        // State machine start
+        doorStateMachine.start(closedState);
+
+        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
+                LOCK_TRANSITION,
+                UNLOCK_TRANSITION,
+                OPEN_TRANSITION)));
+    }
+
+    private static void interpretStateMachine(Machine stateMachine, List<String> commands) {
+
+        stateMachine.current(stateMachine.start());
+
+        for (String event : commands) {
+            for (Transition trans : stateMachine.current().out()) {
+                if (trans.event().equals(event)) {
+                    stateMachine.current(trans.to());
+                    break;
+                }
+            }
+        }
+    }
+}
+```
+
+### Monitoring Data Manager
+TODO
 
 ## Examples
 
