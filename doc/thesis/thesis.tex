@@ -89,6 +89,8 @@
 
 \maketitle
 
+\printglossary
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,17 +102,13 @@
 \include{./chapters/AspectRefactoring}
 \include{./chapters/Evaluation}
 \include{./chapters/Conclusion}
-% \include{./chapters/Further}
-\chapter*{Acknowledgments}
-TODO
 
-\printglossary
-
-\begin{appendix}
-	\include{./appendices/Migration}
-	\include{./appendices/ImplementingDataManager}
-	\include{./appendices/MetricsResults}
-\end{appendix}
+\appendix
+\include{./appendices/MObject}
+\include{./appendices/SchemaLoading}
+\include{./appendices/Migration}
+\include{./appendices/ImplementingDataManager}
+\include{./appendices/MetricsResults}
 
 {%\tiny
   \bibliographystyle{alphaurl}

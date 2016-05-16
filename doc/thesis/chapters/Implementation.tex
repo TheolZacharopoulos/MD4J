@@ -172,65 +172,29 @@ Additionally, the constructor of data managers needs to accept a dictionary of i
 Note that it is important that the data managers inherit from a base data manager, leading to the modular aspect of the data managers.
 As it can be seen, for stacking data managers we used the \textit{Decorator Pattern} \cite{gamma1995design} which is mentioned also in Cook et al. \cite{loh2012managed} as a strategy for static \ac{oop} languages.
 
-\subsection{Managed Objects}\label{sec:Managed Objects}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{MObjects}\label{sec:Managed Objects}
 The \texttt{MObject}, is an implementation of the \texttt{InvocationHandler} interface.
 Thus, the \texttt{MObject}'s \texttt{invoke()} method is called in every field access of the managed object's instance.
 To manipulate its fields' values this object has two methods, \texttt{\_set()} and \texttt{\_get()}.
 In the implementation of these methods additional checks are performed to ensure the correctness of types and structure of the values.
-Those methods can be overridden from derived \texttt{MObject}s in order to \textit{Decorate} the basic \texttt{MObject} with their functionality. 
-Of course they require to call their \texttt{supers} for running all the checks.
+Therefore, a type checker in the schemaklass level has been implemented in the particular place.
+The setter and getter methods can be overridden from derived \texttt{MObject}s in order to \textit{Decorate} the basic \texttt{MObject} with their functionality. 
+Of course they require to call their \texttt{supers} for running the type checker.
 
 The \texttt{MObject} is the \textit{backing object} that stores a reference to the \texttt{schemaKlass} and its implementation represents an instance of that \texttt{schemaKlass}.
 That \texttt{schemaKlass} is a meta class that describes the layout of the \texttt{MObject} and keeps the \texttt{Field}s and their \texttt{Types}.
 During construction, the fields of the \texttt{MObject} are specified by its \texttt{schemaKlass}.
 When a field check has to be performed, the \texttt{MObject} uses its \texttt{schemaKlass}.
-The usage of the \texttt{schemaKlass} for setting up the fields is shown in Listing \ref{lst:setup_fields}.
 
-The \texttt{schemaKlass} is given to the \texttt{MObject} by the \texttt{DataManager} that is responsible for creating it.
-Using this \texttt{schemaKlass} the \texttt{MObject} setups the \texttt{Fields} of the Klass, Line \ref{line:setup_fields}.
-Inside the \texttt{setupField} method the interpretation of the schema is performed.
-In particular, in Line \ref{line:setup_field_many_check} we check if that field is a multi-value field, and if not, we just set it up as a \texttt{Primitive} or a \texttt{Klass} accordingly. 
-Consider that the \texttt{field.type().schemaKlass().name()} is used like a common \texttt{instanceof} in Line \ref{line:instanceof}.
-In case the field has many values, we first check if it is \texttt{Primitive}, since we do not support Set of \texttt{Primitive}s.
-Following that, we check if a \texttt{Key} field exists on that field's type and in that case this field is a Set, otherwise it is a List.
+Overall, one can easily argue that this class defines the main functionality of managed data.
+In particular, this class is the \textit{interpreter} of managed data.
+Therefore, it is responsible for handling the calls to methods (invocation handler), invoke default methods, setup and initialize field values, based on its \texttt{schemaKlass}, and internally perform the \textit{type checking}.
+A detailed presentation of this class and its action is explanation in Appendix \ref{apdx:MObject}.
 
-\begin{sourcecode}
-	\begin{lstlisting}[language=Java, escapechar=|]
-public MObject(Klass schemaKlass, Object... initializers) {
-	this.schemaKlass = schemaKlass;
-
-	this.schemaKlass.fields().forEach(this::safeSetupField);|\label{line:setup_fields}|
-	if (initializers != null) {
-		this.safeInitializeProps(initializers);
-	}
-}
-
-protected void setupField(Field field) {
-	if (!field.many()) { |\label{line:setup_field_many_check}|
-		if (field.type().schemaKlass().name().equals("Primitive")) {|\label{line:instanceof}|
-			this.props.put(field.name(), new MObjectFieldSinglePrimitive(this, field));
-		} else {
-			this.props.put(field.name(), new MObjectFieldSingleMObj(this, field));
-		}
-	} else {
-		if (field.type().schemaKlass().name().equals("Primitive")) {
-			this.props.put(field.name(), new MObjectFieldManyList(this, field));
-		} else {
-
-			Klass klassType = (Klass) field.type();
-			if (klassType.key()!= null) {
-				this.props.put(field.name(), new MObjectFieldManySet(this, field));
-			} else {
-				this.props.put(field.name(), new MObjectFieldManyList(this, field));
-			}
-		}
-	}
-}
-	\end{lstlisting}
-	\caption{MObject: setup fields}
-	\label{lst:setup_fields}
-\end{sourcecode}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Implementing a Data Manager}\label{Implementing a Data Manager}
 The implementation and the integration of a new data manager is straight forward in our framework.
 As it can be seen in Figure \ref{fig:DataManager_and_MObject}, the basic components of a new data manager implementation are the \texttt{Data Manager} class (proxy) and the \texttt{MObject} class (invocation handler).
@@ -293,10 +257,9 @@ public class LockableMObject extends MObject implements Lockable {
 	@Override
 	public void _set(String name, Object value) 
 	throws NoSuchFieldError, InvalidFieldValueException, NoKeyFieldException {
-		if (isLocked) {
+		if (isLocked)
 	    	throw new IllegalAccessError(
 	    		"Cannot change " + name + " of locked object " + schemaKlass.name() + ".");
-		}
 		super._set(name, value);
 	}
 }
@@ -317,11 +280,10 @@ final Point2D lockablePoint = lockablePointFactory.Point2D(1, 2);
 
 // It was mutable until now, now it is locked (immutable).
 ((Lockable)lockablePoint).lock();
-
 try {
 	lockablePoint.x(2); // Should throw here since its immutable.
 } catch (IllegalAccessError e) {
-	System.out.println("IllegalAccessError: " + e.getMessage());
+	System.err.println("IllegalAccessError: " + e.getMessage());
 }
 	\end{lstlisting}
 	\caption{Immutability Example}
@@ -396,72 +358,17 @@ final Schema schemaSchema = ...;
 final SchemaFactory schemaFactory = ...;
 
 final Schema stateMachineSchema = SchemaLoader.load(
-	schemaFactory, 
-	schemaSchema, 
-	Machine.class, 
-	State.class, 
-	Transition.class);
+	schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
 	\end{lstlisting}
 	\caption{SchemaLoader Example}
 	\label{lst:SchemaLoader Example}
 \end{sourcecode}
 
-In the code, the \texttt{SchemaLoader} gets as input a \texttt{SchemaSchemaFactory} and a \texttt{SchemaSchema}, which will be explained further in Section \ref{sec:Bootstrapping}.
+In its implementation, the \texttt{SchemaLoader} gets as input a \texttt{SchemaSchemaFactory} and a \texttt{SchemaSchema}, which will be explained further in Section \ref{sec:Bootstrapping}.
 Moreover, it gets a set of interfaces that describe the state machine schema.
 This schema consists of a set of schema Klasses that are described by interfaces, namely \texttt{Machine.class}, \texttt{State.class} and \texttt{Transition.class}.
 Next, the \texttt{SchemaLoader} analyzes the definition of those schemas using reflection and then makes a \texttt{Schema} by using the \texttt{SchemaFactory} that it has been given.
-A simple description of that process is shown in Listing\footnote{
-	Most of the implementation has been excluded for brevity.} 
-\ref{lst:SchemaLoader}.
-As illustrated we first implement the instances and following that we use setters to wire them up. 
-The reason for this is that not everything exists at the time that it needs to be set.
-
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-public static Schema load(
-	SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
-	// create an empty schema using the factory, will wire it later
-	final Schema schema = factory.Schema();
-
-	// build the types from the schema klasses definition
-	final Set<Type> types = new LinkedHashMap<>();
-	for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
-		final String klassName = schemaKlassDefinition.getSimpleName();
-
-		// build the fields from method definitions
-		final Set<Field> fieldsForKlass = new LinkedHashMap<>();
-		for (Method schemaKlassField : schemaKlassDefinition.getMethods()) {
-
-			// collect the field metadata though annotations...
-			// add its fields, the owner Klass will be added later
-            final Field field = factory.Field();
-            field.name(fieldName);
-            field.contain(contain);
-            field.key(key);
-            field.many(many);
-            field.optional(optional);
-
-            fieldsForKlass.add(field);
-		}
-		// create a new klass
-		final Klass klass = factory.Klass();
-		klass.name(klassName);
-		klass.schema(schema);
-		// wire the owner klass in fields,
-		fieldsForKlass.values().forEach(field -> field.owner(klass));
-	}
-	// wire the types on schema, 
-	// it is inverse so it will refer to schema.types() immediately
-	types.forEach(type -> type.schema(schema));
-	return schema;
-}
-	\end{lstlisting}
-	\caption{SchemaLoader}
-	\label{lst:SchemaLoader}
-\end{sourcecode}
-
-Listing \ref{lst:SchemaLoader} shows the usage of Java reflection in our implementation.
-However, because Java reflection capabilities are limited, this restricted our implementation.
+A more detailed description of this process is given in Appendix \ref{appdx:SchemaLoading}.
 
 \section{Bootstrapping}\label{sec:Bootstrapping}
 Considering that SchemaSchema is managed data itself, we can use the SchemaLoader to build a new SchemaSchema.
@@ -482,26 +389,16 @@ final BasicDataManager basicFactory =
 	new BasicDataManager(SchemaFactory.class, new BootSchema());
 final SchemaFactory schemaFactory = basicFactory.make();
 final Schema realSchemaSchema = SchemaLoader.load(
-        	schemaFactory, 
-        	bootstrapSchema, 
-        	Schema.class, 
-        	Type.class, 
-        	Primitive.class, 
-        	Klass.class, 
-        	Field.class,
+        	schemaFactory, bootstrapSchema, 
+         	Schema.class, Type.class, Primitive.class, Klass.class, Field.class,
         	Primitives.class); |\label{line:Primitives}|
 
 final BasicDataManager basicFactory2 = 
 	new BasicDataManager(SchemaFactory.class, realSchemaSchema);
 final SchemaFactory schemaFactory2 = basicFactory2.make();
 final Schema realSchemaSchema2 = SchemaLoader.load(
-        	schemaFactory2, 
-        	realSchemaSchema, 
-        	Schema.class, 
-        	Type.class, 
-        	Primitive.class, 
-        	Klass.class, 
-        	Field.class);
+        	schemaFactory2, realSchemaSchema, 
+        	Schema.class, Type.class,  Primitive.class, Klass.class, Field.class);
 	\end{lstlisting}
 	\caption{Cutting the umbilical cord}
 	\label{lst:Cutting the umbilical cord}

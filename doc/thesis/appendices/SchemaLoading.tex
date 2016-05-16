@@ -1,0 +1,214 @@
+% !TEX root = ../thesis.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter: Schema Loading
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Schema Loading}\label{appdx:SchemaLoading}
+
+\section{Load method}
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public static Schema load(
+	SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
+
+	// Filter out primitives by loading them separately
+	final List<Class<?>> schemaKlasses = new LinkedList<>();
+	for (Class<?> schemaClass : schemaKlassesDef) {
+		if (Primitives.class.isAssignableFrom(schemaClass)) {
+			primitiveManager.loadPrimitives(schemaClass);
+		} else {
+			schemaKlasses.add(schemaClass);
+		}
+	}
+
+	// setup the cache for classes
+	setupCacheForSchemaKlass(schemaSchema, schemaKlasses);
+
+	// create an empty schema using the factory, will wire it later
+	final Schema schema = factory.Schema();
+
+	// build the types from the schema klasses definition
+	final Set<Type> types = 
+		buildTypesFromClasses(factory, schema, schemaSchema, schemaKlasses);
+
+	// wire the types on schema
+	// it is inverse so it will refer to schema.types() directly
+	types.forEach(type -> type.schema(schema));
+
+	// get the schema's schemaKlass
+	final Klass schemaSchemaKlass = schemaSchema.klasses().stream()
+		.filter(klass -> klass.name().equals("Schema"))
+		.findFirst().orElse(null);
+
+	// wire the schema's schemaKlass
+	schema.schemaKlass(schemaSchemaKlass);
+
+	return schema;
+}
+	\end{lstlisting}
+	\caption{SchemaLoader load method}
+	\label{lst:SchemaLoader_load}
+\end{sourcecode}
+
+\section{Build Types Method}
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+private static Set<Type> buildTypesFromClasses(
+	SchemaFactory factory,
+	Schema schema,
+	Schema schemaSchema,
+	List<Class<?>> schemaKlassesDefinition) {
+	Map<Type, TypeWithClass> types = new LinkedHashMap<>();
+
+	// <classNameFieldNameCombo, FieldWithMethod>
+	Map<String, FieldWithMethod> allFieldsWithReturnType = new LinkedHashMap<>();
+
+	// Klasses
+	for (Class<?> schemaKlassDefinition : schemaKlassesDefinition) {
+		String klassName = schemaKlassDefinition.getSimpleName();
+
+		Map<String, Field> fieldsForKlass =
+			buildFieldsFromMethods(
+				klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
+
+		// create a new klass
+		Klass klass = factory.Klass();
+		klass.name(klassName);
+		klass.schema(schema);
+
+		// wire the owner klass in fields, it is inverse refering to klass.fields()
+		fieldsForKlass.values().forEach(field -> field.owner(klass));
+
+		typesCache.put(klass.name(), klass);
+
+		// add the a new klass
+		types.put(klass, new TypeWithClass(klass, schemaKlassDefinition));
+	}
+
+	// wiring
+	wireFieldTypes(factory, schema, allFieldsWithReturnType);
+	wireFieldInverse(allFieldsWithReturnType);
+	wireFieldTypeKeys(types);
+
+	wireSchemaKlasses(schemaSchema);
+
+	wireKlassSupers(types, typesCache);
+	wireKlassSubs(types, typesCache);
+	wireKlassClassOf(types, schemaKlassesDefinition);
+
+	typesCache.clear();
+
+	return types.keySet();
+}
+    \end{lstlisting}
+	\caption{SchemaLoader buildTypesFromClasses method}
+	\label{lst:SchemaLoader_buildTypesFromClasses}
+\end{sourcecode}
+
+\section{Build Fields Method}
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public static Map<String, Field> buildFieldsFromMethods(
+	String klassName,
+	SchemaFactory factory,
+	Class<?> schemaKlassDefinition,
+	Map<String, FieldWithMethod> allFieldsWithReturnType) {
+	Map<String, Field> fieldsForKlass = new LinkedHashMap<>();
+
+	final Method[] fields = schemaKlassDefinition.getMethods();
+	// sort methods
+	...
+
+	for (Method schemaKlassField : fields) {
+		final String fieldName = schemaKlassField.getName();
+		final Class<?> fieldReturnClass = schemaKlassField.getReturnType();
+
+		// skip default method declarations
+		if (schemaKlassField.isDefault()) {
+			continue;
+		}
+
+		// check for many
+		final boolean many = primitiveManager.isMany(fieldReturnClass);
+
+		// check for optional
+		final boolean optional = schemaKlassField.isAnnotationPresent(Optional.class);
+
+		// check for key
+		final boolean key = schemaKlassField.isAnnotationPresent(Key.class);
+
+		// check for contain
+		final boolean contain = schemaKlassField.isAnnotationPresent(Contain.class);
+
+		// add its fields, the owner Klass will be added later
+		final Field field = factory.Field();
+		field.name(fieldName);
+		field.contain(contain);
+		field.key(key);
+		field.many(many);
+		field.optional(optional);
+
+		fieldsForKlass.put(fieldName, field);
+
+		// use klassName and fieldName combo here, 
+		// because the real hashCode can not be calculated.
+		allFieldsWithReturnType.put(
+			klassName + fieldName, new FieldWithMethod(field, schemaKlassField));
+	}
+	return fieldsForKlass;
+}
+    \end{lstlisting}
+	\caption{SchemaLoader buildFieldsFromMethods method}
+	\label{lst:SchemaLoader_buildFieldsFromMethods}
+\end{sourcecode}
+
+\section{Wire Types Method}
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+private static void wireFieldTypes(
+	SchemaFactory factory,
+	Schema schema,
+	Map<String, FieldWithMethod> allFieldsWithReturnType) {
+
+	for (String klassNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
+		Method method = allFieldsWithReturnType.get(klassNameFieldNameCombo).method;
+		Field field = allFieldsWithReturnType.get(klassNameFieldNameCombo).field;
+
+		// In case the field is multi value (many), that means that the real type is
+		// not given in the method.getReturnType() because this will give Set ot List,
+		// BUT the real type is in method.getGenericReturnType().
+		Class<?> fieldTypeClass;
+
+		// in case it is multi field, get the return the Generic Return Type
+		if (field.many()) {
+			// The type in this case will be Set or List,
+			// but the Generic Return Type will be the actual type.
+			ParameterizedType fieldManyType = 
+				(ParameterizedType) method.getGenericReturnType();
+			fieldTypeClass = (Class<?>) fieldManyType.getActualTypeArguments()[0];
+		} else {
+			fieldTypeClass = method.getReturnType();
+		}
+
+		Type fieldType = getFieldType(fieldTypeClass, schema, factory);
+		field.type(fieldType);
+	}
+}
+    \end{lstlisting}
+	\caption{SchemaLoader wireFieldTypes method}
+	\label{lst:SchemaLoader_wireFieldTypes}
+\end{sourcecode}
+
+Listing \ref{lst:SchemaLoader_load} demonstrates the loading process in managed data.
+As illustrated we first implement the instances and following that we use setters to wire them up. 
+The reason for this is that not everything exists at the time that it needs to be set.
+Listing \ref{lst:SchemaLoader_buildTypesFromClasses} show how the klass creation is performed during the schema loading.
+Listing \ref{lst:SchemaLoader_buildFieldsFromMethods} illustrates how the fields of a klass are created reflection.
+Listing \ref{lst:SchemaLoader_wireFieldTypes} presents the way the types are wired during the schema creation.
+
+This implementation shows the usage of Java reflection in our implementation.
+However, because Java reflection capabilities are limited, this restricted our implementation.
