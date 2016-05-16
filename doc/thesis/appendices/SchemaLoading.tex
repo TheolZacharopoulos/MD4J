@@ -22,9 +22,6 @@ public static Schema load(
 		}
 	}
 
-	// setup the cache for classes
-	setupCacheForSchemaKlass(schemaSchema, schemaKlasses);
-
 	// create an empty schema using the factory, will wire it later
 	final Schema schema = factory.Schema();
 
@@ -43,7 +40,6 @@ public static Schema load(
 
 	// wire the schema's schemaKlass
 	schema.schemaKlass(schemaSchemaKlass);
-
 	return schema;
 }
 	\end{lstlisting}
