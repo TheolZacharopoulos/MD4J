@@ -55,14 +55,16 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
                 // delete owner from old reference
                 if (oldValue != null) {
                     final MObject oldValueMObject = (MObject) Proxy.getInvocationHandler(oldValue);
-                    final MObjectFieldMany oldValueMObjectInverseField = (MObjectFieldMany) oldValueMObject._getField(inverse.name());
+                    final MObjectFieldMany oldValueMObjectInverseField =
+                            (MObjectFieldMany) oldValueMObject._getField(inverse.name());
                     oldValueMObjectInverseField.__delete(owner.getProxy());
                 }
 
                 // insert owner to new inverse reference
                 if (newValue != null) {
                     final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
-                    final MObjectFieldMany newValueMObjectInverseField = (MObjectFieldMany) newValueMObject._getField(inverse.name());
+                    final MObjectFieldMany newValueMObjectInverseField =
+                            (MObjectFieldMany) newValueMObject._getField(inverse.name());
                     newValueMObjectInverseField.__insert(owner.getProxy());
                 }
 
@@ -71,14 +73,16 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
                 // set old inverse reference to null
                 if (oldValue != null) {
                     final MObject oldValueMObject = (MObject) Proxy.getInvocationHandler(oldValue);
-                    final MObjectFieldSingleMObj oldValueMObjectInverseField = (MObjectFieldSingleMObj) oldValueMObject._getField(inverse.name());
+                    final MObjectFieldSingleMObj oldValueMObjectInverseField =
+                            (MObjectFieldSingleMObj) oldValueMObject._getField(inverse.name());
                     oldValueMObjectInverseField.__set(null);
                 }
 
                 // set new inverse reference to owner
                 if (newValue != null) {
                     final MObject newValueMObject = (MObject) Proxy.getInvocationHandler(newValue);
-                    final MObjectFieldSingleMObj newValueMObjectInverseField = (MObjectFieldSingleMObj) newValueMObject._getField(inverse.name());
+                    final MObjectFieldSingleMObj newValueMObjectInverseField =
+                            (MObjectFieldSingleMObj) newValueMObject._getField(inverse.name());
                     newValueMObjectInverseField.__set(owner.getProxy());
                 }
             }

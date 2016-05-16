@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.ccconcerns.aspects;
+package nl.cwi.examples.ccconcerns.aspects;
 
 public class UpdateLogger {
     public static void log(Object obj, String field, Object value) {

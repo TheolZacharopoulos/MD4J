@@ -1,4 +1,7 @@
 
+nl.cwi.examples.ccconcerns.aspects
+nl.cwi.examples.ccconcerns.patterns.lockable
+nl.cwi.examples.ccconcerns.patterns.observer
 nl.cwi.examples.geometry
 nl.cwi.examples.geometry.schemas
 nl.cwi.examples.schema_schema
@@ -6,9 +9,6 @@ nl.cwi.examples.state_machine
 nl.cwi.examples.state_machine.concerns
 nl.cwi.examples.state_machine.schemas
 nl.cwi.managed_data_4j
-nl.cwi.managed_data_4j.ccconcerns.aspects
-nl.cwi.managed_data_4j.ccconcerns.patterns.lockable
-nl.cwi.managed_data_4j.ccconcerns.patterns.observer
 nl.cwi.managed_data_4j.framework
 nl.cwi.managed_data_4j.language.data_manager
 nl.cwi.managed_data_4j.language.managed_object

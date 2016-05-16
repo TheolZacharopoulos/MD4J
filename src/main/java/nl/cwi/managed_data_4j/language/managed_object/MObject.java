@@ -25,6 +25,7 @@ import java.util.*;
  */
 public class MObject implements InvocationHandler, M {
 
+    // the outside object of the managed object (its proxy)
     protected Object thisObject = null;
 
     public void setProxy(Object proxy) {

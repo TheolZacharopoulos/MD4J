@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.ccconcerns.patterns.lockable;
+package nl.cwi.examples.ccconcerns.patterns.lockable;
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;

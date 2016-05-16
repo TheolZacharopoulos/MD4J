@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.ccconcerns.patterns.observer;
+package nl.cwi.examples.ccconcerns.patterns.observer;
 
 @FunctionalInterface
 public interface Observe {

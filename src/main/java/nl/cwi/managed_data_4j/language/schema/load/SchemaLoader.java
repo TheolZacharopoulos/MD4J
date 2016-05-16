@@ -66,9 +66,11 @@ public class SchemaLoader {
     }
 
     /**
-     * This is a special case since every Managed data has a schemaKlass,
-     * which means that during the loading of managed objects (e.g. Point)
+     * This is a special case.
+     * Since every Managed data has a schemaKlass,
+     * which means that during the loading of managed objects (e.g. Point),
      * we need an already created Klass that would used in the schemaKlass field definition.
+     *
      * However, if the Klass schema definition has not been given as input in schemaKlassesDef,
      * then the schema loader will never created, and we will have an error.
      * Thus, we check if the Klass definition is given in schemaKlassesDef, and if not, then
@@ -116,8 +118,7 @@ public class SchemaLoader {
 
         System.out.println("SchemaFactory: create schema");
 
-        // Filter out primitives
-        // load them separately
+        // Filter out primitives by loading them separately
         final List<Class<?>> schemaKlasses = new LinkedList<>();
         for (Class<?> schemaClass : schemaKlassesDef) {
             if (Primitives.class.isAssignableFrom(schemaClass)) {

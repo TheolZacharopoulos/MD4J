@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.ccconcerns.patterns.lockable;
+package nl.cwi.examples.ccconcerns.patterns.lockable;
 
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;

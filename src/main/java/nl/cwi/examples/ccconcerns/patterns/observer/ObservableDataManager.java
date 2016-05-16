@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.ccconcerns.patterns.observer;
+package nl.cwi.examples.ccconcerns.patterns.observer;
 
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;

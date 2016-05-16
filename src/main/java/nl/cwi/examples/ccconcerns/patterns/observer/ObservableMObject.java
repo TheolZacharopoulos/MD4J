@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.ccconcerns.patterns.observer;
+package nl.cwi.examples.ccconcerns.patterns.observer;
 
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
