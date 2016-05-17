@@ -244,12 +244,10 @@ This data manager creates concrete managed objects as subjects, where observes c
 It is important to mention that this new data manager has to inherit the basic one in order to include the basic functionality of schema interpretation and field access.
 This leads to a \textbf{stack} of two data managers, each one adding a new aspect of data in a modular way.
 
-In order to define the specifications of our new data manager we first to define how is it going to be used.
+In order to define the specifications of our new data manager we first to define how is it going to be used (its API).
 First, we need to attach to our \texttt{Machine} object the \textit{monitoring} concern, which is going to be executed in case the \texttt{current} state has be changed.
-Second, we also need to attach the \textit{notification} concern, which is going to be executed in case the \texttt{current} state has been set to \textit{Open} state.
+Second, we need to attach the \textit{notification} concern, which is going to be executed in case the \texttt{current} state has been set to \textit{Open} state.
 The client code can be seen in Listing \ref{lst:StateMachineMonitoringConcerns}.
-In the example the \textit{observers} are the concerns: \textit{monitoring} and \textit{notification}. 
-Accordingly, the \texttt{current} state of the state machine is the \textit{subject} that informs the observers of its change.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -277,11 +275,11 @@ Machine doorStateMachine = stateChangesMachineFactory.Machine();
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Manager Implementation}
-Now that we have the API of our data manager we need to implement it.
+Now that we have specify the API of our data manager, we need to implement it.
 First, we need to define our specifications.
-As it can be seen from Listing \ref{lst:StateMachineMonitoringConcerns}, the \texttt{StateChangeManager} provides the managed data with the method \texttt{addStateChageAction}, which executes an \textit{action} when a specific \textit{predicate} holds.
+As it can be seen from Listing \ref{lst:StateMachineMonitoringConcerns}, the \texttt{StateChangeManager} provides the managed object with the method \texttt{addStateChageAction}, which executes an \textit{action} when a specific \textit{predicate} holds.
 
-Therefore, we can define this specification in an interface named \texttt{StateChangeManager} (Listing \ref{lst:StateChangeManager}) and use as our type.
+Therefore, we can define this specification in an interface named \texttt{StateChangeManager} (Listing \ref{lst:StateChangeManager}) and use it as our type.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -294,7 +292,7 @@ public interface StateChangeManager {
 	\label{lst:StateChangeManager}
 \end{sourcecode}
 
-The \texttt{StateChangeAction} and \texttt{FieldPredicate} are simply functional interfaces that describe an action and a predicate respectively (Listing \ref{lst:StateChangeAction} and \ref{lst:FieldPredicate}).
+The \texttt{StateChangeAction} and \texttt{FieldPredicate} are simply functional interfaces that describe the action and the predicate respectively (Listing \ref{lst:StateChangeAction} and \ref{lst:FieldPredicate}).
 
 \lstdefinestyle{smallJava}{
   basicstyle={\scriptsize\ttfamily},
@@ -367,12 +365,13 @@ public class StateChangesMObject extends MObject implements StateChangeManager {
 \end{sourcecode} 
 
 The data manager, keeps a list of \texttt{Action} - \texttt{Predicate} tuples that can be populated using the \texttt{addStateChangeAction} method.
-Those actions are execute when a change of a field of that object happens, only when they predicate holds.
-Note that this data manager is general, it does not work only for \texttt{Machine} objects, which we use, but for every object that has a \texttt{State}.
-Of course it can be abstracted even more for general cases and use the data manager stacking mechanism in order to make it more modular.
+Those actions are executed when a change of a field of that object happens and only when they predicate holds.
+Note that this data manager is general, it does not work only for \texttt{Machine} objects, which we use it for, but for every object that has a \texttt{State}.
+Of course one can abstracted even more and use the data manager stacking mechanism in order to make it more modular.
 
-Concluding, it can be observed that the only part that changes is the \texttt{Machine} definition of the original code, where the data manager of the \texttt{Machine} managed object has changed to the new observable(state changes) data manager.
-Additionally, the concerns are attached to the machine object very easily, as can be seen in Lines \ref{line:state_machine_monitor} and \ref{line:state_machine_notify} of Listing \ref{lst:StateMachineMonitoringConcerns}.
+Concluding, it can be observed that the only part that has been changed in the original code is the \texttt{Machine} definition.
+In this place the data manager of the \texttt{Machine} managed object has been changed to the new observable (state changes) data manager.
+Additionally, the concerns has been attached to the machine object very easily simply by using lambdas, as can be seen in Lines \ref{line:state_machine_monitor} and \ref{line:state_machine_notify} of Listing \ref{lst:StateMachineMonitoringConcerns}.
 
 By running the program with the commands \texttt{LOCK\_TRANSITION}, \texttt{UNLOCK\_TRANSITION} and \texttt{OPEN\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
 \lstdefinestyle{Bash} {
