@@ -371,7 +371,7 @@ Of course one can abstracted even more and use the data manager stacking mechani
 
 Concluding, it can be observed that the only part that has been changed in the original code is the \texttt{Machine} definition.
 In this place the data manager of the \texttt{Machine} managed object has been changed to the new observable (state changes) data manager.
-Additionally, the concerns has been attached to the machine object very easily simply by using lambdas, as can be seen in Lines \ref{line:state_machine_monitor} and \ref{line:state_machine_notify} of Listing \ref{lst:StateMachineMonitoringConcerns}.
+Additionally, the concerns has been attached to the machine object very easily simply by using lambdas (Lines \ref{line:state_machine_monitor} and \ref{line:state_machine_notify} of Listing \ref{lst:StateMachineMonitoringConcerns}).
 
 By running the program with the commands \texttt{LOCK\_TRANSITION}, \texttt{UNLOCK\_TRANSITION} and \texttt{OPEN\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
 \lstdefinestyle{Bash} {
