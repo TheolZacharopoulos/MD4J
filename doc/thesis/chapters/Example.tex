@@ -1,8 +1,8 @@
 % !TEX root = ../thesis.tex
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Example Application
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Example Application: State Machine Monitoring}\label{Example Application}
 In this chapter in order to show how our managed data implementation works in practice, and in particular in terms of aspect refactoring, we present a showcase.
 The showcase consists of a very simple state machine application.
@@ -17,7 +17,7 @@ Consider the requirements of the state machine as the following:
 	\item A \texttt{Transition} is identified by a certain \texttt{event}.
 \end{itemize}
 
-For reasons of simplicity, this example will be a very basic \textit{door state machine}, which includes three states \textbf{Open}, \textbf{Close} and \textbf{Locked}, accompanied by their transitions: \textbf{open\_door}, \textbf{close\_door}, \textbf{lock\_door} and \textbf{unlock\_door} respectively.
+For reasons of simplicity, this example will be a very basic \textit{door} state machine, which includes three states \textbf{Open}, \textbf{Close} and \textbf{Locked}, accompanied by their transitions: \textbf{open\_door}, \textbf{close\_door}, \textbf{lock\_door} and \textbf{unlock\_door} respectively.
 Figure \ref{fig:State_machine} illustrates the door state machine.
 
 \begin{figure}[H]
@@ -27,9 +27,9 @@ Figure \ref{fig:State_machine} illustrates the door state machine.
   	\label{fig:State_machine}
 \end{figure}
 
-To implement this we need to define the models, interpret the definition given a list of events and finally add any additional functionality (\textit{concern}) needed, for instance monitor the state of the door.
+To implement this we need to define the models, interpret the definition given from a list of events and finally add any additional functionality (\textit{concern}) needed, in our case we will implement monitoring of door's current state.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schemas definition}
 As a first step, all the models of the state machine program need to be defined. 
 An object diagram is illustrated in Figure \ref{fig:State_machine_object}.
@@ -95,7 +95,7 @@ Finally, the field \texttt{machine} represents the state machine that the state 
 As it can be seen in the schema definition, Listing \ref{lst:State_Schema}, the \texttt{machine} field has been annotated with \texttt{@Inverse}, which indicates that this field is a reference to a field of another schema.
 In this case, the \texttt{machine} field of \texttt{State} schema is a reference to \texttt{states} field of \texttt{Machine} schema.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface Transition extends M {
@@ -117,7 +117,7 @@ Finally, in the \texttt{Transition} schema definition, Listing \ref{lst:Transiti
 The \texttt{from} and \texttt{to} fields represent the state that the machine changes from and to respectively.
 However, these are just references to the \texttt{State} schema (Listing \ref{lst:State_Schema}).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Factory definition}
 Now that we have our schemas, we need a way to build instances of managed objects that these schemas describe. 
 In Java to create these three schemas as managed data we need to define a factory, which creates managed data instances (managed objects) for each of these schemas \ref{lst:StateMachineFactory}.
@@ -126,22 +126,22 @@ Note that the method definitions work as \texttt{Constructors} of managed object
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface StateMachineFactory {
-	Machine Machine();  	// constructor for Machine managed objects
+	Machine Machine();  		// constructor for Machine managed objects
 	State State(); 				// constructor for State managed objects
-	Transition Transition(); // constructor for Transition managed objects
+	Transition Transition(); 	// constructor for Transition managed objects
 }
 	\end{lstlisting}
 	\caption{The StateMachine Factory}
 	\label{lst:StateMachineFactory}
 \end{sourcecode}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Basic Data Manager}
 As mentioned above, in order to interpret and manage the defined data we need data managers. 
 Our implementation includes the definition of a \texttt{Basic data manager} that is responsible of interpreting a schema definition to instances of \textit{managed object}s.
 Conclusively, in order to make a \textit{managed object}, the data manager needs its schema definition (the interfaces that define the schemas) and the schema factory (the interface that defines the constructors of the schemas).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A simple program}
 In the case of a simple program without any concerns, we have to use our managed data to define the state machine and then interpret it.
 The definition of the door state machine is given in Listing \ref{lst:Door_state_machine} in Java.
@@ -211,9 +211,9 @@ private static void interpretStateMachine(
 	\label{lst:Door_state_machine}
 \end{sourcecode}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Monitoring and notification concerns}
-Consider a case in which we want to add concerns at the previous door state machine implementation.
+Now consider a case in which we want to add concerns at the previous door state machine implementation.
 A simple concern could be \textit{monitoring}, which would log every change in the current state of the state machine.
 Another concern could be \textit{notification}, which would fire an action when a specific state is set.
 
@@ -236,61 +236,143 @@ A data manager can implement concerns as modular aspects without crosscutting co
 The programmer can define a manipulation mechanism of his/her data that includes an aspect of preference.
 Therefore, by implementing our concerns with data managers we can keep the component and aspect code separate.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Observable Data Manager}
-Regarding the \textit{observation} of changes in the current state of our door state machine, we need a data manager that observes those changes in the managed object.
-In particular, the \texttt{Machine}'s current \texttt{State} field.
-This data manager creates concrete managed objects, namely \textit{observable managed objects}, where observes can be attached in order to be notified of changes.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{State Changes Data Manager}
+Regarding the continuous \textit{observation} of changes in the current state of our door state machine, we need a data manager that observes those changes in the managed object and executes an action defined by the programmer.
+Particularly, it has to observe the \texttt{Machine}'s current \texttt{State} field and performs the actions of logging(monitoring) or sending email (notifying).
+This data manager creates concrete managed objects as subjects, where observes can be attached in order to be notified of changes and execute an action.
 It is important to mention that this new data manager has to inherit the basic one in order to include the basic functionality of schema interpretation and field access.
 This leads to a \textbf{stack} of two data managers, each one adding a new aspect of data in a modular way.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Monitor and notify concerns}
+In order to define the specifications of our new data manager we first to define how is it going to be used.
+First, we need to attach to our \texttt{Machine} object the \textit{monitoring} concern, which is going to be executed in case the \texttt{current} state has be changed.
+Second, we also need to attach the \textit{notification} concern, which is going to be executed in case the \texttt{current} state has been set to \textit{Open} state.
+The client code can be seen in Listing \ref{lst:StateMachineMonitoringConcerns}.
 In the example the \textit{observers} are the concerns: \textit{monitoring} and \textit{notification}. 
 Accordingly, the \texttt{current} state of the state machine is the \textit{subject} that informs the observers of its change.
-The definition of the concerns is given in Listing \ref{lst:StateMachineMonitoring}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-public class StateMachineMonitoring {
-    public static void monitor(Object obj, String field, Object value) {
-        if (field.equals("current")) {
-            logger.log(" > Current state changed to " + ((State) value).name());
-        }
-    }
+StateChangesDataManager stateChangesDataManager =
+	new StateChangesDataManager(
+		StateMachineFactory.class, stateMachineSchema);
+StateMachineFactory stateChangesMachineFactory = stateChangesDataManager.make();
 
-    public static void notify(Object obj, String field, Object value) {
-        if (field.equals("current") && ((State) value).name().equals(OPEN_STATE)) {
-            if (EmailSender.send("Danger!", "Someone just opened the door!")) {
-            	logger.notify(" > Danger e-mail sent!.");
-            }
-        }
-    }
-}
-	\end{lstlisting}
-	\caption{Door state machine concerns definition}
-	\label{lst:StateMachineMonitoring}
-\end{sourcecode}
+Machine doorStateMachine = stateChangesMachineFactory.Machine();
 
-Since there is an observable data manager and the concerns are implemented in a separate and reusable module, completely unrelated to our logic code, we still need to integrate them in the original code.
-The integration code is presented in Listing \ref{lst:StateMachineMonitoringConcerns}.
-The only part that changes is Line \ref{line:state_machine_creation_basic} of the original code, where the data manager of the \texttt{Machine} managed object has changed to the new observable data manager.
-Additionally, the concerns are attached to the machine object very easily, as can be seen in Lines \ref{line:state_machine_monitor} and \ref{line:state_machine_notify} of Listing \ref{lst:StateMachineMonitoringConcerns}.
+((StateChangeManager) doorStateMachine) |\label{line:state_machine_monitor}|
+	.addStateChangeAction(
+		(newState) -> System.out.println(" > State changed to " + newState.name()),
+		(name, value) -> "current".equals(name));
 
-
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-ObservableDataManager observableDataManager = 
-			new ObservableDataManager(StateMachineFactory.class, stateMachineSchema);
-StateMachineFactory observableStateMachineFactory = observableDataManager.make();
-Machine doorStateMachine = observableStateMachineFactory.Machine();
-// Add monitoring and notification concerns
-((Observable) doorStateMachine).observe(StateMachineMonitoring::monitor); |\label{line:state_machine_monitor}|
-((Observable) doorStateMachine).observe(StateMachineMonitoring::notify);  |\label{line:state_machine_notify}|
+((StateChangeManager) doorStateMachine) |\label{line:state_machine_notify}|
+	.addStateChangeAction(
+		(newState) -> EmailSender.send("Danger!", "Someone just opened the door!"),
+		(name, newState) -> "current".equals(name) &&
+			newState.name().equals(StateMachineExampleMonitoring.OPEN_STATE));
 	\end{lstlisting}
 	\caption{Door state machine with concerns}
 	\label{lst:StateMachineMonitoringConcerns}
 \end{sourcecode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Data Manager Implementation}
+Now that we have the API of our data manager we need to implement it.
+First, we need to define our specifications.
+As it can be seen from Listing \ref{lst:StateMachineMonitoringConcerns}, the \texttt{StateChangeManager} provides the managed data with the method \texttt{addStateChageAction}, which executes an \textit{action} when a specific \textit{predicate} holds.
+
+Therefore, we can define this specification in an interface named \texttt{StateChangeManager} (Listing \ref{lst:StateChangeManager}) and use as our type.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+@FunctionalInterface
+public interface StateChangeManager {
+	void addStateChangeAction(StateChangeAction action, FieldPredicate predicate);
+}
+	\end{lstlisting}
+	\caption{StateChangeManager interface}
+	\label{lst:StateChangeManager}
+\end{sourcecode}
+
+The \texttt{StateChangeAction} and \texttt{FieldPredicate} are simply functional interfaces that describe an action and a predicate respectively (Listing \ref{lst:StateChangeAction} and \ref{lst:FieldPredicate}).
+
+\lstdefinestyle{smallJava}{
+  basicstyle={\scriptsize\ttfamily},
+  language=Java
+}
+
+\noindent\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[
+	style=smallJava,
+	caption=Action,
+	frame=tlrb,
+	label=lst:StateChangeAction
+]
+@FunctionalInterface
+public interface StateChangeAction {
+	void stateChanged(State newState);
+}
+\end{lstlisting}
+
+\end{minipage}\hfill
+\begin{minipage}{.50\textwidth}
+\begin{lstlisting}[
+	style=smallJava,
+	caption=Predicate,
+	frame=tlrb,
+	label=lst:FieldPredicate
+]
+@FunctionalInterface
+public interface FieldPredicate {
+	boolean fieldChanged(String fieldName, State fieldValue);
+}
+	\end{lstlisting}
+\end{minipage}
+
+Finally, we need the actual implementation of those specifications from our data manager, that is the \texttt{StateChangesDataManager}. Listing \ref{lst:StateChangesDataManager} show its implementation.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public class StateChangesMObject extends MObject implements StateChangeManager {
+
+	private List<Tuple<StateChangeAction, FieldPredicate>> stateChangeActions;
+
+	public StateChangesMObject(Klass schemaKlass, Object... initializers) {
+		super(schemaKlass, initializers);
+		stateChangeActions = new LinkedList<>();
+	}
+
+	@Override
+	public void _set(String name, Object value) {
+		executeStateChangeActions((State) value, name);
+		super._set(name, value);
+	}
+
+	@Override
+	public void addStateChangeAction(
+			StateChangeAction action, FieldPredicate predicate) {
+		stateChangeActions.add(new Tuple<>(action, predicate));
+	}
+
+	protected void executeStateChangeActions(State newState, String fieldName) {
+		for (Tuple<StateChangeAction, FieldPredicate> stCng : stateChangeActions) {
+			if (stCng.getPredicate().fieldChanged(fieldName, newState)) {
+				stCng.getAction().stateChanged(newState);
+			}
+		}
+	}
+	\end{lstlisting}
+	\caption{StateChangesDataManager}
+	\label{lst:StateChangesDataManager}
+\end{sourcecode} 
+
+The data manager, keeps a list of \texttt{Action} - \texttt{Predicate} tuples that can be populated using the \texttt{addStateChangeAction} method.
+Those actions are execute when a change of a field of that object happens, only when they predicate holds.
+Note that this data manager is general, it does not work only for \texttt{Machine} objects, which we use, but for every object that has a \texttt{State}.
+Of course it can be abstracted even more for general cases and use the data manager stacking mechanism in order to make it more modular.
+
+Concluding, it can be observed that the only part that changes is the \texttt{Machine} definition of the original code, where the data manager of the \texttt{Machine} managed object has changed to the new observable(state changes) data manager.
+Additionally, the concerns are attached to the machine object very easily, as can be seen in Lines \ref{line:state_machine_monitor} and \ref{line:state_machine_notify} of Listing \ref{lst:StateMachineMonitoringConcerns}.
 
 By running the program with the commands \texttt{LOCK\_TRANSITION}, \texttt{UNLOCK\_TRANSITION} and \texttt{OPEN\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
 \lstdefinestyle{Bash} {
