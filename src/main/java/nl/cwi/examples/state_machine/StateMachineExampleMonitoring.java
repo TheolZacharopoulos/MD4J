@@ -1,6 +1,5 @@
 package nl.cwi.examples.state_machine;
 
-import nl.cwi.examples.state_machine.concerns.StateMachineMonitoringConcerns;
 import nl.cwi.examples.state_machine.data_managers.StateChangeManager;
 import nl.cwi.examples.state_machine.data_managers.StateChangesDataManager;
 import nl.cwi.examples.state_machine.schemas.Machine;
@@ -48,9 +47,15 @@ public class StateMachineExampleMonitoring {
 
         // Add Monitoring concerns
         ((StateChangeManager) doorStateMachine)
-                .addStateChangeAction(StateMachineMonitoringConcerns::monitor);
+                .addStateChangeAction(
+                    (newState) -> System.out.println(" > State changed to " + newState.name()),
+                    (name, value) -> "current".equals(name));
+
         ((StateChangeManager) doorStateMachine)
-                .addStateChangeAction(StateMachineMonitoringConcerns::notify);
+                .addStateChangeAction(
+                    (newState) -> System.err.println("Someone just opened the door!"),
+                    (name, newState) -> "current".equals(name) &&
+                        newState.name().equals(StateMachineExampleMonitoring.OPEN_STATE));
 
         // Open State definition
         final State openState = stateMachineFactory.State(OPEN_STATE);
@@ -91,8 +96,6 @@ public class StateMachineExampleMonitoring {
                 LOCK_TRANSITION,
                 UNLOCK_TRANSITION,
                 OPEN_TRANSITION)));
-
-        doorStateMachine.test();
     }
 
     private static void interpretStateMachine(Machine stateMachine, List<String> commands) {

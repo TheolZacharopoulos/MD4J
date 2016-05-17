@@ -11,7 +11,25 @@ import java.util.List;
 
 public class StateChangesMObject extends MObject implements StateChangeManager {
 
-    private List<StateChangeAction> stateChangeActions;
+    private class Tuple<A, P> {
+        private A action;
+        private P predicate;
+
+        public Tuple(A action, P predicate) {
+            this.action = action;
+            this.predicate= predicate;
+        }
+
+        public A getAction() {
+            return action;
+        }
+
+        public P getPredicate() {
+            return predicate;
+        }
+    }
+
+    private List<Tuple<StateChangeAction, FieldPredicate>> stateChangeActions;
 
     public StateChangesMObject(Klass schemaKlass, Object... initializers) {
         super(schemaKlass, initializers);
@@ -20,18 +38,20 @@ public class StateChangesMObject extends MObject implements StateChangeManager {
 
     @Override
     public void _set(String name, Object value) throws NoSuchFieldError, InvalidFieldValueException, NoKeyFieldException {
-        if ("current".equals(name)) {
-            executeStateChangeActions((State) value);
-        }
+        executeStateChangeActions((State) value, name);
         super._set(name, value);
     }
 
-    protected void executeStateChangeActions(State newState) {
-        stateChangeActions.forEach(stateChange -> stateChange.stateChanged(newState));
+    protected void executeStateChangeActions(State newState, String fieldName) {
+        for (Tuple<StateChangeAction, FieldPredicate> stateChange : stateChangeActions) {
+            if (stateChange.getPredicate().fieldChanged(fieldName, newState)) {
+                stateChange.getAction().stateChanged(newState);
+            }
+        }
     }
 
     @Override
-    public void addStateChangeAction(StateChangeAction action) {
-        stateChangeActions.add(action);
+    public void addStateChangeAction(StateChangeAction action, FieldPredicate predicate) {
+        stateChangeActions.add(new Tuple<>(action, predicate));
     }
 }
