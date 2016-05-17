@@ -1,11 +1,11 @@
 % !TEX root = ../thesis.tex
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Aspect refactoring 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Taming Aspects of JHotDraw with managed data}\label{AspectRefactoring}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Crosscutting Concerns Identification}
 Our managed data framework addresses the problem of \ac{ccc} by capturing them in modular data managers.
 Yet, to solve the problem of \ac{ccc} it is first required to identify them in the source code.
@@ -16,14 +16,10 @@ Marin et al. \cite{marin2004identifying} introduced a technique constructed by s
 One of these projects include the JHotDraw.
 In this thesis we focused on their concern findings in refactoring JHotDraw.
 In particular, we focused on the \textit{FigureSelection}, concern, which is an observer pattern implementation.
-% TODO: Undo
-% In particular, we focused on two main concerns, the \textit{FigureSelection}, which is an observer pattern implementation and the \textit{Undo} concern that is part of the command pattern.
 
 \section{Aspect Refactoring in Managed Data}
 In order to evaluate the ability of managed data to tame aspects, we have refactored the aforementioned concerns of JHotDraw.
 More specifically, in this chapter we present the refactoring of the \textit{FigureSelectionListener} observer pattern.
-% TODO: Undo
-% More specifically, in this chapter we present the refactoring of the \textit{FigureSelectionListener} observer pattern as well as the \textit{Undo} concern.
 The choice of those concerns has been made on purpose, since those are the concerns that AJHotDraw refactors using AspectJ and \ac{aop} techniques.
 For the refactoring we used our implementation of managed data in Java, presented in the previous chapter.
 Therefore, by having three versions of the same application (JHotDraw) and by solving the same concerns we will be able to perform a comparative evaluation.
@@ -47,9 +43,9 @@ The migration process of the basic components is detailed described in Appendix 
 Aspect refactoring usually refers to the refactoring of legacy code in aspect oriented code. 
 However, in this section we present an aspect refactoring of JHotDraw legacy code in managed data.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FigureSelectionListener
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{FigureSelectionListener: Observer Pattern}
 The \texttt{FigureSelectionListener} observer pattern of JHotDraw is a concern first presented by Hannemann et al. \cite{hannemann2005role} in their role-based refactoring of design patterns in AspectJ. 
 Later, Marin et al. used the same concern and migrated it into their AJHotDraw implementation \cite{marin2005approach}.
@@ -76,7 +72,7 @@ On the observers' side, the figure selection listeners implement the \texttt{fig
 
 Concluding, as described above, the ``pattern code'' of the observer pattern is scattered in many places, including the list of listeners on the subject, the add / remove methods, along with the pointcut methods that call the method which notifies the listeners.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Refactoring FigureSelectionListener in AJHotDraw}
 Marin et al. presented a refactoring of this concern in AJHotDraw \cite{marin2005approach}. 
 Their refactoring is illustrated in Figure \ref{fig:JHotDraw_FigureSelectionListener_AOP}. 
@@ -159,7 +155,7 @@ public void clearSelection() {
 	\label{lst:StandardDrawingView clearSelection Method}
 \end{sourcecode}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Refactoring FigureSelectionListener in ManagedDataJHotDraw}
 In JHotDraw's original code, the \textit{observer} \texttt{DrawApplication} creates a new \texttt{StandardDrawingView} instance using the \texttt{createDrawingView} method.
 During the construction the \texttt{DrawApplication} passes itself to the constructor of the \texttt{StandardDrawingView} and this in turn adds it to its listeners list, using the \texttt{addFigureSelectionListener} method.
@@ -544,9 +540,9 @@ First, all of the \textit{Undo} related functionalities of a command have been r
 Next, following the original design, the creation of an \texttt{UndoActivity} instance is again defined inside a nested class; however, this time it is not in the command itself but it is inside a ``command-specific'' data manager.
 Finally, the \texttt{execute} method of a command is not aware of its undo functionality since it has been extracted to an undo dedicated pointcut inside a data manager.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Metrics
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Metrics}\label{Evaluation Metrics}
 Concluding we have presented a new version of JHotDraw, the ManagedDataJHotDraw which refactors two \ac{ccc} of the original system.
 We ensure that the new version preserved behavioral equivalence with the original, using the provided automated tests suite and manual tests.
@@ -611,9 +607,9 @@ These results are discussed in the following chapter.
 \label{tbl:metrics}
 \end{table}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Claims
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{Claims}
 % We claim that our framework successfully performed aspect refactoring of the \texttt{FigureSelectionListener} concern in JHotDraw.
 % Furthermore, it evolved the pointcut concept of \ac{aop} by adding conditions on them.
