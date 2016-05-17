@@ -26,10 +26,6 @@ public class StateChangesMObject extends MObject implements StateChangeManager {
         super._set(name, value);
     }
 
-    public void test() {
-        System.out.print("666");
-    }
-
     protected void executeStateChangeActions(State newState) {
         stateChangeActions.forEach(stateChange -> stateChange.stateChanged(newState));
     }
