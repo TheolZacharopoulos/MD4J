@@ -204,3 +204,84 @@ public static MDDrawingView newDrawingView(
 \section{MDDrawingView Integration}
 Finally, in order to integrate the \texttt{MDDrawingView} managed objects in the existing system, first we had to replace every instance of \texttt{DrawingView} with \texttt{MDDrawingView}, every \texttt{StandardDrawingView} with \texttt{MDStandardDrawingView} and every \texttt{NullDrawingView} with \texttt{MDNullDrawingView} accordingly.
 In addition, everywhere a new instance of these is created, we replaced it with our \textit{instances factory}.
+
+For instance Listings \ref{lst:original_createDrawingView} and \ref{lst:refactored_createDrawingView} show how the code has been changed in the \texttt{DrawApplication} class.
+
+\lstdefinestyle{smallJava}{
+  basicstyle={\scriptsize\ttfamily},
+  language=Java
+}
+
+\noindent\begin{minipage}{.45\textwidth}
+\begin{lstlisting}[
+	style=smallJava,
+	caption=Original createDrawingView,
+	frame=tlrb,
+	label=lst:original_createDrawingView
+]
+Dimension d = getDrawingViewSize();
+
+DrawingView newDrawingView = 
+	new StandardDrawingView(this, d.width, d.height);
+
+newDrawingView.setDrawing(newDrawing);
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.47\textwidth}
+\begin{lstlisting}[
+	style=smallJava,
+	caption=ManagedData createDrawingView,
+	frame=tlrb,
+	label=lst:refactored_createDrawingView
+]
+Dimension d = getDrawingViewSize();
+
+MDDrawingView newDrawingView = 
+	MDDrawingViewFactory
+		.newSubjectRoleDrawingView(this, d.width, d.height);
+
+newDrawingView.setDrawing(newDrawing);
+	\end{lstlisting}
+\label{lst:createDrawingView}
+\end{minipage}
+
+The factory's code of the \texttt{MDDrawingView} with the observable data manager is shown in Listing \ref{lst:ManagedDataJHotDraw_MDDrawingView_Factory}.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java]
+public static MDDrawingView newSubjectRoleDrawingView(
+	DrawingEditor editor, int width, int height) {
+
+	Schema drawingViewSchema = SchemaLoader.load(
+			schemaFactory, schemaSchema,
+			JHotDrawPrimitives.class, MDStandardDrawingView.class);
+
+	FigureSelectionListenerSubjectRoleDataManager subjectRoleFactory =
+		new FigureSelectionListenerSubjectRoleDataManager(
+			DrawingViewSchemaFactory.class, drawingViewSchema);
+
+	DrawingViewSchemaFactory drawingViewSchemaFactory = subjectRoleFactory.make();
+
+	MDStandardDrawingView drawingView = drawingViewSchemaFactory.DrawingView();
+
+	MyJPanel jPanel = new MyJPanel();
+	jPanel.setAutoscrolls(true);
+	....
+	drawingView.editor(editor);
+
+	drawingView.size(new Dimension(width, height));
+	jPanel.setSize(width, height);
+
+	...
+
+	// Panel events
+	jPanel.addMouseListener(new MouseAdapter() {...});
+	jPanel.addMouseMotionListener(new MouseMotionListener() {...});
+	jPanel.addKeyListener(new DrawingViewKeyListener(drawingView));
+
+	return drawingView;
+}
+	\end{lstlisting}
+	\caption{ManagedDataJHotDraw: MDDrawingView Factory}
+	\label{lst:ManagedDataJHotDraw_MDDrawingView_Factory}
+\end{sourcecode}
