@@ -1,4 +1,5 @@
 % Made by Dr. Vadim Zaytsev aka @grammarware
+% Customized for my needs by Theologos Zacharopoulos
 \NeedsTeXFormat{LaTeX2e}
 % 2014/03/25 UvA MSc SE document class v1.0
 % 2014/04/09 UvA MSc SE document class v1.01 - bugfix
@@ -79,7 +80,6 @@
 }
 %% end of Listing environment
 
-
 \newcommand{\uvacoverfoot}{%
   \vfill
   \begin{center}
@@ -125,6 +125,8 @@
   \uvacoverfoot
   \newpage
   \tableofcontents
+  \newpage
+  \printglossary[type=\acronymtype, nonumberlist, title=List of Abbreviations]
   \newpage
   \uvaabstract
   \global\@topnum\z@ % To prevent floats above the title

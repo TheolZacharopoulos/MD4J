@@ -191,6 +191,7 @@ The weaver produces static Java code, which is then compiled in \ac{jvm} and can
 On the contrary, data managers dynamically analyze the schemas through reflection, which makes it a lot harder for the compiler to optimize. 
 More specifically, even though the HotSpot \ac{jvm} has one of the best just-in-time compilers, Java's dynamic proxies introduce 6.5x overhead \cite{marr2015zero}.
 Thus, \ac{aop} performance is much higher than managed data.
+% A simple demonstration of the performance overhead introduced by managed data can be seen in Appendix \ref{appdx:PerformanceOverhead}.
 
 \subsection{Migration and Integration}
 Finally, both the migration and the integration of an existing application in the two cases has some trade-offs.
@@ -210,14 +211,9 @@ Additionally, some limitations arise from this migration because interfaces and 
 As seen, the framework has some limitations such as Java keywords and encapsulation of the methods in interfaces.
 However, such definitions could be defined using annotations in future work.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Claims
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Claims}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Threads to validity
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Threads to Validity}
 In this section we present a set of validity criteria including \textit{Construct}, \textit{Internal}, \textit{External} validity and \textit{Reliability} \cite{easterbrook2008selecting}.
 % Construct Validity: Efficient interpretation of the results 
