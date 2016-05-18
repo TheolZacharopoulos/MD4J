@@ -27,14 +27,14 @@ public class SchemaSchemaExample {
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         final Schema realSchemaSchema =
-                SchemaLoader.load(schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+                SchemaLoader.load(schemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         // =======================
         // Test equality
         final BasicDataManager basicFactory2 = new BasicDataManager();
         final SchemaFactory schemaFactory2 = basicFactory2.factory(SchemaFactory.class, realSchemaSchema);
         final Schema realSchemaSchema2 =
-                SchemaLoader.load(schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
+                SchemaLoader.load(schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class);
 
         boolean equal = MObjectUtils.equals(realSchemaSchema, realSchemaSchema2);
         if (equal) {

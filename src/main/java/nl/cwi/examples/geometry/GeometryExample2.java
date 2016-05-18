@@ -43,7 +43,7 @@ public class GeometryExample2 {
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         final Schema realSchemaSchema = SchemaLoader.load(
-            schemaFactory, bootstrapSchema,
+            schemaFactory,
             Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
         DebugUtils.debugSchema(bootstrapSchema);
@@ -57,7 +57,7 @@ public class GeometryExample2 {
         final BasicDataManager basicFactory2 = new BasicDataManager();
         final SchemaFactory schemaFactory2 = basicFactory2.factory(SchemaFactory.class, realSchemaSchema);
         final Schema realSchemaSchema2 = SchemaLoader.load(
-            schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
+            schemaFactory2, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
         System.out.println(" Check boot and real schema equality");
         boolean equalBootReal = MObjectUtils.equals(bootstrapSchema, realSchemaSchema);
@@ -86,7 +86,7 @@ public class GeometryExample2 {
         // (points) to be created with starting props.
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
         final Schema pointSchema = SchemaLoader.load(
-                schemaFactory2, realSchemaSchema2, Point.class, Point2D.class, Point3D.class, Line.class, Primitives.class);
+                schemaFactory2, Point.class, Point2D.class, Point3D.class, Line.class, Primitives.class);
         final BasicDataManager basicFactoryForPoints = new BasicDataManager();
         final PointFactory pointFactory = basicFactoryForPoints.factory(PointFactory.class, pointSchema);
 

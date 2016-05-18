@@ -31,7 +31,7 @@ public class GeometryExample {
         // (points) to be created with starting props.
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
         final Schema pointSchema = SchemaLoader.load(
-                schemaFactory, schemaSchema, Point.class, Point2D.class, Point3D.class, Line.class, Primitives.class);
+                schemaFactory, Point.class, Point2D.class, Point3D.class, Line.class, Primitives.class);
         final BasicDataManager basicFactoryForPoints = new BasicDataManager();
         final PointFactory pointFactory = basicFactoryForPoints.factory(PointFactory.class, pointSchema);
 

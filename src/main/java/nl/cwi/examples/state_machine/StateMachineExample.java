@@ -27,7 +27,7 @@ public class StateMachineExample {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         final Schema stateMachineSchema =
-                SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
+                SchemaLoader.load(schemaFactory, Machine.class, State.class, Transition.class);
         final BasicDataManager basicDataManagerForStateMachines = new BasicDataManager();
         final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.factory(StateMachineFactory.class, stateMachineSchema);
 

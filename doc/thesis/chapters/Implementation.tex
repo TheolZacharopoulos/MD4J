@@ -364,17 +364,18 @@ Schema schemaSchema = ...;
 SchemaFactory sf = basicFactory.factory(SchemaFactory.class, schemaSchema);
 
 Schema stateMachineSchema = SchemaLoader.load(
-	sf, schemaSchema, Machine.class, State.class, Transition.class);
+	sf, Machine.class, State.class, Transition.class);
 	\end{lstlisting}
 	\caption{SchemaLoader Example}
 	\label{lst:SchemaLoader Example}
 \end{sourcecode}
 
-In its implementation, the \texttt{SchemaLoader} gets as input a \texttt{SchemaSchemaFactory} and a \texttt{SchemaSchema}, which will be explained further in Section \ref{sec:Bootstrapping}.
-Moreover, it gets a set of interfaces that describe the state machine schema.
+In its implementation, the \texttt{SchemaLoader} gets as input a \texttt{SchemaSchemaFactory} and a set of interfaces that describe the state machine schema.
 This schema consists of a set of schema Klasses that are described by interfaces, namely \texttt{Machine.class}, \texttt{State.class} and \texttt{Transition.class}.
 Next, the \texttt{SchemaLoader} analyzes the definition of those schemas using reflection and then makes a \texttt{Schema} by using the \texttt{SchemaFactory} that it has been given.
 A more detailed description of this process is given in Appendix \ref{appdx:SchemaLoading}.
+% #important
+In general \texttt{SchemaLoader} can be seen as our parser, which accepts a description of language (the interfaces) and a method create objects of its components (the schema factory).
 
 \section{Bootstrapping}\label{sec:Bootstrapping}
 Considering that SchemaSchema is managed data itself, we can use the SchemaLoader to build a new SchemaSchema.
@@ -395,7 +396,7 @@ final BasicDataManager basicFactory = new BasicDataManager();
 final SchemaFactory schemaFactory = 
 	basicFactory.factory(SchemaFactory.class, new BootSchema());
 final Schema realSchemaSchema = SchemaLoader.load(
-        	schemaFactory, bootstrapSchema, 
+        	schemaFactory,
          	Schema.class, Type.class, Primitive.class, Klass.class, Field.class,
         	Primitives.class); |\label{line:Primitives}|
 
@@ -403,7 +404,7 @@ final BasicDataManager basicFactory2 = new BasicDataManager();
 final SchemaFactory schemaFactory2 = 
 	basicFactory2.factory(SchemaFactory.class, realSchemaSchema);
 final Schema realSchemaSchema2 = SchemaLoader.load(
-        	schemaFactory2, realSchemaSchema, 
+        	schemaFactory2, 
         	Schema.class, Type.class,  Primitive.class, Klass.class, Field.class);
 	\end{lstlisting}
 	\caption{Cutting the umbilical cord}

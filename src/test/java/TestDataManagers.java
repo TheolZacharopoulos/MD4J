@@ -22,7 +22,7 @@ public class TestDataManagers {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final Schema personSchema = SchemaLoader.load(
-                schemaFactory, schemaSchema, Person.class, Address.class, Car.class, Primitives.class);
+                schemaFactory, Person.class, Address.class, Car.class, Primitives.class);
 
         final TestDataManager testDataManager = new TestDataManager();
         personFactory = testDataManager.factory(PersonFactory.class, personSchema);

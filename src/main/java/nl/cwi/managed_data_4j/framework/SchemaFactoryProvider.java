@@ -26,7 +26,7 @@ public class SchemaFactoryProvider {
             final SchemaFactory bootStrapSchemaFactory = basicFactory.factory(SchemaFactory.class, bootstrapSchema);
 
             schemaSchema = SchemaLoader.load(
-                bootStrapSchemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
+                bootStrapSchemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
         }
         return schemaSchema;
     }

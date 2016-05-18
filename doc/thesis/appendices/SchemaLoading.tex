@@ -10,7 +10,7 @@
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public static Schema load(
-	SchemaFactory factory, Schema schemaSchema, Class<?>... schemaKlassesDef) {
+	SchemaFactory factory, Class<?>... schemaKlassesDef) {
 
 	// Filter out primitives by loading them separately
 	final List<Class<?>> schemaKlasses = new LinkedList<>();
@@ -26,17 +26,14 @@ public static Schema load(
 	final Schema schema = factory.Schema();
 
 	// build the types from the schema klasses definition
-	final Set<Type> types = 
-		buildTypesFromClasses(factory, schema, schemaSchema, schemaKlasses);
+	final Set<Type> types = buildTypesFromClasses(factory, schema, schemaKlasses);
 
 	// wire the types on schema
 	// it is inverse so it will refer to schema.types() directly
 	types.forEach(type -> type.schema(schema));
 
 	// get the schema's schemaKlass
-	final Klass schemaSchemaKlass = schemaSchema.klasses().stream()
-		.filter(klass -> klass.name().equals("Schema"))
-		.findFirst().orElse(null);
+	final Klass schemaSchemaKlass = factory.Klass().schemaKlass();
 
 	// wire the schema's schemaKlass
 	schema.schemaKlass(schemaSchemaKlass);
@@ -54,7 +51,6 @@ public static Schema load(
 private static Set<Type> buildTypesFromClasses(
 	SchemaFactory factory,
 	Schema schema,
-	Schema schemaSchema,
 	List<Class<?>> schemaKlassesDefinition) {
 	Map<Type, TypeWithClass> types = new LinkedHashMap<>();
 
@@ -88,7 +84,7 @@ private static Set<Type> buildTypesFromClasses(
 	wireFieldInverse(allFieldsWithReturnType);
 	wireFieldTypeKeys(types);
 
-	wireSchemaKlasses(schemaSchema);
+	wireSchemaKlasses(schema.schemaKlass().schema());
 
 	wireKlassSupers(types, typesCache);
 	wireKlassSubs(types, typesCache);
