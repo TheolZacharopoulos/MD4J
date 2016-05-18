@@ -1,8 +1,8 @@
 % !TEX root = ../thesis.tex
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Introduction
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}\label{Introduction}
 \ac{ccc} is a problem the classic programming techniques can not tackle with sufficiently. 
 This results in scattered and tangled code, which affects the system's modularity and its ease of maintenance and evolution. 
@@ -29,21 +29,21 @@ In their study on managed data, Cook et al. \cite{loh2012managed} presented the 
 As a use case, they presented the Enso\footref{foot:enso} project in order to reuse database management and  access control mechanisms across different data definitions.
 
 This thesis is an extension of their work; we implement managed data in Java (a static programming language) using the Java reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} and dynamic proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}}. 
-Although proxies in static programming languages can not implement the full range of managed data \cite{loh2012managed}. 
-Java provides a strong implementation of the \ac{mop} \cite{kiczales1991art}, which can be used though the Java Reflection API \cite{forman2004java}. 
+Although proxies in static programming languages can not implement the full range of managed data \cite{loh2012managed}, Java provides sufficient meta-data manipulation mechanisms through its Reflection API \cite{forman2004java} and dynamic proxies. 
 Additionally, our work focuses on the aspects perspective and it provides a solution to the \ac{ccc} problem by using managed data and their data managers.
 
 The most famous language implementation of \ac{aop} is the one provided by Kiczales et al. called AspectJ \cite{kiczales2001overview}. 
 Although AspectJ has been used by a number of projects, some of them with significant research results \cite{hannemann2002design} \cite{marinajhotdraw}, it includes all the trade-offs of \ac{aop}, which are presented in detail in Section \ref{Problem statement}.
 In this thesis we show how we use managed data in order to handle aspects and compare our findings with the original JHotDraw and an AspectJ show case, the AJHotDraw.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem statement}\label{Problem statement}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Problem Analysis}\label{Problem Analysis}
 
 % Predefined data structuring mechanisms
+% Reuse
 \subsubsection{Predefined data structuring mechanisms}\label{Predefined data structuring mechanisms problem}
 One of the most important characteristics of programming languages is the data structures definition.
 Different types of data structures can be found on different languages and paradigms including \textit{structures}, \textit{objects}, \textit{predefined data structures}, \textit{abstract data types} and more.
@@ -54,6 +54,7 @@ The problem with this approach is that the predefined data structuring mechanism
 In particular, those requirements are not properties that belong to a data structure definition, since, although it is easy to define them individually for every data type, that introduces a significant amount of duplicated and scattered code through the program.
 
 Consequently, in this thesis we implement managed data, which gives the programmers control over the data structuring mechanisms.
+In addition, it allows the programmer to define the strategies of \ac{ccc} just once as reusable modules.
 
 % Cross cutting concerns
 \subsubsection{Crosscutting concerns}\label{Cross cutting concerns problem}
@@ -81,13 +82,13 @@ Additionally, Steimann \cite{steimann2005domain} argues that modeling languages 
 The problem that arises is located at the level of software modeling. 
 More specifically, whereas in \ac{oop} roles are tied to the collaborations, in \textit{roles modeling} collaborations rely on interactions of objects and aspects are typically defined independently of one another.
 
-Furthermore, in terms of order, it has been observed that aspects are not elements of the domain, they rather describe the order than the domain. 
+% Furthermore, in terms of order, it has been observed that aspects are not elements of the domain, they rather describe the order than the domain. 
 Finally, aspects invariably express non-functional requirements, but if the non-functional requirements are not elements of domain models then neither are aspects.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Questions}\label{Research Questions}
 Managed data has not been practically implemented in a static language before, which considered a challenge, therefore our first research questions states 
-\textit{``Can managed data be implemented in a static language?''}.
+\textit{``How to implemented managed data in a static language?''}.
 Based on the argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve the problem of crosscutting concerns?''}. 
 Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
 we evaluate the implementation of managed data on an inventory of aspects. 
@@ -146,8 +147,6 @@ In order to answer our research questions we studied the theoretical background,
   Our first contribution is the implementation of managed data in a static language, in our case we chose Java.
   The reason we chose Java as the programming language is because Java is a very popular, static, object oriented programming language, with meta-programming (reflective) capabilities which we took advantage of.
   Managed data implemented in Java, using interfaces for schema definitions and dynamic proxies for the data managers.
-
-  \item[Contribution 2: Managed Data Java Framework.]
   The final deliverable is a Java library, in \texttt{jar} format, which the developer can use to define managed data and data managers for them. 
   Additionally, the developer can define and implement aspects as reusable modules and introduce them in an application without mixing the business logic with the concern logic. 
   More specifically, the schemas and the data managers have to be defined by the developer, as well as any additional functionality that needs to be integrated to the patterns or roles of the application.

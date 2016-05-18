@@ -157,9 +157,8 @@ The \textit{setup} of the fields is done automatically by the data manager who i
 public class StateMachineExample {
 	public static void main(String[] args) {
 		Schema schemaSchema = ...; |\label{line:state_schemaSchema}|
-		Schema stateMachineSchema = ....; |\label{line:state_schemaMachineSchema}|
-		BasicDataManager basicDataManager = 
-				new BasicDataManager();  |\label{line:state_meaning_full_code}|
+		Schema stateMachineSchema = ...; |\label{line:state_schemaMachineSchema}|
+		BasicDataManager basicDataManager = new BasicDataManager();  |\label{line:state_meaning_full_code}|
 		StateMachineFactory stateMachineFactory = 
 			basicDataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
@@ -188,25 +187,25 @@ public class StateMachineExample {
 
 		doorStateMachine.start(closedState);
 		interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-		        LOCK_TRANSITION,
-		        UNLOCK_TRANSITION,
-		        OPEN_TRANSITION)));
+				LOCK_TRANSITION,
+				UNLOCK_TRANSITION,
+				OPEN_TRANSITION)));
+		}	
+	}
+
+	private static void interpretStateMachine(
+			Machine stateMachine, List<String> commands) 
+	{ |\label{line:state_machine_interpreter}|
+	    stateMachine.current(stateMachine.start());
+		for (String event : commands) {
+			for (Transition trans : stateMachine.current().out()) {
+				if (trans.event().equals(event)) {
+					stateMachine.current(trans.to());
+					break;
+				}
+			}
 	}
 }
-
-private static void interpretStateMachine(
-		Machine stateMachine, List<String> commands) 
-{ |\label{line:state_machine_interpreter}|
-    stateMachine.current(stateMachine.start());
-    for (String event : commands) {
-        for (Transition trans : stateMachine.current().out()) {
-            if (trans.event().equals(event)) {
-                stateMachine.current(trans.to());
-                break;
-            }
-        }
-    }
-}   
 	\end{lstlisting}
 	\caption{Door state machine}
 	\label{lst:Door_state_machine}
