@@ -20,10 +20,10 @@ public class SchemaFactoryProvider {
 
         if (schemaSchema == null) {
             final Schema bootstrapSchema = SchemaLoader.bootLoad();
-            final BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
+            final BasicDataManager basicFactory = new BasicDataManager();
 
             // schema factory made from bootstrapping
-            final SchemaFactory bootStrapSchemaFactory = basicFactory.make();
+            final SchemaFactory bootStrapSchemaFactory = basicFactory.factory(SchemaFactory.class, bootstrapSchema);
 
             schemaSchema = SchemaLoader.load(
                 bootStrapSchemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
@@ -36,10 +36,10 @@ public class SchemaFactoryProvider {
         if (schemaFactory == null) {
 
             final Schema realSchemaSchema = getSchemaSchema();
-            final BasicDataManager realBasicFactory = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
+            final BasicDataManager realBasicFactory = new BasicDataManager();
 
             // schema factory made from managed data
-            final SchemaFactory realSchemaFactory = realBasicFactory.make();
+            final SchemaFactory realSchemaFactory = realBasicFactory.factory(SchemaFactory.class, realSchemaSchema);
 
             schemaFactory = realSchemaFactory;
         }

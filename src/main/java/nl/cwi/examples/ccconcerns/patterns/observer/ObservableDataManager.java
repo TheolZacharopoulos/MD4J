@@ -1,5 +1,6 @@
 package nl.cwi.examples.ccconcerns.patterns.observer;
 
+import nl.cwi.managed_data_4j.language.IFactory;
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
@@ -7,10 +8,10 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 
 public class ObservableDataManager extends BasicDataManager {
 
-    public ObservableDataManager(Class<?> moSchemaFactoryClass, Schema schema) {
-
-        // Add the observable class in order to use it in the managed object.
-        super(moSchemaFactoryClass, schema, Observable.class);
+    @Override
+    public <T extends IFactory> T factory(Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
+        // Add the Observable class in order to use it in the managed object.
+        return super.factory(moSchemaFactoryClass, schema, Observable.class);
     }
 
     @Override

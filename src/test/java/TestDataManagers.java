@@ -1,5 +1,4 @@
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
-import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
@@ -25,8 +24,8 @@ public class TestDataManagers {
         final Schema personSchema = SchemaLoader.load(
                 schemaFactory, schemaSchema, Person.class, Address.class, Car.class, Primitives.class);
 
-        final TestDataManager testDataManager = new TestDataManager(PersonFactory.class, personSchema);
-        personFactory = testDataManager.make();
+        final TestDataManager testDataManager = new TestDataManager();
+        personFactory = testDataManager.factory(PersonFactory.class, personSchema);
     }
 
     @Test

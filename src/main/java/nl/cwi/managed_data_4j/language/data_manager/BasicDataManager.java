@@ -17,36 +17,8 @@ import java.util.Set;
  */
 public class BasicDataManager implements IDataManager {
 
-    // the Class of the Schema-Factory.
-    protected final Class<?> moSchemaFactoryClass;
-
-    // the schema of the managed object which will be built.
-    protected final Schema schema;
-
     // we need those in order to add the to the java Proxy.
     private Set<Class<?>> proxiedInterfaces = new LinkedHashSet<>();
-
-    /**
-     * Constructor
-     * @param moSchemaFactoryClass the Class of the Schema-Factory.
-     * @param schema the schema of the managed object which will be built.
-     * @param proxiedInterfaces (Optional) extra proxied Interfaces which will be attached to
-     *                          the Dynamic proxy of the managed object.
-     */
-    public BasicDataManager(Class<?> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
-        this.moSchemaFactoryClass = moSchemaFactoryClass;
-        this.schema = schema;
-
-        // add the extra proxied interfaces
-        for (Class<?> proxiedInterface : proxiedInterfaces) {
-            this.addProxiedInterface(proxiedInterface);
-        }
-
-        // add the klass interfaces of the schema
-        this.schema.klasses().stream()
-            .map(Klass::classOf)
-            .forEach(this::addProxiedInterface);
-    }
 
     /**
      * Used to build data managers which build managed objects.
@@ -55,15 +27,30 @@ public class BasicDataManager implements IDataManager {
      * the data manager interprets the schema, and returns a Proxied Factory
      * that creates Managed Objects which are described with that schema.
      *
+     * @param moSchemaFactoryClass the Class of the Schema-Factory.
+     * @param schema the schema of the managed object which will be built.
+     * @param proxiedInterfaces (Optional) extra proxied Interfaces which will be attached to
+     *                          the Dynamic proxy of the managed object.
      * @return a new factory which creates managed objects.
      */
     @SuppressWarnings("unchecked")
-    public <T extends IFactory> T make() {
+    public <T extends IFactory> T factory(Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
+
+        // add the extra proxied interfaces
+        for (Class<?> proxiedInterface : proxiedInterfaces) {
+            this.addProxiedInterface(proxiedInterface);
+        }
+
+        // add the klass interfaces of the schema
+        schema.klasses().stream()
+            .map(Klass::classOf)
+            .forEach(this::addProxiedInterface);
+
         return (T) Proxy.newProxyInstance(
             moSchemaFactoryClass.getClassLoader(),
             new Class<?>[]{moSchemaFactoryClass},
             (proxy, method, args) ->
-                this.createProxiedManagedObject(moSchemaFactoryClass, schema, method, args)
+                createProxiedManagedObject(moSchemaFactoryClass, schema, method, args)
         );
     }
 

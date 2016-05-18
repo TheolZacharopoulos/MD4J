@@ -28,8 +28,8 @@ public class StateMachineExample {
 
         final Schema stateMachineSchema =
                 SchemaLoader.load(schemaFactory, schemaSchema, Machine.class, State.class, Transition.class);
-        final BasicDataManager basicDataManagerForStateMachines = new BasicDataManager(StateMachineFactory.class, stateMachineSchema);
-        final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.make();
+        final BasicDataManager basicDataManagerForStateMachines = new BasicDataManager();
+        final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.factory(StateMachineFactory.class, stateMachineSchema);
 
         // ========================================================
         // Door State Machine definition

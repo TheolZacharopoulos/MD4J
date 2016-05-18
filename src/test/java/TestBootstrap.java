@@ -19,10 +19,10 @@ public class TestBootstrap {
     public void equality_Test() {
         final Schema bootstrapSchema = new BootSchema();
 
-        final BasicDataManager basicFactory = new BasicDataManager(SchemaFactory.class, bootstrapSchema);
+        final BasicDataManager basicFactory = new BasicDataManager();
 
         // Create a schema Factory which creates Schema instances.
-        final SchemaFactory schemaFactory = basicFactory.make();
+        final SchemaFactory schemaFactory = basicFactory.factory(SchemaFactory.class, bootstrapSchema);
 
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
@@ -31,8 +31,8 @@ public class TestBootstrap {
 
         // =======================
         // Test equality
-        final BasicDataManager basicFactory2 = new BasicDataManager(SchemaFactory.class, realSchemaSchema);
-        final SchemaFactory schemaFactory2 = basicFactory2.make();
+        final BasicDataManager basicFactory2 = new BasicDataManager();
+        final SchemaFactory schemaFactory2 = basicFactory2.factory(SchemaFactory.class, realSchemaSchema);
         final Schema realSchemaSchema2 = SchemaLoader.load(
                 schemaFactory2, realSchemaSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 

@@ -28,9 +28,9 @@ public class TestSchemaDefinition {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final Schema personSchema = SchemaLoader.load(schemaFactory, schemaSchema, Person.class, Address.class, Car.class, Primitives.class);
-        final BasicDataManager basicFactoryForPersons = new BasicDataManager(PersonFactory.class, personSchema);
+        final BasicDataManager basicFactoryForPersons = new BasicDataManager();
 
-        personFactory = basicFactoryForPersons.make();
+        personFactory = basicFactoryForPersons.factory(PersonFactory.class, personSchema);
     }
 
     @Test

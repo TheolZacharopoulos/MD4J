@@ -32,8 +32,8 @@ public class GeometryExample {
         // use the schemaFactory2, the schema factory which has been made from the realSchemaSchema
         final Schema pointSchema = SchemaLoader.load(
                 schemaFactory, schemaSchema, Point.class, Point2D.class, Point3D.class, Line.class, Primitives.class);
-        final BasicDataManager basicFactoryForPoints = new BasicDataManager(PointFactory.class, pointSchema);
-        final PointFactory pointFactory = basicFactoryForPoints.make();
+        final BasicDataManager basicFactoryForPoints = new BasicDataManager();
+        final PointFactory pointFactory = basicFactoryForPoints.factory(PointFactory.class, pointSchema);
 
         final Point2D point = pointFactory.Point2D(3, 2);
 
@@ -62,8 +62,8 @@ public class GeometryExample {
         System.out.println("=============");
         System.out.println("Observable Objects: ");
 
-        final ObservableDataManager observableFactory = new ObservableDataManager(PointFactory.class, pointSchema);
-        final PointFactory observablePointFactory = observableFactory.make();
+        final ObservableDataManager observableFactory = new ObservableDataManager();
+        final PointFactory observablePointFactory = observableFactory.factory(PointFactory.class, pointSchema);
 
         // Create a new observer-record managed object.
         final Point3D observerPoint = observablePointFactory.Point3D();
@@ -81,8 +81,8 @@ public class GeometryExample {
         System.out.println("=============");
         System.out.println("Lockable Objects: ");
 
-        final LockableDataManager lockableFactory = new LockableDataManager(PointFactory.class, pointSchema);
-        final PointFactory lockablePointFactory = lockableFactory.make();
+        final LockableDataManager lockableFactory = new LockableDataManager();
+        final PointFactory lockablePointFactory = lockableFactory.factory(PointFactory.class, pointSchema);
         final Point2D lockablePoint = lockablePointFactory.Point2D();
         lockablePoint.x(1);
         lockablePoint.y(1);
