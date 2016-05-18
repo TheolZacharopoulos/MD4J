@@ -151,21 +151,64 @@ Machine stateMachineInstance = stateMachineFactory.Machine(); |\label{line:basic
 
 \subsubsection{Basic Data Manager}
 As described above, we use Java interfaces to define schema Klasses that include fields. 
-Those fields are dynamically discovered by the data manager who has the ability to determine the fields and methods of the managed data object during runtime.
+Those fields are dynamically discovered by a schema loading process and provided to the data manager as schemas.
+A data manager has the ability to determine the fields and methods of the managed object during runtime.
 In addition, when the data manager adds functionality on a managed object then it first delegates the calls to its specifications and then to the fields of an instance.
-In order to dynamically interpret a schema inside a data manager and delegate functionality, we used Java Reflection and Dynamic Proxies.
+In order to dynamically interpret a schema inside a data manager and delegate its functionalities, we used Dynamic Proxies.
 
 In our implementation we have separated the Proxy factory (\texttt{DataManager}) from the Invocation Handler (\texttt{MObject}).
-This way, the \texttt{DataManager} class is responsible for creating proxy instances of managed data, while the \texttt{MObject} instances are responsible for interpreting the schema and delegating actions with their invocation handling mechanisms. 
+This way, the \texttt{DataManager} class is responsible for creating proxy instances of \texttt{IFactories}. 
+The \texttt{IFactory} creates proxy instances with the \texttt{MObject} class instances as invocation handlers.
+The \texttt{MObject} instances are responsible for interpreting the schema and delegating actions using their invocation handling implementation. 
 Figure \ref{fig:DataManager_and_MObject} illustrates this structure.
-As it can be seen the data manager is a \textit{factory} that has only one exposed method, \texttt{factory()}, that is used to build a \texttt{SchemaFactory}, which in turn builds \texttt{MObject} instances.
+As it can be seen the data manager is a \textit{factory} that has a single exposed method, \texttt{factory()}, that is used to build an \texttt{IFactory} instance, which in turn builds \texttt{MObject} instances.
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.70\textwidth]{figures/DataManager_and_MObject.png}}
+  	\fbox{\includegraphics[width=.85\textwidth]{figures/DataManager_and_MObject.png}}
   	\caption{Data Manager and MObject}
   	\label{fig:DataManager_and_MObject}
 \end{figure}
+
+The two level \textit{proxing} process that the \texttt{DataManager} class performs, from the basic data manager to IFactory and then to MObject, can be seen in Listing \ref{lst:Basic Data Manager}.
+Note that the \texttt{createManagedObject} is \texttt{protected} for the sub data managers to override it in order to create MObjects of preference.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public <T extends IFactory> T factory(
+	Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) 
+{
+	// add the extra proxied interfaces
+	for (Class<?> proxiedInterface : proxyInterfaces) {
+		this.addProxiedInterface(proxiedInterface);
+	}
+
+	// add the klass interfaces of the schema
+	for (Klass klass : schema.klasses()) {
+		this.addProxiedInterface(klass.classOf());
+	}
+
+	return (T) Proxy.newProxyInstance(
+		factoryClass.getClassLoader(),
+		new Class<?>[]{factoryClass},
+		(proxy, method, args) -> // invocation handler
+			createProxiedManagedObject(factoryClass, schema, method, args) // mobject
+		);
+}
+
+protected Object createProxiedManagedObject(...) {
+	//...
+	final MObject managedObject = createManagedObject(schemaKlass, inits);
+	return Proxy.newProxyInstance(
+		schemaFactoryCallingMethodClassLoader,
+		proxiedInterfaces.toArray(new Class[proxiedInterfaces.size()]),
+		managedObject
+	);
+}
+\end{lstlisting}
+	\caption{Basic Data Manager}
+	\label{lst:Basic Data Manager}
+\end{sourcecode}
 
 \subsubsection{Stacking Data Managers}
 In order to create a stack of data managers that combine behavior and specifications, we can use inheritance.
@@ -183,7 +226,7 @@ The \texttt{MObject}, is an implementation of the \texttt{InvocationHandler} int
 Thus, the \texttt{MObject}'s \texttt{invoke()} method is called in every field access of the managed object's instance.
 To manipulate its fields' values this object has two methods, \texttt{\_set()} and \texttt{\_get()}.
 In the implementation of these methods additional checks are performed to ensure the correctness of types and structure of the values.
-Therefore, a type checker in the schemaklass level has been implemented in the particular place.
+Therefore, a type checker in the schemaKlass level has been implemented in the particular place.
 The setter and getter methods can be overridden from derived \texttt{MObject}s in order to \textit{Decorate} the basic \texttt{MObject} with their functionality. 
 Of course they require to call their \texttt{supers} for running the type checker.
 
@@ -197,8 +240,8 @@ In particular, this class is the \textit{interpreter} of managed data.
 Therefore, it is responsible for handling the calls to methods (invocation handler), invoke default methods, setup and initialize field values, based on its \texttt{schemaKlass}, and internally perform the \textit{type checking}.
 A detailed presentation of this class and its action is explanation in Appendix \ref{apdx:MObject}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Implementing a Data Manager}\label{Implementing a Data Manager}
 The implementation and the integration of a new data manager is straight forward in our framework.
 As it can be seen in Figure \ref{fig:DataManager_and_MObject}, the basic components of a new data manager implementation are the \texttt{Data Manager} class (proxy) and the \texttt{MObject} class (invocation handler).
@@ -214,9 +257,9 @@ public class LockableDataManager extends BasicDataManager {
 
 	@Override
     public <T extends IFactory> T factory(
-    	Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
+    	Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
         // Add the Lockable class in order to use it in the managed object.
-        return super.factory(moSchemaFactoryClass, schema, Lockable.class);
+        return super.factory(factoryClass, schema, Lockable.class);
     }
 
 	@Override
@@ -473,7 +516,7 @@ public interface Primitives {
 The benefits of such a definition is that the \texttt{Primitives} interface is extensible.
 By extending it one can add more primitives in the schema as long as it is introduced during the schema loading.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation Issues}\label{Implementation Issues}
 The fact that we use Java reflection and dynamic proxies, along with the fact that everything is managed data, even the schemaSchema, introduces some issues, including the methods ordering problem described in Section \ref{Methods ordering}.
 

@@ -255,6 +255,72 @@ If they are proxied then they are also overridden by the proxy classes and invoc
 Other methods defined in \texttt{Object} are not overridden by proxy classes, as they are \texttt{final} \cite{eugster2006uniform}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section: JHotDraw
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{JHotDraw And AJHotDraw}\label{JHotDraw And AJHotDraw}
+JHotDraw\footnote{\url{http://www.jhotdraw.org/}} is a Java GUI framework for technical and structured graphics. 
+It is an open-source, well-designed and flexible drawing framework of around 18,000 non-comment lines of Java code. 
+JHotDraw's  design relies heavily on some well-known design patterns \cite{gamma1995design} and it is considered as a showcase for software quality techniques provided to the \ac{oop} community. 
+
+The fact that JHotDraw is praised for its design makes it an ideal candidate as a showcase for an aspect oriented migration. 
+Marin and Moonen \cite{marinajhotdraw} use this showcase for adoption of aspect-oriented techniques in existing systems. 
+In particular, they present AJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/AJHotDraw}}, which is an aspect-oriented version of JHotDraw developed in Java and AspectJ. 
+The goal of AJHotDraw is to take JHotDraw and migrate it to a functionally equivalent aspect-oriented version. 
+
+The authors presented a fan-in analysis of JHotDraw \cite{marin2004identifying} and implemented an idiom-driven approach to aspect-mining. 
+This way they could extract a number of aspects in JHotDraw. 
+Next, they performed a concern exploration in order to expand their mining results, leading to concern sorts.
+Concern sorts is a consistent way to address crosscutting concerns in source code \cite{marin2005classification}.
+This led to the identification and documentation of \ac{ccc} in JHotDraw, which helps the developers to identify \ac{ccc} in it.
+In order to tame the aspects in a more consistent and formal way, Marin et al. provided a list of \textit{template aspect} solutions for their concern sorts.
+Finally, they performed aspect refactoring of JHotDraw by presenting the AJHotDraw, which according to them, was the largest migration to aspects available to date.
+Their refactoring aimed at maintaining the conceptual integrity of the original design.
+
+In order to refactor the existing framework, the first thing that AJHotDraw developers needed to do was to create a test subproject for the JHotDraw, called TestJHotDraw\footnote{\url{http://swerl.tudelft.nl/bin/view/AMR/TestJHotDraw}}, which ensures behavioral equivalence between the original and the refactored solution. 
+Refactoring implies preserving the observable behavior of an application \cite{fowler2009refactoring} and since the developers of AJHotDraw ought to test their functionality, TestJHotDraw was created. 
+There are several contributions of the aspect-oriented implementation approach \cite{marinajhotdraw}. 
+The authors suggest that the project contributes to a gradual and safe adoption of aspect-oriented techniques in existing applications and allows for a better assessment of aspect orientation.
+
+In this thesis we have used JHotDraw and AJHotDraw in order to evaluate our aspect refactoring in managed data.
+However, TestJHotDraw is written in AspectJ, a language we did not want include in our project, and therefore it is not used.
+Instead, we used the JHotDraw original test suite, which consists of 1218 test cases, for our refactoring behavioral preservation.
+The aspect refactoring process is described in Chapter \ref{AspectRefactoring}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Refactoring of Crosscutting Concerns}\label{Refactoring of ccc}
+The refactoring of legacy code to aspect oriented code is also known as \textit{Aspect Refactoring} \cite{marin2005approach}. 
+During this process it is important to identify which elements are going to be refactored and which \textit{aspect} solutions will replace them. 
+To evaluate the refactored elements \cite{fowler2009refactoring}, a testing component is needed in order to ensure behavior conservation, hence some coherent criteria to organize \ac{ccc} are needed. 
+Marin, Moonen and Deursen \cite{marin2005approach} organize the \ac{ccc} into types, which are descriptions of similar concerns that share the following properties: 
+
+\begin{itemize}
+	\item A generic behavioral, design or policy requirement to describe the concern within a formalized, consistent context (e.g., role superimposition to modular units (classes), enforced consistent behavior, etc.),
+
+	\item An associated legacy implementation idiom in a given (non-aspect oriented) language (e.g., interface implementations, method calls, etc.)
+
+	\item An associated (desired) aspect language mechanism to support the modularization of the type's concerns (e.g., \texttt{pointcut} and \texttt{advice}, introduction, composition models).
+\end{itemize}
+
+\subsection{Role-based Refactoring}
+The authors present a \textit{role-based} refactoring, which consists of classifying the roles of the pattern in different aspects.
+The role-based refactoring approach helps the developer to transform a scattered implementation of \ac{ccc} into an equivalent but modular \ac{aop} implementation. 
+Both \ac{ccc} and refactoring are described in terms of roles. 
+
+According to the authors \cite{hannemann2005role}, the steps of role-based refactoring are the following:
+\begin{description}
+
+	\item [Selecting a \ac{ccc} refactoring:] The refactoring includes an abstract description of the \ac{ccc} it targets and a set of instructions to produce a modular AOP implementation of the refactoring (e.g. the Observer pattern \ac{ccc} refactoring).
+
+	\item [Stating a mapping:] Map role elements comprising the \ac{ccc} description to the program elements of the scattered code (e.g. the Subject and the Observer role to concrete classes)
+
+	\item [Planning the refactoring:] make the right choices for specific cases since a \ac{ccc} refactoring involves modifying several parts of a codebase (e.g. naming).
+
+	\item [Execution:] transform the code according to the refactoring instructions (e.g. modularizes Observer pattern as a result).
+\end{description}
+
+Thus, to refactor \ac{ccc} it is required a mapping from the abstract \ac{ccc} description to programming components that explicitly describe the \ac{ccc} implementation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Metrics
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Metrics}\label{Background Metrics}
@@ -297,7 +363,7 @@ The metrics proposed \cite{sant2003reuse} are grouped in four subsections (crite
 \paragraph{Cohesion}of a component is a measure of the closeness of the relationship between its internal components \cite{sommerville2004software}.
 	\begin{itemize}
 		\item \ac{lcoo}, measures the lack of cohesion of a component.
-		The metric is an extension of Chidamber and Kemerer's \cite{chidamber1994metrics} \ac{lcom} metric.
+		The metric is an extension ofChidamber and Kemerer's \cite{chidamber1994metrics} \ac{lcom} metric.
 		More specifically, it measures the amount of method / advice pairs which do not access the same instance variable.
 	\end{itemize}
 
@@ -317,3 +383,12 @@ The metrics proposed \cite{sant2003reuse} are grouped in four subsections (crite
 		\item \ac{woc}, measures the complexity of a component in terms of its operations.
 		This metric extends the Chidamber and Kemerer's \cite{chidamber1994metrics} \ac{wmc} metric for \ac{aop}.
 	\end{itemize}
+
+Garcia et al. \cite{garcia2003agents} present an overview of these metrics in terms of the Goal / Question / Metric (GQM) approach \cite{wohlin2012experimentation} \ac{lcom} can be seen in Figure \ref{fig:metrics_questions}.
+
+\begin{figure}[H]
+	\centering
+  	\includegraphics[width=.9\textwidth]{figures/metrics_questions.png}
+  	\caption{Metrics and Goal/Question/Metric approach \cite{garcia2003agents}}
+  	\label{fig:metrics_questions}
+\end{figure}

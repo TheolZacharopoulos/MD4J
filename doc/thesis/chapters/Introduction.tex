@@ -54,7 +54,7 @@ The problem with this approach is that the predefined data structuring mechanism
 In particular, those requirements are not properties that belong to a data structure definition, since, although it is easy to define them individually for every data type, that introduces a significant amount of duplicated and scattered code through the program.
 
 Consequently, in this thesis we implement managed data, which gives the programmers control over the data structuring mechanisms.
-In addition, it allows the programmer to define the strategies of \ac{ccc} just once as reusable modules.
+In addition, it allows the programmer to define the strategies of \ac{ccc} manipulation as reusable modules.
 
 % Cross cutting concerns
 \subsubsection{Crosscutting concerns}\label{Cross cutting concerns problem}
@@ -81,11 +81,10 @@ Thus, the aspects are tightly coupled to the application and this greatly affect
 Additionally, Steimann \cite{steimann2005domain} argues that modeling languages are not aspect ready. 
 The problem that arises is located at the level of software modeling. 
 More specifically, whereas in \ac{oop} roles are tied to the collaborations, in \textit{roles modeling} collaborations rely on interactions of objects and aspects are typically defined independently of one another.
-
 % Furthermore, in terms of order, it has been observed that aspects are not elements of the domain, they rather describe the order than the domain. 
 Finally, aspects invariably express non-functional requirements, but if the non-functional requirements are not elements of domain models then neither are aspects.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Questions}\label{Research Questions}
 Managed data has not been practically implemented in a static language before, which considered a challenge, therefore our first research questions states 
 \textit{``How to implemented managed data in a static language?''}.
@@ -94,7 +93,7 @@ Finally by using a software showcase, the JHotDraw framework, as well as its \ac
 we evaluate the implementation of managed data on an inventory of aspects. 
 As a result the third research question states \textit{``To what extent can managed data handle an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?''}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Solution Outline}\label{Solution Outline}
 Our solution consists of an implementation of managed data in Java.
 In particular, we have implemented a framework that can be used in order to implement managed data in Java.
@@ -119,14 +118,14 @@ We compared those aspects with the original version of JHotDraw, and the aspect 
 Since our solution is a refactoring of the JHotDraw framework we needed a way to ensure the behavioral equivalence between the original and the refactored solution \cite{fowler2009refactoring}.
 To archive that, we used the original JHotDraw test suite that consists of 1218 executable tests in total.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Method}\label{Research Method}
 In order to answer our research questions we studied the theoretical background, we examined our managed data implementation in Java and we evaluated our implementation in an existing use case system.
 
 \begin{description}
 
   \item[Managed data implementation in a static programming language.]
-  In order to answer the question if managed data could be implemented in a static language, we have implemented managed data in Java using Java's reflection API. 
+  In order to answer the question how to implement managed data in a static language, we have implemented managed data in Java using its reflection API. 
   An extensive presentation of the implementation is given in Chapter \ref{Implementation}.
 
   \item[Use case implementation.] 
@@ -151,16 +150,16 @@ In order to answer our research questions we studied the theoretical background,
   Additionally, the developer can define and implement aspects as reusable modules and introduce them in an application without mixing the business logic with the concern logic. 
   More specifically, the schemas and the data managers have to be defined by the developer, as well as any additional functionality that needs to be integrated to the patterns or roles of the application.
 
-  \item[Contribution 3: Managed Data Refactoring of JHotDraw.]
+  \item[Contribution 2: Managed Data Refactoring of JHotDraw.]
   We implemented a new version of the JHotDraw application using our framework in order to evaluate our refactoring of \ac{ccc}.
   More specifically, we focused on the \textit{Observer} pattern, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules, as well as the \textit{Undo} concern, which is part of a \textit{Command Pattern} and it is scattered through the modules that use this functionality.
 
-  \item[Contribution 4: JHotDraw Refactoring Evaluation.]
+  \item[Contribution 3: JHotDraw Refactoring Evaluation.]
   Finally, we evaluate our aspect refactoring by using a set of predefined metrics and comparing it in regard to the original version.
   In addition we present a set of modularity properties, which we discuss in relation to the \ac{aop} version.
 \end{description}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Related Work}\label{Related Work}
 In this section we discuss the related work of research that inspired this thesis.
 In particular, we discuss points that we followed and points that we have tried to improve as well as the reason of doing it.
@@ -168,9 +167,6 @@ In particular, we discuss points that we followed and points that we have tried 
 \begin{description}
 
   \item[Meta-Object Protocol]~\\
-  % Managed data can be implemented using reflection and the \ac{mop}. 
-  % The authors of Enso \cite{loh2012managed} implemented it in Ruby using the meta-programming framework and in particular, the \textit{method\_missing} mechanism. 
-  % In other languages (such as Java, JavaScript or C\#) that support dynamic proxies, they can be used for the managed data implementation, which is the way we have implemented it.
   The \ac{mop} \cite{kiczales1991art} was first implemented for simple \ac{oop} capabilities of the Lisp language in order to satisfy some developer demands including compatibility, extensibility and developers experimentation. 
   The idea was that the languages have been designed to be viewed as black box abstractions without giving the programmers the control over semantics or the implementation of those abstractions. 
   \ac{mop} opens up those abstractions to the programmer so he can adjust aspects of the implementation strategy. 
@@ -210,7 +206,7 @@ In particular, we discuss points that we followed and points that we have tried 
 
 \end{description}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Document Outline}\label{Document Outline}
 In this section we outline the structure of this thesis. 
 In Chapter \ref{Background} we introduce the background, focusing on the concepts, which the reader must be familiar with in order to follow the next chapters.
@@ -218,7 +214,4 @@ In Chapter \ref{Example Application} we demonstrate an example to show the capab
 In Chapter \ref{Implementation} the implementation of managed data in Java is presented and discussed, providing detailed explanation of our issues and implementation details.
 Next, in Chapter \ref{AspectRefactoring} a showcase is presented, by applying our implementation to refactor aspects in JHotDraw.
 In Chapter \ref{Evaluation} an evaluation of the aspect refactoring is illustrated.
-% Additionally, some metrics, claims and results are presented.
-Finally, a conclusion is given in Chapter \ref{Conclusion}. 
-% followed by further work in Chapter \ref{Further Work}.
 
