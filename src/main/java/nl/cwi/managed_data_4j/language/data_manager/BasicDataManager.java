@@ -1,5 +1,6 @@
 package nl.cwi.managed_data_4j.language.data_manager;
 
+import nl.cwi.managed_data_4j.language.IFactory;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
@@ -57,7 +58,7 @@ public class BasicDataManager implements IDataManager {
      * @return a new factory which creates managed objects.
      */
     @SuppressWarnings("unchecked")
-    public <T> T make() {
+    public <T extends IFactory> T make() {
         return (T) Proxy.newProxyInstance(
             moSchemaFactoryClass.getClassLoader(),
             new Class<?>[]{moSchemaFactoryClass},
