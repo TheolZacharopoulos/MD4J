@@ -35,7 +35,7 @@ Additionally, our work focuses on the aspects perspective and it provides a solu
 
 The most famous language implementation of \ac{aop} is the one provided by Kiczales et al. called AspectJ \cite{kiczales2001overview}. 
 Although AspectJ has been used by a number of projects, some of them with significant research results \cite{hannemann2002design} \cite{marinajhotdraw}, it includes all the trade-offs of \ac{aop}, which are presented in detail in Section \ref{Problem statement}.
-In this thesis we show how we use managed data in order to tame aspects and compare our findings with the original JHotDraw and an AspectJ show case, the AJHotDraw.
+In this thesis we show how we use managed data in order to handle aspects and compare our findings with the original JHotDraw and an AspectJ show case, the AJHotDraw.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Problem statement}\label{Problem statement}
@@ -91,7 +91,7 @@ Managed data has not been practically implemented in a static language before, w
 Based on the argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve the problem of crosscutting concerns?''}. 
 Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
 we evaluate the implementation of managed data on an inventory of aspects. 
-As a result the third research question states \textit{``To what extent can managed data tame an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?''}.
+As a result the third research question states \textit{``To what extent can managed data handle an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?''}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Solution Outline}\label{Solution Outline}
@@ -207,7 +207,7 @@ In particular, we discuss points that we followed and points that we have tried 
   Although \ac{aop} is not directly connected to managed data, it is a mechanism that is relatively easy to be supported in managed data.
   This mechanism consists of the \textit{weaving} of aspect code in specific join points. 
   The way to support this in managed data is through data managers. 
-  How to tame aspects in managed data is one of the topics in this thesis and is going to be presented extensively in the following chapters.
+  How to handle aspects in managed data is one of the topics in this thesis and is going to be presented extensively in the following chapters.
 
 \end{description}
 

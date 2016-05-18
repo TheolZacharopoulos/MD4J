@@ -18,12 +18,12 @@ For the implementation of managed data in Java, we used Java's reflection capabi
 
 \paragraph{Can managed data solve the problem of crosscutting concerns?}
 We argue that by using data managers, managed data can implement aspects of data in a modular way.
-As presented in both Chapters \ref{Example Application} and \ref{AspectRefactoring}, managed data can tame aspects and solve the problem of \acrlong{ccc}.
+As presented in both Chapters \ref{Example Application} and \ref{AspectRefactoring}, managed data can handle aspects and solve the problem of \acrlong{ccc}.
 Additionally, we have collected a set of metrics that assess our implementation in relation to the original.
 In this chapter we discuss the results of those metrics extensively.
 
-\paragraph{To what extent can managed data tame an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?}
-The results of our aspect refactoring in Chapter \ref{AspectRefactoring} show that managed data can tame aspects of JHotDraw. 
+\paragraph{To what extent can managed data handle an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?}
+The results of our aspect refactoring in Chapter \ref{AspectRefactoring} show that managed data can handle aspects of JHotDraw. 
 In addition, we claim that our solution extends some of the capabilities of the AJHotDraw implementation.
 However, in this chapter, we provide further evaluation of our aspect refactoring and we compare it with the \acrlong{aop} solution in terms of a list of ``modularity properties''.
 
@@ -155,7 +155,7 @@ However, in this case the methods related to the crosscutting functionality of u
 Additionally, in managed data the \texttt{UndoActivity} is not defined based on naming conventions like in AspectJ, but through a nested private class definition dedicated to the command-specific data manager.
 
 \section{Discussion}\label{Evaluation Discussion}
-Conclusively, managed data is able to successfully tame aspects in a system.
+Conclusively, managed data is able to successfully handle aspects in a system.
 However, the following issues should be acknowledged:
 
 \subsection{Modularity}
@@ -227,7 +227,7 @@ The internal and external validity of this thesis is satisfactory since our focu
 However, the AJHotDraw provides a more complete aspect refactoring of the original version.
 For instance, in the undo concern case, AJHotDraw refactors all of its instances inside JHotDraw. 
 % It separates the concerns removal on different levels of complexity, each of which has a different refactoring approach.
-In our case we only refactored a part of the undo concern, in order to show how our framework will tame this aspect; a limited approach when compared to AJHotDraw's holistic implementation.
+In our case we only refactored a part of the undo concern, in order to show how our framework will handle this aspect; a limited approach when compared to AJHotDraw's holistic implementation.
 % Metrics:
 We should keep in mind that the metrics we used have been introduced for both \ac{oop} and \ac{aop} systems.
 However, in this thesis we used them in managed data implementation. 

@@ -1,11 +1,11 @@
 % !TEX root = ../thesis.tex
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Aspect refactoring 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Taming Aspects of JHotDraw with managed data}\label{AspectRefactoring}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Aspects refactoring of JHotDraw}\label{AspectRefactoring}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Crosscutting Concerns Identification}
 Our managed data framework addresses the problem of \ac{ccc} by capturing them in modular data managers.
 Yet, to solve the problem of \ac{ccc} it is first required to identify them in the source code.
@@ -18,7 +18,7 @@ In this thesis we focused on their concern findings in refactoring JHotDraw.
 In particular, we focused on the \textit{FigureSelection}, concern, which is an observer pattern implementation.
 
 \section{Aspect Refactoring in Managed Data}
-In order to evaluate the ability of managed data to tame aspects, we have refactored the aforementioned concerns of JHotDraw.
+In order to evaluate the ability of managed data to handle aspects, we have refactored the aforementioned concerns of JHotDraw.
 More specifically, in this chapter we present the refactoring of the \textit{FigureSelectionListener} observer pattern.
 The choice of those concerns has been made on purpose, since those are the concerns that AJHotDraw refactors using AspectJ and \ac{aop} techniques.
 For the refactoring we used our implementation of managed data in Java, presented in the previous chapter.
