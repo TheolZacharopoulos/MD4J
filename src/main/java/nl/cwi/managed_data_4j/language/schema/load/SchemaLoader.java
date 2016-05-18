@@ -76,41 +76,34 @@ public class SchemaLoader {
      * Thus, we check if the Klass definition is given in schemaKlassesDef, and if not, then
      * we can the Klass definition from the schemaSchema itself.
      *
-     * @param schemaSchema the schemaSchema
      * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
      */
-    private static void setupCacheForSchemaKlass(Schema schemaSchema, List<Class<?>> schemaKlassesDef) {
+    private static void setupCacheForSchemaKlass(SchemaFactory schemaFactory, List<Class<?>> schemaKlassesDef) {
         boolean includesSchemaDef    = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Schema"));
-        boolean includesTypeDef      = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Type"));
         boolean includesPrimitiveDef = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Primitive"));
         boolean includesKlassDef     = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Klass"));
         boolean includesFieldDef     = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Field"));
 
         if (!includesSchemaDef) {
-            typesCache.put("Schema", schemaSchema.types().stream().filter(type -> type.name().equals("Schema")).findFirst().get());
-        }
-
-        if (!includesTypeDef) {
-            typesCache.put("Type", schemaSchema.types().stream().filter(type -> type.name().equals("Type")).findFirst().get());
+            typesCache.put("Schema", schemaFactory.Schema().schemaKlass());
         }
 
         if (!includesPrimitiveDef) {
-            typesCache.put("Primitive", schemaSchema.types().stream().filter(type -> type.name().equals("Primitive")).findFirst().get());
+            typesCache.put("Primitive", schemaFactory.Primitive().schemaKlass());
         }
 
         if (!includesKlassDef) {
-            typesCache.put("Klass", schemaSchema.types().stream().filter(type -> type.name().equals("Klass")).findFirst().get());
+            typesCache.put("Klass", schemaFactory.Klass().schemaKlass());
         }
 
         if (!includesFieldDef) {
-            typesCache.put("Field", schemaSchema.types().stream().filter(type -> type.name().equals("Field")).findFirst().get());
+            typesCache.put("Field", schemaFactory.Field().schemaKlass());
         }
     }
 
     /**
      * Convert from a schema definitions (interface) to an instance of Schema.
      * @param factory the factory which creates the schema
-     * @param schemaSchema the schemaSchema
      * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
      * @return the instance of Schema
      */
@@ -129,7 +122,7 @@ public class SchemaLoader {
         }
 
         // setup the cache for classes
-        setupCacheForSchemaKlass(schemaSchema, schemaKlasses);
+        setupCacheForSchemaKlass(factory, schemaKlasses);
 
         // create an empty schema using the factory, will wire it later
         final Schema schema = factory.Schema();
@@ -142,9 +135,7 @@ public class SchemaLoader {
         types.forEach(type -> type.schema(schema));
 
         // get the schema's schemaKlass
-        final Klass schemaSchemaKlass = schemaSchema.klasses().stream()
-            .filter(klass -> klass.name().equals("Schema"))
-            .findFirst().orElse(null);
+        final Klass schemaSchemaKlass = factory.Schema().schemaKlass();
 
         // wire the schema's schemaKlass
         schema.schemaKlass(schemaSchemaKlass);

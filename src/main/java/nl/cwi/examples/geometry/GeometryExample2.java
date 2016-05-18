@@ -43,7 +43,8 @@ public class GeometryExample2 {
         // The schemas are described by the SchemaSchema.
         // This schemaSchema is also self-describing.
         final Schema realSchemaSchema = SchemaLoader.load(
-            schemaFactory, bootstrapSchema, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
+            schemaFactory, bootstrapSchema,
+            Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
         DebugUtils.debugSchema(bootstrapSchema);
         System.out.println("=======================================");

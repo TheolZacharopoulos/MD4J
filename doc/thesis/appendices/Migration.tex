@@ -138,7 +138,7 @@ The code of the \texttt{MDStandardDrawingView} \textit{instances factory} is ill
 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-public interface DrawingViewSchemaFactory {
+public interface DrawingViewSchemaFactory extends IFactory {
 	MDStandardDrawingView DrawingView();
 	MDNullDrawingView NullDrawingView();
 }
@@ -257,10 +257,10 @@ public static MDDrawingView newSubjectRoleDrawingView(
 			JHotDrawPrimitives.class, MDStandardDrawingView.class);
 
 	FigureSelectionListenerSubjectRoleDataManager subjectRoleFactory =
-		new FigureSelectionListenerSubjectRoleDataManager(
-			DrawingViewSchemaFactory.class, drawingViewSchema);
+		new FigureSelectionListenerSubjectRoleDataManager();
 
-	DrawingViewSchemaFactory drawingViewSchemaFactory = subjectRoleFactory.make();
+	DrawingViewSchemaFactory drawingViewSchemaFactory = subjectRoleFactory.factory(
+			DrawingViewSchemaFactory.class, drawingViewSchema);
 
 	MDStandardDrawingView drawingView = drawingViewSchemaFactory.DrawingView();
 

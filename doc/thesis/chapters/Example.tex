@@ -125,7 +125,7 @@ Note that the method definitions work as \texttt{Constructors} of managed object
 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
-public interface StateMachineFactory {
+public interface StateMachineFactory extends IFactory {
 	Machine Machine();  		// constructor for Machine managed objects
 	State State(); 				// constructor for State managed objects
 	Transition Transition(); 	// constructor for Transition managed objects
@@ -139,7 +139,7 @@ public interface StateMachineFactory {
 \section{Basic Data Manager}
 As mentioned above, in order to interpret and manage the defined data we need data managers. 
 Our implementation includes the definition of a \texttt{Basic data manager} that is responsible of interpreting a schema definition to instances of \textit{managed object}s.
-Conclusively, in order to make a \textit{managed object}, the data manager needs its schema definition (the interfaces that define the schemas) and the schema factory (the interface that defines the constructors of the schemas).
+Conclusively, in order to make a \textit{managed object}, the data manager needs its schema definition (the interfaces that define the schemas) and the factory (the interface that defines the constructors of the schemas).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A simple program}
@@ -149,7 +149,7 @@ The definition of the door state machine is given in Listing \ref{lst:Door_state
 In practice, the basic data manager needs to provide us with mechanisms that interpret the managed object that based on \texttt{stateMachineSchema}, shown in Line \ref{line:state_meaning_full_code}.
 The basic data manager  also supports the field accessors of those data, namely, the setters and getters of their values.
 An basic interpreter for the state machine is shown in Line \ref{line:state_machine_interpreter}.
-As it can be seen, the schema factory is used to create managed objects.
+As it can be seen, the factory is used to create managed objects.
 The \textit{setup} of the fields is done automatically by the data manager who is responsible for the managed object interpretation.
 
 \begin{sourcecode}
@@ -159,8 +159,9 @@ public class StateMachineExample {
 		Schema schemaSchema = ...; |\label{line:state_schemaSchema}|
 		Schema stateMachineSchema = ....; |\label{line:state_schemaMachineSchema}|
 		BasicDataManager basicDataManager = 
-				new BasicDataManager(StateMachineFactory.class, stateMachineSchema);  |\label{line:state_meaning_full_code}|
-		StateMachineFactory stateMachineFactory = basicDataManager.make();
+				new BasicDataManager();  |\label{line:state_meaning_full_code}|
+		StateMachineFactory stateMachineFactory = 
+			basicDataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
 		Machine doorStateMachine = stateMachineFactory.Machine(); |\label{line:state_machine_creation_basic}|
 
@@ -251,10 +252,9 @@ The client code can be seen in Listing \ref{lst:StateMachineMonitoringConcerns}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-StateChangesDataManager stateChangesDataManager =
-	new StateChangesDataManager(
-		StateMachineFactory.class, stateMachineSchema);
-StateMachineFactory stateChangesMachineFactory = stateChangesDataManager.make();
+StateChangesDataManager stateChangesDataManager = new StateChangesDataManager();
+StateMachineFactory stateChangesMachineFactory = 
+	stateChangesDataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
 Machine doorStateMachine = stateChangesMachineFactory.Machine();
 
