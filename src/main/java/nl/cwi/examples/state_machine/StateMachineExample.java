@@ -23,7 +23,6 @@ public class StateMachineExample {
     public final static String UNLOCK_TRANSITION = "unlock_door";
 
     public static void main(String[] args) {
-        final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         final Schema stateMachineSchema =

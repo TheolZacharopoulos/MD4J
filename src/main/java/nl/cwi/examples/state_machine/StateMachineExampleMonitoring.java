@@ -1,5 +1,7 @@
 package nl.cwi.examples.state_machine;
 
+import nl.cwi.examples.ccconcerns.patterns.observer.Observable;
+import nl.cwi.examples.ccconcerns.patterns.observer.ObservableDataManager;
 import nl.cwi.examples.state_machine.data_managers.StateChangeManager;
 import nl.cwi.examples.state_machine.data_managers.StateChangesDataManager;
 import nl.cwi.examples.state_machine.schemas.Machine;
@@ -27,7 +29,6 @@ public class StateMachineExampleMonitoring {
     public final static String UNLOCK_TRANSITION = "unlock_door";
 
     public static void main(String[] args) {
-        final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         final Schema stateMachineSchema =
@@ -37,25 +38,21 @@ public class StateMachineExampleMonitoring {
 
         // ========================================================
         // State Machine monitoring
-        final StateChangesDataManager stateChangesDataManager =
-                new StateChangesDataManager();
-        final StateMachineFactory stateChangesMachineFactory = stateChangesDataManager.factory(StateMachineFactory.class, stateMachineSchema);
+        final ObservableDataManager observableDataManager = new ObservableDataManager();
+        final StateMachineFactory stateChangesMachineFactory =
+                observableDataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
         // ========================================================
         // Door State Machine definition, with state changes data manager
         final Machine doorStateMachine = stateChangesMachineFactory.Machine();
 
-        // Add Monitoring concerns
-        ((StateChangeManager) doorStateMachine)
-                .addStateChangeAction(
-                    (newState) -> System.out.println(" > State changed to " + newState.name()),
-                    (name, value) -> "current".equals(name));
-
-        ((StateChangeManager) doorStateMachine)
-                .addStateChangeAction(
-                    (newState) -> System.err.println("Someone just opened the door!"),
-                    (name, newState) -> "current".equals(name) &&
-                        newState.name().equals(StateMachineExampleMonitoring.OPEN_STATE));
+        // Add logging concern
+        ((Observable) doorStateMachine)
+            .observe((obj, fieldName, newValue) -> {
+                if (fieldName.equals("current")) {
+                    System.out.println(" > State changed to " + ((State)newValue).name());
+                }
+            });
 
         // Open State definition
         final State openState = stateMachineFactory.State(OPEN_STATE);
