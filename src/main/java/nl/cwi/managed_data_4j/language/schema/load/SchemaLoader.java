@@ -76,34 +76,41 @@ public class SchemaLoader {
      * Thus, we check if the Klass definition is given in schemaKlassesDef, and if not, then
      * we can the Klass definition from the schemaSchema itself.
      *
+     * @param schemaSchema the schemaSchema
      * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
      */
-    private static void setupCacheForSchemaKlass(SchemaFactory schemaFactory, List<Class<?>> schemaKlassesDef) {
+    private static void setupCacheForSchemaKlass(Schema schemaSchema, List<Class<?>> schemaKlassesDef) {
         boolean includesSchemaDef    = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Schema"));
+        boolean includesTypeDef      = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Type"));
         boolean includesPrimitiveDef = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Primitive"));
         boolean includesKlassDef     = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Klass"));
         boolean includesFieldDef     = schemaKlassesDef.stream().anyMatch(aClass -> aClass.getSimpleName().equals("Field"));
 
         if (!includesSchemaDef) {
-            typesCache.put("Schema", schemaFactory.Schema().schemaKlass());
+            typesCache.put("Schema", schemaSchema.types().stream().filter(type -> type.name().equals("Schema")).findFirst().get());
+        }
+
+        if (!includesTypeDef) {
+            typesCache.put("Type", schemaSchema.types().stream().filter(type -> type.name().equals("Type")).findFirst().get());
         }
 
         if (!includesPrimitiveDef) {
-            typesCache.put("Primitive", schemaFactory.Primitive().schemaKlass());
+            typesCache.put("Primitive", schemaSchema.types().stream().filter(type -> type.name().equals("Primitive")).findFirst().get());
         }
 
         if (!includesKlassDef) {
-            typesCache.put("Klass", schemaFactory.Klass().schemaKlass());
+            typesCache.put("Klass", schemaSchema.types().stream().filter(type -> type.name().equals("Klass")).findFirst().get());
         }
 
         if (!includesFieldDef) {
-            typesCache.put("Field", schemaFactory.Field().schemaKlass());
+            typesCache.put("Field", schemaSchema.types().stream().filter(type -> type.name().equals("Field")).findFirst().get());
         }
     }
 
     /**
      * Convert from a schema definitions (interface) to an instance of Schema.
      * @param factory the factory which creates the schema
+     * @param schemaSchema the schemaSchema
      * @param schemaKlassesDef the schemas definitions (interfaces) to be converted.
      * @return the instance of Schema
      */
@@ -122,7 +129,7 @@ public class SchemaLoader {
         }
 
         // setup the cache for classes
-        setupCacheForSchemaKlass(factory, schemaKlasses);
+        setupCacheForSchemaKlass(schemaSchema, schemaKlasses);
 
         // create an empty schema using the factory, will wire it later
         final Schema schema = factory.Schema();
@@ -135,7 +142,9 @@ public class SchemaLoader {
         types.forEach(type -> type.schema(schema));
 
         // get the schema's schemaKlass
-        final Klass schemaSchemaKlass = factory.Schema().schemaKlass();
+        final Klass schemaSchemaKlass = schemaSchema.klasses().stream()
+                .filter(klass -> klass.name().equals("Schema"))
+                .findFirst().orElse(null);
 
         // wire the schema's schemaKlass
         schema.schemaKlass(schemaSchemaKlass);
@@ -200,7 +209,7 @@ public class SchemaLoader {
 
             System.out.println("> SchemaFactory: create klass " + klassName);
             final Map<String, Field> fieldsForKlass =
-                buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
+                    buildFieldsFromMethods(klassName, factory, schemaKlassDefinition, allFieldsWithReturnType);
 
             // create a new klass
             final Klass klass = factory.Klass();
@@ -346,9 +355,9 @@ public class SchemaLoader {
      * @param allFieldsWithReturnType all the created fields
      */
     private static void wireFieldTypes(
-        SchemaFactory factory,
-        Schema schema,
-        Map<String, FieldWithMethod> allFieldsWithReturnType)
+            SchemaFactory factory,
+            Schema schema,
+            Map<String, FieldWithMethod> allFieldsWithReturnType)
     {
         for (String klassNameFieldNameCombo : allFieldsWithReturnType.keySet()) {
             final Method method = allFieldsWithReturnType.get(klassNameFieldNameCombo).method;
@@ -403,15 +412,15 @@ public class SchemaLoader {
      */
     private static void wireKlassSupers(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
         types.keySet().stream()
-            .filter(type -> type.schemaKlass().name().equals("Klass"))
-            .map(Klass.class::cast)
-            .forEach(klass -> {
-                final TypeWithClass typeWithClass = types.get(klass);
-                final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
-                if (superKlasses.size() > 0 && superKlasses.toArray()[0] != null) {
-                    klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
-                }
-            });
+                .filter(type -> type.schemaKlass().name().equals("Klass"))
+                .map(Klass.class::cast)
+                .forEach(klass -> {
+                    final TypeWithClass typeWithClass = types.get(klass);
+                    final Set<Klass> superKlasses = buildSupers(typeWithClass.clazz, cache);
+                    if (superKlasses.size() > 0 && superKlasses.toArray()[0] != null) {
+                        klass.supers(superKlasses.toArray(new Klass[superKlasses.size()]));
+                    }
+                });
     }
 
     /**
@@ -421,16 +430,16 @@ public class SchemaLoader {
      */
     private static void wireKlassSubs(Map<Type, TypeWithClass> types, Map<String, Type> cache) {
         types.keySet().stream()
-            .filter(type -> type.schemaKlass().name().equals("Klass"))
-            .map(Klass.class::cast)
-            .forEach(klass -> {
-                final TypeWithClass typeWithClass = types.get(klass);
-                final Set<Klass> subKlasses = buildSubs(typeWithClass.clazz, cache);
-                if (subKlasses.size() > 0) {
-                    final Klass[] subsToArray = subKlasses.toArray(new Klass[subKlasses.size()]);
-                    klass.subKlasses(subsToArray);
-                }
-            });
+                .filter(type -> type.schemaKlass().name().equals("Klass"))
+                .map(Klass.class::cast)
+                .forEach(klass -> {
+                    final TypeWithClass typeWithClass = types.get(klass);
+                    final Set<Klass> subKlasses = buildSubs(typeWithClass.clazz, cache);
+                    if (subKlasses.size() > 0) {
+                        final Klass[] subsToArray = subKlasses.toArray(new Klass[subKlasses.size()]);
+                        klass.subKlasses(subsToArray);
+                    }
+                });
     }
 
     /**
@@ -479,7 +488,7 @@ public class SchemaLoader {
                 final String fieldForSearchOwnerName = fieldForSearch.owner().name();
 
                 if  (fieldForSearchName.equals(fieldInverseFieldName) &&
-                     fieldForSearchOwnerName.equals(inverseOtherName))
+                        fieldForSearchOwnerName.equals(inverseOtherName))
                 {
                     fieldInverseField = fieldForSearch;
                     break;
@@ -543,8 +552,8 @@ public class SchemaLoader {
 
                 for (Klass superKlass : subKlass.supers()) {
                     if (superKlass != null &&
-                        superKlass.name() != null &&
-                        superKlass.name().equals(schemaKlassDefinition.getSimpleName()))
+                            superKlass.name() != null &&
+                            superKlass.name().equals(schemaKlassDefinition.getSimpleName()))
                     {
                         subs.add(subKlass);
                     }
