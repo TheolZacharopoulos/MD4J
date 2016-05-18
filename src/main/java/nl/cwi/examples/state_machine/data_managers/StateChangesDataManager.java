@@ -9,8 +9,8 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 public class StateChangesDataManager extends BasicDataManager {
 
     @Override
-    public <T extends IFactory> T factory(Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
-        return super.factory(moSchemaFactoryClass, schema, StateChangeManager.class);
+    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
+        return super.factory(factoryClass, schema, StateChangeManager.class);
     }
 
     @Override

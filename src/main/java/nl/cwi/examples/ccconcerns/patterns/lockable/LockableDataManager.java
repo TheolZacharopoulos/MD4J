@@ -9,9 +9,9 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 public class LockableDataManager extends BasicDataManager {
 
     @Override
-    public <T extends IFactory> T factory(Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
+    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
         // Add the Lockable class in order to use it in the managed object.
-        return super.factory(moSchemaFactoryClass, schema, Lockable.class);
+        return super.factory(factoryClass, schema, Lockable.class);
     }
 
     @Override

@@ -27,30 +27,30 @@ public class BasicDataManager implements IDataManager {
      * the data manager interprets the schema, and returns a Proxied Factory
      * that creates Managed Objects which are described with that schema.
      *
-     * @param moSchemaFactoryClass the Class of the Schema-Factory.
+     * @param factoryClass the Class of the Schema-Factory.
      * @param schema the schema of the managed object which will be built.
-     * @param proxiedInterfaces (Optional) extra proxied Interfaces which will be attached to
+     * @param proxyInterfaces (Optional) extra proxied Interfaces which will be attached to
      *                          the Dynamic proxy of the managed object.
      * @return a new factory which creates managed objects.
      */
     @SuppressWarnings("unchecked")
-    public <T extends IFactory> T factory(Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) {
+    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
 
         // add the extra proxied interfaces
-        for (Class<?> proxiedInterface : proxiedInterfaces) {
+        for (Class<?> proxiedInterface : proxyInterfaces) {
             this.addProxiedInterface(proxiedInterface);
         }
 
         // add the klass interfaces of the schema
-        schema.klasses().stream()
-            .map(Klass::classOf)
-            .forEach(this::addProxiedInterface);
+        for (Klass klass : schema.klasses()) {
+            this.addProxiedInterface(klass.classOf());
+        }
 
         return (T) Proxy.newProxyInstance(
-            moSchemaFactoryClass.getClassLoader(),
-            new Class<?>[]{moSchemaFactoryClass},
+            factoryClass.getClassLoader(),
+            new Class<?>[]{factoryClass},
             (proxy, method, args) ->
-                createProxiedManagedObject(moSchemaFactoryClass, schema, method, args)
+                createProxiedManagedObject(factoryClass, schema, method, args)
         );
     }
 
@@ -58,7 +58,7 @@ public class BasicDataManager implements IDataManager {
      * Proxies a managed object. The reason of using a proxy here is to add methods
      * on the returned object since Java does not support dynamic method attachment.
      *
-     * @param moSchemaFactoryClass the Class of the Schema-Factory.
+     * @param factoryClass the Class of the IFactory.
      * @param schema the schema of the managed object which will be built.
      * @param schemaFactoryCallingMethod the method that is called to the schema factory
      *                                    in order to create a managed object instance.
@@ -67,7 +67,7 @@ public class BasicDataManager implements IDataManager {
      * @return a new Proxied ManagedObject.
      */
     protected Object createProxiedManagedObject(
-            Class<?> moSchemaFactoryClass, Schema schema, Method schemaFactoryCallingMethod, Object... inits)
+            Class<?> factoryClass, Schema schema, Method schemaFactoryCallingMethod, Object... inits)
     {
         final Class<?> schemaFactoryCallingMethodClass = schemaFactoryCallingMethod.getReturnType();
         final ClassLoader schemaFactoryCallingMethodClassLoader = schemaFactoryCallingMethodClass.getClassLoader();
@@ -78,7 +78,7 @@ public class BasicDataManager implements IDataManager {
             .findFirst()
             .orElseThrow(() -> new RuntimeException(
             "Error on klass extraction of class (" + schemaFactoryCallingMethodClass.getSimpleName() + ") " +
-            "from factory (" + moSchemaFactoryClass.getSimpleName() + ")"));
+            "from factory (" + factoryClass.getSimpleName() + ")"));
 
         final MObject managedObject = this.createManagedObject(schemaKlass, inits);
 

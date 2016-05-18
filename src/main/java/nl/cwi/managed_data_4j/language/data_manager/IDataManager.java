@@ -8,5 +8,5 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
  * @author Theologos Zacharopoulos
  */
 public interface IDataManager {
-    <T extends IFactory> T factory(Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces);
+    <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces);
 }
