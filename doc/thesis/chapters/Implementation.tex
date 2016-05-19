@@ -92,9 +92,11 @@ In those definitions the above concepts can be recognized and their meaning can 
 However, even if we have the definitions of schemas, we still need a way to create instances of managed data described by them.
 We can not use Java's mechanisms\footnote{\texttt{new} keyword} for this functionality since we need them to be managed data and not ordinary objects.
 Thus, we use Java interfaces to define instance factories.
-An \texttt{IFactory} is a list of \textit{constructor definitions} for specific schemas.
+An \texttt{IFactory} interface extension is a list of \textit{constructor definitions} for specific schemas.
+% #Important
+The \texttt{IFactory} interface is an empty interface that is used for documentation and semantics manner.
 
-The methods in this interface are used similarly to the constructors in a Java class, while their implementation is handled by the data managers.
+The methods in the interfaces that extend \texttt{IFactory} are used similarly to the constructors in a Java class, while their implementation is handled by the data managers.
 Since those methods are constructors, we can define a constructor with or without initial values.
 Unfortunately, we have encountered a limitation regarding constructors with initialization values, making them inappropriate to use in complicated schemas.
 
@@ -177,10 +179,10 @@ In addition the \texttt{createManagedObjectProxy} is also \texttt{protected} in 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public <T extends IFactory> T factory(
-	Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) 
+	Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) 
 {
 	// add the extra proxy interfaces
-	for (Class<?> proxyInterface : proxyInterfaces) {
+	for (Class<?> proxyInterface : additionalInterfaces) {
 		this.addProxyInterface(proxyInterface);
 	}
 
@@ -202,7 +204,7 @@ protected Object createManagedObjectProxy(...) {
 	MObject managedObject = createManagedObject(schemaKlass, inits); // invoc handler
 	return Proxy.newProxyInstance(
 		schemaFactoryCallingMethodClassLoader, // schema constructor
-		proxiedInterfaces.toArray(new Class[proxyInterfaces.size()]),
+		proxiedInterfaces.toArray(new Class[additionalInterfaces.size()]),
 		managedObject
 	);
 }
@@ -258,7 +260,7 @@ public class LockableDataManager extends BasicDataManager {
 
 	@Override
     public <T extends IFactory> T factory(
-    	Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
+    	Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
         // Add the Lockable class in order to use it in the managed object.
         return super.factory(factoryClass, schema, Lockable.class);
     }

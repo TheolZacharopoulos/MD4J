@@ -8,8 +8,8 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 public class TestDataManager extends BasicDataManager {
 
     @Override
-    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
-        return super.factory(factoryClass, schema, proxyInterfaces);
+    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
+        return super.factory(factoryClass, schema, additionalInterfaces);
     }
 
     @Override

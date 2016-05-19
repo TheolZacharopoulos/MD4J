@@ -9,7 +9,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 public class ObservableDataManager extends BasicDataManager {
 
     @Override
-    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
+    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
         // Add the Observable class in order to use it in the managed object.
         return super.factory(factoryClass, schema, Observable.class);
     }

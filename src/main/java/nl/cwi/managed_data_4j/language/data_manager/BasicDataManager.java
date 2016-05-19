@@ -18,7 +18,7 @@ import java.util.Set;
 public class BasicDataManager implements IDataManager {
 
     // we need those in order to add the to the java Proxy.
-    private Set<Class<?>> proxyInterfaces = new LinkedHashSet<>();
+    private Set<Class<?>> additionalInterfaces = new LinkedHashSet<>();
 
     /**
      * Used to build data managers which build managed objects.
@@ -29,15 +29,15 @@ public class BasicDataManager implements IDataManager {
      *
      * @param factoryClass the Class of the Schema-Factory.
      * @param schema the schema of the managed object which will be built.
-     * @param proxyInterfaces (Optional) extra proxy Interfaces which will be attached to
+     * @param additionalInterfaces (Optional) extra proxy Interfaces which will be attached to
      *                          the Dynamic proxy of the managed object.
      * @return a new factory which creates managed objects.
      */
     @SuppressWarnings("unchecked")
-    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
+    public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
 
         // add the extra proxy interfaces
-        for (Class<?> proxyInterface : proxyInterfaces) {
+        for (Class<?> proxyInterface : additionalInterfaces) {
             this.addProxiedInterface(proxyInterface);
         }
 
@@ -85,7 +85,7 @@ public class BasicDataManager implements IDataManager {
 
         final Object proxyManagedObject = Proxy.newProxyInstance(
                 schemaFactoryCallingMethodClassLoader,   // the class loader of the return type of the called method of the schema factory.
-                proxyInterfaces.toArray(new Class[proxyInterfaces.size()]),  // the interfaces that the Proxy will proxy.
+                additionalInterfaces.toArray(new Class[additionalInterfaces.size()]),  // the interfaces that the Proxy will proxy.
                 managedObject  // proxy it to a new Managed Object
         );
 
@@ -115,7 +115,7 @@ public class BasicDataManager implements IDataManager {
      */
     private void addProxiedInterface(Class<?> newInterface) {
         if (newInterface != null && !PrimitivesManager.getInstance().isPrimitiveClass(newInterface)) {
-            proxyInterfaces.add(newInterface);
+            additionalInterfaces.add(newInterface);
         }
     }
 }

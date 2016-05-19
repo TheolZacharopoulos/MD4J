@@ -134,6 +134,7 @@ public class SchemaLoader {
         // it is inverse so it will refer to schema.types() directly
         types.forEach(type -> type.schema(schema));
 
+        //TODO: remove
         // get the schema's schemaKlass
         final Klass schemaSchemaKlass = factory.Schema().schemaKlass();
 
