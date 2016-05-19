@@ -18,7 +18,7 @@ import java.util.Set;
 public class BasicDataManager implements IDataManager {
 
     // we need those in order to add the to the java Proxy.
-    private Set<Class<?>> proxiedInterfaces = new LinkedHashSet<>();
+    private Set<Class<?>> proxyInterfaces = new LinkedHashSet<>();
 
     /**
      * Used to build data managers which build managed objects.
@@ -29,16 +29,16 @@ public class BasicDataManager implements IDataManager {
      *
      * @param factoryClass the Class of the Schema-Factory.
      * @param schema the schema of the managed object which will be built.
-     * @param proxyInterfaces (Optional) extra proxied Interfaces which will be attached to
+     * @param proxyInterfaces (Optional) extra proxy Interfaces which will be attached to
      *                          the Dynamic proxy of the managed object.
      * @return a new factory which creates managed objects.
      */
     @SuppressWarnings("unchecked")
     public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) {
 
-        // add the extra proxied interfaces
-        for (Class<?> proxiedInterface : proxyInterfaces) {
-            this.addProxiedInterface(proxiedInterface);
+        // add the extra proxy interfaces
+        for (Class<?> proxyInterface : proxyInterfaces) {
+            this.addProxiedInterface(proxyInterface);
         }
 
         // add the klass interfaces of the schema
@@ -50,12 +50,13 @@ public class BasicDataManager implements IDataManager {
             factoryClass.getClassLoader(),
             new Class<?>[]{factoryClass},
             (proxy, method, args) ->
-                createProxiedManagedObject(factoryClass, schema, method, args)
+                createManagedObjectProxy(factoryClass, schema, method, args)
         );
     }
 
     /**
-     * Proxies a managed object. The reason of using a proxy here is to add methods
+     * Creates a proxy for a managed object.
+     * The reason of using a proxy here is to add methods
      * on the returned object since Java does not support dynamic method attachment.
      *
      * @param factoryClass the Class of the IFactory.
@@ -66,7 +67,7 @@ public class BasicDataManager implements IDataManager {
      *
      * @return a new Proxied ManagedObject.
      */
-    protected Object createProxiedManagedObject(
+    protected Object createManagedObjectProxy(
             Class<?> factoryClass, Schema schema, Method schemaFactoryCallingMethod, Object... inits)
     {
         final Class<?> schemaFactoryCallingMethodClass = schemaFactoryCallingMethod.getReturnType();
@@ -82,16 +83,16 @@ public class BasicDataManager implements IDataManager {
 
         final MObject managedObject = this.createManagedObject(schemaKlass, inits);
 
-        final Object proxiedManagedObject = Proxy.newProxyInstance(
+        final Object proxyManagedObject = Proxy.newProxyInstance(
                 schemaFactoryCallingMethodClassLoader,   // the class loader of the return type of the called method of the schema factory.
-                proxiedInterfaces.toArray(new Class[proxiedInterfaces.size()]),  // the interfaces that the Proxy will proxy.
+                proxyInterfaces.toArray(new Class[proxyInterfaces.size()]),  // the interfaces that the Proxy will proxy.
                 managedObject  // proxy it to a new Managed Object
         );
 
         // wire the proxy object.
-        managedObject.setProxy(proxiedManagedObject);
+        managedObject.setProxy(proxyManagedObject);
 
-        return proxiedManagedObject;
+        return proxyManagedObject;
     }
 
     /**
@@ -107,14 +108,14 @@ public class BasicDataManager implements IDataManager {
     }
 
     /**
-     * Helper to add new proxied interfaces, this is needed in case we need a new interface
-     * to be proxied on the Managed Object.
+     * Helper to add new proxy interfaces, this is needed in case we need a new interface
+     * to be proxy on the Managed Object.
      *
-     * @param newInterface the interface to be added in the proxied interfaces list.
+     * @param newInterface the interface to be added in the proxy interfaces list.
      */
     private void addProxiedInterface(Class<?> newInterface) {
         if (newInterface != null && !PrimitivesManager.getInstance().isPrimitiveClass(newInterface)) {
-            proxiedInterfaces.add(newInterface);
+            proxyInterfaces.add(newInterface);
         }
     }
 }

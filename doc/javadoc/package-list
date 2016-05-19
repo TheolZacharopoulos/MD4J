@@ -6,10 +6,11 @@ nl.cwi.examples.geometry
 nl.cwi.examples.geometry.schemas
 nl.cwi.examples.schema_schema
 nl.cwi.examples.state_machine
-nl.cwi.examples.state_machine.concerns
+nl.cwi.examples.state_machine.data_managers
 nl.cwi.examples.state_machine.schemas
 nl.cwi.managed_data_4j
 nl.cwi.managed_data_4j.framework
+nl.cwi.managed_data_4j.language
 nl.cwi.managed_data_4j.language.data_manager
 nl.cwi.managed_data_4j.language.managed_object
 nl.cwi.managed_data_4j.language.managed_object.managed_object_field
