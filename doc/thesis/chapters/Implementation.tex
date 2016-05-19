@@ -172,36 +172,37 @@ As it can be seen the data manager is a \textit{factory} that has a single expos
 
 The two level \textit{proxing} process that the \texttt{DataManager} class performs, from the basic data manager to IFactory and then to MObject, can be seen in Listing \ref{lst:Basic Data Manager}.
 Note that the \texttt{createManagedObject} is \texttt{protected} for the sub data managers to override it in order to create MObjects of preference.
+In addition the \texttt{createManagedObjectProxy} is also \texttt{protected} in case the programmers wants to to extend the proxy creation.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public <T extends IFactory> T factory(
 	Class<T> factoryClass, Schema schema, Class<?>... proxyInterfaces) 
 {
-	// add the extra proxied interfaces
-	for (Class<?> proxiedInterface : proxyInterfaces) {
-		this.addProxiedInterface(proxiedInterface);
+	// add the extra proxy interfaces
+	for (Class<?> proxyInterface : proxyInterfaces) {
+		this.addProxyInterface(proxyInterface);
 	}
 
 	// add the klass interfaces of the schema
 	for (Klass klass : schema.klasses()) {
-		this.addProxiedInterface(klass.classOf());
+		this.addProxyInterface(klass.classOf());
 	}
 
 	return (T) Proxy.newProxyInstance(
 		factoryClass.getClassLoader(),
 		new Class<?>[]{factoryClass},
 		(proxy, method, args) -> // invocation handler
-			createProxiedManagedObject(factoryClass, schema, method, args) // mobject
+			createManagedObjectProxy(factoryClass, schema, method, args) // mobject
 		);
 }
 
-protected Object createProxiedManagedObject(...) {
+protected Object createManagedObjectProxy(...) {
 	//...
-	final MObject managedObject = createManagedObject(schemaKlass, inits);
+	MObject managedObject = createManagedObject(schemaKlass, inits); // invoc handler
 	return Proxy.newProxyInstance(
-		schemaFactoryCallingMethodClassLoader,
-		proxiedInterfaces.toArray(new Class[proxiedInterfaces.size()]),
+		schemaFactoryCallingMethodClassLoader, // schema constructor
+		proxiedInterfaces.toArray(new Class[proxyInterfaces.size()]),
 		managedObject
 	);
 }
