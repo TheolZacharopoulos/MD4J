@@ -88,6 +88,12 @@ Schema definition examples are presented in Chapter \ref{Example Application} Li
 In those definitions the above concepts can be recognized and their meaning can be revealed in context.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The M interface}\label{M}
+In order to declare that an interface is a schema definition, this interface has to extend the \texttt{M} interface.
+This interface defines a single method \texttt{schemaKlass}, which refers to the \texttt{Klass} that an object is described with.
+This \texttt{Klass} is used by the interpreter in order to get the structural description of a managed object. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{IFactories}\label{IFactories}
 However, even if we have the definitions of schemas, we still need a way to create instances of managed data described by them.
 We can not use Java's mechanisms\footnote{\texttt{new} keyword} for this functionality since we need them to be managed data and not ordinary objects.
@@ -158,6 +164,7 @@ A data manager has the ability to determine the fields and methods of the manage
 In addition, when the data manager adds functionality on a managed object then it first delegates the calls to its specifications and then to the fields of an instance.
 In order to dynamically interpret a schema inside a data manager and delegate its functionalities, we used Dynamic Proxies.
 
+\paragraph{Two proxies process} \mbox{}\\
 In our implementation we have separated the Proxy factory (\texttt{DataManager}) from the Invocation Handler (\texttt{MObject}).
 This way, the \texttt{DataManager} class is responsible for creating proxy instances of \texttt{IFactories}. 
 The \texttt{IFactory} creates proxy instances with the \texttt{MObject} class instances as invocation handlers.
@@ -252,6 +259,9 @@ As it can be seen in Figure \ref{fig:DataManager_and_MObject}, the basic compone
 First, to follow the modularity aspect and the ability to stack data managers together combining their specifications, we need to inherit from, at least, the \texttt{BasicDataManager} and its \texttt{MObject} respectively.
 A simple data manager that could be useful is a data manager that introduces immutability to its managed objects.
 A \texttt{Lockable} data manager should first inherit the \texttt{BasicDataManager} to get its field access specification.
+Additionally, it has to add the \texttt{Lockable.class} into its \texttt{additionalInterfaces} List.
+This list is responsible of keeping interfaces that are going to be added to the proxy instance creation.
+This way an instance of a proxy can be ``casted'' to any of these interfaces, in this case the managed object can be casted to \texttt{Lockable}.
 The implementation of the \texttt{LockableDataManager} is illustrated in \ref{lst:Lockable Data Manager}.
 
 \begin{sourcecode} [H]
