@@ -1,5 +1,6 @@
 package nl.cwi.examples.geometry;
 
+import nl.cwi.examples.ccconcerns.patterns.observer.lockable_observable.LockableObservableDataManager;
 import nl.cwi.examples.geometry.schemas.Line;
 import nl.cwi.examples.geometry.schemas.Point;
 import nl.cwi.examples.geometry.schemas.Point2D;
@@ -88,7 +89,7 @@ public class GeometryExample {
         lockablePoint.y(1);
 
         // It was mutable until now, now it is locked (immutable).
-        ((Lockable)lockablePoint).lock();
+        ((Lockable) lockablePoint).lock();
 
         try {
             lockablePoint.x(2); // Should throw here since its immutable.
@@ -96,6 +97,34 @@ public class GeometryExample {
             System.out.println("IllegalAccessError: " + e.getMessage());
         }
         System.out.println(lockablePoint.x());
+
+        // =========================== Lockable Observable ===================================
+        System.out.println("=============");
+        System.out.println("Lockable Observable: ");
+
+        final LockableObservableDataManager lockableObservableDataManager = new LockableObservableDataManager();
+        final PointFactory lockableObservablePointFactory =
+                lockableObservableDataManager.factory(PointFactory.class, pointSchema);
+
+        final Point2D lockableObservablePoint = lockableObservablePointFactory.Point2D();
+
+        // Add Logging concerns
+        ((Observable) lockableObservablePoint).observe(UpdateLogger::log);
+
+        lockableObservablePoint.x(555);
+        lockableObservablePoint.y(666);
+        lockableObservablePoint.x(lockableObservablePoint.x() + lockableObservablePoint.y());
+        System.out.println(lockableObservablePoint.x() + lockableObservablePoint.y());
+
+        // Add immutability concern
+        ((Lockable)lockableObservablePoint).lock();
+        try {
+            lockableObservablePoint.x(2); // Should throw here since its immutable.
+        } catch (IllegalAccessError e) {
+            System.out.println("IllegalAccessError: " + e.getMessage());
+        }
+        System.out.println(lockableObservablePoint.x());
+
 
         System.exit(0);
     }
