@@ -156,12 +156,12 @@ The \textit{setup} of the fields is done automatically by the data manager who i
 	\begin{lstlisting}[language=Java, escapechar=|]
 public class StateMachineExample {
 	public static void main(String[] args) {
-		SchemaFactory schemaFactory = ...;
-		Schema stateMachineSchema = SchemaLoader
+		SchemaFactory schemaFactory = ...; // get schemaFactory from framework
+		Schema stateMachineSchema = SchemaLoader // load state machine schema
 			.load(schemaFactory, Machine.class, State.class, Transition.class); |\label{line:state_schemaMachineSchema}|
 
 		BasicDataManager basicDataManager = new BasicDataManager(); |\label{line:state_meaning_full_code}|
-		StateMachineFactory stateMachineFactory = 
+		StateMachineFactory stateMachineFactory = // create factory with data manager
 			basicDataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
 		Machine doorStateMachine = stateMachineFactory.Machine(); |\label{line:state_machine_creation_basic}|
@@ -379,8 +379,8 @@ The basic data manager allows to solely build managed objects, but the observabl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Combine crosscutting concern}
-One of managed data main characteristics is that it allows to define reusable aspects but also to combine them independently.
-The concerns do not know about each other while a new data manager can combine them.
+One of the main characteristics of managed data is that it allows to define reusable aspects but also to combine them independently.
+The concerns are not aware of each other; however, a new data manager can combine them.
 An example of this can be shown in Figure \ref{fig:concerns_combination}.
 
 \begin{figure}[H]
@@ -419,7 +419,7 @@ final Machine doorStateMachine = stateChangesMachineFactory.Machine();
 	\label{lst:StateMachineMonitoringConcernsCombination}
 \end{sourcecode}
 
-The new \texttt{MObject} simply combines the two aspects by using composition of \texttt{LockableMObject} and \texttt{ObservableMObject} instances.
+The new \texttt{MObject} simply combines the two aspects by including \texttt{LockableMObject} and \texttt{ObservableMObject} instances.
 By overriding the methods defined by the \texttt{Lockable} and \texttt{Observable} interfaces and using the \texttt{LockableMObject} and \texttt{ObservableMObject} instances respectively, the new data manager combines the two concerns in a modular way.
 Listings \ref{lst:LockableObservableMObject} and \ref{lst:LockableObservableDataManager} show this implementation.
 

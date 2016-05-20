@@ -38,6 +38,8 @@ We solely focused on the parts that were going to be refactored, based on refact
 Thanks to their fan-in analysis \cite{marin2004identifying}, we targeted the same concerns in order to make a fair comparison.
 Furthermore, during the implementation of ManagedDataJHotDraw we focused on maintaining behavioral coherence and the original design.
 The migration process of the basic components is detailed described in Appendix \ref{Migration Process}.
+Something that has to be noted in this process is the \texttt{JHotDrawPrimitives} interface, which defines the objects that are not managed data (primitives).
+This made the migration process a lot simpler, since we only had to implement a part of it, the components that were needed to be managed data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Aspect Refactoring of JHotDraw}

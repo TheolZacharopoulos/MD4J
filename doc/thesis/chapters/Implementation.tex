@@ -15,9 +15,20 @@ Although Ruby is a dynamic language, Enso significantly contributed to our imple
 In this chapter we preset the implementation of managed data in Java, which is available also online as an open-source project called JavaMD (Java Managed Data)\footnote{\url{https://github.com/TheolZacharopoulos/JavaMD}}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Overview}\label{sec:Overview}
+In general, in managed data, the programmer has to simply define schemas and factories of data instances, namely managed objects, described by these schemas.
+In order to do that, our framework provides the programmer with a loading process, which parses the schemas defined and uses data managers to manipulate its instances.
+The data managers return a new factory instance that creates managed objects.
+Depending on the data manager, the managed objects may have different properties, such as \ac{ccc}.
+% TODO: Formal
+% This process can be seen in Figure
+% load : Factory(schema), Class<?>(T) -> Schema (T)
+% ... (dms) : Schema(T), Class<Factory(T)> -> Factory(T)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Managed Data Implementation}\label{sec:Managed Data Implementation}
 Managed data allows the programmer to handle the fundamental data manipulation mechanisms using \textit{Data Managers}, one of its distinguishing features being modularity.
-Using a data description language the programmer defines \textit{Schemas}. 
+Using a data description language the programmer defines \textit{Schemas}.
 \textit{Schemas} are the input of \textit{Data Managers}. 
 A \textit{Data Manager} in turn interprets the data description language that is used to define the structure and the behavior of the data to be managed.
 \textit{Schemas} and \textit{Data Managers} are essential components of managed data, along with \textit{Integration} in the programming language, in our case being Java.
@@ -90,7 +101,7 @@ In those definitions the above concepts can be recognized and their meaning can 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The M interface}\label{M}
 In order to declare that an interface is a schema definition, this interface has to extend the \texttt{M} interface.
-This interface defines a single method \texttt{schemaKlass}, which refers to the \texttt{Klass} that an object is described with.
+The \texttt{M} interface defines a single method \texttt{schemaKlass}, which refers to the \texttt{Klass} that an object is described with.
 This \texttt{Klass} is used by the interpreter in order to get the structural description of a managed object. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -172,16 +183,16 @@ The \texttt{MObject} instances are responsible for interpreting the schema and d
 Figure \ref{fig:DataManager_and_MObject} illustrates this structure.
 As it can be seen the data manager is a \textit{factory} that has a single exposed method, \texttt{factory()}, that is used to build an \texttt{IFactory} instance, which in turn builds \texttt{MObject} instances.
 
+The two level \textit{proxing} process that the \texttt{DataManager} class performs, from the basic data manager to IFactory and then to MObject, can be seen in Listing \ref{lst:Basic Data Manager}.
+Note that the \texttt{createManagedObject} is \texttt{protected} for the sub data managers to override it in order to create MObjects of preference.
+In addition the \texttt{createManagedObjectProxy} is also \texttt{protected} in case the programmers wants to to extend the proxy creation.
+
 \begin{figure}[H]
 	\centering
   	\fbox{\includegraphics[width=.85\textwidth]{figures/DataManager_and_MObject.png}}
   	\caption{Data Manager and MObject}
   	\label{fig:DataManager_and_MObject}
 \end{figure}
-
-The two level \textit{proxing} process that the \texttt{DataManager} class performs, from the basic data manager to IFactory and then to MObject, can be seen in Listing \ref{lst:Basic Data Manager}.
-Note that the \texttt{createManagedObject} is \texttt{protected} for the sub data managers to override it in order to create MObjects of preference.
-In addition the \texttt{createManagedObjectProxy} is also \texttt{protected} in case the programmers wants to to extend the proxy creation.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
@@ -260,8 +271,8 @@ First, to follow the modularity aspect and the ability to stack data managers to
 A simple data manager that could be useful is a data manager that introduces immutability to its managed objects.
 A \texttt{Lockable} data manager should first inherit the \texttt{BasicDataManager} to get its field access specification.
 Additionally, it has to add the \texttt{Lockable.class} into its \texttt{additionalInterfaces} List.
-This list is responsible of keeping interfaces that are going to be added to the proxy instance creation.
-This way an instance of a proxy can be ``casted'' to any of these interfaces, in this case the managed object can be casted to \texttt{Lockable}.
+This list is responsible of storing interfaces that are going to be added to the proxy instance creation.
+This way an instance of a proxy can be ``casted'' to any of these interfaces, in this case the managed object (stateMachine) is casted to \texttt{Lockable}.
 The implementation of the \texttt{LockableDataManager} is illustrated in \ref{lst:Lockable Data Manager}.
 
 \begin{sourcecode} [H]
