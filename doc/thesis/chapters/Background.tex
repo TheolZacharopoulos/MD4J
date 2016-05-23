@@ -10,7 +10,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Cross Cutting Concerns}\label{Cross Cutting Concerns}
 There is significant research in software engineering that focuses on the importance of software modularity. 
-The most significant, among the many, advantage of modular systems is the extensibility and evolution of a system \cite{parnas1972criteria}.
+The most significant, among the many, advantage of modular systems is their extensibility and evolution \cite{parnas1972criteria}.
 
 However, during the development of a system there is a number of concerns that have to be considered and implemented into the system. 
 In order to follow the modularity principles, those concerns have to be implemented in separate modules, this way the program will be extensible and its evolution will be easier.
@@ -33,7 +33,7 @@ In other words, refactorings of \ac{ccc} should replace all the scattered and ta
 \section{Aspect Oriented Programming}\label{Aspect Oriented Programming}
 
 Kiczales et al. present \ac{aop} \cite{kiczales1997aspect} by using an example of a very simple image processing application. 
-In that system, as in every system, whenever two properties that are being programmed must compose different tasks and yet be coordinated (in the example filters and loop-fusion), they \textbf{crosscut} each other.
+In that system, as in every system, whenever two properties that are being programmed must compose different tasks and yet be coordinated, they \textbf{crosscut} each other.
 Because general purposes languages provide only one composition mechanism, which leads to complexity and tangling, the programmer must do the co-composition manually.
 According to their theory, a system's property can be either a \textit{component}, if it can be clearly encapsulated in a generalized procedure, or it is an \textit{aspect}, which is the opposite.
 \ac{aop} supports the programmer in separating components and aspects from each other, by providing mechanisms that make it possible to abstract and compose them together when producing the whole system, a process called \textit{aspect weaving}.
@@ -65,7 +65,7 @@ Pattern implementations are often binded to the instance of use resulting in the
 Even worse, in case of multiple patterns used in a system (pattern overlay and pattern composition), it can become difficult to trace particular instances of a design pattern. 
 Composition creates large clusters of mutually dependent classes\cite{sullivan2002advanced} and some design patterns explicitly use other patterns in their solution.
 
-\subsubsection{Modularity Properties}\label{BG Modularity Properties}
+\subsection{Modularity Properties}\label{BG Modularity Properties}
 Hannemann et al. \cite{hannemann2002design} provide some example implementations of several design patterns.
 During the assessment of their findings, the authors used four \textit{modularity properties}.
 In this thesis we used the same properties to assess our refactoring in relation to the \ac{aop} version.
@@ -108,9 +108,9 @@ This new language that implements aspects in a modular way is something try to r
 \section{Managed Data}\label{Managed Data}
 Managed data \cite{loh2012managed} is a data abstraction mechanism that allows the programmer to control the definition of the data and their manipulation mechanisms. 
 Additionally it provides a modular way to control aspects of data.
-Managed data helps the programmer by giving them control over the structuring mechanisms, which until now were predefined by the programming languages. 
+Managed data helps the programmers by giving them control over the structuring mechanisms, which until now were predefined by the programming languages. 
 The developers could not take control of them, they could only create data of those types.
-Managed data provides significant flexibility since it lifts data management up to the application level, by allowing the programmer to build data managers that handle the fundamental data manipulation primitives, normally hard-coded into the programming language. 
+Managed data provides significant flexibility since it lifts data management up to the application level, by allowing the programmers to build data managers that handle the fundamental data manipulation primitives, normally hard-coded into the programming language. 
 
 Managed data has three essential components:
 
@@ -124,24 +124,25 @@ Managed data has three essential components:
 
 In the traditional approach, the programming language includes data definition mechanisms and their processes, which are both predefined. 
 However, with managed data, the data structuring mechanisms are defined by the programmer by interpretation of data definitions.
-Of course, since a data definition model is also data, it requires a meta-definition mechanism.
+% Of course, since a data definition model is also data, it requires a meta-definition mechanism.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Schemas}\label{Schemas}
 The schemas are the way to describe the structure of the data to be managed. 
 They can be just a simple data description language which programmers can use to describe simple kind of data. 
 For example Cook et al. \cite{loh2012managed} used Ruby hash for the data description on a simple example where the hash was an object that represented a mapping from values to values. 
 However, a simple schema format like this can not be used to describe itself because it is not a record. 
 Therefore, we need a more descriptive language that defines records and fields of records.
+An instance of a schema is a meta model.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Managers}\label{Data Managers}
 Data managers are the mechanisms that interpret \textit{schemas} with defined manipulation strategies set by the programmers. 
 The input to a data manager is a schema, which describes the structure of the data to be managed.
 Since the schema is only known dynamically, the data managers must be able to determine the fields of the managed data object dynamically as well.
 In order to implement such an operation we need a meta-programming mechanism that dynamically analyses the structure of a schema and applies to it the functionality of the data managers.
 In their implementation Cook et al. \cite{loh2012managed} used the ``missing\_method'' implementation in order to succeed that.
-In our case we will use the reflection API and dynamic proxies.
+In our case we use Java's reflection and dynamic proxies.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Reflection

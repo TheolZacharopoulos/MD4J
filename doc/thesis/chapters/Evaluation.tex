@@ -5,14 +5,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Evaluation}\label{Evaluation}
 
-Having presented evidence that our framework is able to solve the problem of \ac{ccc}, Chapters \ref{Example Application} and \ref{AspectRefactoring}, we will now evaluate our claims.
-In this chapter we present an evaluation of our contributions in taming aspects with managed data, in relation to our research questions.
+Having presented evidence that our framework is able to solve the problem of \ac{ccc} (Chapters \ref{Example Application} and \ref{AspectRefactoring}) we will now evaluate our claims.
+In this chapter we present an evaluation of our contributions in implementing aspects with managed data, in relation to our research questions.
 
 \section{Research Questions and Answers}\label{Research Questions and Answers}
 In Chapter \ref{Introduction} we stated three research questions which were the main focus of this thesis.
 These are answered as follows:
 
-\paragraph{How to implemented managed data in a static language?}
+\paragraph{How to implement managed data in a static language?}
 From our managed data implementation in Java, presented in Chapter \ref{Implementation}, we conclude that it is possible to implement managed data in a static programming language by using Reflection and Dynamic Proxies.
 
 \paragraph{Can managed data solve the problem of crosscutting concerns?}
@@ -102,13 +102,13 @@ Thus, all the participants are free of the pattern context and there is no coupl
 However, as the \ac{aop} evolution paradox suggests \cite{tourwe2003existence}, the aspects themselves are strongly coupled to the application's code.
 
 Likewise, in the \textit{managed data} version, \textit{Subject} and \textit{Observer} classes are pattern agnostic.
-Those classes are not aware of their pattern properties since they have been attached later by a subject role data manager.
+However, those classes are not aware of their pattern properties since they have been attached later by a subject role data manager.
 
 \subsubsection{Reusability}
 In the \ac{aop} version, the core pattern code is abstract and reusable. 
 They have implemented abstract aspect code that explicitly refers to an observer pattern generalized implementation.
 This has been defined as an abstract aspect and it can be reused and shared across multiple observer pattern instances \cite{hannemann2005role}.
-That leads to a modular solution, although the concrete aspects have high-coupling with the application's code.
+That leads to a modular solution, although the concrete aspects still are highly coupled with the application's code.
 
 Similarly, in the \textit{managed data} version, we have implemented the observer pattern as a reusable data manager.
 More specifically, the \texttt{SubjectRole} data manager is an abstract observer pattern that can be reused in any case.
@@ -230,6 +230,10 @@ In our case we only refactored a part of the undo concern, in order to show how 
 % Metrics:
 We should keep in mind that the metrics we used have been introduced for both \ac{oop} and \ac{aop} systems.
 However, in this thesis we used them in managed data implementation. 
+% #Important
+Additionally, one can argue that JHotDraw's \ac{ccc} could be refactored simply by using dynamic proxies, without the whole Managed Data modeling structure.
+This is something that can be researched more; however, managed data besides the first class modeling they provide, they also have a modular design of aspect implementation.
+This design makes it easy to write modular aspects of data using dynamic proxies.
 
 % Reliability: same results on replication?
 Finally, the reliability of this research can be problematic.

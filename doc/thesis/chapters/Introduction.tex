@@ -20,10 +20,10 @@ Managed data have been researched and implemented under the Enso project\footnot
 Furthermore, it is considered \cite{loh2012managed} that managed data cannot be fully supported in static languages directly, which makes it more challenging for this thesis since our first task it to implement it in Java.
 In this thesis we use the Java reflection API in order to implement managed data and focus on specific aspects and design patterns implementations using the data managers concept. 
 
-Finally, in order to evaluate the implementation of aspects and how we deal with \ac{ccc} in managed data, we have reimplemented a part of a well-known use case, the JHotDraw, and evaluated the results on a number of explicit criteria.
+Finally, in order to evaluate the implementation of aspects and how we deal with \ac{ccc} in managed data, we have reimplemented a part of a well-known use case, the JHotDraw, and evaluated the results on a qualitative process.
 Additionally, we present our results in relation with the original implementation and its \ac{aop} counterpart implementation.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Initial Study}\label{Initial Study}
 In their study on managed data, Cook et al. \cite{loh2012managed} presented the main idea of managed data, while using a show case of it in a Ruby implementation. 
 As a use case, they presented the Enso\footref{foot:enso} project in order to reuse database management and  access control mechanisms across different data definitions.
@@ -81,13 +81,12 @@ Thus, the aspects are tightly coupled to the application and this greatly affect
 Additionally, Steimann \cite{steimann2005domain} argues that modeling languages are not aspect ready. 
 The problem that arises is located at the level of software modeling. 
 More specifically, whereas in \ac{oop} roles are tied to the collaborations, in \textit{roles modeling} collaborations rely on interactions of objects and aspects are typically defined independently of one another.
-% Furthermore, in terms of order, it has been observed that aspects are not elements of the domain, they rather describe the order than the domain. 
 Finally, aspects invariably express non-functional requirements, but if the non-functional requirements are not elements of domain models then neither are aspects.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Research Questions}\label{Research Questions}
 Managed data has not been practically implemented in a static language before, which considered a challenge, therefore our first research questions states 
-\textit{``How to implemented managed data in a static language?''}.
+\textit{``How to implement managed data in a static language?''}.
 Based on the argumentation about the relevance of \ac{aop} and the solutions that managed data can provide in \acrlong{ccc}, our second research question is \textit{``Can managed data solve the problem of crosscutting concerns?''}. 
 Finally by using a software showcase, the JHotDraw framework, as well as its \ac{aop} implementation AJHotDraw \cite{marinajhotdraw}, 
 we evaluate the implementation of managed data on an inventory of aspects. 
@@ -125,11 +124,11 @@ In order to answer our research questions we studied the theoretical background,
 \begin{description}
 
   \item[Managed data implementation in a static programming language.]
-  In order to answer the question how to implement managed data in a static language, we have implemented managed data in Java using its reflection API. 
+  In order to answer the question how to implement managed data in a static language, we have implemented managed data in Java. 
   An extensive presentation of the implementation is given in Chapter \ref{Implementation}.
 
   \item[Use case implementation.] 
-  In order to argue about the contribution of our implementation and managed data on taming aspects in general, we have used a use case application (JHotDraw) which is considered as a good design use case for \ac{oop}, along with its \ac{aop} implementation (AJHotDraw).
+  In order to argue about the contribution of our implementation and managed data in general on solving \ac{ccc}, we have used a use case application (JHotDraw) which is considered as a good design use case for \ac{oop}, along with its \ac{aop} implementation (AJHotDraw).
   Thus, we have built our version of the JHotDraw application (ManagedDataJHotDraw) using our managed data framework to refactor the \ac{ccc}.
 
   \item[Evaluation and Metrics.]
@@ -155,8 +154,8 @@ In order to answer our research questions we studied the theoretical background,
   More specifically, we focused on the \textit{Observer} pattern, which has been used in multiple parts of JHotDraw and cuts ``pattern code'' on different modules, as well as the \textit{Undo} concern, which is part of a \textit{Command Pattern} and it is scattered through the modules that use this functionality.
 
   \item[Contribution 3: JHotDraw Refactoring Evaluation.]
-  Finally, we evaluate our aspect refactoring by using a set of predefined metrics and comparing it in regard to the original version.
-  In addition we present a set of modularity properties, which we discuss in relation to the \ac{aop} version.
+  Finally, we evaluate our aspect refactoring by using a set of predefined metrics and comparing it in regards to the original version.
+  In addition, we present a set of \textit{modularity properties}, which we discuss in relation to the \ac{aop} version.
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -213,5 +212,5 @@ In Chapter \ref{Background} we introduce the background, focusing on the concept
 In Chapter \ref{Example Application} we demonstrate an example to show the capabilities of our implementation.
 In Chapter \ref{Implementation} the implementation of managed data in Java is presented and discussed, providing detailed explanation of our issues and implementation details.
 Next, in Chapter \ref{AspectRefactoring} a showcase is presented, by applying our implementation to refactor aspects in JHotDraw.
-In Chapter \ref{Evaluation} an evaluation of the aspect refactoring is illustrated.
+Finally, in Chapter \ref{Evaluation} an evaluation of the aspect refactoring is illustrated.
 

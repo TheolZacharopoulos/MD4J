@@ -4,9 +4,9 @@
 % Chapter: Example Application
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Example Application: State Machine}\label{Example Application}
-In this chapter in order to show how our managed data implementation works in practice, and in particular in terms of aspect refactoring, we present a showcase.
+In this chapter in order to show how our managed data implementation works in practice, and in particular in terms of aspect refactoring, we present an example showcase.
 A detailed demonstration of managed data is presented in Chapter \ref{Implementation}; however, in this chapter we focus on its usage.
-The showcase consists of a very simple state machine application.
+The example showcase consists of a very simple state machine application.
 A similar example is presented in Enso paper as a showcase for its Object Grammar capabilities \cite{storm2012object}.
 
 Consider the requirements of the state machine as the following: 
@@ -117,11 +117,12 @@ public interface Transition extends M {
 Finally, in the \texttt{Transition} schema definition, Listing \ref{lst:Transition_Schema}, we need an \texttt{event} that corresponds to the event of the transition and is the \textbf{key} of that schema.
 The \texttt{from} and \texttt{to} fields represent the state that the machine changes from and to respectively.
 However, these are just references to the \texttt{State} schema (Listing \ref{lst:State_Schema}).
+The \textit{parsing} of schemas is performed through a schema loading process presented in Section \ref{sec:Schema Loading}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Factory definition}
 Now that we have our schemas, we need a way to build instances of managed objects that these schemas describe. 
-In Java to create these three schemas as managed data we need to define a factory, which creates managed data instances (managed objects) for each of these schemas \ref{lst:StateMachineFactory}.
+In Java to create instances of these schemas as managed data we need to define a factory, which creates managed data instances (managed objects) for each of these schemas \ref{lst:StateMachineFactory}.
 Note that the method definitions work as \texttt{Constructors} of managed objects.
 
 \begin{sourcecode}[H]
@@ -138,17 +139,18 @@ public interface StateMachineFactory extends IFactory {
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Basic Data Manager}
-As mentioned above, in order to interpret and manage the defined data we need data managers. 
-Our implementation includes the definition of a \texttt{Basic data manager} that is responsible of interpreting a schema definition to instances of \textit{managed object}s.
+As mentioned above, in order to interpret and manage the defined schemas of data we need data managers. 
+Our framework includes the definition of a \texttt{Basic data manager} that is responsible of interpreting a schema definition to instances of \textit{managed object}s.
 Conclusively, in order to make a \textit{managed object}, the data manager needs its schema definition (the interfaces that define the schemas) and the factory (the interface that defines the constructors of the schemas).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A simple program}
-In the case of a simple program without any concerns, we have to use our managed data to define the state machine and then interpret it.
+In the case of a simple program without any concerns, we have to use our schemas to define the state machine, parse it, interpret it and finally use it.
 The definition of the door state machine is given in Listing \ref{lst:Door_state_machine} in Java.
 
-In practice, the basic data manager needs to provide us with mechanisms that interpret the managed object that based on \texttt{stateMachineSchema}, shown in Line \ref{line:state_meaning_full_code}.
-The basic data manager  also supports the field accessors of those data, namely, the setters and getters of their values.
+In practice, after defining our schemas the schema loader parse them and provides us with schema instance. 
+Furthermore, the basic data manager provides us with mechanisms that interpret the managed object based on \texttt{stateMachineSchema}, shown in Line \ref{line:state_meaning_full_code}.
+The basic data manager also supports the field accessors of those data, namely, the setters and getters of their values.
 An basic interpreter for the state machine is shown in Line \ref{line:state_machine_interpreter}.
 As it can be seen, the factory is used to create managed objects.
 The \textit{setup} of the fields is done automatically by the data manager who is responsible for the managed object interpretation.
