@@ -1,5 +1,7 @@
 # JavaManagedData
 
+[![Build Status](https://travis-ci.org/TheolZacharopoulos/JavaMD.svg?branch=master)](https://travis-ci.org/TheolZacharopoulos/JavaMD)
+
 JavaMD is a Managed Data implementation in Java.
 
 ## Influence
