@@ -27,9 +27,9 @@ Additionally, some design patterns scatter ``design pattern code'' through the a
 In order to solve this problem we need a way to refactor and transform the non-modularized \ac{ccc} into a modular \textit{aspect}.
 In other words, refactorings of \ac{ccc} should replace all the scattered and tangled code of a concern with an equivalent module \cite{hannemann2005role}, which in \ac{aop} terminology is called \textit{aspect} \cite{kiczales1997aspect}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: AOP
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Aspect Oriented Programming}\label{Aspect Oriented Programming}
 
 Kiczales et al. present \ac{aop} \cite{kiczales1997aspect} by using an example of a very simple image processing application. 
@@ -44,7 +44,7 @@ More specifically, a general purpose language needs only a language, a \textit{c
 In the case of an \ac{aop} based implementation, a program consists of a \textit{component language}, in which the components are programmed, one or more \textit{aspect languages}, in which the aspects are programmed, an aspect \textit{weaver} for the combined languages, a \textit{component program} that implements the components using the component language and finally, one or more \textit{aspect programs} that implement the aspects using the aspect languages.
 Additionally, an essential function of the aspect weaver is the concept of \textit{join points}, namely the elements of the component language semantics that the aspect programs coordinate with. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{AspectJ}\label{AspectJ}
 There is significant work in the area of aspect oriented languages but one the most important contribution is the AspectJ\footnote{\url{https://eclipse.org/aspectj/}} project, which is a simple and practical aspect-oriented extension to Java and it has been introduced by Kiczales et al. \cite{kiczales2001overview}.
 The authors of AspectJ provide examples of programs developed in AspectJ and show that by using it, \ac{ccc} can be implemented in clear form, which in other general purpose languages would lead to tangled and scattered code. 
@@ -52,7 +52,7 @@ AspectJ was developed as a compatible extension to Java so that it would facilit
 The compatibility lays on upward compatibility, platform compatibility, tool compatibility and programmer compatibility. One of the most important characteristics of AspectJ is that it is not a \ac{dsl} but a general purpose language that uses Java's static type system.
 Our goal is to apply those properties for our managed data implementation.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Design Patterns in Aspect Oriented Programming}\label{Design Patterns in Aspect Oriented Programming}
 
 Hannemann et al. present a showcase of \ac{aop} \cite{hannemann2002design} in which they conduct an aspect-oriented implementation of the Gang of Four design patterns \cite{gamma1995design} in AspectJ, in which 17 out of 23 cases show modularity improvements.
@@ -64,30 +64,6 @@ Pattern implementations are often binded to the instance of use resulting in the
 
 Even worse, in case of multiple patterns used in a system (pattern overlay and pattern composition), it can become difficult to trace particular instances of a design pattern. 
 Composition creates large clusters of mutually dependent classes\cite{sullivan2002advanced} and some design patterns explicitly use other patterns in their solution.
-
-% \subsubsection{Observer pattern in Aspect Oriented Programming}\label{Observer pattern in Aspect Oriented Programming}
-% Hannemann et al. \cite{hannemann2002design} provide some example implementations of several design patterns, including the \textit{Observer Pattern} in which they focus on a detailed implementation.
-% As they mention, in an observer pattern implementation, both the \textit{Subject} and the \textit{Observer} have to know about their roles and have ``pattern related code'' in them. 
-% As a result, adding or removing code from a class requires changes of code in that class. 
-
-% In their implementation \cite{hannemann2002design} of the observer pattern in AspectJ, they separate abstract aspects for: 
-
-% \begin{itemize}
-% 	\item The \textit{Subject} and \textit{Observer} roles in classes.
-
-% 	\item Maintenance of a mapping from \textit{Subjects} to \textit{Observers}.
-
-% 	\item The trigger of \textit{Subjects} that update \textit{Observers}.
-% \end{itemize}
-
-% And concrete aspects for each instance of the pattern fills in the specific parts:
-% \begin{itemize}
-% 	\item Which classes can be \textit{Subjects} and which \textit{Observers}.
-
-% 	\item A set of changes on the \textit{Subjects} that triggers the \textit{Observers}.
-
-% 	\item The specific means of updating each kind of \textit{Observer} when the update logic requires it.
-% \end{itemize}
 
 \subsubsection{Modularity Properties}\label{BG Modularity Properties}
 Hannemann et al. \cite{hannemann2002design} provide some example implementations of several design patterns.
@@ -114,7 +90,7 @@ The modularity properties are the following:
 	This way the problem of having multiple instances of a design pattern in one application is solved.
 \end{description}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evolvability issues}\label{Aspect Oriented Programming Evolvability}
 Since modularization and separation of concerns make the evolution of an application a lot easier and \ac{aop} provides mechanisms for modularization and system decomposition, aspect-oriented programs should be easier to be evolved and maintained.
 Paradoxically, this is not the case since \ac{aop} technologies deliver applications that are as hard, and sometimes even harder, as non-\ac{aop}.
@@ -126,9 +102,9 @@ As Tourwe et al. propose, a solution for this problem would be the creation of a
 A language that enables the developer to discriminate between methods based on what they actually do instead of what they look like, in a more intentional way.
 This new language that implements aspects in a modular way is something try to realize in our thesis.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Managed Data 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Managed Data}\label{Managed Data}
 Managed data \cite{loh2012managed} is a data abstraction mechanism that allows the programmer to control the definition of the data and their manipulation mechanisms. 
 Additionally it provides a modular way to control aspects of data.
@@ -158,13 +134,6 @@ For example Cook et al. \cite{loh2012managed} used Ruby hash for the data descri
 However, a simple schema format like this can not be used to describe itself because it is not a record. 
 Therefore, we need a more descriptive language that defines records and fields of records.
 
-% A self-describing schema would allow schemas to be managed data themselves. 
-% We therefore need a self-describing schema that can be used to describe schemas, namely the ``Schema-Schema''. 
-% A Schema-Schema is also managed data with its own data manager.
-% This process is called \textit{Bootstrapping} and it is needed in order to ``jumpstart'' the process. 
-% This extends the benefits of programmable data structuring to their own implementation.
-% Schemas can be interpreted in many different ways to create different kinds of records based on the manipulation provided by the data managers.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Managers}\label{Data Managers}
 Data managers are the mechanisms that interpret \textit{schemas} with defined manipulation strategies set by the programmers. 
@@ -174,14 +143,14 @@ In order to implement such an operation we need a meta-programming mechanism tha
 In their implementation Cook et al. \cite{loh2012managed} used the ``missing\_method'' implementation in order to succeed that.
 In our case we will use the reflection API and dynamic proxies.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section: Reflection
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Java Reflection and Dynamic Proxies}\label{Java Reflection and Dynamic Proxies}
 The Java programming language provides the programmer with a Reflection API\footnote{\url{https://docs.oracle.com/javase/tutorial/reflect/}} that offers the ability to examine or modify the runtime behavior of applications running in the \ac{jvm}. 
 Additionally, Java comes with an implementation of Dynamic Proxies\footnote{\url{https://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html}} which is a class that implements a list of interfaces specified at runtime.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Reflection}\label{Reflection}
 
 Reflection is the ability of a running program to examine itself and its environment and to change what it does depending on what it finds \cite{forman2004java}.
@@ -213,7 +182,7 @@ Although reflection is considered helpful for developing flexible software, it h
 
 \end{description}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dynamic Proxies}\label{Dynamic Proxies}
 Since 1.3 version Java supports the concept of \textit{Dynamic Proxies}.
 A \textit{proxy} is an object that supports the interface of another object (\textit{target}), so that the proxy can substitute for the target for all practical purposes \cite{forman2004java}.
@@ -384,11 +353,11 @@ The metrics proposed \cite{sant2003reuse} are grouped in four subsections (crite
 		This metric extends the Chidamber and Kemerer's \cite{chidamber1994metrics} \ac{wmc} metric for \ac{aop}.
 	\end{itemize}
 
-Garcia et al. \cite{garcia2003agents} present an overview of these metrics in terms of the Goal / Question / Metric (GQM) approach \cite{wohlin2012experimentation} \ac{lcom} can be seen in Figure \ref{fig:metrics_questions}.
+% Garcia et al. \cite{garcia2003agents} present an overview of these metrics in terms of the Goal / Question / Metric (GQM) approach \cite{wohlin2012experimentation} \ac{lcom} can be seen in Figure \ref{fig:metrics_questions}.
 
-\begin{figure}[H]
-	\centering
-  	\includegraphics[width=.9\textwidth]{figures/metrics_questions.png}
-  	\caption{Metrics and Goal/Question/Metric approach \cite{garcia2003agents}}
-  	\label{fig:metrics_questions}
-\end{figure}
+% \begin{figure}[H]
+% 	\centering
+%   	\includegraphics[width=.9\textwidth]{figures/metrics_questions.png}
+%   	\caption{Metrics and Goal/Question/Metric approach \cite{garcia2003agents}}
+%   	\label{fig:metrics_questions}
+% \end{figure}

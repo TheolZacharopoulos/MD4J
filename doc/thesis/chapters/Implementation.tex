@@ -20,10 +20,25 @@ In general, in managed data, the programmer has to simply define schemas and fac
 In order to do that, our framework provides the programmer with a loading process, which parses the schemas defined and uses data managers to manipulate its instances.
 The data managers return a new factory instance that creates managed objects.
 Depending on the data manager, the managed objects may have different properties, such as \ac{ccc}.
-% TODO: Formal
-% This process can be seen in Figure
-% load : Factory(schema), Class<?>(T) -> Schema (T)
-% ... (dms) : Schema(T), Class<Factory(T)> -> Factory(T)
+% TODO: Keep this?
+Figure \ref{fig:formal_metamodel} illustrates this process.
+As the figure shows, the framework has three steps.
+First, the schema loader gets a \texttt{factory} of schema schemas
+\footnote{
+	A schemaSchema and its factory are provided by the framework, Section \ref{sec:SchemaSchema} describes what a schemaSchema is and how it is created.} 
+and a set of \texttt{classes} that describe a schema of type \texttt{T}.
+With this information the schema loader parses the arguments and returns a schema of \texttt{T}.
+Next, a data manger, gets a schema of \texttt{T} and the class of the \texttt{factory of T} and returns a proxy instance of this \texttt{factory}.
+Finally, by using the \texttt{factory of T} the programmer can create instances of \texttt{T} (t) based on the specifications described by the data manager.
+
+\begin{figure}[H]
+\centering
+\[Schema \ Loading : Factory_{(schema)} \times \overline{Class\langle ? \rangle}^{T} \Rightarrow Schema_{(T)}\]
+\[\dots (Data \ Managers) : Schema_{(T)} \times Class\langle Factory_{(T)}\rangle \Rightarrow Factory_{(T)}\]
+\[ Instance \ Creation : Factory_{(T)} \Rightarrow t\]
+\caption{Managed data framework}
+\label{fig:formal_metamodel}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Managed Data Implementation}\label{sec:Managed Data Implementation}
@@ -189,7 +204,7 @@ In addition the \texttt{createManagedObjectProxy} is also \texttt{protected} in 
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=.85\textwidth]{figures/DataManager_and_MObject.png}}
+  	\fbox{\includegraphics[width=.95\textwidth]{figures/DataManager_and_MObject.png}}
   	\caption{Data Manager and MObject}
   	\label{fig:DataManager_and_MObject}
 \end{figure}
@@ -197,30 +212,19 @@ In addition the \texttt{createManagedObjectProxy} is also \texttt{protected} in 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public <T extends IFactory> T factory(
-	Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) 
-{
-	// add the extra proxy interfaces
-	for (Class<?> proxyInterface : additionalInterfaces) {
-		this.addProxyInterface(proxyInterface);
-	}
-
-	// add the klass interfaces of the schema
-	for (Klass klass : schema.klasses()) {
-		this.addProxyInterface(klass.classOf());
-	}
-
-	return (T) Proxy.newProxyInstance(
+	Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
+	// ...
+	return (T) Proxy.newProxyInstance( // First proxy
 		factoryClass.getClassLoader(),
 		new Class<?>[]{factoryClass},
-		(proxy, method, args) -> // invocation handler
+		(proxy, method, args) -> // inv handler
 			createManagedObjectProxy(factoryClass, schema, method, args) // mobject
 		);
 }
-
 protected Object createManagedObjectProxy(...) {
 	//...
-	MObject managedObject = createManagedObject(schemaKlass, inits); // invoc handler
-	return Proxy.newProxyInstance(
+	MObject managedObject = createManagedObject(schemaKlass, inits); // inv handler
+	return Proxy.newProxyInstance( // Second proxy
 		schemaFactoryCallingMethodClassLoader, // schema constructor
 		proxiedInterfaces.toArray(new Class[additionalInterfaces.size()]),
 		managedObject
@@ -280,11 +284,11 @@ The implementation of the \texttt{LockableDataManager} is illustrated in \ref{ls
 public class LockableDataManager extends BasicDataManager {
 
 	@Override
-    public <T extends IFactory> T factory(
-    	Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
-        // Add the Lockable class in order to use it in the managed object.
-        return super.factory(factoryClass, schema, Lockable.class);
-    }
+	public <T extends IFactory> T factory(
+	Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
+		// Add the Lockable class in order to use it in the managed object.
+		return super.factory(factoryClass, schema, Lockable.class);
+	}
 
 	@Override
 	protected MObject createManagedObject(Klass klass, Object... _inits) {
