@@ -12,10 +12,10 @@ A detailed demonstration of managed data is presented in Chapter \ref{Implementa
 % What am I going to do
 The example showcase consists of a very simple state machine application.
 First, we present how to define the schemas of the state machine by using our definition language, the Java interfaces.
-After that, we show how to create factories that build instances of data described by our schemas.
+After that, we show how to define factories that build instances of data described by our schemas again with interfaces.
 Next, we define a basic data manager that handles the fundamental functionalities of the state machine's instances.
-In addition, we also define a simple program that uses these components in order to define and interpret a state machine.
-Finally, having a simple application and a basic data manager, we show that by defining a new data manager the programmer can implement aspects on it.
+In addition, we also provide a simple program that uses these components in order to describe and interpret a state machine.
+Finally, having a simple application and a basic data manager, we show that by creating a new data manager the programmer can implement aspects on it.
 The aspect is implemented in the new data manager, without scattering concern code on the basic application.
 
 A similar example is presented in Enso paper as a showcase for its Object Grammar capabilities \cite{storm2012object}.
@@ -44,18 +44,15 @@ To implement this we need to define the models, interpret the definition given f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schemas definition}
 As a first step, all the models of the state machine program need to be defined. 
-
-In our implementation we define schemas using Java interfaces with a set of meta data described with Java annotations.
-Therefore, as extracted from the requirements we need \texttt{Machine} (Listing \ref{lst:Machine_Schema}), \texttt{State} (Listing \ref{lst:State_Schema}) and \texttt{Transition} (Listing \ref{lst:Transition_Schema}) schemas.
+In our implementation we define schemas using Java interfaces with a set of meta data declarations described with Java annotations.
+For our case, as extracted from the requirements, we need \texttt{Machine} (Listing \ref{lst:Machine_Schema}), \texttt{State} (Listing \ref{lst:State_Schema}) and \texttt{Transition} (Listing \ref{lst:Transition_Schema}) schemas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface Machine extends M {
 	State start(State... startingState);
-
 	State current(State... currentState);
-
 	Set<State> states(State... states);
 }
 	\end{lstlisting}
@@ -130,10 +127,10 @@ The \textit{parsing} of schemas is performed through a schema loading process pr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Factory definition}
 Now that we have our schemas, we need a way to build instances of managed objects that these schemas describe. 
-In Java, to create instances of these schemas as managed data, we need to define a type of factory, which creates managed data instances (managed objects) for each of these schemas.
+In Java, to create instances of these schemas as managed data, we need to define a factory class, which creates managed data instances (managed objects) for each of these schemas.
 Note that the method definitions work as \texttt{Constructors} of managed objects.
 Listing \ref{lst:StateMachineFactory} illustrates a type of this factory for our state machine.
-This type of factory class is going to be used by our data manager to (reflectively) analyze it and provide an instance of it that creates instances of managed objects.
+This factory class is going to be used by our data manager to (reflectively) analyze it and provide an instance of it that creates instances of managed objects.
 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
@@ -286,7 +283,7 @@ The new \texttt{stateMachineFactory} instance will create instances that are \te
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-IDataManager dataManager = new ObservableDataManager(); // New data manager
+IDataManager dataManager = new ObservableDataManager(); // Observable data manager
 StateMachineFactory stateMachineFactory =
 	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
@@ -315,79 +312,80 @@ void doors(StateMachineFactory stateMachineFactory) {
 	\label{lst:StateMachineMonitoringConcerns}
 \end{sourcecode}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Data Manager Implementation}
-Now that we have specified how our \textit{Observable} data manager is used and what it does, we need to implement it.
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Data Manager Implementation}
+% Now that we have specified how our \textit{Observable} data manager is used and what it does, we need to implement it.
 
-First, we need to define our specifications.
-As it can be seen from Listing \ref{lst:StateMachineMonitoringConcerns}, the \texttt{ObservableDataManager} provides a managed object with the method \texttt{observe}, which adds observers on field changes.
+% First, we need to define our specifications.
+% As it can be seen from Listing \ref{lst:StateMachineMonitoringConcerns}, the \texttt{ObservableDataManager} provides a managed object with the method \texttt{observe}, which adds observers on field changes.
 
-More specifically, this data manager allows to add observers in managed data in the form of a functional interface.
-The observe action is shown in Listing \ref{lst:Observe functional interface}.
+% More specifically, this data manager allows to add observers in managed data in the form of a functional interface.
+% The observe action is shown in Listing \ref{lst:Observe functional interface}.
 
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-@FunctionalInterface
-public interface Observe {
-	void observe(Object obj, String fieldName, Object newValue);
-}
-	\end{lstlisting}
-	\caption{Observe Functional Interface}
-	\label{lst:Observe functional interface}
-\end{sourcecode}
+% \begin{sourcecode} [H]
+% 	\begin{lstlisting}[language=Java, escapechar=|]
+% @FunctionalInterface
+% public interface Observe {
+% 	void observe(Object obj, String fieldName, Object newValue);
+% }
+% 	\end{lstlisting}
+% 	\caption{Observe Functional Interface}
+% 	\label{lst:Observe functional interface}
+% \end{sourcecode}
 
-This functional interface represents an action that is performed when a field changes.
-In order to be executed, an action needs to be added in an list of observers.
-This specification can be defined in an interface, shown in Listing \ref{lst:Observable interface}.
+% This functional interface represents an action that is performed when a field changes.
+% In order to be executed, an action needs to be added in an list of observers.
+% This specification can be defined in an interface, shown in Listing \ref{lst:Observable interface}.
 
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-public interface Observable {
-	void observe(Observe _observer);
-}
-	\end{lstlisting}
-	\caption{Observable Interface}
-	\label{lst:Observable interface}
-\end{sourcecode}
+% \begin{sourcecode} [H]
+% 	\begin{lstlisting}[language=Java, escapechar=|]
+% public interface Observable {
+% 	void observe(Observe _observer);
+% }
+% 	\end{lstlisting}
+% 	\caption{Observable Interface}
+% 	\label{lst:Observable interface}
+% \end{sourcecode}
 
-This interface describes the specification for our data manager.
-Finally, Listing \ref{lst:ObservableMObject} shows the data manager implementation.
-The observable data manager keeps a list of \texttt{Observe} actions.
-The programmer can add actions by using the \texttt{observe} method.
-Every time a field's value changes, calling the \texttt{\_set} method of the \texttt{MObject}, the list of the observer actions is executed.
-Note that this data manager is general, it does not exclusively work for \texttt{Machine} objects, as in this case, but for any managed object.
+% This interface describes the specification for our data manager.
+% Finally, Listing \ref{lst:ObservableMObject} shows the data manager implementation.
+% The observable data manager keeps a list of \texttt{Observe} actions.
+% The programmer can add actions by using the \texttt{observe} method.
+% Every time a field's value changes, calling the \texttt{\_set} method of the \texttt{MObject}, the list of the observer actions is executed.
+% Note that this data manager is general, it does not exclusively work for \texttt{Machine} objects, as in this case, but for any managed object.
 
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-public class ObservableMObject extends MObject implements Observable {
-	// a list of observers for that object
-	private List<Observe> observers = new ArrayList<Observe>();
+% \begin{sourcecode} [H]
+% 	\begin{lstlisting}[language=Java, escapechar=|]
+% public class ObservableMObject extends MObject implements Observable {
+% 	// a list of observers for that object
+% 	private List<Observe> observers = new ArrayList<Observe>();
 
-	public ObservableMObject(Klass schemaKlass, Object... initializers) {
-		super(schemaKlass, initializers);
-	}
+% 	public ObservableMObject(Klass schemaKlass, Object... initializers) {
+% 		super(schemaKlass, initializers);
+% 	}
 
-	public void observe(Observe _observer) {
-		observers.add(_observer);
-	}
+% 	public void observe(Observe _observer) {
+% 		observers.add(_observer);
+% 	}
 
-	@Override
-	public void _set(String _name, Object _value) {
-		super._set(_name, _value);
-		// Run the observe function for each of the observers on every "set"
-		observers.forEach(observer -> observer.observe(thisObject, _name, _value));
-	}
-}
-	\end{lstlisting}
-	\caption{ObservableMObject}
-	\label{lst:ObservableMObject}
-\end{sourcecode}
+% 	@Override
+% 	public void _set(String _name, Object _value) {
+% 		super._set(_name, _value);
+% 		// Run the observe function for each of the observers on every "set"
+% 		observers.forEach(observer -> observer.observe(thisObject, _name, _value));
+% 	}
+% }
+% 	\end{lstlisting}
+% 	\caption{ObservableMObject}
+% 	\label{lst:ObservableMObject}
+% \end{sourcecode}
 
 Concluding, it can be observed that the only part that has been changed in the original code is the data manager and the logging concern definition.
 The data manager of the \texttt{Machine} managed object has been changed to the new observable data manager.
 Additionally, the logging concern has been attached to the machine object very easily simply by using lambdas.
 
-By running the program with the commands \texttt{LOCK\_EVENT}, \texttt{UNLOCK\_EVENT} and \texttt{OPEN\_EVENT}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
+The first state change happens on \texttt{doorStateMachine.start(closedState)} call.
+After that, by running the program with the commands \texttt{LOCK\_EVENT}, \texttt{UNLOCK\_EVENT} and \texttt{OPEN\_EVENT}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
 \lstdefinestyle{Bash} {
     backgroundcolor=\color{white},
     basicstyle=\scriptsize\color{black}\ttfamily
@@ -396,9 +394,10 @@ By running the program with the commands \texttt{LOCK\_EVENT}, \texttt{UNLOCK\_E
 \begin{sourcecode} [H]
 	\lstset{numbers=none}
 	\begin{lstlisting}[style=Bash]
-> Current state changed to Closed
-> Current state changed to Locked
-> Current state changed to Open
+> State changed to Closed
+> State changed to Locked
+> State changed to Closed
+> State changed to Open
 	\end{lstlisting}
 	\caption{Door state machine with logging concern: output}
 	\label{lst:StateMachineMonitoringConcernsOutput}

@@ -3,11 +3,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Aspect refactoring 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Aspects refactoring of JHotDraw}\label{AspectRefactoring}
+\chapter{Aspect refactoring of JHotDraw}\label{AspectRefactoring}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Crosscutting Concerns Identification}
-Our managed data framework addresses the problem of \ac{ccc} by capturing them in modular data managers.
+Our managed data framework can implement in modular data managers.
 Yet, to solve the problem of \ac{ccc} it is first required to identify them in the source code.
 This leads to a process called \textit{aspect mining}.
 \textit{Aspect mining} is a reverse engineering process that aims at finding \ac{ccc} in existing systems \cite{marin2004identifying}.
@@ -19,8 +19,15 @@ In particular, we focused on the \textit{FigureSelection}, concern, which is an 
 
 \section{Aspect Refactoring in Managed Data}
 In order to evaluate the ability of managed data to handle aspects, we have refactored two \ac{ccc} that have been identified in JHotDraw.
-More specifically, in this chapter we present the refactoring of the \textit{FigureSelectionListener} observer pattern.
-In this chapter we investigated both the \texttt{FigureSelectionListener} and the \texttt{ChangeAttributeCommand} (\textit{Undo}) \ac{ccc}.
+More specifically, in this chapter we investigated both the \texttt{FigureSelectionListener} and the \texttt{ChangeAttributeCommand} (\textit{Undo}) \ac{ccc}.
+
+First, the \texttt{FigureSelectionListener} is an observer pattern implementation that is used to notify a subject for changes on figure selection in \texttt{DrawingView} of JHotDraw.
+In order to implement this concern we use a new data manager that defines a \textit{subject} role on the \texttt{DrawingView}. 
+This data manager allows the programmer to attach observers that need to listen to figure selection changes.
+Second, the \textit{Undo} concern is a command pattern that is used by the a number of components in JHotDraw that supports the undo functionality.
+For our implementation we use a new data manager that implements the \textit{undoable} functionality on commands.
+This way the undo concern is defined in the data manager and any command that needs this functionality uses the proper factory.
+
 The choice of those concerns has been made on purpose, since those are the concerns that AJHotDraw refactors using AspectJ and \ac{aop} techniques.
 For the refactoring we used our implementation of managed data in Java, presented in the previous chapter.
 Therefore, by having three versions of the same application (JHotDraw) and by solving the same concerns we will be able to perform a comparative evaluation.
@@ -362,9 +369,9 @@ Most importantly, the behavior of the application remained equivalent to the ori
 ManagedDataJHotDraw conserved the behavior of JHotDraw, which we evaluated through its own test suite along with manual tests.
 Interestingly, by stacking data managers we manage to define aspects of our data in a modular way.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Undo Concern
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{ChangeAttributeCommand: Undo Concern}
 The ``Undo'' functionality is used in several places in the original JHotDraw.
 Marin's fan-in analysis \cite{marin2004identifying}, identified about 30 undo activities defined for various elements of JHotDraw. 
@@ -578,8 +585,6 @@ Using this tool we managed to collect the following metrics\footnote{
 	The tool uses different acronyms \cite{chidamber1994metrics} for the metrics: \ac{cbc} is CBO, \ac{woc} is \ac{wmc} and \ac{lcoo} is \ac{lcom}.
 }: \ac{loc}, \ac{woc}, \ac{cbc}, \ac{lcoo} and \ac{dit}.
 Table \ref{tbl:metrics} presents the metrics collected for the systems under evaluation.
-The detailed results are presented in Appendix \ref{Metrics Results}. 
-These results are discussed in the following chapter.
 
 \begin{table} [H]
 \resizebox{\textwidth}{!}{%
@@ -602,13 +607,11 @@ These results are discussed in the following chapter.
 \label{tbl:metrics}
 \end{table}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Claims
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \section{Claims}
-% We claim that our framework successfully performed aspect refactoring of the \texttt{FigureSelectionListener} concern in JHotDraw.
-% Furthermore, it evolved the pointcut concept of \ac{aop} by adding conditions on them.
-% This leads to a solution that focuses on behavior conservation, lost in the case of the \ac{aop} refactoring.
-% Moreover, we claim that our framework also performed a successful aspect refactoring of the \texttt{ChangeAttributeCommand} undo concern in JHotDraw.
-% Additionally, it solves the \ac{aop}'s problem of useing naming conventions for the nested classes.
-% Finally, we have collected a set of metrics in order to assess our results and compare them with the original.
+As presented in the table, the \textit{coupling} metric of the two systems is very similar. 
+In the case of MDJHotDraw the number has increased since the data managers are coupled with their specifications but not with the application, while in the original JHotDraw the crosscutting concerns are coupled with the application components.
+The \textit{size} of the two systems is also similar. 
+For MDJHotDraw it is slightly bigger because of the migration to managed data.
+The \textit{cohesion} of MDJHotDraw is moderately smaller since during the managed data migration we have tried to improve cohesion explicitly.
+Finally, the \textit{separation of concerns} of MDJHotDraw is notably higher.
+This is because the concern code is not scattered and tangled like in the JHotDraw case, but it has moved to data managers.
+The detailed results are presented in Appendix \ref{Metrics Results} and discussed in the following chapter.

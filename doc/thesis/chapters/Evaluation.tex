@@ -153,11 +153,44 @@ Following the similar design we managed to achieve the same level of unpluggabil
 However, in this case the methods related to the crosscutting functionality of undo have not been defined by top level classes but by a set of stacked data mangers.
 Additionally, in managed data the \texttt{UndoActivity} is not defined based on naming conventions like in AspectJ, but through a nested private class definition dedicated to the command-specific data manager.
 
+The overall assessment of the modularity properties presented in this section is summarized in Table \ref{tbl:Modularity Properties}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lcc@{}}
+	\toprule
+	\textbf{Modularity Property} & \textbf{AJHotDraw} & \textbf{MDJHotDraw} \\ \midrule
+	\textbf{Locality} 					& + & ++ \\
+	\textbf{Reusability} 				& + & ++ \\
+	\textbf{(Un)pluggability} 			& - & +  \\
+	\textbf{Composition Transparency} 	& + & +  \\ 
+	\bottomrule
+\end{tabular}
+\caption{Modularity Properties}
+\label{tbl:Modularity Properties}
+\end{table}
+
 \section{Discussion}\label{Evaluation Discussion}
-Conclusively, managed data is able to successfully handle aspects in a system.
+In this section we provide a discussion of the overall findings during the development of this thesis.
+
+\subsection{Managed Data Implementation}
+One of the advantages of our managed data framework is the simplicity of its usage. 
+The programmer simply needs to define the schemas, followed by their factories and data managers, can easily write a program using them.
+The framework takes care of the \textit{parsing}, \textit{interpretation}, \textit{type checking} and any other underline mechanisms.
+Moreover, it uses Java concepts, which makes it safer in terms of type checking and definitions resulting to an easier, for Java developers, adaptation.
+Furthermore, by being a self-describing language it is no longer bounded to the Java constructs transforming everything into managed data.
+Finally, the effortless mechanism of stacking data managers makes it significantly modular on every level, meta or not.
+
+However, there is a number of implementation issues described in Section \ref{Implementation Issues}.
+
+Another issue that arises is that integration in existing systems is complicated considering every model has to be redefined as a schema and every functionality has to be reimplemented in data managers.
+An existing system integration is presented in Chapter \ref{AspectRefactoring}.
+
+\subsection{Managed Data Evaluation}
+Managed data is able to successfully handle aspects in a system.
 However, the following issues should be acknowledged:
 
-\subsection{Modularity}
+\subsubsection{Modularity}
 First, the modularity of data managers and their abstract way of data manipulation makes the implementation of aspects very simple and extensible.
 More specifically, implementing \textit{components} (non-crosscutting concerns) as managed data and \textit{aspects} (crosscutting concerns) by using specific data managers, one completely separates the two concepts.
 Contrary to the \ac{aop} version, managed data does not couple the aspects with the application's components code.
@@ -165,7 +198,7 @@ The aspects are reusable data managers that can be plugged / unplugged and used 
 Certainly, there are application specific parts, such as pointcut definitions; however, by \textit{stacking} data managers we can support the application specific pointcuts at the lowest level.
 As a result, we can claim that managed data does not entirely solve the \textbf{evolution paradox} \cite{tourwe2003existence}, but it exceeds \ac{aop} system in modularity.
 
-\subsection{Flexibility}
+\subsubsection{Flexibility}
 Managed data can be used similarly to \ac{aop}; however, the flexibility of the language takes it a step further in some cases.
 The design of the application is not bounded by the language, like in AspectJ's case.
 
@@ -183,7 +216,7 @@ Since we have defined our data, its structure is accessible via the \texttt{sche
 Moreover, private classes in managed data is as easy to be defined as in the original version since \texttt{MObject} is just a class.
 Therefore, no code conventions are needed.
 
-\subsection{Performance}
+\subsubsection{Performance}
 In practice, since managed data has been implemented using Java reflection and Dynamic Proxies, it is unfavorable for applications that need performance to use it.
 \ac{aop}, and specifically the \textit{aspect weaving} process, provides an oblivious way of dealing with aspects.
 The weaver produces static Java code, which is then compiled in \ac{jvm} and can be optimized.
@@ -192,7 +225,7 @@ More specifically, even though the HotSpot \ac{jvm} has one of the best just-in-
 Thus, \ac{aop} performance is much higher than managed data.
 % A simple demonstration of the performance overhead introduced by managed data can be seen in Appendix \ref{appdx:PerformanceOverhead}.
 
-\subsection{Migration and Integration}
+\subsubsection{Migration and Integration}
 Finally, both the migration and the integration of an existing application in the two cases has some trade-offs.
 
 On one hand, the integration of an \ac{aop} version requires a whole new language (e.g. AspectJ) in line with the new concepts of the \ac{aop} paradigm.
@@ -211,9 +244,9 @@ As seen, the framework has some limitations such as Java keywords and encapsulat
 However, such definitions could be defined using annotations in future work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Threads to validity
+% Threats to validity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Threads to Validity}
+\section{Threats to Validity}
 In this section we present a set of validity criteria including \textit{Construct}, \textit{Internal}, \textit{External} validity and \textit{Reliability} \cite{easterbrook2008selecting}.
 % Construct Validity: Efficient interpretation of the results 
 First, regarding the construct validity of this research, one should keep in mind that our results are compared to another research's findings. 
@@ -230,6 +263,11 @@ In our case we only refactored a part of the undo concern, in order to show how 
 % Metrics:
 We should keep in mind that the metrics we used have been introduced for both \ac{oop} and \ac{aop} systems.
 However, in this thesis we used them in managed data implementation. 
+% Tests
+Furthermore, in order to evaluate the behavioral conservation of our refactoring we used JHotDraw's test suite.
+Even though our code passes the tests, the suite is not complete and breaks in some files, even in the original version.
+We proposed the creation of a new test suite, like AJHotDraw did with the TestJHotDraw project, as a potential solution to this problem.
+
 % #Important
 Additionally, one can argue that JHotDraw's \ac{ccc} could be refactored simply by using dynamic proxies, without the whole Managed Data modeling structure.
 This is something that can be researched more; however, managed data besides the first class modeling they provide, they also have a modular design of aspect implementation.
