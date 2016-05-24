@@ -3,6 +3,7 @@ package nl.cwi.examples.state_machine;
 import nl.cwi.examples.state_machine.schemas.*;
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.data_manager.IDataManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
@@ -17,52 +18,64 @@ public class StateMachineExample {
     public final static String CLOSED_STATE     = "Closed";
     public final static String LOCKED_STATE     = "Locked";
 
-    public final static String OPEN_TRANSITION  = "open_door";
-    public final static String CLOSE_TRANSITION = "close_door";
-    public final static String LOCK_TRANSITION  = "lock_door";
-    public final static String UNLOCK_TRANSITION = "unlock_door";
+    public final static String OPEN_EVENT   = "open_door";
+    public final static String CLOSE_EVENT  = "close_door";
+    public final static String LOCK_EVENT   = "lock_door";
+    public final static String UNLOCK_EVENT = "unlock_door";
 
     public static void main(String[] args) {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         final Schema stateMachineSchema =
                 SchemaLoader.load(schemaFactory, Machine.class, State.class, Transition.class);
-        final BasicDataManager basicDataManagerForStateMachines = new BasicDataManager();
-        final StateMachineFactory stateMachineFactory = basicDataManagerForStateMachines.factory(StateMachineFactory.class, stateMachineSchema);
+        final IDataManager dataManager = new BasicDataManager();
+        final StateMachineFactory stateMachineFactory =
+                dataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
+        doors(stateMachineFactory);
+    }
+
+    private static void doors(StateMachineFactory stateMachineFactory) {
         // ========================================================
         // Door State Machine definition
         final Machine doorStateMachine = stateMachineFactory.Machine();
 
         // Open State definition
-        final State openState = stateMachineFactory.State(OPEN_STATE);
+        final State openState = stateMachineFactory.State();
+        openState.name(OPEN_STATE);
         openState.machine(doorStateMachine);
 
         // Closed State definition
-        final State closedState = stateMachineFactory.State(CLOSED_STATE);
+        final State closedState = stateMachineFactory.State();
+        closedState.name(CLOSED_STATE);
         closedState.machine(doorStateMachine);
 
         // Locked State definition
-        final State lockedState = stateMachineFactory.State(LOCKED_STATE);
+        final State lockedState = stateMachineFactory.State();
+        lockedState.name(LOCKED_STATE);
         lockedState.machine(doorStateMachine);
 
         // Close Transition
-        final Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
+        final Transition closeTransition = stateMachineFactory.Transition();
+        closeTransition.event(CLOSE_EVENT);
         closeTransition.from(openState);
         closeTransition.to(closedState);
 
         // Open Transition
-        final Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
+        final Transition openTransition = stateMachineFactory.Transition();
+        openTransition.event(OPEN_EVENT);
         openTransition.from(closedState);
         openTransition.to(openState);
 
         // Lock Transition
-        final Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
+        final Transition lockTransition = stateMachineFactory.Transition();
+        lockTransition.event(LOCK_EVENT);
         lockTransition.from(closedState);
         lockTransition.to(lockedState);
 
         // Unlock Transition
-        final Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
+        final Transition unlockTransition = stateMachineFactory.Transition();
+        unlockTransition.event(UNLOCK_EVENT);
         unlockTransition.from(lockedState);
         unlockTransition.to(closedState);
 
@@ -70,9 +83,9 @@ public class StateMachineExample {
         doorStateMachine.start(closedState);
 
         interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-                LOCK_TRANSITION,
-                UNLOCK_TRANSITION,
-                OPEN_TRANSITION)));
+                LOCK_EVENT,
+                UNLOCK_EVENT,
+                OPEN_EVENT)));
     }
 
     private static void interpretStateMachine(Machine stateMachine, List<String> commands) {

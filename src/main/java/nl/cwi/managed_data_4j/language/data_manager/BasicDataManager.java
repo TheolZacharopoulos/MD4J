@@ -38,12 +38,12 @@ public class BasicDataManager implements IDataManager {
 
         // add the extra proxy interfaces
         for (Class<?> proxyInterface : additionalInterfaces) {
-            this.addProxiedInterface(proxyInterface);
+            this.addProxyInterface(proxyInterface);
         }
 
         // add the klass interfaces of the schema
         for (Klass klass : schema.klasses()) {
-            this.addProxiedInterface(klass.classOf());
+            this.addProxyInterface(klass.classOf());
         }
 
         return (T) Proxy.newProxyInstance(
@@ -113,9 +113,17 @@ public class BasicDataManager implements IDataManager {
      *
      * @param newInterface the interface to be added in the proxy interfaces list.
      */
-    private void addProxiedInterface(Class<?> newInterface) {
+    private void addProxyInterface(Class<?> newInterface) {
         if (newInterface != null && !PrimitivesManager.getInstance().isPrimitiveClass(newInterface)) {
             additionalInterfaces.add(newInterface);
         }
+    }
+
+    protected Class<?>[] pushKlassToProxyInterfaces(Class<?> push) {
+        Class<?>[] array = additionalInterfaces.toArray(new Class<?>[additionalInterfaces.size()]);
+        Class<?>[] longer = new Class<?>[array.length + 1];
+        System.arraycopy(array, 0, longer, 0, array.length);
+        longer[array.length] = push;
+        return longer;
     }
 }
