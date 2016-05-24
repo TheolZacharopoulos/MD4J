@@ -119,11 +119,10 @@ public class BasicDataManager implements IDataManager {
         }
     }
 
-    protected Class<?>[] pushKlassToProxyInterfaces(Class<?> push) {
-        Class<?>[] array = additionalInterfaces.toArray(new Class<?>[additionalInterfaces.size()]);
-        Class<?>[] longer = new Class<?>[array.length + 1];
-        System.arraycopy(array, 0, longer, 0, array.length);
-        longer[array.length] = push;
+    protected Class<?>[] pushKlassToProxyInterfaces(Class<?> push, Class<?>... additional) {
+        Class<?>[] longer = new Class<?>[additional.length + 1];
+        System.arraycopy(additional, 0, longer, 0, additional.length);
+        longer[additional.length] = push;
         return longer;
     }
 }

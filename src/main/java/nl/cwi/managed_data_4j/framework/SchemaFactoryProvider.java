@@ -22,11 +22,16 @@ public class SchemaFactoryProvider {
             final Schema bootstrapSchema = SchemaLoader.bootLoad();
             final BasicDataManager basicFactory = new BasicDataManager();
 
-            // schema factory made from bootstrapping
-            final SchemaFactory bootStrapSchemaFactory = basicFactory.factory(SchemaFactory.class, bootstrapSchema);
+            final SchemaFactory schemaFactory = basicFactory.factory(SchemaFactory.class, bootstrapSchema);
 
-            schemaSchema = SchemaLoader.load(
-                bootStrapSchemaFactory, Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
+            final Schema realSchemaSchema = SchemaLoader.load(
+                    schemaFactory,
+                    Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
+
+            Klass realSchemaKlass = realSchemaSchema.klasses().stream().filter(klass -> "Schema".equals(klass.name())).findFirst().get();
+            realSchemaSchema.schemaKlass(realSchemaKlass);
+
+            schemaSchema = realSchemaSchema;
         }
         return schemaSchema;
     }

@@ -12,7 +12,7 @@ public class LockableDataManager extends BasicDataManager {
     public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
 
         // Add the Lockable class in order to use it in the managed object.
-        return super.factory(factoryClass, schema, pushKlassToProxyInterfaces(Lockable.class));
+        return super.factory(factoryClass, schema, pushKlassToProxyInterfaces(Lockable.class, additionalInterfaces));
     }
 
     @Override

@@ -46,6 +46,9 @@ public class GeometryExample2 {
             schemaFactory,
             Schema.class, Type.class, Primitive.class, Klass.class, Field.class, Primitives.class);
 
+        Klass realSchemaKlass = realSchemaSchema.klasses().stream().filter(klass -> "Schema".equals(klass.name())).findFirst().get();
+        realSchemaSchema.schemaKlass(realSchemaKlass);
+
         DebugUtils.debugSchema(bootstrapSchema);
         System.out.println("=======================================");
         DebugUtils.debugSchema(realSchemaSchema);
@@ -148,7 +151,7 @@ public class GeometryExample2 {
 
         try {
             lockablePoint.x(2); // Should throw here since its immutable.
-        } catch (IllegalAccessError e) {
+        } catch (IllegalStateException e) {
             System.out.println("IllegalAccessError: " + e.getMessage());
         }
         System.out.println(lockablePoint.x());

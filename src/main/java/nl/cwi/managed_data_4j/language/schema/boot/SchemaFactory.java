@@ -31,11 +31,4 @@ public interface SchemaFactory extends IFactory {
      * Builds a new empty Field
      */
     Field Field();
-
-    /**
-     * Builds a new Field with given the following arguments.
-     * Consider that those arguments are given with alphabetical order which is
-     * used as the default order standard for initialization in this framework.
-     */
-    Field Field(Boolean contain, Boolean key, Boolean many, String name, Boolean optional);
 }

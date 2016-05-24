@@ -120,8 +120,8 @@ public class GeometryExample {
         ((Lockable)lockableObservablePoint).lock();
         try {
             lockableObservablePoint.x(2); // Should throw here since its immutable.
-        } catch (IllegalAccessError e) {
-            System.out.println("IllegalAccessError: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.out.println("IllegalStateException: " + e.getMessage());
         }
         System.out.println(lockableObservablePoint.x());
 
