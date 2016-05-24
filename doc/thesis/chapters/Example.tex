@@ -4,9 +4,20 @@
 % Chapter: Example Application
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Example Application: State Machine}\label{Example Application}
+
+\section{Overview}
 In this chapter in order to show how our managed data implementation works in practice, and in particular in terms of aspect refactoring, we present an example showcase.
 A detailed demonstration of managed data is presented in Chapter \ref{Implementation}; however, in this chapter we focus on its usage.
+
+% What am I going to do
 The example showcase consists of a very simple state machine application.
+First, we present how to define the schemas of the state machine by using our definition language, the Java interfaces.
+After that, we show how to create factories that build instances of data described by our schemas.
+Next, we define a basic data manager that handles the fundamental functionalities of the state machine's instances.
+In addition, we also define a simple program that uses these components in order to define and interpret a state machine.
+Finally, having a simple application and a basic data manager, we show that by defining a new data manager the programmer can implement aspects on it.
+The aspect is implemented in the new data manager, without scattering concern code on the basic application.
+
 A similar example is presented in Enso paper as a showcase for its Object Grammar capabilities \cite{storm2012object}.
 
 Consider the requirements of the state machine as the following: 
@@ -33,16 +44,8 @@ To implement this we need to define the models, interpret the definition given f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Schemas definition}
 As a first step, all the models of the state machine program need to be defined. 
-An object diagram is illustrated in Figure \ref{fig:State_machine_object}.
 
-\begin{figure}[H]
-	\centering
-  	\fbox{\includegraphics[width=.50\textwidth]{figures/State_machine_object_diagram.png}}
-  	\caption{Basic door state machine object diagram}
-  	\label{fig:State_machine_object}
-\end{figure}
-
-In our implementation we define schemas using Java interfaces with a set of meta-data described with Java annotations.
+In our implementation we define schemas using Java interfaces with a set of meta data described with Java annotations.
 Therefore, as extracted from the requirements we need \texttt{Machine} (Listing \ref{lst:Machine_Schema}), \texttt{State} (Listing \ref{lst:State_Schema}) and \texttt{Transition} (Listing \ref{lst:Transition_Schema}) schemas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,7 +56,6 @@ public interface Machine extends M {
 
 	State current(State... currentState);
 
-	@Contain
 	Set<State> states(State... states);
 }
 	\end{lstlisting}
@@ -61,11 +63,20 @@ public interface Machine extends M {
 	\label{lst:Machine_Schema}
 \end{sourcecode}
 
-As it can be seen in Listing \ref{lst:Machine_Schema}, the \texttt{Machine} schema definition requires a \texttt{start}ing state, the \texttt{current} state of the machine and a set of \texttt{states} that the machine can be into at each time.
-Note that the \texttt{@Contain} annotation suggests that the \texttt{states} field is part of the spine tree and it is not a cross-reference.
-This will be further explained in Chapter \ref{Implementation}.
+As it can be seen in Listing \ref{lst:Machine_Schema}, the \texttt{Machine} schema definition interface extends the \texttt{M} interface.
+This describes that this particular interface is a schema definition.
+The \texttt{M} interface has a \texttt{schemaKlass} field that is used by the framework to interpret the schema.
+Section \ref{M} explains \texttt{M}'s existence in detail.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Since we use Java interfaces for our schema definition language, we need a way to define fields and meta data for these field.
+For that, we use Java methods for field definitions and Java annotations for meta data on those fields.
+
+As it can be seen in Listing \ref{lst:Machine_Schema}, the \texttt{Machine} schema definition requires a \texttt{start}ing state, the \texttt{current} state of the machine and a set of \texttt{states} that the machine can be into at each time.
+
+Note that for convention, we use a single field (method) definition for both \textit{setter} and \textit{getter}.
+More specifically, since the method accepts varargs it can be used either without arguments as a \textit{getter}, or with an argument as a \textit{setter}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface State extends M {
@@ -75,32 +86,29 @@ public interface State extends M {
 	@Inverse(other = Machine.class, field = "states")
 	Machine machine(Machine... machine);
 
-	@Contain
-	Set<Transition> out(Transition... transition);
+	List<Transition> out(Transition... transition);
 
-	@Contain
-	Set<Transition> in(Transition... transition);
+	@Inverse(other = State.class, field = "out")
+	List<Transition> in(Transition... transition);
 }
 	\end{lstlisting}
 	\caption{The State Schema}
 	\label{lst:State_Schema}
 \end{sourcecode}
 
-For the \texttt{State} definition, Listing \ref{lst:State_Schema}, we need a \texttt{name} field, which represents the name of the state. 
-This \texttt{name} field has been annotated with the \texttt{@Key} annotation, which indicates uniqueness. 
-The states field of Machine can be indexed by name.
-Moreover, the schema includes a set of \texttt{in} and \texttt{out} \texttt{Transition}s.
-Since those two fields are of type \texttt{Set}, one field of the \texttt{Transition} schema has to be marked as \textit{key}.
-In this case, it is the \texttt{name} field (Line \ref{line:transition_key} Listing \ref{lst:Transition_Schema}).
-Finally, the field \texttt{machine} represents the state machine that the state is part of. 
+For the \texttt{State} schema definition, Listing \ref{lst:State_Schema}, we need a \texttt{name} field, which represents the name of the state. 
+This \texttt{name} field has been annotated with the \texttt{@Key} annotation, which indicates uniqueness when the object is used in a \texttt{Set}. 
+The \texttt{states} field of Machine can be indexed by name.
+Moreover, the schema includes a list of \texttt{in} and \texttt{out} \texttt{Transition}s.
+Next, the field \texttt{machine} represents the state machine that the state is part of. 
 As it can be seen in the schema definition, Listing \ref{lst:State_Schema}, the \texttt{machine} field has been annotated with \texttt{@Inverse}, which indicates that this field is a reference to a field of another schema.
 In this case, the \texttt{machine} field of \texttt{State} schema is a reference to \texttt{states} field of \texttt{Machine} schema.
+Finally, the same holds for the \texttt{in} field, which is inverse of \texttt{out}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
 public interface Transition extends M {
-	@Key 					|\label{line:transition_key}| 
 	String event(String... event);
 
 	@Inverse(other = State.class, field = "out")
@@ -114,7 +122,7 @@ public interface Transition extends M {
 	\label{lst:Transition_Schema}
 \end{sourcecode}
 
-Finally, in the \texttt{Transition} schema definition, Listing \ref{lst:Transition_Schema}, we need an \texttt{event} that corresponds to the event of the transition and is the \textbf{key} of that schema.
+Finally, in the \texttt{Transition} schema definition, Listing \ref{lst:Transition_Schema}, we need an \texttt{event} that corresponds to the event of the transition.
 The \texttt{from} and \texttt{to} fields represent the state that the machine changes from and to respectively.
 However, these are just references to the \texttt{State} schema (Listing \ref{lst:State_Schema}).
 The \textit{parsing} of schemas is performed through a schema loading process presented in Section \ref{sec:Schema Loading}.
@@ -122,8 +130,10 @@ The \textit{parsing} of schemas is performed through a schema loading process pr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Factory definition}
 Now that we have our schemas, we need a way to build instances of managed objects that these schemas describe. 
-In Java to create instances of these schemas as managed data we need to define a factory, which creates managed data instances (managed objects) for each of these schemas \ref{lst:StateMachineFactory}.
+In Java, to create instances of these schemas as managed data, we need to define a type of factory, which creates managed data instances (managed objects) for each of these schemas.
 Note that the method definitions work as \texttt{Constructors} of managed objects.
+Listing \ref{lst:StateMachineFactory} illustrates a type of this factory for our state machine.
+This type of factory class is going to be used by our data manager to (reflectively) analyze it and provide an instance of it that creates instances of managed objects.
 
 \begin{sourcecode}[H]
 	\begin{lstlisting}[language=Java,escapechar=|]
@@ -141,80 +151,96 @@ public interface StateMachineFactory extends IFactory {
 \section{Basic Data Manager}
 As mentioned above, in order to interpret and manage the defined schemas of data we need data managers. 
 Our framework includes the definition of a \texttt{Basic data manager} that is responsible of interpreting a schema definition to instances of \textit{managed object}s.
-Conclusively, in order to make a \textit{managed object}, the data manager needs its schema definition (the interfaces that define the schemas) and the factory (the interface that defines the constructors of the schemas).
+Conclusively, in order to make a \textit{managed object}, the data manager needs its schema definition (the interfaces that define the schemas) and the factory class (the interface that defines the constructors of the schemas).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A simple program}
-In the case of a simple program without any concerns, we have to use our schemas to define the state machine, parse it, interpret it and finally use it.
-The definition of the door state machine is given in Listing \ref{lst:Door_state_machine} in Java.
+In the case of a simple program without any concerns, we have to use our schemas to define the state machine, parse it, interpret it and finally use it. A general interpreter for state machines is shown in Listing \ref{lst:Door_state_machine_interpreter}.
 
-In practice, after defining our schemas the schema loader parse them and provides us with schema instance. 
-Furthermore, the basic data manager provides us with mechanisms that interpret the managed object based on \texttt{stateMachineSchema}, shown in Line \ref{line:state_meaning_full_code}.
-The basic data manager also supports the field accessors of those data, namely, the setters and getters of their values.
-An basic interpreter for the state machine is shown in Line \ref{line:state_machine_interpreter}.
-As it can be seen, the factory is used to create managed objects.
-The \textit{setup} of the fields is done automatically by the data manager who is responsible for the managed object interpretation.
-
-\begin{sourcecode}
+\begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-public class StateMachineExample {
-	public static void main(String[] args) {
-		SchemaFactory schemaFactory = ...; // get schemaFactory from framework
-		Schema stateMachineSchema = SchemaLoader // load state machine schema
-			.load(schemaFactory, Machine.class, State.class, Transition.class); |\label{line:state_schemaMachineSchema}|
-
-		BasicDataManager basicDataManager = new BasicDataManager(); |\label{line:state_meaning_full_code}|
-		StateMachineFactory stateMachineFactory = // create factory with data manager
-			basicDataManager.factory(StateMachineFactory.class, stateMachineSchema);
-
-		Machine doorStateMachine = stateMachineFactory.Machine(); |\label{line:state_machine_creation_basic}|
-
-		State openState = stateMachineFactory.State(OPEN_STATE);
-		openState.machine(doorStateMachine);
-
-		State closedState = stateMachineFactory.State(CLOSED_STATE);
-		closedState.machine(doorStateMachine);
-
-		State lockedState = stateMachineFactory.State(LOCKED_STATE);
-		lockedState.machine(doorStateMachine);
-
-		Transition closeTransition = stateMachineFactory.Transition(CLOSE_TRANSITION);
-		closeTransition.from(openState); closeTransition.to(closedState);
-
-		Transition openTransition = stateMachineFactory.Transition(OPEN_TRANSITION);
-		openTransition.from(closedState); openTransition.to(openState);
-
-		Transition lockTransition = stateMachineFactory.Transition(LOCK_TRANSITION);
-		lockTransition.from(closedState); lockTransition.to(lockedState);
-
-		Transition unlockTransition = stateMachineFactory.Transition(UNLOCK_TRANSITION);
-		unlockTransition.from(lockedState); unlockTransition.to(closedState);
-
-		doorStateMachine.start(closedState);
-		interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-				LOCK_TRANSITION,
-				UNLOCK_TRANSITION,
-				OPEN_TRANSITION)));
-		}	
-	}
-
-	private static void interpretStateMachine(
-			Machine stateMachine, List<String> commands) 
-	{ |\label{line:state_machine_interpreter}|
-	    stateMachine.current(stateMachine.start());
-		for (String event : commands) {
-			for (Transition trans : stateMachine.current().out()) {
-				if (trans.event().equals(event)) {
-					stateMachine.current(trans.to());
-					break;
-				}
+void interpretStateMachine(Machine stateMachine, List<String> commands) {
+	stateMachine.current(stateMachine.start());
+	for (String event : commands) {
+		for (Transition trans : stateMachine.current().out()) {
+			if (trans.event().equals(event)) {
+				stateMachine.current(trans.to());
+				break;
 			}
+		}
 	}
 }
 	\end{lstlisting}
-	\caption{Door state machine}
+	\caption{Door State Machine Interpreter}
+	\label{lst:Door_state_machine_interpreter}
+\end{sourcecode}
+
+The definition of the door state machine is shown in Listing \ref{lst:Door_state_machine}.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+void doors(StateMachineFactory smFactory) {
+	final Machine doorStateMachine = smFactory.Machine();
+
+	final State openState = stateMachineFactory.State();
+	openState.name(OPEN_STATE); openState.machine(doorStateMachine);
+
+	final State closedState = stateMachineFactory.State();
+	closedState.name(CLOSED_STATE); closedState.machine(doorStateMachine);
+
+	final State lockedState = stateMachineFactory.State();
+	lockedState.name(LOCKED_STATE); lockedState.machine(doorStateMachine);
+
+	final Transition closeTransition = stateMachineFactory.Transition();
+	closeTransition.event(CLOSE_EVENT);
+	closeTransition.from(openState); closeTransition.to(closedState);
+
+	final Transition openTransition = stateMachineFactory.Transition();
+	openTransition.event(OPEN_EVENT);
+	openTransition.from(closedState); openTransition.to(openState);
+
+	final Transition lockTransition = stateMachineFactory.Transition();
+	lockTransition.event(LOCK_EVENT);
+	lockTransition.from(closedState); lockTransition.to(lockedState);
+
+	final Transition unlockTransition = stateMachineFactory.Transition();
+	unlockTransition.event(UNLOCK_EVENT);
+	unlockTransition.from(lockedState); unlockTransition.to(closedState);
+
+	doorStateMachine.start(closedState);
+
+	interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
+		LOCK_EVENT,
+		UNLOCK_EVENT,
+		OPEN_EVENT)));
+}
+	\end{lstlisting}
+	\caption{Door State Machine Definition}
 	\label{lst:Door_state_machine}
 \end{sourcecode}
+
+In practice, after defining our schemas, the schema loader parses them and provides us with a schema instance.
+The schema instance can then used by a data manager in order to create a \texttt{StateMachineFactory} instance. 
+A factory instance is created by a basic data manager that provides us with mechanisms that interpret the managed object based on \texttt{stateMachineSchema}.
+Listing \ref{lst:Door_state_machine_initialization} shows this initialization process.
+
+\begin{sourcecode}
+	\begin{lstlisting}[language=Java, escapechar=|]
+Schema stateMachineSchema =
+	SchemaLoader.load(schemaFactory, Machine.class, State.class, Transition.class);
+IDataManager dataManager = new BasicDataManager(); // basic
+StateMachineFactory stateMachineFactory = 
+	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
+
+doors(stateMachineFactory);
+	\end{lstlisting}
+	\caption{Door State Machine Initialization}
+	\label{lst:Door_state_machine_initialization}
+\end{sourcecode}
+
+The basic data manager also supports the field accessors of those data, namely, the setters and getters of their values.
+As it can be seen, the factory is used to create managed objects.
+The \textit{setup} of the fields is done automatically by the data manager who is responsible for the managed object interpretation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -222,8 +248,23 @@ public class StateMachineExample {
 \section{Logging crosscutting concern}
 Now consider a case where we want to add a crosscutting concern at the previous door state machine implementation.
 A simple concern could be \textit{logging}, which would log every change in the ``current'' state of the door state machine.
+Listing \ref{lst:Logging Concern Definition} shows the definition of the logging concern in current states.
 
-In order to implement this concern we need a mechanism that continuously observes the changes (transitions) of the machine's \texttt{current} state and reacts accordingly.
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+public class StateMachineConcerns {
+	public static void logCurrentStateChanges(Object obj, String name, Object state) {
+		if (name.equals("current")) {
+			System.out.println(" > State changed to " + ((State)state).name());
+		}
+	}
+}
+	\end{lstlisting}
+	\caption{Logging Concern}
+	\label{lst:Logging Concern Definition}
+\end{sourcecode}
+
+In order to attach this concern to our machine we need a mechanism that continuously observes the changes (transitions) of the machine's states and reacts accordingly.
 Usually, this would lead to scattered logging code in the interpretation method or the models themselves (the machine model).
 This is where data managers come to the rescue.
 A data manager can implement concerns as modular aspects without scattering code to the components.
@@ -232,39 +273,52 @@ Therefore, by implementing our concern with a data manager we can keep the compo
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Observable Data Manager}
-Regarding the continuous \textit{observation} of our state machine's ``current'' state changes, we need a data manager that observes these changes in a managed object and executes actions defined by the programmer.
-Particularly, it has to observe the \texttt{Machine}'s current \texttt{State} field and perform logging in case this field's value changes.
+Regarding the continuous \textit{observation} of our state machine's state changes, we need a data manager that observes these changes in a managed object and executes actions defined by the programmer.
+More specifically, it has to observe the \texttt{Machine}'s current \texttt{State} field and perform logging in case this field's value changes.
 This data manager creates concrete managed objects as subjects, where observers can be attached in order to be notified of changes and execute an action.
 It is important to mention that this new data manager has to inherit the basic one in order to include the basic functionality of schema interpretation and field access.
 This leads to a \textbf{stack} of two data managers, each one adding a new aspect of data in a modular way.
 
-In order to define the specifications of our new data manager we first need to define how it is going to be used (its API).
-First, we need to attach the \textit{logging} concern to our \texttt{Machine} object. 
+In order to define the functionalities of our new data manager we first need to define how it is going to be used.
+First, during the initialization of our schema factory, we need to use our new data manager, namely \texttt{ObservableDataManager}.
+As Listing \ref{lst:Door_state_machine_initialization_observable} shows, we change only the data manager object definition in order to generate a new \texttt{stateMachineFactory}.
+The new \texttt{stateMachineFactory} instance will create instances that are \texttt{Observable}.
+
+\begin{sourcecode} [H]
+	\begin{lstlisting}[language=Java, escapechar=|]
+IDataManager dataManager = new ObservableDataManager(); // New data manager
+StateMachineFactory stateMachineFactory =
+	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
+
+doors(stateMachineFactory);
+	\end{lstlisting}
+	\caption{Door State Machine Initialization with Observable Data Manager}
+	\label{lst:Door_state_machine_initialization_observable}
+\end{sourcecode}
+
+The next step it to attach the \textit{logging} concern to our \texttt{Machine} object. 
 This is going to be executed in case the \texttt{current} state changes.
 The client code can be seen in Listing \ref{lst:StateMachineMonitoringConcerns}.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-ObservableDataManager observableDataManager = new 	ObservableDataManager();
-StateMachineFactory stateChangesMachineFactory =
-	observableDataManager.factory(StateMachineFactory.class, stateMachineSchema);
+void doors(StateMachineFactory stateMachineFactory) {
+	final Machine doorStateMachine = stateMachineFactory.Machine();
 
-Machine doorStateMachine = stateChangesMachineFactory.Machine();
-
-((Observable) doorStateMachine) // Add logging concern on current field changes
-	.observe((obj, fieldName, newState) -> { |\label{line:state_machine_monitor}|
-		if (fieldName.equals("current")) {
-			System.out.println(" > State changed to " + ((State)newState).name());
-		}
-	});
+	// Add logging concern on the state machine
+	((Observable) doorStateMachine)
+			.observe(StateMachineConcerns::logCurrentStateChanges);
+	// ...
+}
 	\end{lstlisting}
-	\caption{Door state machine with logging concern}
+	\caption{Door State Machine with Logging Concern}
 	\label{lst:StateMachineMonitoringConcerns}
 \end{sourcecode}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Data Manager Implementation}
-Now that we have specified the API of our data manager, we need to implement it.
+Now that we have specified how our \textit{Observable} data manager is used and what it does, we need to implement it.
+
 First, we need to define our specifications.
 As it can be seen from Listing \ref{lst:StateMachineMonitoringConcerns}, the \texttt{ObservableDataManager} provides a managed object with the method \texttt{observe}, which adds observers on field changes.
 
@@ -297,41 +351,20 @@ public interface Observable {
 \end{sourcecode}
 
 This interface describes the specification for our data manager.
-The proxy factory code is shown in Listing \ref{lst:ObservableDataManager} and its MObject implementation in Listing \ref{lst:ObservableMObject}.
-
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-public class ObservableDataManager extends BasicDataManager {
-
-    @Override
-    public <T extends IFactory> T factory(
-    	Class<T> moSchemaFactoryClass, Schema schema, Class<?>... proxiedInterfaces) 
-    {
-        return super.factory(moSchemaFactoryClass, schema, Observable.class);
-    }
-
-    @Override
-    protected MObject createManagedObject(Klass klass, Object... _inits) {
-        return new ObservableMObject(klass, _inits);
-    }
-}
-	\end{lstlisting}
-	\caption{ObservableDataManager - Proxy factory}
-	\label{lst:ObservableDataManager}
-\end{sourcecode}
-
-Note that the \texttt{ObservableDataManager} adds the \texttt{Observable.class} in its proxy interfaces.
-By doing this, the managed object can be ``casted'' as an \texttt{Observable} and adopt the data manager's functionality, as shown in the client code Listing \ref{lst:StateMachineMonitoringConcerns}.
+Finally, Listing \ref{lst:ObservableMObject} shows the data manager implementation.
+The observable data manager keeps a list of \texttt{Observe} actions.
+The programmer can add actions by using the \texttt{observe} method.
+Every time a field's value changes, calling the \texttt{\_set} method of the \texttt{MObject}, the list of the observer actions is executed.
+Note that this data manager is general, it does not exclusively work for \texttt{Machine} objects, as in this case, but for any managed object.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
 public class ObservableMObject extends MObject implements Observable {
 	// a list of observers for that object
-	private List<Observe> observers;
+	private List<Observe> observers = new ArrayList<Observe>();
 
 	public ObservableMObject(Klass schemaKlass, Object... initializers) {
 		super(schemaKlass, initializers);
-		observers = new ArrayList<Observe>();
 	}
 
 	public void observe(Observe _observer) {
@@ -346,20 +379,15 @@ public class ObservableMObject extends MObject implements Observable {
 	}
 }
 	\end{lstlisting}
-	\caption{ObservableMObject - Invocation Handler}
+	\caption{ObservableMObject}
 	\label{lst:ObservableMObject}
 \end{sourcecode}
 
-The data manager keeps a list of \texttt{Observe} actions.
-The programmer can add actions by using the \texttt{observe} method.
-Every time a field's value changes, calling the \texttt{\_set} method of the \texttt{MObject}, the list of the observer actions is executed.
-Note that this data manager is general, it does not exclusively work for \texttt{Machine} objects, as in this case, but for all managed objects.
-
 Concluding, it can be observed that the only part that has been changed in the original code is the data manager and the logging concern definition.
 The data manager of the \texttt{Machine} managed object has been changed to the new observable data manager.
-Additionally, the logging concern has been attached to the machine object very easily simply by using lambdas (Line \ref{line:state_machine_monitor} of Listing \ref{lst:StateMachineMonitoringConcerns}).
+Additionally, the logging concern has been attached to the machine object very easily simply by using lambdas.
 
-By running the program with the commands \texttt{LOCK\_TRANSITION}, \texttt{UNLOCK\_TRANSITION} and \texttt{OPEN\_TRANSITION}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
+By running the program with the commands \texttt{LOCK\_EVENT}, \texttt{UNLOCK\_EVENT} and \texttt{OPEN\_EVENT}, the output is presented in Listing \ref{lst:StateMachineMonitoringConcernsOutput}.
 \lstdefinestyle{Bash} {
     backgroundcolor=\color{white},
     basicstyle=\scriptsize\color{black}\ttfamily
@@ -378,110 +406,113 @@ By running the program with the commands \texttt{LOCK\_TRANSITION}, \texttt{UNLO
 
 The basic data manager allows to solely build managed objects, but the observable data manager also provides the functionality of attaching concerns in the managed objects after a specified event.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Combine crosscutting concern}
-One of the main characteristics of managed data is that it allows to define reusable aspects but also to combine them independently.
-The concerns are not aware of each other; however, a new data manager can combine them.
-An example of this can be shown in Figure \ref{fig:concerns_combination}.
+The example presented a reusable solution of \ac{ccc} without scattering and tangling code in the components.
+The data manager that defines the logging aspect is reusable and modular.
 
-\begin{figure}[H]
-	\centering
-  	\fbox{\includegraphics[width=1\textwidth]{figures/Example_Class_Diagram.png}}
-  	\caption{Combination of logging and immutability concerns}
-  	\label{fig:concerns_combination}
-\end{figure}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Combine crosscutting concern}
+% One of the main characteristics of managed data is that it allows to define reusable aspects but also to combine them independently.
+% The concerns are not aware of each other; however, a new data manager can combine them.
+% An example of this can be shown in Figure \ref{fig:concerns_combination}.
 
-As the figure shows there are two separate concerns implemented in \texttt{MObjects}, namely \texttt{Observable} and \texttt{Lockable}.
-Consider that we want to add the \texttt{Lockable} feature (immutability) in our previous door state machine while the \texttt{Observable} functionality still exists.
-The client code for this is presented in Listing \ref{lst:StateMachineMonitoringConcernsCombination}.
-The \texttt{Lockable} data manager is presented in detail in Section \ref{Implementing a Data Manager}.
+% \begin{figure}[H]
+% 	\centering
+%   	\fbox{\includegraphics[width=1\textwidth]{figures/Example_Class_Diagram.png}}
+%   	\caption{Combination of logging and immutability concerns}
+%   	\label{fig:concerns_combination}
+% \end{figure}
 
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-// The new data manger that combines two aspects
-LockableObservableDataManager dataManager = new 	LockableObservableDataManager();
-StateMachineFactory stateChangesMachineFactory =
-	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
+% As the figure shows there are two separate concerns implemented in \texttt{MObjects}, namely \texttt{Observable} and \texttt{Lockable}.
+% Consider that we want to add the \texttt{Lockable} feature (immutability) in our previous door state machine while the \texttt{Observable} functionality still exists.
+% The client code for this is presented in Listing \ref{lst:StateMachineMonitoringConcernsCombination}.
+% The \texttt{Lockable} data manager is presented in detail in Section \ref{Implementing a Data Manager}.
 
-final Machine doorStateMachine = stateChangesMachineFactory.Machine();
+% \begin{sourcecode} [H]
+% 	\begin{lstlisting}[language=Java, escapechar=|]
+% // The new data manger that combines two aspects
+% LockableObservableDataManager dataManager = new 	LockableObservableDataManager();
+% StateMachineFactory stateChangesMachineFactory =
+% 	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
-((Observable) doorStateMachine) // Add logging concern on current field changes
-	.observe((obj, fieldName, newState) -> {
-		if (fieldName.equals("current")) {
-			System.out.println(" > State changed to " + ((State)newState).name());
-		}
-	});
-// ...
-// It was mutable until now, will not allow changes from now on.
-((Lockable) doorStateMachine).lock(); // Add immutability concern 
-// ...
-	\end{lstlisting}
-	\caption{Door state machine with logging and immutability concerns}
-	\label{lst:StateMachineMonitoringConcernsCombination}
-\end{sourcecode}
+% final Machine doorStateMachine = stateChangesMachineFactory.Machine();
 
-The new \texttt{MObject} simply combines the two aspects by including \texttt{LockableMObject} and \texttt{ObservableMObject} instances.
-By overriding the methods defined by the \texttt{Lockable} and \texttt{Observable} interfaces and using the \texttt{LockableMObject} and \texttt{ObservableMObject} instances respectively, the new data manager combines the two concerns in a modular way.
-Listings \ref{lst:LockableObservableMObject} and \ref{lst:LockableObservableDataManager} show this implementation.
+% ((Observable) doorStateMachine) // Add logging concern on current field changes
+% 	.observe((obj, fieldName, newState) -> {
+% 		if (fieldName.equals("current")) {
+% 			System.out.println(" > State changed to " + ((State)newState).name());
+% 		}
+% 	});
+% // ...
+% // It was mutable until now, will not allow changes from now on.
+% ((Lockable) doorStateMachine).lock(); // Add immutability concern 
+% // ...
+% 	\end{lstlisting}
+% 	\caption{Door state machine with logging and immutability concerns}
+% 	\label{lst:StateMachineMonitoringConcernsCombination}
+% \end{sourcecode}
 
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-public class LockableObservableMObject 
-	extends MObject implements Lockable, Observable 
-	{
+% The new \texttt{MObject} simply combines the two aspects by including \texttt{LockableMObject} and \texttt{ObservableMObject} instances.
+% By overriding the methods defined by the \texttt{Lockable} and \texttt{Observable} interfaces and using the \texttt{LockableMObject} and \texttt{ObservableMObject} instances respectively, the new data manager combines the two concerns in a modular way.
+% Listings \ref{lst:LockableObservableMObject} and \ref{lst:LockableObservableDataManager} show this implementation.
 
-	private LockableMObject lockableMObject;
-	private ObservableMObject observableMObject;
+% \begin{sourcecode} [H]
+% 	\begin{lstlisting}[language=Java, escapechar=|]
+% public class LockableObservableMObject 
+% 	extends MObject implements Lockable, Observable 
+% 	{
 
-	public LockableObservableMObject(Klass schemaKlass, Object... initializers) {
-		super(schemaKlass, initializers);
-		lockableMObject = new LockableMObject(schemaKlass, initializers);
-		observableMObject = new ObservableMObject(schemaKlass, initializers);
-	}
+% 	private LockableMObject lockableMObject;
+% 	private ObservableMObject observableMObject;
 
-	@Override
-	public void observe(Observe _observer) {
-		observableMObject.observe(_observer);
-	}
+% 	public LockableObservableMObject(Klass schemaKlass, Object... initializers) {
+% 		super(schemaKlass, initializers);
+% 		lockableMObject = new LockableMObject(schemaKlass, initializers);
+% 		observableMObject = new ObservableMObject(schemaKlass, initializers);
+% 	}
 
-	@Override
-	public void lock() {
-		lockableMObject.lock();
-	}
+% 	@Override
+% 	public void observe(Observe _observer) {
+% 		observableMObject.observe(_observer);
+% 	}
 
-	@Override
-	public void _set(String name, Object value) {
-		lockableMObject._set(name, value);
-		observableMObject._set(name, value);
-		super._set(name, value);
-	}
-}
-	\end{lstlisting}
-	\caption{LockableObservableMObject}
-	\label{lst:LockableObservableMObject}
-\end{sourcecode}
+% 	@Override
+% 	public void lock() {
+% 		lockableMObject.lock();
+% 	}
 
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-public class LockableObservableDataManager extends BasicDataManager {
+% 	@Override
+% 	public void _set(String name, Object value) {
+% 		lockableMObject._set(name, value);
+% 		observableMObject._set(name, value);
+% 		super._set(name, value);
+% 	}
+% }
+% 	\end{lstlisting}
+% 	\caption{LockableObservableMObject}
+% 	\label{lst:LockableObservableMObject}
+% \end{sourcecode}
 
-	@Override
-	public <T extends IFactory> T factory(
-		Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) 
-	{
-		return super.factory(factoryClass, schema, Lockable.class, Observable.class);
-	}
+% \begin{sourcecode} [H]
+% 	\begin{lstlisting}[language=Java, escapechar=|]
+% public class LockableObservableDataManager extends BasicDataManager {
 
-	@Override
-	protected MObject createManagedObject(Klass klass, Object... _inits) {
-		return new LockableObservableMObject(klass, _inits);
-	}
-}
-	\end{lstlisting}
-	\caption{LockableObservableDataManager}
-	\label{lst:LockableObservableDataManager}
-\end{sourcecode}
+% 	@Override
+% 	public <T extends IFactory> T factory(
+% 		Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) 
+% 	{
+% 		return super.factory(factoryClass, schema, Lockable.class, Observable.class);
+% 	}
 
-Concluding, the example presented a reusable solution of \ac{ccc} without scattering and tangling code in the components.
-Additionally, it demonstrates a simple way of combining \ac{ccc} implementation in a modular way.
+% 	@Override
+% 	protected MObject createManagedObject(Klass klass, Object... _inits) {
+% 		return new LockableObservableMObject(klass, _inits);
+% 	}
+% }
+% 	\end{lstlisting}
+% 	\caption{LockableObservableDataManager}
+% 	\label{lst:LockableObservableDataManager}
+% \end{sourcecode}
+
+% The example presented a reusable solution of \ac{ccc} without scattering and tangling code in the components.
+% Additionally, it demonstrates a simple way of combining \ac{ccc} implementation in a modular way.

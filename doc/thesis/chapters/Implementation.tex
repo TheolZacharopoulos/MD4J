@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Managed data in Java}\label{Implementation}
 
-As it has already been mentioned, the programming languages include data definition mechanisms that are predefined. 
+As it has already been mentioned, programming languages include data definition mechanisms that are predefined. 
 This makes them unable to define \ac{ccc} without repeating and scattering code through the components \cite{loh2012managed}.
 Notably, the problem is that \ac{ccc} are not considered features of the data types, but instead features of data management.
 As a result, we implement managed data to allow the developer to define the mechanisms of data manipulation.
@@ -24,11 +24,10 @@ Depending on the data manager, the managed objects may have different properties
 Figure \ref{fig:formal_metamodel} illustrates this process.
 
 \begin{figure}[H]
-\begin{flalign*}
-Load   : Factory_{schema} \times \overline{Class\langle ? \rangle}^{T} \rightarrow Schema_{T} \nonumber \\
-Manage : Schema_{T} \times Class\langle Factory_{T}\rangle \rightarrow Factory_{T} \nonumber \\
-Create : Factory_{T} \rightarrow T \nonumber
-\end{flalign*}
+\centering
+\[Load   : Factory_{schema} \times \overline{Class\langle ? \rangle}^{T} \rightarrow Schema_{T} \nonumber \]
+\[Manage : Schema_{T} \times Class\langle Factory_{T}\rangle \rightarrow Factory_{T} \nonumber \]
+\[Create : Factory_{T} \rightarrow T \nonumber\]
 
 \caption{Managed data framework}
 \label{fig:formal_metamodel}
