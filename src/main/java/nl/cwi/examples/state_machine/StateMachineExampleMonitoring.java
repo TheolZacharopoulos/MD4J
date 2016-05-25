@@ -39,17 +39,22 @@ public class StateMachineExampleMonitoring {
         final StateMachineFactory stateMachineFactory =
                 dataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
-        doors(stateMachineFactory);
-    }
-
-    private static void doors(StateMachineFactory stateMachineFactory) {
-        // ========================================================
-        // Door State Machine definition, with state changes data manager
-        final Machine doorStateMachine = stateMachineFactory.Machine();
+        final Machine doorStateMachine = doors(stateMachineFactory);
 
         // Add logging concern
         ((Observable) doorStateMachine)
-            .observe(StateMachineLogging::logCurrentStateChanges);
+                .observe(StateMachineLogging::logCurrentStateChanges);
+
+        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
+                LOCK_EVENT,
+                UNLOCK_EVENT,
+                OPEN_EVENT)));
+    }
+
+    private static Machine doors(StateMachineFactory stateMachineFactory) {
+        // ========================================================
+        // Door State Machine definition, with state changes data manager
+        final Machine doorStateMachine = stateMachineFactory.Machine();
 
         final State openState = stateMachineFactory.State();
         openState.name(OPEN_STATE);
@@ -92,10 +97,7 @@ public class StateMachineExampleMonitoring {
         // State machine start
         doorStateMachine.start(closedState);
 
-        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-                LOCK_EVENT,
-                UNLOCK_EVENT,
-                OPEN_EVENT)));
+        return doorStateMachine;
     }
 
     private static void interpretStateMachine(Machine stateMachine, List<String> commands) {

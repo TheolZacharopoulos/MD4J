@@ -32,10 +32,15 @@ public class StateMachineExample {
         final StateMachineFactory stateMachineFactory =
                 dataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
-        doors(stateMachineFactory);
+        final Machine doorStateMachine = doors(stateMachineFactory);
+
+        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
+                LOCK_EVENT,
+                UNLOCK_EVENT,
+                OPEN_EVENT)));
     }
 
-    private static void doors(StateMachineFactory stateMachineFactory) {
+    private static Machine doors(StateMachineFactory stateMachineFactory) {
         // ========================================================
         // Door State Machine definition
         final Machine doorStateMachine = stateMachineFactory.Machine();
@@ -82,10 +87,7 @@ public class StateMachineExample {
         // State machine start
         doorStateMachine.start(closedState);
 
-        interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-                LOCK_EVENT,
-                UNLOCK_EVENT,
-                OPEN_EVENT)));
+        return doorStateMachine;
     }
 
     private static void interpretStateMachine(Machine stateMachine, List<String> commands) {

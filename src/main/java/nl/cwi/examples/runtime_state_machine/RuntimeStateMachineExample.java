@@ -2,6 +2,7 @@ package nl.cwi.examples.runtime_state_machine;
 
 import nl.cwi.examples.runtime_state_machine.schemas.RMachine;
 import nl.cwi.examples.runtime_state_machine.schemas.RState;
+import nl.cwi.examples.state_machine.StateMachineFactory;
 import nl.cwi.examples.state_machine.schemas.Machine;
 import nl.cwi.examples.state_machine.schemas.State;
 import nl.cwi.examples.state_machine.schemas.Transition;
@@ -29,31 +30,36 @@ public class RuntimeStateMachineExample {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
 
         final Schema stateMachineSchema =
-                SchemaLoader.load(schemaFactory, Machine.class, State.class, Transition.class, RMachine.class, RState.class);
+                SchemaLoader.load(
+                    schemaFactory,
+                    Machine.class, State.class, Transition.class, RMachine.class, RState.class);
+
         final IDataManager dataManager = new BasicDataManager();
-        final RuntimeStateMachineFactory stateMachineFactory =
+        final StateMachineFactory stateMachineFactory =
                 dataManager.factory(RuntimeStateMachineFactory.class, stateMachineSchema);
 
-        doors(stateMachineFactory);
+        final RMachine doorStateMachine = (RMachine) doors(stateMachineFactory);
+
+        Arrays.asList(LOCK_EVENT, UNLOCK_EVENT, OPEN_EVENT).forEach(doorStateMachine::execute);
     }
 
-    private static void doors(RuntimeStateMachineFactory stateMachineFactory) {
+    private static Machine doors(StateMachineFactory stateMachineFactory) {
         // ========================================================
         // Door State Machine definition
-        final RMachine doorStateMachine = stateMachineFactory.Machine();
+        final Machine doorStateMachine = stateMachineFactory.Machine();
 
         // Open State definition
-        final RState openState = stateMachineFactory.State();
+        final State openState = stateMachineFactory.State();
         openState.name(OPEN_STATE);
         openState.machine(doorStateMachine);
 
         // Closed State definition
-        final RState closedState = stateMachineFactory.State();
+        final State closedState = stateMachineFactory.State();
         closedState.name(CLOSED_STATE);
         closedState.machine(doorStateMachine);
 
         // Locked State definition
-        final RState lockedState = stateMachineFactory.State();
+        final State lockedState = stateMachineFactory.State();
         lockedState.name(LOCKED_STATE);
         lockedState.machine(doorStateMachine);
 
@@ -84,10 +90,6 @@ public class RuntimeStateMachineExample {
         // State machine start
         doorStateMachine.start(closedState);
 
-        Arrays.asList(LOCK_EVENT, UNLOCK_EVENT, OPEN_EVENT).forEach(doorStateMachine::execute);
-
-        System.out.println("Locked Views: " + lockedState.views());
-        System.out.println("Closed Views: " + closedState.views());
-        System.out.println("Open Views: "   + openState.views());
+        return doorStateMachine;
     }
 }
