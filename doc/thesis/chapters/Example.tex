@@ -173,10 +173,11 @@ void interpretStateMachine(Machine stateMachine, List<String> commands) {
 \end{sourcecode}
 
 The definition of the door state machine is shown in Listing \ref{lst:Door_state_machine}.
+The \texttt{doors} method accepts a \texttt{StateMachineFactory}, defines our door state machine and returns the new \texttt{Machine} instance.
 
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-void doors(StateMachineFactory smFactory) {
+Machine doors(StateMachineFactory smFactory) {
 	final Machine doorStateMachine = smFactory.Machine();
 
 	final State openState = stateMachineFactory.State();
@@ -206,10 +207,7 @@ void doors(StateMachineFactory smFactory) {
 
 	doorStateMachine.start(closedState);
 
-	interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
-		LOCK_EVENT,
-		UNLOCK_EVENT,
-		OPEN_EVENT)));
+	return doorStateMachine;
 }
 	\end{lstlisting}
 	\caption{Door State Machine Definition}
@@ -229,7 +227,12 @@ IDataManager dataManager = new BasicDataManager(); // basic
 StateMachineFactory stateMachineFactory = 
 	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
 
-doors(stateMachineFactory);
+Machine doorStateMachine = doors(stateMachineFactory);
+
+interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
+		LOCK_EVENT,
+		UNLOCK_EVENT,
+		OPEN_EVENT)));
 	\end{lstlisting}
 	\caption{Door State Machine Initialization}
 	\label{lst:Door_state_machine_initialization}
@@ -276,40 +279,36 @@ This data manager creates concrete managed objects as subjects, where observers 
 It is important to mention that this new data manager has to inherit the basic one in order to include the basic functionality of schema interpretation and field access.
 This leads to a \textbf{stack} of two data managers, each one adding a new aspect of data in a modular way.
 
-In order to define the functionalities of our new data manager we first need to define how it is going to be used.
-First, during the initialization of our schema factory, we need to use our new data manager, namely \texttt{ObservableDataManager}.
+During the initialization of our schema factory, we need to use our new data manager, namely \texttt{ObservableDataManager}.
 As Listing \ref{lst:Door_state_machine_initialization_observable} shows, we change only the data manager object definition in order to generate a new \texttt{stateMachineFactory}.
 The new \texttt{stateMachineFactory} instance will create instances that are \texttt{Observable}.
-
-\begin{sourcecode} [H]
-	\begin{lstlisting}[language=Java, escapechar=|]
-IDataManager dataManager = new ObservableDataManager(); // Observable data manager
-StateMachineFactory stateMachineFactory =
-	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
-
-doors(stateMachineFactory);
-	\end{lstlisting}
-	\caption{Door State Machine Initialization with Observable Data Manager}
-	\label{lst:Door_state_machine_initialization_observable}
-\end{sourcecode}
+The \texttt{stateMachineFactory} is then passed as an argument to the \texttt{door} method in order to build the door state machine.
+Note that this time, the \texttt{Machine} instance is created by using the \texttt{Observable} data manager.
 
 The next step it to attach the \textit{logging} concern to our \texttt{Machine} object. 
 This is going to be executed in case the \texttt{current} state changes.
-The client code can be seen in Listing \ref{lst:StateMachineMonitoringConcerns}.
-
 \begin{sourcecode} [H]
 	\begin{lstlisting}[language=Java, escapechar=|]
-void doors(StateMachineFactory stateMachineFactory) {
-	final Machine doorStateMachine = stateMachineFactory.Machine();
+// Create an observable data manager
+IDataManager dataManager = new ObservableDataManager();
 
-	// Add logging concern on the state machine
-	((Observable) doorStateMachine)
-			.observe(StateMachineConcerns::logCurrentStateChanges);
-	// ...
-}
+StateMachineFactory stateMachineFactory =
+	dataManager.factory(StateMachineFactory.class, stateMachineSchema);
+
+// doors method remains the same
+Machine doorStateMachine = doors(stateMachineFactory);
+
+// Add logging concern on the state machine
+((Observable) doorStateMachine)
+		.observe(StateMachineConcerns::logCurrentStateChanges);
+
+interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
+		LOCK_EVENT,
+		UNLOCK_EVENT,
+		OPEN_EVENT)));
 	\end{lstlisting}
-	\caption{Door State Machine with Logging Concern}
-	\label{lst:StateMachineMonitoringConcerns}
+	\caption{Door State Machine Initialization with Observable Data Manager}
+	\label{lst:Door_state_machine_initialization_observable}
 \end{sourcecode}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -381,6 +380,7 @@ void doors(StateMachineFactory stateMachineFactory) {
 % \end{sourcecode}
 
 Concluding, it can be observed that the only part that has been changed in the original code is the data manager and the logging concern definition.
+The \texttt{door} method remained the same reusing the creation code.
 The data manager of the \texttt{Machine} managed object has been changed to the new observable data manager.
 Additionally, the logging concern has been attached to the machine object very easily simply by using lambdas.
 
