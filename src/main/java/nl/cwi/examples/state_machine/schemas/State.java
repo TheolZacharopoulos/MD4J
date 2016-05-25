@@ -5,7 +5,6 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inve
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 
 import java.util.List;
-import java.util.Set;
 
 public interface State extends M {
 
