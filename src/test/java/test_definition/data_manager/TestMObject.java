@@ -1,9 +1,9 @@
 package test_definition.data_manager;
 
-import nl.cwi.managed_data_4j.language.managed_object.MObject;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.java_managed_data.language.managed_object.MObject;
+import nl.cwi.java_managed_data.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.java_managed_data.language.managed_object.managed_object_field.errors.NoKeyFieldException;
+import nl.cwi.java_managed_data.language.schema.models.definition.Klass;
 import test_definition.schemas.Person;
 
 public class TestMObject extends MObject {

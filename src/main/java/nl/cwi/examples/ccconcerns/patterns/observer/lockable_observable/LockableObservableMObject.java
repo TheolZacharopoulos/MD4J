@@ -5,10 +5,10 @@ import nl.cwi.examples.ccconcerns.patterns.lockable.LockableMObject;
 import nl.cwi.examples.ccconcerns.patterns.observer.Observable;
 import nl.cwi.examples.ccconcerns.patterns.observer.ObservableMObject;
 import nl.cwi.examples.ccconcerns.patterns.observer.Observe;
-import nl.cwi.managed_data_4j.language.managed_object.MObject;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.java_managed_data.language.managed_object.MObject;
+import nl.cwi.java_managed_data.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.java_managed_data.language.managed_object.managed_object_field.errors.NoKeyFieldException;
+import nl.cwi.java_managed_data.language.schema.models.definition.Klass;
 
 public class LockableObservableMObject extends MObject implements Lockable, Observable {
 

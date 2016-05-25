@@ -3,7 +3,7 @@ package nl.cwi.examples.geometry;
 import nl.cwi.examples.geometry.schemas.Line;
 import nl.cwi.examples.geometry.schemas.Point2D;
 import nl.cwi.examples.geometry.schemas.Point3D;
-import nl.cwi.managed_data_4j.language.IFactory;
+import nl.cwi.java_managed_data.IFactory;
 
 /**
  * The Point Schema Factory.

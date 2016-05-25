@@ -1,6 +1,6 @@
 package test_definition;
 
-import nl.cwi.managed_data_4j.language.IFactory;
+import nl.cwi.java_managed_data.IFactory;
 import test_definition.schemas.Address;
 import test_definition.schemas.Car;
 import test_definition.schemas.Person;

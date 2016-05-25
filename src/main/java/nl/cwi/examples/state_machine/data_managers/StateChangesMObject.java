@@ -1,10 +1,10 @@
 package nl.cwi.examples.state_machine.data_managers;
 
 import nl.cwi.examples.state_machine.schemas.State;
-import nl.cwi.managed_data_4j.language.managed_object.MObject;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.java_managed_data.language.managed_object.MObject;
+import nl.cwi.java_managed_data.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
+import nl.cwi.java_managed_data.language.managed_object.managed_object_field.errors.NoKeyFieldException;
+import nl.cwi.java_managed_data.language.schema.models.definition.Klass;
 
 import java.util.LinkedList;
 import java.util.List;

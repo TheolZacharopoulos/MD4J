@@ -1,9 +1,9 @@
 package test_definition.data_manager;
 
-import nl.cwi.managed_data_4j.language.IFactory;
-import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
+import nl.cwi.java_managed_data.IFactory;
+import nl.cwi.java_managed_data.language.data_manager.BasicDataManager;
+import nl.cwi.java_managed_data.language.schema.models.definition.Klass;
+import nl.cwi.java_managed_data.language.schema.models.definition.Schema;
 
 public class TestDataManager extends BasicDataManager {
 

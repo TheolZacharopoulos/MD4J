@@ -3,7 +3,7 @@ package nl.cwi.examples.runtime_state_machine;
 import nl.cwi.examples.runtime_state_machine.schemas.RMachine;
 import nl.cwi.examples.runtime_state_machine.schemas.RState;
 import nl.cwi.examples.state_machine.schemas.Transition;
-import nl.cwi.managed_data_4j.language.IFactory;
+import nl.cwi.java_managed_data.IFactory;
 
 public interface RuntimeStateMachineFactory extends IFactory {
     RState State();
