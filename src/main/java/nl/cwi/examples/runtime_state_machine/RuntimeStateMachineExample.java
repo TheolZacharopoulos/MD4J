@@ -41,6 +41,10 @@ public class RuntimeStateMachineExample {
         final RMachine doorStateMachine = (RMachine) doors(stateMachineFactory);
 
         Arrays.asList(LOCK_EVENT, UNLOCK_EVENT, OPEN_EVENT).forEach(doorStateMachine::execute);
+
+        for (State state : doorStateMachine.states()) {
+            System.out.println(state.name() + " views: " + ((RState)state).views());
+        }
     }
 
     private static Machine doors(StateMachineFactory stateMachineFactory) {

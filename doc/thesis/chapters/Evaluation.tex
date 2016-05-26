@@ -157,15 +157,18 @@ The overall assessment of the modularity properties presented in this section is
 
 \begin{table}[H]
 \centering
-\begin{tabular}{@{}lcc@{}}
+\resizebox{\textwidth}{!}{%
+	\begin{tabular}{@{}lll@{}}
 	\toprule
-	\textbf{Modularity Property} & \textbf{AJHotDraw} & \textbf{MDJHotDraw} \\ \midrule
-	\textbf{Locality} 					& +- & + \\
-	\textbf{Reusability} 				& + & ++ \\
-	\textbf{(Un)pluggability} 			& - & +-  \\
-	\textbf{Composition Transparency} 	& + & +  \\ 
-	\bottomrule
-\end{tabular}
+	\textbf{Modularity Property} & \multicolumn{1}{c}{\textbf{AJHotDraw}} & \multicolumn{1}{c}{\textbf{MDJHotDraw}} \\ \midrule
+	\textbf{Locality} & + CCC implemented in aspects & + CCC implemented in data managers \\ \midrule
+	\multirow{3}{*}{\textbf{Reusability}} & + Abstract aspects & + Abstract data managers \\
+	 & - Pointcuts for concern-specific & - Pointcuts for concern-specific \\
+	 & - Not Flexible (Name conventions, no conditions) & + Flexible (No conventions, state in DMs) \\ \midrule
+	\textbf{(Un)pluggability} & + Easy to plug and unplug (Defined in aspect) & + Easy to plug and unplug (Change data manager) \\ \midrule
+	\multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Composition \\ Transparency\end{tabular}}} & + Easy to be part on more than one patterns & + Easy to be part on more than one patterns \\
+	 & - Complicated in join-points & + Easy on join-points (concrete object) \\ \bottomrule
+	\end{tabular}}
 \caption{Modularity Properties}
 \label{tbl:Modularity Properties}
 \end{table}
