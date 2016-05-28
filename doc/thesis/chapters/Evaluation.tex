@@ -24,7 +24,7 @@ In this chapter we discuss the results of those metrics extensively.
 \paragraph{To what extent can managed data handle an inventory of aspects in the JHotDraw framework, compared to the original and the Aspect Oriented implementation?}
 The results of our aspect refactoring in Chapter \ref{AspectRefactoring} show that managed data can handle aspects of JHotDraw. 
 In addition, we claim that our solution extends some of the capabilities of the AJHotDraw implementation.
-However, in this chapter, we provide further evaluation of our aspect refactoring and we compare it with the \acrlong{aop} solution in terms of a list of ``modularity properties''.
+However, in this chapter, we provide further evaluation of our aspect refactoring and we compare it with the \acrlong{aop} solution in terms of a list of ``modularity properties'' and metrics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Metrics
@@ -167,7 +167,7 @@ The overall assessment of the modularity properties presented in this section is
 	 & - Not Flexible (Name conventions, no conditions) & + Flexible (No conventions, state in DMs) \\ \midrule
 	\textbf{(Un)pluggability} & + Easy to plug and unplug (Defined in aspect) & + Easy to plug and unplug (Change data manager) \\ \midrule
 	\multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}l@{}}Composition \\ Transparency\end{tabular}}} & + Easy to be part on more than one patterns & + Easy to be part on more than one patterns \\
-	 & - Complicated in join-points & + Easy on join-points (concrete object) \\ \bottomrule
+	 & - Complicated in join-points (multiple role aspects) & + Easy on join-points (stack data managers) \\ \bottomrule
 	\end{tabular}}
 \caption{Modularity Properties}
 \label{tbl:Modularity Properties}
@@ -206,7 +206,7 @@ Managed data can be used similarly to \ac{aop}; however, the flexibility of the 
 The design of the application is not bounded by the language, like in AspectJ's case.
 
 AspectJ has limitations that can be one overcome by using managed data.
-In particular, as shown, data managers allow to access the current object's state, while AspectJ's aspects implementation do not.
+In particular, as shown, data managers allow to access the current object's state, while AspectJ's pointcuts implementation do not.
 An object's state can be used for implementing functionalities depending on the current state of an object, for instance conditions in pointcuts.
 
 Furthermore, \ac{aop} tries to discriminate methods based on some common structural properties such as particular coding conventions.
@@ -235,7 +235,7 @@ On one hand, the integration of an \ac{aop} version requires a whole new languag
 A developer has to implement \textit{aspects}, \textit{advices}, \textit{join-points} and \textit{pointcuts}. 
 In addition, the programmer has to setup AspectJ to the IDE of preference along with the programming environment.
 After the environment has been set up, the migration of an existing application to the \ac{aop} paradigm is relatively easy.
-Finally, a developer has to simply migrate the application using the aspect oriented language's concepts and the weaver will do the job.
+Finally, a developer has to migrate the application using the aspect oriented language's concepts and the weaver will do the job.
 
 On the other hand, the integration of managed data is very simple since it is pure Java.
 No new language is required, no any additional IDE setup nor programming environment.
@@ -243,7 +243,7 @@ Additionally, although managed data introduces new concepts, it still uses the J
 It is relatively easy for a developer, who is familiar with Java, to learn the managed data concepts.
 However, the migration of an existing application to managed data can be time consuming since a programmer has to migrate it from normal Java class definition  to managed data schemas definition (interfaces).
 Additionally, some limitations arise from this migration because interfaces and classes do not explicitly support the same functionalities.
-As seen, the framework has some limitations such as Java keywords and encapsulation of the methods in interfaces.
+As seen, the framework has some limitations such as Java keywords, encapsulation of the methods in interfaces or class inheritance.
 However, such definitions could be defined using annotations in future work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

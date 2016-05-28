@@ -1,8 +1,8 @@
 % !TEX root = ../thesis.tex
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chapter: Migration
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{JHotDraw Migration Process}\label{Migration Process}
 
 \section{DrawingView}
@@ -117,17 +117,6 @@ public interface JHotDrawPrimitives extends Primitives {
 
 This has been proven very helpful since we did not need to re-implement every field as managed data during the refactoring. 
 Especially, classes that are provided by libraries such as \texttt{javax.swing} and \texttt{java.awt}.
-
-\subsection{Limitations}
-However, extending our framework's primitives with the JHotDrawPrimitives we lost the ``pureness'' of managed data.
-That led to an application that partly managed data.
-Generally, this may be the case when refactoring big applications like JHotDraw.
-
-Another limitation is that some Java keywords such as ``synchronized'' can not be supported on default methods.
-Instead, as future work, we could use annotations that define these properties to the default methods and add them during the interpretation of the schemas.
-Moreover, privacy and visibility is another an issue.
-All default methods are \texttt{public}, which means that the encapsulation is violated.
-Finally, private classes definition is not possible inside schemas, although they can be defined outside as managed data.
 
 \section{MDDrawingView Schema Factories}
 In order to create instances of the defined \texttt{MDStandardDrawingView} and \texttt{MDNullDrawingView} schemas, we needed their factories.

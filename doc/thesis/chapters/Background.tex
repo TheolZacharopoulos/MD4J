@@ -97,7 +97,7 @@ Paradoxically, this is not the case since \ac{aop} technologies deliver applicat
 
 According to Tourwe et al. \cite{tourwe2003existence} the problem is that aspects have to include a crosscut description of all places in the application.
 Thus, it is much harder to make such crosscuts oblivious to the application and most importantly to the rest of the modules. 
-Additionally, current means for specifying concerns rely heavily in the existing structure of the application, therefore the aspects are tightly coupled to the application (and its structure) and consequently this affects negatively the evolvability of a system since it makes it hard to change its structural.
+Additionally, current means for specifying concerns rely heavily in the existing structure of the application, therefore the aspects are tightly coupled to the application (and its structure) and consequently this affects negatively the evolvability of a system since it makes it hard to change its structure.
 As Tourwe et al. propose, a solution for this problem would be the creation of a new, more sophisticated crosscut language. 
 A language that enables the developer to discriminate between methods based on what they actually do instead of what they look like, in a more intentional way.
 This new language that implements aspects in a modular way is something try to realize in our thesis.
@@ -242,7 +242,7 @@ This way they could extract a number of aspects in JHotDraw.
 Next, they performed a concern exploration in order to expand their mining results, leading to concern sorts.
 Concern sorts is a consistent way to address crosscutting concerns in source code \cite{marin2005classification}.
 This led to the identification and documentation of \ac{ccc} in JHotDraw, which helps the developers to identify \ac{ccc} in it.
-In order to tame the aspects in a more consistent and formal way, Marin et al. provided a list of \textit{template aspect} solutions for their concern sorts.
+In order to handle the aspects in a more consistent and formal way, Marin et al. provided a list of \textit{template aspect} solutions for their concern sorts.
 Finally, they performed aspect refactoring of JHotDraw by presenting the AJHotDraw, which according to them, was the largest migration to aspects available to date.
 Their refactoring aimed at maintaining the conceptual integrity of the original design.
 
@@ -333,7 +333,7 @@ The metrics proposed \cite{sant2003reuse} are grouped in four subsections (crite
 \paragraph{Cohesion}of a component is a measure of the closeness of the relationship between its internal components \cite{sommerville2004software}.
 	\begin{itemize}
 		\item \ac{lcoo}, measures the lack of cohesion of a component.
-		The metric is an extension ofChidamber and Kemerer's \cite{chidamber1994metrics} \ac{lcom} metric.
+		The metric is an extension of Chidamber and Kemerer's \cite{chidamber1994metrics} \ac{lcom} metric.
 		More specifically, it measures the amount of method / advice pairs which do not access the same instance variable.
 	\end{itemize}
 

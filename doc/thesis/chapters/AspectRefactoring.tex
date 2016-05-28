@@ -7,7 +7,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Crosscutting Concerns Identification}
-Our managed data framework can implement in modular data managers.
+Our managed data framework can implement aspects in modular data managers.
 Yet, to solve the problem of \ac{ccc} it is first required to identify them in the source code.
 This leads to a process called \textit{aspect mining}.
 \textit{Aspect mining} is a reverse engineering process that aims at finding \ac{ccc} in existing systems \cite{marin2004identifying}.
@@ -15,7 +15,7 @@ The aspect mining topic has been addressed in previous research that include met
 Marin et al. \cite{marin2004identifying} introduced a technique constructed by spotting methods that are invoked from many different places (high fan-in), in order to identify candidate aspects in open-source Java systems.
 One of these projects include the JHotDraw.
 In this thesis we focused on their concern findings in refactoring JHotDraw.
-In particular, we focused on the \textit{FigureSelection}, concern, which is an observer pattern implementation.
+In particular, we focused on the \textit{FigureSelection}, concern, which is an observer pattern implementation and the ``Undo'' concern.
 
 \section{Aspect Refactoring in Managed Data}
 In order to evaluate the ability of managed data to handle aspects, we have refactored two \ac{ccc} that have been identified in JHotDraw.
@@ -47,6 +47,10 @@ Furthermore, during the implementation of ManagedDataJHotDraw we focused on main
 The migration process of the basic components is detailed described in Appendix \ref{Migration Process}.
 Something that has to be noted in this process is the \texttt{JHotDrawPrimitives} interface, which defines the objects that are not managed data (primitives).
 This made the migration process a lot simpler, since we only had to implement a part of it, the components that were needed to be managed data.
+ 
+However, Java attribute keywords such as ``synchronized'' can not be supported on default methods.
+Moreover, visibility is an issue since all default methods are \texttt{public}, which means that the encapsulation is violated.
+Finally, private classes definition is not possible inside schemas, although they can be defined outside as managed data.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Aspect Refactoring of JHotDraw}
@@ -66,7 +70,7 @@ The original \texttt{FigureSelectionListener} observer pattern of JHotDraw is il
 
 \begin{figure}[H]
 	\centering
-  	\fbox{\includegraphics[width=1\textwidth]{figures/JHotDraw_FigureSelectionListener_OOP.png}}
+  	\fbox{\includegraphics[width=0.85\textwidth]{figures/JHotDraw_FigureSelectionListener_OOP.png}}
   	\caption{FigureSelectionListener in JHotDraw}
   	\label{fig:JHotDraw_FigureSelectionListener_OOP}
 \end{figure}
@@ -135,9 +139,9 @@ public aspect SelectionChangedNotification {
 \end{sourcecode}
 
 \subsubsection{Benefits and Limitations}
-According to the authors \cite{marin2005approach}, such refactoring allows the crosscutting elements to be addressed individually, which leads to a modular solution, and any deviations from the pattern implementation can be addressed separately.
+As the authors mention \cite{marin2005approach}, such refactoring allows the crosscutting elements to be addressed individually, which leads to a modular solution, and any deviations from the pattern implementation can be addressed separately.
 
-However, as they mention, the definition of pointcuts in order to capture the calls to the notifier is difficult when many consistent behavior instances occur. 
+However, the definition of pointcuts in order to capture the calls to the notifier is difficult when many consistent behavior instances occur. 
 As Listing \ref{lst:StandardDrawingView clearSelection Method} shows, the original \texttt{clearSelection} method in JHotDraw calls \texttt{fireSelectionChanged} under specific conditions.
 Considering the \ac{aop} solution of AJHotDraw, Listing \ref{lst:Consistent Behavior in FigureSelectionListener}, this is not the case.
 In the pointcut definition, the pattern refactoring solution notifies the observers independently of the condition in the caller.
@@ -177,7 +181,7 @@ In this section we present our managed data refactoring of the \texttt{FigureSel
 Managed data implements aspects using data managers, by adding specifications to the data.
 For this case, we needed a similar mechanism to the \textit{role superimposition} of \ac{aop}.
 This mechanism should be defined in a data manager that will produce managed data instances (managed objects) with a specific role.
-Additionally, the data manager has to support something similar to the \textit{consistent behavior} as a pointcut.
+Additionally, the data manager has to support something similar to the \textit{consistent behavior} for the pointcuts.
 
 In detail, since the \texttt{DrawingView} is managed data, and it is the \textit{Subject} to the \textit{Listeners} of the \textit{FigureSelectionListener} case, we can implement a data manager that attaches the \textit{Subject} \texttt{MDStandardDrawingView}.
 Therefore, no \textit{Subject} role specific code will be tangled with the \texttt{DrawingView}, but a data manager will attach this role later.
@@ -245,7 +249,7 @@ This data manager defines a ``role superimposition'' of the subject role.
 \paragraph{Role Superimposition}\mbox{}\\
 The implementation of the \texttt{SubjectRoleMObject} is presented in Listing \ref{lst:SubjectRoleMObject}.
 First, the SubjectRoleMObject extends the MObject, inheriting the functionalities of the base data manager, followed by the implementation of the \texttt{SubjectRole} specifications.
-By implementing the \texttt{SubjectRole} interface, the MObject has to implement the \texttt{addListener} and \texttt{removeListener} methods that have been provided by the subject role specifications.
+By implementing the \texttt{SubjectRole} interface, the MObject has to implement the \texttt{executeListenerActions}, \texttt{addListener} and \texttt{removeListener} methods that have been provided by the subject role specifications.
 Having added a listener object along with its \texttt{Action} to be executed on each notification, the method \texttt{executeListenerActions} executes all the actions for each of the listeners.
 
 \begin{sourcecode} [H]
