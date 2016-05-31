@@ -7,7 +7,6 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inve
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 
 public interface State extends M {
-
     @Key
     String name(String... name);
 

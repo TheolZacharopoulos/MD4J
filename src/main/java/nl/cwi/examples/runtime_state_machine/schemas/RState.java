@@ -4,12 +4,12 @@ import nl.cwi.examples.state_machine.schemas.State;
 import nl.cwi.examples.state_machine.schemas.Transition;
 
 public interface RState extends State {
-    Integer views(Integer... views);
+    Integer visits(Integer... views);
 
     default boolean handle(String event) {
         for (Transition transition : out()) {
             if (transition.event().equals(event)) {
-                views(views() + 1);
+                visits(visits() + 1);
                 return true;
             }
         }
