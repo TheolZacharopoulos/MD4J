@@ -6,11 +6,11 @@ import nl.cwi.examples.state_machine.ccc.StateMachineLogging;
 import nl.cwi.examples.state_machine.schemas.Machine;
 import nl.cwi.examples.state_machine.schemas.State;
 import nl.cwi.examples.state_machine.schemas.Transition;
-import nl.cwi.java_managed_data.framework.SchemaFactoryProvider;
-import nl.cwi.java_managed_data.language.data_manager.IDataManager;
-import nl.cwi.java_managed_data.language.schema.boot.SchemaFactory;
-import nl.cwi.java_managed_data.language.schema.load.SchemaLoader;
-import nl.cwi.java_managed_data.language.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
+import nl.cwi.managed_data_4j.language.data_manager.IDataManager;
+import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
+import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 
 import java.util.Arrays;
 import java.util.LinkedList;

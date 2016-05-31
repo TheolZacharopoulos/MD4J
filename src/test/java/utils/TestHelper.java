@@ -1,8 +1,8 @@
 package utils;
 
-import nl.cwi.java_managed_data.language.schema.models.definition.Field;
-import nl.cwi.java_managed_data.language.schema.models.definition.Klass;
-import nl.cwi.java_managed_data.language.schema.models.definition.Type;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 
 import java.util.Set;
 
