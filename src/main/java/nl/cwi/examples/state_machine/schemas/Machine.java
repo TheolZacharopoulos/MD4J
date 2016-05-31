@@ -1,8 +1,8 @@
 package nl.cwi.examples.state_machine.schemas;
 
-import nl.cwi.java_managed_data.M;
-
 import java.util.Set;
+
+import nl.cwi.managed_data_4j.M;
 
 public interface Machine extends M {
     State start(State... startingState);

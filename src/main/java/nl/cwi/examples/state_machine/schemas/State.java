@@ -1,10 +1,10 @@
 package nl.cwi.examples.state_machine.schemas;
 
-import nl.cwi.java_managed_data.M;
-import nl.cwi.java_managed_data.language.schema.models.definition.annotations.Inverse;
-import nl.cwi.java_managed_data.language.schema.models.definition.annotations.Key;
-
 import java.util.List;
+
+import nl.cwi.managed_data_4j.M;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
 
 public interface State extends M {
 

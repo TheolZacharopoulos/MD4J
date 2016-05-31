@@ -2,11 +2,11 @@ package nl.cwi.examples.ccconcerns.patterns.observer.lockable_observable;
 
 import nl.cwi.examples.ccconcerns.patterns.lockable.Lockable;
 import nl.cwi.examples.ccconcerns.patterns.observer.Observable;
-import nl.cwi.java_managed_data.IFactory;
-import nl.cwi.java_managed_data.language.data_manager.BasicDataManager;
-import nl.cwi.java_managed_data.language.managed_object.MObject;
-import nl.cwi.java_managed_data.language.schema.models.definition.Klass;
-import nl.cwi.java_managed_data.language.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.IFactory;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.managed_object.MObject;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 
 public class LockableObservableDataManager extends BasicDataManager {
 

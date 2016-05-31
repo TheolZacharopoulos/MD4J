@@ -1,14 +1,15 @@
 package utils;
 
-import nl.cwi.java_managed_data.framework.SchemaFactoryProvider;
-import nl.cwi.java_managed_data.language.data_manager.BasicDataManager;
-import nl.cwi.java_managed_data.language.primitives.Primitives;
-import nl.cwi.java_managed_data.language.schema.boot.SchemaFactory;
-import nl.cwi.java_managed_data.language.schema.load.SchemaLoader;
-import nl.cwi.java_managed_data.language.schema.models.definition.Schema;
-import nl.cwi.java_managed_data.language.utils.MObjectUtils;
 import org.junit.Before;
 import org.junit.Test;
+
+import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
+import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
+import nl.cwi.managed_data_4j.language.primitives.Primitives;
+import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
+import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
+import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 import test_definition.PersonFactory;
 import test_definition.schemas.Address;
 import test_definition.schemas.Car;

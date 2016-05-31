@@ -1,6 +1,6 @@
 package nl.cwi.examples.geometry.schemas;
 
-import nl.cwi.java_managed_data.M;
+import nl.cwi.managed_data_4j.M;
 
 /**
  * The Point Schema.

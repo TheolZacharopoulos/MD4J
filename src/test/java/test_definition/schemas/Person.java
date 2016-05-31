@@ -1,11 +1,11 @@
 package test_definition.schemas;
 
-import nl.cwi.java_managed_data.M;
-import nl.cwi.java_managed_data.language.schema.models.definition.annotations.Contain;
-import nl.cwi.java_managed_data.language.schema.models.definition.annotations.Optional;
-
 import java.util.List;
 import java.util.Set;
+
+import nl.cwi.managed_data_4j.M;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Optional;
 
 public interface Person extends M {
 
