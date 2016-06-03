@@ -109,9 +109,15 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
 
         boolean isSubKlass = false;
         if (fieldType.subKlasses() != null) {
-            for (Klass superKlass : valueSchemaKlass.supers()) {
-                if (superKlass != null && superKlass.name().equals(fieldType.name())) {
-                    isSubKlass = true;
+
+            for (Klass subKlass : fieldType.subKlasses()) {
+                for (Klass superKlass : valueSchemaKlass.supers()) {
+                    if ((superKlass != null && superKlass.name().equals(subKlass.name())) ||
+                        (superKlass != null && superKlass.name().equals(fieldType.name())))
+                    {
+                        isSubKlass = true;
+                        break;
+                    }
                 }
             }
         }
