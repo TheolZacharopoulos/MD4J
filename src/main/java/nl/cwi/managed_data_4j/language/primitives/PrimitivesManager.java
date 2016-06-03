@@ -27,7 +27,7 @@ public class PrimitivesManager {
     private PrimitivesManager() {}
 
     public void loadPrimitives(Class<?> primitivesDefinition) {
-        System.out.println(" > Primitives Manager: Loading primitives");
+        // System.out.println(" > Primitives Manager: Loading primitives");
         for (Method primDef : primitivesDefinition.getMethods()) {
             Class<?> primitiveClass = primDef.getReturnType();
             if (isMany(primitiveClass)) {
@@ -47,7 +47,7 @@ public class PrimitivesManager {
             final Object defaultValue = getDefaultValue(primitiveClass);
 
             primitives.add(new AbstractPrimitive(defaultValue, primitiveClass, primitiveName) {});
-            System.out.println("    > Primitives Manager: primitive added " + primitiveName);
+            // System.out.println("    > Primitives Manager: primitive added " + primitiveName);
         }
     }
 
