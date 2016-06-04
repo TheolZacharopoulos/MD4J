@@ -11,6 +11,10 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
 public class MObjectUtils {
     private static final PrimitivesManager primitiveManager = PrimitivesManager.getInstance();
 
+    public static boolean instanceOf(M object, Class<?> clazz) {
+        return object.schemaKlass().name().equals(clazz.getSimpleName());
+    }
+
     public static boolean equals(M x, M y) {
 
         final Map<Object, Object> equalityMap = new HashMap<>();
