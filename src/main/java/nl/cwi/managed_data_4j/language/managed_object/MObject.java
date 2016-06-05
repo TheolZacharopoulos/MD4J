@@ -317,6 +317,11 @@ public class MObject implements InvocationHandler, M {
         // ================
         // Managed Object
         final MObjectField mObjectField = this.props.get(fieldName);
+
+        if (mObjectField == null) {
+            throw new NoSuchFieldError("No field named '" + fieldName + "' found in klass '" + schemaKlass.name() + "'");
+        }
+
         final boolean isMany = mObjectField.getField().many();
 
         // if no args given, then just return the field's value.
@@ -336,7 +341,7 @@ public class MObject implements InvocationHandler, M {
         }
 
         // If it is null and it is not many, then empty it
-        if (fieldArgs == null && isMany) {
+        if (fieldArgs == null) {
             _set(fieldName, new Object[0]);
             return null;
         }
