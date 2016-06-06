@@ -1,6 +1,9 @@
 package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single;
 
 import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
@@ -111,7 +114,9 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
         if (fieldType.subKlasses() != null) {
 
             for (Klass subKlass : fieldType.subKlasses()) {
-                for (Klass superKlass : valueSchemaKlass.supers()) {
+                Set<Klass> supers = getAllSuperKlasses(valueSchemaKlass);
+
+                for (Klass superKlass : supers) {
                     if ((superKlass != null && superKlass.name().equals(subKlass.name())) ||
                         (superKlass != null && superKlass.name().equals(fieldType.name())))
                     {
@@ -127,5 +132,19 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
                 "Invalid value for " + this.field.owner().name() + " " +
                 this.field.name() + " " + field.type().name() + " found (" + valueSchemaKlass.name() + ")");
         }
+    }
+
+    // TODO: fixed point
+    private Set<Klass> getAllSuperKlasses(Klass klass) {
+        Set<Klass> supers = klass.supers();
+
+        supers.addAll(klass.supers().stream()
+            .filter(k -> k.supers() != null)
+            .flatMap(k -> k.supers().stream())
+            .filter(k -> k.supers() != null)
+            .flatMap(k -> k.supers().stream())
+            .collect(Collectors.toSet()));
+
+        return supers;
     }
 }
