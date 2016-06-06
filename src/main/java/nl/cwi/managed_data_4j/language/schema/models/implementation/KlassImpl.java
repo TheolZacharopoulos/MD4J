@@ -1,13 +1,13 @@
 package nl.cwi.managed_data_4j.language.schema.models.implementation;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
-
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Represents an implementation of a Klass Schema definition.

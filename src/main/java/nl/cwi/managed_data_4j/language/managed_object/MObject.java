@@ -1,5 +1,12 @@
 package nl.cwi.managed_data_4j.language.managed_object;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.*;
+
+import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
@@ -11,13 +18,6 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.singl
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSinglePrimitive;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.M;
-
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * The Managed Object
@@ -317,6 +317,11 @@ public class MObject implements InvocationHandler, M {
         // ================
         // Managed Object
         final MObjectField mObjectField = this.props.get(fieldName);
+
+        if (mObjectField == null) {
+            throw new NoSuchFieldError("No field named '" + fieldName + "' found in klass '" + schemaKlass.name() + "'");
+        }
+
         final boolean isMany = mObjectField.getField().many();
 
         // if no args given, then just return the field's value.
@@ -336,7 +341,7 @@ public class MObject implements InvocationHandler, M {
         }
 
         // If it is null and it is not many, then empty it
-        if (fieldArgs == null && isMany) {
+        if (fieldArgs == null) {
             _set(fieldName, new Object[0]);
             return null;
         }

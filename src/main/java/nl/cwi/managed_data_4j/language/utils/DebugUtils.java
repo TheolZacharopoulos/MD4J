@@ -1,11 +1,11 @@
 package nl.cwi.managed_data_4j.language.utils;
 
+import java.util.Set;
+
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-
-import java.util.Set;
 
 public class DebugUtils {
 

@@ -1,12 +1,12 @@
 package nl.cwi.examples.ccconcerns.patterns.observer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A Managed Object that can be observed

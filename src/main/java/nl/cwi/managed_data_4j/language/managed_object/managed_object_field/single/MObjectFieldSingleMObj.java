@@ -1,5 +1,11 @@
 package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single;
 
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
@@ -7,9 +13,6 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.MObjectFieldMany;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.M;
-
-import java.lang.reflect.Proxy;
 
 /**
  * Represents a single value field which is a Managed Object.
@@ -109,9 +112,17 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
 
         boolean isSubKlass = false;
         if (fieldType.subKlasses() != null) {
-            for (Klass superKlass : valueSchemaKlass.supers()) {
-                if (superKlass != null && superKlass.name().equals(fieldType.name())) {
-                    isSubKlass = true;
+
+            for (Klass subKlass : fieldType.subKlasses()) {
+                Set<Klass> supers = getAllSuperKlasses(valueSchemaKlass);
+
+                for (Klass superKlass : supers) {
+                    if ((superKlass != null && superKlass.name().equals(subKlass.name())) ||
+                        (superKlass != null && superKlass.name().equals(fieldType.name())))
+                    {
+                        isSubKlass = true;
+                        break;
+                    }
                 }
             }
         }
@@ -121,5 +132,19 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
                 "Invalid value for " + this.field.owner().name() + " " +
                 this.field.name() + " " + field.type().name() + " found (" + valueSchemaKlass.name() + ")");
         }
+    }
+
+    // TODO: fixed point
+    private Set<Klass> getAllSuperKlasses(Klass klass) {
+        Set<Klass> supers = klass.supers();
+
+        supers.addAll(klass.supers().stream()
+            .filter(k -> k.supers() != null)
+            .flatMap(k -> k.supers().stream())
+            .filter(k -> k.supers() != null)
+            .flatMap(k -> k.supers().stream())
+            .collect(Collectors.toSet()));
+
+        return supers;
     }
 }
