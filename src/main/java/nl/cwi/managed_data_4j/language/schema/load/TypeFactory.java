@@ -1,13 +1,13 @@
 package nl.cwi.managed_data_4j.language.schema.load;
 
+import java.util.Map;
+
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Primitive;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
-
-import java.util.Map;
 
 /**
  * Creates types

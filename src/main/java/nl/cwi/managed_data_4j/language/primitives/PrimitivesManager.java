@@ -1,10 +1,10 @@
 package nl.cwi.managed_data_4j.language.primitives;
 
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 
 /**
  * Utilities needed for the Java primitives
@@ -27,7 +27,7 @@ public class PrimitivesManager {
     private PrimitivesManager() {}
 
     public void loadPrimitives(Class<?> primitivesDefinition) {
-        System.out.println(" > Primitives Manager: Loading primitives");
+        // System.out.println(" > Primitives Manager: Loading primitives");
         for (Method primDef : primitivesDefinition.getMethods()) {
             Class<?> primitiveClass = primDef.getReturnType();
             if (isMany(primitiveClass)) {
@@ -47,7 +47,7 @@ public class PrimitivesManager {
             final Object defaultValue = getDefaultValue(primitiveClass);
 
             primitives.add(new AbstractPrimitive(defaultValue, primitiveClass, primitiveName) {});
-            System.out.println("    > Primitives Manager: primitive added " + primitiveName);
+            // System.out.println("    > Primitives Manager: primitive added " + primitiveName);
         }
     }
 

@@ -1,10 +1,10 @@
 package nl.cwi.managed_data_4j.language.schema.models.definition;
 
-import nl.cwi.managed_data_4j.M;
-import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
-
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import nl.cwi.managed_data_4j.M;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 
 /**
  * Schema definition.

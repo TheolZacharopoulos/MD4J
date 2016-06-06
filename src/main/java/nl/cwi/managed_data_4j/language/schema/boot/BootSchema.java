@@ -1,13 +1,13 @@
 package nl.cwi.managed_data_4j.language.schema.boot;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.FieldImpl;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.KlassImpl;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.PrimitiveImpl;
 import nl.cwi.managed_data_4j.language.schema.models.implementation.SchemaImpl;
-
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 
 /**
  * This schema describes the schema of a schemaSchema (self description / MetaSchema)

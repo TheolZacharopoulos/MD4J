@@ -1,15 +1,15 @@
 package nl.cwi.managed_data_4j.language.data_manager;
 
-import nl.cwi.managed_data_4j.IFactory;
-import nl.cwi.managed_data_4j.language.managed_object.MObject;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
-import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import nl.cwi.managed_data_4j.IFactory;
+import nl.cwi.managed_data_4j.language.managed_object.MObject;
+import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 
 /**
  * Represents the basic data manager.

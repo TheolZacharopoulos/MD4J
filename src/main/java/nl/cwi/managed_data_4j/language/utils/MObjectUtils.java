@@ -1,15 +1,19 @@
 package nl.cwi.managed_data_4j.language.utils;
 
+import java.util.*;
+
+import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
-import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Type;
-
-import java.util.*;
 
 public class MObjectUtils {
     private static final PrimitivesManager primitiveManager = PrimitivesManager.getInstance();
+
+    public static boolean instanceOf(M object, Class<?> clazz) {
+        return object.schemaKlass().name().equals(clazz.getSimpleName());
+    }
 
     public static boolean equals(M x, M y) {
 
@@ -21,7 +25,7 @@ public class MObjectUtils {
     }
 
     private static boolean crossReferencesCheck(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences) {
-        System.out.println(" Checking cross-references ");
+        // System.out.println(" Checking cross-references ");
 
         for (Object crossReferenceObject : crossReferences.keySet()) {
             for (Object equalityCheckedObject : equalityMap.keySet()) {
@@ -53,10 +57,10 @@ public class MObjectUtils {
 
         // check for null first
         if (x == null && y == null) {
-            System.out.println(" x and y are NULL");
+            // System.out.println(" x and y are NULL");
             return true;
         } else if ((x == null && y != null) || (x != null && y == null)) {
-            System.out.println(" one of x and y is NULL");
+            // System.out.println(" one of x and y is NULL");
             return false;
         }
 
@@ -65,14 +69,14 @@ public class MObjectUtils {
             primitiveManager.isPrimitiveClass(y.getClass()) &&
             x.getClass().equals(y.getClass()))
         {
-            System.out.println(" << Primitive >> : (x = " + x + " | y = " + y + ")");
+            // System.out.println(" << Primitive >> : (x = " + x + " | y = " + y + ")");
             equalityMap.put(x, y);
             return x.equals(y);
         }
 
         // vector leaf
         if (primitiveManager.isMany(x.getClass()) && primitiveManager.isMany(y.getClass())) {
-            System.out.println(" << Vector >> ");
+            // System.out.println(" << Vector >> ");
 
             final Collection<Object> xCollection = (Collection<Object>) x;
             final Collection<Object> yCollection = (Collection<Object>) y;
@@ -94,10 +98,10 @@ public class MObjectUtils {
         final Klass yKlass = mObjectY.schemaKlass();
 
         final List<Field> xFields = new LinkedList<>(xKlass.fields());
-        System.out.println(" <<Object>> (x) : " + xKlass.name());
+        // System.out.println(" <<Object>> (x) : " + xKlass.name());
 
         final List<Field> yFields = new LinkedList<>(yKlass.fields());
-        System.out.println(" <<Object>> (y) : " + yKlass.name());
+        // System.out.println(" <<Object>> (y) : " + yKlass.name());
 
         // sort fields by name, this way we know we compare the field with the right order
         Collections.sort(xFields, (o1, o2) -> o1.name().compareTo(o2.name()));
@@ -151,8 +155,8 @@ public class MObjectUtils {
             final Field xField = xFields.get(n);
             final Field yField = yFields.get(n);
 
-            System.out.println("\t(x) Field name: " + xField.name());
-            System.out.println("\t(y) Field name: " + yField.name());
+            // System.out.println("\t(x) Field name: " + xField.name());
+            // System.out.println("\t(y) Field name: " + yField.name());
 
             final Object xFieldValue = getValueFromField(x, xField.name(), xField.type());
             final Object yFieldValue = getValueFromField(y, yField.name(), yField.type());
@@ -162,7 +166,7 @@ public class MObjectUtils {
             // Check Contain only for non primitives
             // So, if not primitive and not in Spine tree, just skip
             if (!isPrimitive && !(xField.contain() || yField.contain())) {
-                System.out.println(" [Cross-Reference] <" + xField.name() + ">"); // Cross reference
+                // System.out.println(" [Cross-Reference] <" + xField.name() + ">"); // Cross reference
 
                 // support multiple values, add value to cross references
                 if (!crossReferences.containsKey(xFieldValue)) {
@@ -172,7 +176,7 @@ public class MObjectUtils {
 
                 return areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, n + 1);
             }
-            System.out.println(" [Contain] <" + xField.name() + ">"); // Spine
+            // System.out.println(" [Contain] <" + xField.name() + ">"); // Spine
 
             return e(equalityMap, crossReferences, xFieldValue, yFieldValue) &&
                 areFieldsEqual(equalityMap, crossReferences, x, xFields, y, yFields, n + 1);
