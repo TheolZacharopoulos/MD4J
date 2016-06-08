@@ -129,8 +129,9 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
 
         if (!(valueSchemaKlass.name().equals(fieldType.name()) || isSubKlass)) {
             throw new InvalidFieldValueException(
-                "Invalid value for " + this.field.owner().name() + " " +
-                this.field.name() + " " + field.type().name() + " found (" + valueSchemaKlass.name() + ")");
+                "Invalid value for Klass: " + this.field.owner().name() + ", field '" +
+                this.field.name() + "' <" + field.type().name() + ">." +
+                " Type found: " + valueSchemaKlass.name() + "");
         }
     }
 
