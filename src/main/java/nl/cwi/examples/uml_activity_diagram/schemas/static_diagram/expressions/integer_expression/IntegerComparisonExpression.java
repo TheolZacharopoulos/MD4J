@@ -32,7 +32,7 @@ public interface IntegerComparisonExpression extends IntegerExpression {
 				result = operandValue1 <= operandValue2;
 				break;
 		}
-		BooleanValue resultValue = FactoriesProvider.getValuesFactory().BooleanValue();
+		BooleanValue resultValue = FactoriesProvider.getActivityDiagramFactory().BooleanValue();
 
 		resultValue.value(result);
 		assignee().currentValue(resultValue);

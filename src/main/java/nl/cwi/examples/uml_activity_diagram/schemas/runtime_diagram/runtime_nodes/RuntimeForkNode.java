@@ -14,7 +14,7 @@ public interface RuntimeForkNode extends RuntimeControlNode, ForkNode {
     default void fire(List<Token> tokens) {
         List<Token> forkedTokens = new ArrayList<Token>();
         for(Token token : tokens) {
-            ForkedToken forkedToken = FactoriesProvider.getTokenFactory().ForkedToken();
+            ForkedToken forkedToken = FactoriesProvider.getRuntimeActivityDiagramFactory().ForkedToken();
 
             forkedToken.baseToken(token);
             forkedToken.remainingOffersCount(outgoing().size());

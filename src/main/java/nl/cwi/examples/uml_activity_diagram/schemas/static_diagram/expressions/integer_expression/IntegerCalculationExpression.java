@@ -23,7 +23,7 @@ public interface IntegerCalculationExpression extends IntegerExpression {
 				result = operandValue1 - operandValue2;
 				break;
 		}
-		IntegerValue resultValue = FactoriesProvider.getValuesFactory().IntegerValue();
+		IntegerValue resultValue = FactoriesProvider.getActivityDiagramFactory().IntegerValue();
 
 		resultValue.value(result);
 		assignee().currentValue(resultValue);

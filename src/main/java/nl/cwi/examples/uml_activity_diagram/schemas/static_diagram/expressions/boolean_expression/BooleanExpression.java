@@ -27,7 +27,7 @@ public interface BooleanExpression extends Expression {
 	}
 
 	default void assignValue(Boolean value) {
-		BooleanValue resultValue = FactoriesProvider.getValuesFactory().BooleanValue();
+		BooleanValue resultValue = FactoriesProvider.getActivityDiagramFactory().BooleanValue();
 		resultValue.value(value);
 		getAssignee().currentValue(resultValue);
 	}

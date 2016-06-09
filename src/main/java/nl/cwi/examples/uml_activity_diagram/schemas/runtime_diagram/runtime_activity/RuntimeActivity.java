@@ -19,7 +19,7 @@ import java.util.List;
 public interface RuntimeActivity extends Activity {
 
 	default void initializeTrace() {
-		Trace newTrace = FactoriesProvider.getTraceFactory().Trace();
+		Trace newTrace = FactoriesProvider.getRuntimeActivityDiagramFactory().Trace();
 		trace(newTrace);
 	}
 

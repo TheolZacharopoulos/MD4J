@@ -12,12 +12,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        final RuntimeActivity activity = (RuntimeActivity) TestActivity1.getTestActivity(
-            FactoriesProvider.getValuesFactory(),
-            FactoriesProvider.getVariablesFactory(),
-            FactoriesProvider.getRuntimeNodesFactory(),
-            FactoriesProvider.getRuntimeEdgesFactory(),
-            FactoriesProvider.getRuntimeActivityFactory());
+        final RuntimeActivity activity = (RuntimeActivity)
+                TestActivity1.getTestActivity(FactoriesProvider.getRuntimeActivityDiagramFactory());
 
         activity.main(Collections.emptyList());
 

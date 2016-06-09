@@ -22,7 +22,7 @@ public interface RuntimeAction extends RuntimeExecutableNode, Action {
 	default void sendOffers() {
 		if (outgoing().size() > 0) {
 			List<Token> tokens = new ArrayList<Token>();
-			tokens.add(FactoriesProvider.getTokenFactory().ControlToken());
+			tokens.add(FactoriesProvider.getRuntimeActivityDiagramFactory().ControlToken());
 			addTokens(tokens);
 			((RuntimeActivityEdge) outgoing().get(0)).sendOffer(tokens);
 		}
