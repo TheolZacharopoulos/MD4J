@@ -1,9 +1,5 @@
 package nl.cwi.managed_data_4j.language.schema.load;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.*;
-
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
@@ -13,6 +9,10 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.*;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Key;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
 
 /**
  * Dynamically loads schemas.
