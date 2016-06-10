@@ -4,11 +4,11 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.expressions.b
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.BooleanVariable;
 
 public interface BooleanUnaryExpression extends BooleanExpression {
-	BooleanVariable operant(BooleanVariable... operant);
+	BooleanVariable operand(BooleanVariable... operant);
 	BooleanUnaryOperator operator(BooleanUnaryOperator... operator);
 
 	default void execute() {
-		boolean operandValue = getCurrentBoolValue(operant());
+		boolean operandValue = getCurrentBoolValue(operand());
 
 		Boolean result = null;
 		switch (operator()) {

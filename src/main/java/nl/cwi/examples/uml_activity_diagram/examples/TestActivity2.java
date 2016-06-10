@@ -1,87 +1,95 @@
 package nl.cwi.examples.uml_activity_diagram.examples;
 
-import nl.cwi.examples.uml_activity_diagram.schemas.ActivityDiagramFactory;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.Activity;
-import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.ControlFlow;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.ActivityFactory;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.ActivityEdge;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.*;
-import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.values.BooleanValue;
-import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.BooleanVariable;
 
 public class TestActivity2 {
     
-    public static Activity getTestActivity(ActivityDiagramFactory activityDiagramFactory)
-    {
-        // Variables
-        BooleanValue falseValue = activityDiagramFactory.BooleanValue();
-        falseValue.value(false);
+    public static Activity getTestActivity(ActivityFactory f) {
 
-        BooleanVariable defaultFalse = activityDiagramFactory.BooleanVariable();
-        defaultFalse.name("false");
-        defaultFalse.currentValue(falseValue);
+        OpaqueAction action3_3 = f.OpaqueAction();
+        action3_3.name("action3");
 
-        // nodes
-        InitialNode initialNode2 = activityDiagramFactory.InitialNode();
-        initialNode2.name("initialNode2");
+        OpaqueAction action2_2 = f.OpaqueAction();
+        action2_2.name("action2");
 
-        ForkNode forkNode1 = activityDiagramFactory.ForkNode();
-        forkNode1.name("forkNode1");
+        ForkNode forkNode1_1 = f.ForkNode();
+        forkNode1_1.name("forkNode1");
 
-        Action action2 = activityDiagramFactory.Action();
-        action2.name("action2");
+        JoinNode joinNode1_4 = f.JoinNode();
+        joinNode1_4.name("joinNode1");
 
-        Action action3 = activityDiagramFactory.Action();
-        action3.name("action3");
+        ActivityFinalNode finalNode2_5 = f.ActivityFinalNode();
+        finalNode2_5.name("finalNode2");
 
-        JoinNode joinNode1 = activityDiagramFactory.JoinNode();
-        joinNode1.name("joinNode1");
+        InitialNode initialNode2_0 = f.InitialNode();
+        initialNode2_0.name("initialNode2");
 
-        ActivityFinalNode finalNode2 = activityDiagramFactory.ActivityFinalNode();
-        finalNode2.name("finalNode2");
+        ActivityEdge edge5_8 = f.ActivityEdge();
+        edge5_8.name("edge5");
 
-        // edges
-        ControlFlow edge3 = activityDiagramFactory.ControlFlow();
-        edge3.name("edge3");
-        edge3.guard(defaultFalse);
-        edge3.source(initialNode2);
-        edge3.target(forkNode1);
+        ActivityEdge edge4_7 = f.ActivityEdge();
+        edge4_7.name("edge4");
 
-        ControlFlow edge4 = activityDiagramFactory.ControlFlow();
-        edge4.name("edge4");
-        edge4.guard(defaultFalse);
-        edge4.source(forkNode1);
-        edge4.target(action2);
+        ActivityEdge edge8_11 = f.ActivityEdge();
+        edge8_11.name("edge8");
 
-        ControlFlow edge5 = activityDiagramFactory.ControlFlow();
-        edge5.name("edge5");
-        edge5.guard(defaultFalse);
-        edge5.source(forkNode1);
-        edge5.target(action3);
+        ActivityEdge edge3_6 = f.ActivityEdge();
+        edge3_6.name("edge3");
+        ActivityEdge edge7_10 = f.ActivityEdge();
+        edge7_10.name("edge7");
+        ActivityEdge edge6_9 = f.ActivityEdge();
+        edge6_9.name("edge6");
 
-        ControlFlow edge6 = activityDiagramFactory.ControlFlow();
-        edge6.name("edge6");
-        edge6.guard(defaultFalse);
-        edge6.source(action2);
-        edge6.target(joinNode1);
+        edge5_8.source(forkNode1_1);
+        edge5_8.target(action3_3);
 
-        ControlFlow edge7 = activityDiagramFactory.ControlFlow();
-        edge7.name("edge7");
-        edge7.guard(defaultFalse);
-        edge7.source(action3);
-        edge7.target(joinNode1);
+        edge4_7.source(forkNode1_1);
+        edge4_7.target(action2_2);
 
-        ControlFlow edge8 = activityDiagramFactory.ControlFlow();
-        edge8.name("edge8");
-        edge8.guard(defaultFalse);
-        edge8.source(joinNode1);
-        edge8.target(finalNode2);
+        edge8_11.source(joinNode1_4);
+        edge8_11.target(finalNode2_5);
 
-        // Activity
-        Activity test2 = activityDiagramFactory.Activity();
-        test2.name("test2");
+        edge3_6.source(initialNode2_0);
+        edge3_6.target(forkNode1_1);
 
-        test2.edges(edge3, edge4, edge5, edge6, edge7, edge8);
-        test2.nodes(initialNode2, action2, action3, joinNode1, forkNode1, finalNode2);
+        edge7_10.source(action3_3);
+        edge7_10.target(joinNode1_4);
 
-        return test2;
+        edge6_9.source(action2_2);
+        edge6_9.target(joinNode1_4);
+
+        action3_3.outgoing(edge7_10);
+        action3_3.incoming(edge5_8);
+
+        action3_3.expressions();
+
+        action2_2.outgoing(edge6_9);
+        action2_2.incoming(edge4_7);
+
+        action2_2.expressions();
+
+        forkNode1_1.outgoing(edge4_7, edge5_8);
+        forkNode1_1.incoming(edge3_6);
+
+        joinNode1_4.outgoing(edge8_11);
+        joinNode1_4.incoming(edge6_9, edge7_10);
+
+        finalNode2_5.outgoing();
+        finalNode2_5.incoming(edge8_11);
+
+        initialNode2_0.outgoing(edge3_6);
+        initialNode2_0.incoming();
+
+        Activity test2_12 = f.Activity();
+        test2_12.name("test2");
+        test2_12.locals();
+        test2_12.inputs();
+        test2_12.nodes(action3_3, action2_2, forkNode1_1, joinNode1_4, finalNode2_5, initialNode2_0);
+        test2_12.edges(edge5_8, edge4_7, edge8_11, edge3_6, edge7_10, edge6_9);
+
+        return test2_12;
     }
 }

@@ -6,8 +6,8 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.values.Boolea
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.BooleanVariable;
 
 public interface IntegerComparisonExpression extends IntegerExpression {
-	BooleanVariable assignee(BooleanVariable... assignee);
-	IntegerComparisonOperator operator();
+	BooleanVariable assignee(BooleanVariable...assignee);
+	IntegerComparisonOperator operator(IntegerComparisonOperator...operator);
 
 	@Override
 	default void execute() {

@@ -98,10 +98,8 @@ public interface RuntimeActivity extends Activity {
 		// TODO: Change to this?
 		while (enabledNodes.size() > 0) {
 			for (ActivityNode nextNode : enabledNodes) {
-				if (!MObjectUtils.instanceOf(nextNode, RuntimeInitialNode.class)) {
-					fireNode(nextNode);
-					enabledNodes = getEnabledNodes();
-				}
+				fireNode(nextNode);
+				enabledNodes = getEnabledNodes();
 			}
 		}
 	}

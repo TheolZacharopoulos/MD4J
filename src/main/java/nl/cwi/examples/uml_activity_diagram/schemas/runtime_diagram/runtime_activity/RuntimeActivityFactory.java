@@ -1,6 +1,5 @@
-package nl.cwi.examples.uml_activity_diagram.schemas;
+package nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity;
 
-import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivity;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_edges.RuntimeActivityEdge;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_edges.RuntimeControlFlow;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_nodes.*;
@@ -9,8 +8,9 @@ import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.tokens.Forke
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.tokens.Token;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.trace.Offer;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.trace.Trace;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.ActivityFactory;
 
-public interface RuntimeActivityDiagramFactory extends ActivityDiagramFactory {
+public interface RuntimeActivityFactory extends ActivityFactory {
     // Activity
     RuntimeActivity Activity();
 

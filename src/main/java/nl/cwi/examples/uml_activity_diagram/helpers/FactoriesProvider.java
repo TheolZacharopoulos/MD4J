@@ -1,8 +1,8 @@
 package nl.cwi.examples.uml_activity_diagram.helpers;
 
-import nl.cwi.examples.uml_activity_diagram.schemas.ActivityDiagramFactory;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.ActivityFactory;
 import nl.cwi.examples.uml_activity_diagram.schemas.OperatorsPrimitives;
-import nl.cwi.examples.uml_activity_diagram.schemas.RuntimeActivityDiagramFactory;
+import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivityFactory;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.input.InputValue;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivity;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_edges.RuntimeActivityEdge;
@@ -84,19 +84,19 @@ public class FactoriesProvider {
 
     // ===================
     // static factory
-    private static ActivityDiagramFactory activityDiagramFactory =
-            dataManager.factory(ActivityDiagramFactory.class, runtimeActivityDiagramSchema);
+    private static ActivityFactory activityDiagramFactory =
+            dataManager.factory(ActivityFactory.class, runtimeActivityDiagramSchema);
 
-    public static ActivityDiagramFactory getActivityDiagramFactory() {
+    public static ActivityFactory getActivityDiagramFactory() {
         return activityDiagramFactory;
     }
 
     // ===================
     // runtime factory
-    private static RuntimeActivityDiagramFactory runtimeActivityFactory =
-                dataManager.factory(RuntimeActivityDiagramFactory.class, runtimeActivityDiagramSchema);
+    private static RuntimeActivityFactory runtimeActivityFactory =
+                dataManager.factory(RuntimeActivityFactory.class, runtimeActivityDiagramSchema);
 
-    public static RuntimeActivityDiagramFactory getRuntimeActivityDiagramFactory() {
+    public static RuntimeActivityFactory getRuntimeActivityDiagramFactory() {
         return runtimeActivityFactory;
     }
 }
