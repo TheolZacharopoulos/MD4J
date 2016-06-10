@@ -6,7 +6,7 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.Activit
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.*;
 
 public class TestActivity2 {
-    
+
     public static Activity getTestActivity(ActivityFactory f) {
 
         OpaqueAction action3_3 = f.OpaqueAction();
@@ -38,8 +38,10 @@ public class TestActivity2 {
 
         ActivityEdge edge3_6 = f.ActivityEdge();
         edge3_6.name("edge3");
+
         ActivityEdge edge7_10 = f.ActivityEdge();
         edge7_10.name("edge7");
+
         ActivityEdge edge6_9 = f.ActivityEdge();
         edge6_9.name("edge6");
 

@@ -7,6 +7,8 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.Activit
 import java.util.List;
 
 public interface RuntimeActivityFinalNode extends RuntimeFinalNode, ActivityFinalNode {
+
+    @Override
     default void fire(List<Token> tokens) {
         ((RuntimeActivity) activity()).terminateNodes();
     }

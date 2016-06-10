@@ -2,16 +2,13 @@ package nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_act
 
 import nl.cwi.examples.uml_activity_diagram.helpers.FactoriesProvider;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.input.InputValue;
-import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_nodes.RuntimeActivityFinalNode;
-import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_nodes.RuntimeActivityNode;
+import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_nodes.*;
+import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.tokens.Token;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.trace.Trace;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.Activity;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.ActivityNode;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Variable;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
-import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_nodes.RuntimeInitialNode;
-import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.tokens.Token;
-import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.Activity;
-import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.InitialNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,32 +33,28 @@ public interface RuntimeActivity extends Activity {
 
 	default void runNodes() {
 		for (ActivityNode node : nodes()) {
+			System.out.println("Run node " + node.name());
 			((RuntimeActivityNode)node).run();
 		}
 	}
 
 	default void fireInitialNode() {
-		InitialNode initialNode = getInitialNode();
+		RuntimeInitialNode initialNode = getInitialNode();
 		fireNode(initialNode);
 	}
 
-	default void fireNode(ActivityNode node) {
+	default void fireNode(RuntimeActivityNode node) {
 		System.out.println("Fire node " + node.name());
-		List<Token> tokens = ((RuntimeActivityNode)node).takeOfferdTokens();
-		((RuntimeActivityNode)node).fire(tokens);
+		List<Token> tokens = node.takeOfferdTokens();
+		node.fire(tokens);
 
 		trace().executedNodes().add(node);
-
-		// TODO: Add this?
-		if (MObjectUtils.instanceOf(node, RuntimeActivityFinalNode.class)) {
-			terminateNodes();
-		}
 	}
 
-	default InitialNode getInitialNode() {
+	default RuntimeInitialNode getInitialNode() {
 		for (ActivityNode node : nodes()) {
 			if (MObjectUtils.instanceOf(node, RuntimeInitialNode.class)) {
-				return (InitialNode)node;
+				return (RuntimeInitialNode)node;
 			}
 		}
 		return null;
@@ -98,7 +91,7 @@ public interface RuntimeActivity extends Activity {
 		// TODO: Change to this?
 		while (enabledNodes.size() > 0) {
 			for (ActivityNode nextNode : enabledNodes) {
-				fireNode(nextNode);
+				fireNode((RuntimeActivityNode) nextNode);
 				enabledNodes = getEnabledNodes();
 			}
 		}

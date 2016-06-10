@@ -12,8 +12,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        final RuntimeActivity activity = (RuntimeActivity)
-                TestActivity2.getTestActivity(FactoriesProvider.getRuntimeActivityDiagramFactory());
+        final RuntimeActivity activity = (RuntimeActivity) TestActivity2
+                .getTestActivity(FactoriesProvider.getRuntimeActivityDiagramFactory());
 
         activity.main(Collections.emptyList());
 

@@ -1,13 +1,13 @@
-import org.junit.Before;
-import org.junit.Test;
-
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
-import test_definition.PersonFactory;
+import org.junit.Before;
+import org.junit.Test;
+import test_definition.APersonFactory;
+import test_definition.schemas.APerson;
 import test_definition.schemas.Address;
 import test_definition.schemas.Car;
 import test_definition.schemas.Person;
@@ -22,16 +22,16 @@ import static org.junit.Assert.assertTrue;
 
 public class TestSchemaDefinition {
 
-    private PersonFactory personFactory;
+    private APersonFactory personFactory;
 
     @Before
     public void setup() {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
         final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
-        final Schema personSchema = SchemaLoader.load(schemaFactory, Person.class, Address.class, Car.class, Primitives.class);
+        final Schema personSchema = SchemaLoader.load(schemaFactory, APerson.class, Person.class, Address.class, Car.class, Primitives.class);
         final BasicDataManager basicFactoryForPersons = new BasicDataManager();
 
-        personFactory = basicFactoryForPersons.factory(PersonFactory.class, personSchema);
+        personFactory = basicFactoryForPersons.factory(APersonFactory.class, personSchema);
     }
 
     @Test
@@ -285,6 +285,15 @@ public class TestSchemaDefinition {
         person.name("Alex");
 
         assertEquals("__Alex__", person.getNameWithFormat());
+        assertEquals("Hello", person.justReturnWhatYouGet("Hello"));
+    }
+
+    @Test
+    public void default_method_invocation_Sub_Test() {
+        APerson person = personFactory.Person();
+        person.name("Alex");
+
+        assertEquals("%%Alex%%", person.getNameWithFormat());
         assertEquals("Hello", person.justReturnWhatYouGet("Hello"));
     }
 }
