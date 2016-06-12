@@ -10,6 +10,7 @@ public interface RuntimeActivityFinalNode extends RuntimeFinalNode, ActivityFina
 
     @Override
     default void fire(List<Token> tokens) {
+        System.out.println("Firing: Runtime ActivityFinalNode ");
         ((RuntimeActivity) activity()).terminateNodes();
     }
 }

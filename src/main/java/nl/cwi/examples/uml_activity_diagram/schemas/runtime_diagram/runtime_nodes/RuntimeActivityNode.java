@@ -61,10 +61,7 @@ public interface RuntimeActivityNode extends ActivityNode {
     default void addTokens(List<Token> tokens) {
         for (Token token : tokens) {
             Token transferredToken = token.transfer(this);
-            List<Token> tokenList = heldTokens();
-            tokenList.add(transferredToken);
-
-            heldTokens(tokenList.toArray(new Token[tokenList.size()]));
+            heldTokens().add(transferredToken);
         }
     }
 
@@ -79,9 +76,6 @@ public interface RuntimeActivityNode extends ActivityNode {
     }
 
     default void removeToken(Token token) {
-        List<Token> tokenList = heldTokens();
         heldTokens().remove(token);
-
-        heldTokens(tokenList.toArray(new Token[tokenList.size()]));
     }
 }
