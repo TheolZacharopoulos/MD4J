@@ -1,11 +1,5 @@
 package nl.cwi.managed_data_4j.language.managed_object;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.*;
-
 import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObjectField;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
@@ -18,6 +12,13 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.singl
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSinglePrimitive;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * The Managed Object
@@ -253,17 +254,18 @@ public class MObject implements InvocationHandler, M {
      */
     protected Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
 
-        final Class<?> declaringClass = method.getDeclaringClass();
+//        final Class<?> declaringClass = method.getDeclaringClass();
+        final Class<?> declaringClass = schemaKlass.classOf();
 
         // declare MethodHandles.Lookup constructor accessible
-        Constructor constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+        Constructor<Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
 
         // use the constructor to create a lookup object with PRIVATE access
         constructor.setAccessible(true);
 
         // create a lookup for the default method
         final MethodHandles.Lookup defaultMethodLookup =
-                (MethodHandles.Lookup) constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
+                constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
 
         // create a method handle that will not check for overridden method (unreflectSpecial)
         // Since it is "special" it will skip the overriding done
