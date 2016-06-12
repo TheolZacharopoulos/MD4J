@@ -254,18 +254,17 @@ public class MObject implements InvocationHandler, M {
      */
     protected Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
 
-//        final Class<?> declaringClass = method.getDeclaringClass();
-        final Class<?> declaringClass = schemaKlass.classOf();
+        final Class<?> declaringClass = method.getDeclaringClass();
+//        final Class<?> declaringClass = schemaKlass.classOf();
 
         // declare MethodHandles.Lookup constructor accessible
-        Constructor<Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+        final Constructor<Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
 
         // use the constructor to create a lookup object with PRIVATE access
         constructor.setAccessible(true);
 
         // create a lookup for the default method
-        final MethodHandles.Lookup defaultMethodLookup =
-                constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
+        final MethodHandles.Lookup defaultMethodLookup = constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE);
 
         // create a method handle that will not check for overridden method (unreflectSpecial)
         // Since it is "special" it will skip the overriding done
