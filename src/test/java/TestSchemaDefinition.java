@@ -7,6 +7,7 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 import org.junit.Before;
 import org.junit.Test;
 import test_definition.APersonFactory;
+import test_definition.PersonFactory;
 import test_definition.schemas.APerson;
 import test_definition.schemas.Address;
 import test_definition.schemas.Car;
@@ -22,7 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 public class TestSchemaDefinition {
 
-    private APersonFactory personFactory;
+    private PersonFactory personFactory;
+    private APersonFactory aPersonFactory;
 
     @Before
     public void setup() {
@@ -33,7 +35,8 @@ public class TestSchemaDefinition {
 
         final BasicDataManager basicFactoryForPersons = new BasicDataManager();
 
-        personFactory = basicFactoryForPersons.factory(APersonFactory.class, personSchema);
+        personFactory = basicFactoryForPersons.factory(PersonFactory.class, personSchema);
+        aPersonFactory = basicFactoryForPersons.factory(APersonFactory.class, personSchema);
     }
 
     @Test
@@ -292,7 +295,7 @@ public class TestSchemaDefinition {
 
     @Test
     public void default_method_invocation_Sub_Test() {
-        APerson person = personFactory.Person();
+        APerson person = aPersonFactory.Person();
         person.name("Alex");
 
         assertEquals("%%Alex%%", person.getNameWithFormat());

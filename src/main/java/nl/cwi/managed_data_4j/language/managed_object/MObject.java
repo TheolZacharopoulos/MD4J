@@ -14,7 +14,6 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -254,11 +253,12 @@ public class MObject implements InvocationHandler, M {
      */
     protected Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
 
-        final Class<?> declaringClass = method.getDeclaringClass();
-//        final Class<?> declaringClass = schemaKlass.classOf();
+        final Class<?> declaringClass = schemaKlass.classOf();
+
+        final Method schemaKlassMethod = declaringClass.getMethod(method.getName(), method.getParameterTypes());
 
         // declare MethodHandles.Lookup constructor accessible
-        final Constructor<Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+        final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
 
         // use the constructor to create a lookup object with PRIVATE access
         constructor.setAccessible(true);
@@ -270,7 +270,7 @@ public class MObject implements InvocationHandler, M {
         // Since it is "special" it will skip the overriding done
         // by the proxying and invoke the default implementation
         return defaultMethodLookup
-            .unreflectSpecial(method, declaringClass)
+            .unreflectSpecial(schemaKlassMethod, declaringClass)
             .bindTo(proxy)
             .invokeWithArguments(args);
     }
