@@ -29,6 +29,6 @@ public interface RuntimeAction extends RuntimeExecutableNode, Action {
 	}
 
 	default boolean isReady() {
-		return RuntimeExecutableNode.super.isReady() && hasOffers();
+		return isRunning() && hasOffers();
 	}
 }

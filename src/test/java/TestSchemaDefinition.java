@@ -27,8 +27,10 @@ public class TestSchemaDefinition {
     @Before
     public void setup() {
         final SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
-        final Schema schemaSchema = SchemaFactoryProvider.getSchemaSchema();
-        final Schema personSchema = SchemaLoader.load(schemaFactory, APerson.class, Person.class, Address.class, Car.class, Primitives.class);
+
+        final Schema personSchema = SchemaLoader.load(schemaFactory,
+                APerson.class, Person.class, Address.class, Car.class, Primitives.class);
+
         final BasicDataManager basicFactoryForPersons = new BasicDataManager();
 
         personFactory = basicFactoryForPersons.factory(APersonFactory.class, personSchema);

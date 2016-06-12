@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface RuntimeInitialNode extends RuntimeControlNode, InitialNode {
 
+    @Override
     default void fire(List<Token> tokens) {
+        System.out.println("Firing: Runtime InitialNode");
         List<Token> producedTokens = new ArrayList<Token>();
         producedTokens.add(FactoriesProvider.getRuntimeActivityDiagramFactory().ControlToken());
 
@@ -17,6 +19,7 @@ public interface RuntimeInitialNode extends RuntimeControlNode, InitialNode {
         sendOffers(producedTokens);
     }
 
+    @Override
     default boolean isReady() {
         return false; // is fired by activity directly
     }

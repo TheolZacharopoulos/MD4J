@@ -6,12 +6,15 @@ import java.util.List;
 
 public interface RuntimeControlNode extends RuntimeActivityNode {
 
-    default boolean isReady() {
-        return RuntimeActivityNode.super.isReady() && hasOffers();
-    }
-
+    @Override
     default void fire(List<Token> tokens) {
+        System.out.println("Firing: RuntimeControlNode");
         addTokens(tokens);
         sendOffers(tokens);
+    }
+
+    @Override
+    default boolean isReady() {
+        return isRunning() && hasOffers();
     }
 }
