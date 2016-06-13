@@ -389,10 +389,13 @@ public class TestPerformanceVariant3_2 {
         testperformance_variant3_2_48.name("testperformance_variant3_2");
         testperformance_variant3_2_48.locals(value1_9, value2_1, iL2_4, loop_5, iE2_3, iG2_2, iterations_6, loopLiterations_8, loopEiterations_7);
         testperformance_variant3_2_48.inputs(i_0);
-        testperformance_variant3_2_48.nodes(j_22, k_25, l_26, mergeE_15, initialNode7_10, mergeFinal7_24, decisionLoop_23, decisionI_17, a_11, b_12, c_13, d_14, e_16, f_18, g_19, h_20, i_21);
-        testperformance_variant3_2_48.edges(edge28_34, edge30_36, edge29_35, edge31_37, edge32_38, edge33_39, edge34_40, edge22_28, edge35_41, edge23_29, edge36_42, edge24_30, edge37_43, edge25_31, edge38_44, edge39_45, edge40_46, edge26_32, edge41_47, edge27_33);
+        testperformance_variant3_2_48.nodes(
+                j_22, k_25, l_26, mergeE_15, initialNode7_10, mergeFinal7_24, decisionLoop_23, decisionI_17, a_11, b_12,
+                c_13, d_14, e_16, f_18, g_19, h_20, i_21, finalNode7_27);
 
-		finalNode7_27.activity(testperformance_variant3_2_48);			
+        testperformance_variant3_2_48.edges(edge28_34, edge30_36, edge29_35, edge31_37, edge32_38, edge33_39, edge34_40,
+                edge22_28, edge35_41, edge23_29, edge36_42, edge24_30, edge37_43, edge25_31, edge38_44, edge39_45,
+                edge40_46, edge26_32, edge41_47, edge27_33);
 
         return testperformance_variant3_2_48;
     }

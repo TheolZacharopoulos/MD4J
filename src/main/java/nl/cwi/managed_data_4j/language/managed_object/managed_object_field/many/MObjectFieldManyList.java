@@ -47,6 +47,7 @@ public class MObjectFieldManyList extends MObjectFieldMany {
 
         if (!this.values.contains(value)) {
             __insert(value);
+            notify(value);
         }
     }
 

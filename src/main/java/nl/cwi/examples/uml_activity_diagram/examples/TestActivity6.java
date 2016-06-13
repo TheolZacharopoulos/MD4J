@@ -237,10 +237,11 @@ public class TestActivity6 {
         test6_31.name("test6");
         test6_31.locals(notinternal_1);
         test6_31.inputs(internal_0);
-        test6_31.nodes(mergeAuthorizePayment_13, decisionInternal_4, initialNode6_2, addToWebsite_9, forkGetWelcomePackage_7, authorizePayment_14, managerReport_12, register_3, assignToProjectExternal_5, assignToProject_8, joinManagerInterview_10, getWelcomePackage_6, managerInterview_11);
+        test6_31.nodes(
+                mergeAuthorizePayment_13, decisionInternal_4, initialNode6_2, addToWebsite_9, forkGetWelcomePackage_7,
+                authorizePayment_14, managerReport_12, register_3, assignToProjectExternal_5, assignToProject_8,
+                joinManagerInterview_10, getWelcomePackage_6, managerInterview_11, finalNode6_15);
         test6_31.edges(edge54_28, edge42_16, edge55_29, edge43_17, edge56_30, edge44_18, edge45_19, edge46_20, edge47_21, edge48_22, edge50_24, edge49_23, edge51_25, edge52_26, edge53_27);
-
-        finalNode6_15.activity(test6_31);
 
         return test6_31;
     }

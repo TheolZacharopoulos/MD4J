@@ -82,10 +82,8 @@ public class TestActivity5 {
         test5_8.name("test5");
         test5_8.locals(var10_1, var11_2);
         test5_8.inputs(var9_0);
-        test5_8.nodes(initialNode5_3, action10_4);
+        test5_8.nodes(initialNode5_3, action10_4, finalNode5_5);
         test5_8.edges(edge20_6, edge21_7);
-
-        finalNode5_5.activity(test5_8);
 
         return test5_8;
     }

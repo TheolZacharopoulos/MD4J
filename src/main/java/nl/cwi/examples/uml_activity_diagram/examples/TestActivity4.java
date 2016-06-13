@@ -169,10 +169,8 @@ public class TestActivity4 {
         test4_17.name("test4");
         test4_17.locals(var4_1, var7_4, var5_2, var8_5, var3_0, var6_3);
         test4_17.inputs();
-        test4_17.nodes(action6_7, initialNode4_6, action9_10, action8_9, action7_8);
+        test4_17.nodes(action6_7, initialNode4_6, action9_10, action8_9, action7_8, finalNode4_11);
         test4_17.edges(edge16_13, edge17_14, edge18_15, edge19_16, edge15_12);
-
-        finalNode4_11.activity(test4_17);
 
         return test4_17;
     }
