@@ -10,7 +10,6 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 
 import java.lang.reflect.Proxy;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -129,26 +128,6 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
                 "Invalid value for Klass: " + this.field.owner().name() + ", field '" +
                 this.field.name() + "' <" + field.type().name() + ">." +
                 " Type found: " + valueSchemaKlass.name() + "");
-        }
-    }
-
-    private Set<Klass> getAllSuperKlasses(Klass klass) {
-        Set<Klass> supers = new LinkedHashSet<>();
-
-        getAllSuperKlasses(klass, supers);
-
-        return supers;
-    }
-
-    private void getAllSuperKlasses(Klass klass, Set<Klass> stack) {
-        for (Klass superKlass : klass.supers()) {
-
-            if (superKlass.supers() != null && superKlass.supers().size() > 0) {
-                stack.add(superKlass);
-                getAllSuperKlasses(superKlass, stack);
-            } else {
-                stack.add(superKlass);
-            }
         }
     }
 }
