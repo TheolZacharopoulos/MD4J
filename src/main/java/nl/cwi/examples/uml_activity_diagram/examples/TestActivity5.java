@@ -21,16 +21,24 @@ public class TestActivity5 {
         IntegerValue fiveValue = f.IntegerValue();
         fiveValue.value(1);
 
+        IntegerValue tenValue = f.IntegerValue();
+        fiveValue.value(10);
+
         IntegerVariable var10_1 = f.IntegerVariable();
         var10_1.name("var10");
         var10_1.initialValue(fiveValue);
+        var10_1.currentValue(fiveValue);
 
         IntegerVariable var11_2 = f.IntegerVariable();
         var11_2.name("var11");
         var11_2.initialValue(zeroValue);
+        var11_2.currentValue(zeroValue);
 
+        // TODO: This is input
         IntegerVariable var9_0 = f.IntegerVariable();
         var9_0.name("var9");
+        var9_0.initialValue(tenValue);
+        var9_0.currentValue(tenValue);
 
         ActivityFinalNode finalNode5_5 = f.ActivityFinalNode();
         finalNode5_5.name("finalNode5");
@@ -74,8 +82,10 @@ public class TestActivity5 {
         test5_8.name("test5");
         test5_8.locals(var10_1, var11_2);
         test5_8.inputs(var9_0);
-        test5_8.nodes(finalNode5_5, initialNode5_3, action10_4);
+        test5_8.nodes(initialNode5_3, action10_4);
         test5_8.edges(edge20_6, edge21_7);
+
+        finalNode5_5.activity(test5_8);
 
         return test5_8;
     }

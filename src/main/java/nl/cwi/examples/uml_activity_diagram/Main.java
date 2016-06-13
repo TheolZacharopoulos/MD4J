@@ -1,6 +1,6 @@
 package nl.cwi.examples.uml_activity_diagram;
 
-import nl.cwi.examples.uml_activity_diagram.examples.TestActivity2;
+import nl.cwi.examples.uml_activity_diagram.examples.TestActivity6;
 import nl.cwi.examples.uml_activity_diagram.helpers.FactoriesProvider;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivity;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.Activity;
@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        final RuntimeActivity activity = (RuntimeActivity) TestActivity2
+        final RuntimeActivity activity = (RuntimeActivity) TestActivity6
                 .getTestActivity(FactoriesProvider.getRuntimeActivityDiagramFactory());
 
         activity.main(Collections.emptyList());

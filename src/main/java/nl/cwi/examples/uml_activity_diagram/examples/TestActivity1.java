@@ -47,8 +47,10 @@ public class TestActivity1 {
         test1_5.name("test1");
         test1_5.locals();
         test1_5.inputs();
-        test1_5.nodes(action1_1, finalNode1_2, initialNode1_0);
+        test1_5.nodes(action1_1, initialNode1_0);
         test1_5.edges(edge1_3, edge2_4);
+
+        finalNode1_2.activity(test1_5);
 
         return test1_5;
     }
