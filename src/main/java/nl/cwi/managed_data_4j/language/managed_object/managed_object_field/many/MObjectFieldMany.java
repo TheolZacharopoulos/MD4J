@@ -5,8 +5,11 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.MObje
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single.MObjectFieldSingleMObj;
 import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+
+import java.lang.reflect.Proxy;
 
 /**
  * Represents a multi value field.
@@ -45,4 +48,14 @@ public abstract class MObjectFieldMany extends MObjectField implements Iterable 
     public abstract boolean isEmpty();
 
     public abstract void clear();
+
+    protected void notify(Object value) {
+        if (this.inverse != null && !this.inverse.many()) {
+            final MObject valueMObject = (MObject) Proxy.getInvocationHandler(value);
+            final MObjectFieldSingleMObj newValueMObjectInverseField =
+                    (MObjectFieldSingleMObj) valueMObject._getField(inverse.name());
+
+            newValueMObjectInverseField.__set(owner.getProxy());
+        }
+    }
 }

@@ -1,15 +1,15 @@
 package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a multi value field which is a List.
@@ -47,6 +47,7 @@ public class MObjectFieldManyList extends MObjectFieldMany {
 
         if (!this.values.contains(value)) {
             __insert(value);
+            notify(value);
         }
     }
 

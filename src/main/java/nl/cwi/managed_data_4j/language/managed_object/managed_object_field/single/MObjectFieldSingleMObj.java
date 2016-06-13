@@ -1,10 +1,5 @@
 package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.single;
 
-import java.lang.reflect.Proxy;
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
@@ -14,15 +9,16 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many.
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 
+import java.lang.reflect.Proxy;
+import java.util.Set;
+
 /**
  * Represents a single value field which is a Managed Object.
  * @author Theologos Zacharopoulos
  */
 public class MObjectFieldSingleMObj extends MObjectFieldSingle {
 
-    public MObjectFieldSingleMObj(MObject owner, Field field)
-            throws UnknownTypeException, InvalidFieldValueException
-    {
+    public MObjectFieldSingleMObj(MObject owner, Field field) throws UnknownTypeException, InvalidFieldValueException {
         super(owner, field);
     }
 
@@ -129,22 +125,9 @@ public class MObjectFieldSingleMObj extends MObjectFieldSingle {
 
         if (!(valueSchemaKlass.name().equals(fieldType.name()) || isSubKlass)) {
             throw new InvalidFieldValueException(
-                "Invalid value for " + this.field.owner().name() + " " +
-                this.field.name() + " " + field.type().name() + " found (" + valueSchemaKlass.name() + ")");
+                "Invalid value for Klass: " + this.field.owner().name() + ", field '" +
+                this.field.name() + "' <" + field.type().name() + ">." +
+                " Type found: " + valueSchemaKlass.name() + "");
         }
-    }
-
-    // TODO: fixed point
-    private Set<Klass> getAllSuperKlasses(Klass klass) {
-        Set<Klass> supers = klass.supers();
-
-        supers.addAll(klass.supers().stream()
-            .filter(k -> k.supers() != null)
-            .flatMap(k -> k.supers().stream())
-            .filter(k -> k.supers() != null)
-            .flatMap(k -> k.supers().stream())
-            .collect(Collectors.toSet()));
-
-        return supers;
     }
 }

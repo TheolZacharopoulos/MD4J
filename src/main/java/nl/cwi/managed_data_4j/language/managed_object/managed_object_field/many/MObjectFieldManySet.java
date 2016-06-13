@@ -1,7 +1,5 @@
 package nl.cwi.managed_data_4j.language.managed_object.managed_object_field.many;
 
-import java.util.*;
-
 import nl.cwi.managed_data_4j.M;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
@@ -9,6 +7,8 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
 import nl.cwi.managed_data_4j.language.utils.ReflectionUtils;
+
+import java.util.*;
 
 /**
  * Represents a multi value field which is a Set.
@@ -54,6 +54,7 @@ public class MObjectFieldManySet extends MObjectFieldMany {
         if (value != null && keyValue != null) {
             if (this.values.get(keyValue) != value) {
                 __insert(value);
+                notify(value);
             }
         }
     }

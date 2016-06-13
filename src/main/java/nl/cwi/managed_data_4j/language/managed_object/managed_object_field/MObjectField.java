@@ -5,6 +5,10 @@ import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.error
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Field;
+import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Represents the field of a managed object.
@@ -19,7 +23,7 @@ public abstract class MObjectField {
     protected final Field field;
 
     // the Inverse of the field.
-    protected final Field inverse;
+    protected Field inverse;
 
     /**
      * A field of the Managed Object
@@ -31,6 +35,19 @@ public abstract class MObjectField {
         this.field = field;
 
         this.inverse = field.inverse();
+
+        // in case no inverse exist,
+        // check for inverse on the parent klasses
+        if (this.inverse == null) {
+            for (Klass aSuper : getAllSuperKlasses(this.field.owner())) {
+                for (Field aSuperField : aSuper.fields()) {
+                    if (aSuperField.name().equals(field.name()) && aSuperField.inverse() != null) {
+                        this.inverse = aSuperField.inverse();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -75,5 +92,25 @@ public abstract class MObjectField {
      */
     public Field getField() {
         return this.field;
+    }
+
+    protected Set<Klass> getAllSuperKlasses(Klass klass) {
+        Set<Klass> supers = new LinkedHashSet<>();
+        getAllSuperKlasses(klass, supers);
+        return supers;
+    }
+
+    protected void getAllSuperKlasses(Klass klass, Set<Klass> stack) {
+        if (klass.supers() != null) {
+            for (Klass superKlass : klass.supers()) {
+
+                if (superKlass.supers() != null && superKlass.supers().size() > 0) {
+                    stack.add(superKlass);
+                    getAllSuperKlasses(superKlass, stack);
+                } else {
+                    stack.add(superKlass);
+                }
+            }
+        }
     }
 }

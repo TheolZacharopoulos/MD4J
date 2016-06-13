@@ -1,10 +1,12 @@
 package nl.cwi.managed_data_4j.language.primitives;
 
+import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
-
-import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.UnknownTypeException;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Utilities needed for the Java primitives
@@ -68,8 +70,7 @@ public class PrimitivesManager {
      * @return true if it is an array class that is supported, false otherwise
      */
     public boolean isMany(Class<?> clazz) {
-        return  (clazz.isArray()) ||
-                (Set.class.isAssignableFrom(clazz)) ||
+        return  (Set.class.isAssignableFrom(clazz)) ||
                 (List.class.isAssignableFrom(clazz));
     }
 

@@ -14,4 +14,6 @@ public interface Primitives {
     Class Class();
     Float Float();
     Double Double();
+
+    int[] __intArr(); // for enums
 }
