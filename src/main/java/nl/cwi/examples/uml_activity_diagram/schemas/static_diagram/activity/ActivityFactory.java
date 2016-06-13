@@ -1,5 +1,6 @@
 package nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity;
 
+import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.input.InputValue;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.ActivityEdge;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.ControlFlow;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.expressions.Expression;
@@ -38,6 +39,7 @@ public interface ActivityFactory extends IFactory {
     // Values
     IntegerValue IntegerValue();
     BooleanValue BooleanValue();
+    InputValue InputValue();
 
     // Variables
     IntegerVariable IntegerVariable();

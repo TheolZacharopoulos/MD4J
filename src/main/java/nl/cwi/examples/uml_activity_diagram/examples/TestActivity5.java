@@ -22,7 +22,7 @@ public class TestActivity5 {
         fiveValue.value(1);
 
         IntegerValue tenValue = f.IntegerValue();
-        fiveValue.value(10);
+        tenValue.value(10);
 
         IntegerVariable var10_1 = f.IntegerVariable();
         var10_1.name("var10");
