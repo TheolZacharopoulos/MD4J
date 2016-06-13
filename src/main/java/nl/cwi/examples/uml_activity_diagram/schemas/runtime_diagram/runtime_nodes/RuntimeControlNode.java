@@ -8,7 +8,6 @@ public interface RuntimeControlNode extends RuntimeActivityNode {
 
     @Override
     default void fire(List<Token> tokens) {
-        System.out.println("Firing: RuntimeControlNode");
         addTokens(tokens);
         sendOffers(tokens);
     }

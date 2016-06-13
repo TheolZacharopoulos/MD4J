@@ -11,7 +11,6 @@ public interface RuntimeInitialNode extends RuntimeControlNode, InitialNode {
 
     @Override
     default void fire(List<Token> tokens) {
-        System.out.println("Firing: Runtime InitialNode");
         List<Token> producedTokens = new ArrayList<Token>();
         producedTokens.add(FactoriesProvider.getRuntimeActivityDiagramFactory().ControlToken());
 

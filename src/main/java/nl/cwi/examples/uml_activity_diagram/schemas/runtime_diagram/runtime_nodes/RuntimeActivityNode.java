@@ -19,11 +19,9 @@ public interface RuntimeActivityNode extends ActivityNode {
     Boolean running(Boolean... running);
 
     default void fire(List<Token> tokens) {
-        System.out.println("Firing: " + name());
     }
 
     default void run() {
-        System.out.println("Running: " + name());
         running(true);
     }
 

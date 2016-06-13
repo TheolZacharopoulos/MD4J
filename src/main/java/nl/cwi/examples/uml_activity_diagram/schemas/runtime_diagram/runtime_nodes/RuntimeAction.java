@@ -15,7 +15,6 @@ public interface RuntimeAction extends RuntimeExecutableNode, Action {
 	}
 
 	default void fire(List<Token> tokens) {
-		System.out.println("Firing: Runtime Action ");
 		doAction();
 		sendOffers();
 	}

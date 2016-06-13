@@ -33,7 +33,6 @@ public interface RuntimeActivity extends Activity {
 
 	default void runNodes() {
 		for (ActivityNode node : nodes()) {
-			System.out.println("Run node " + node.name());
 			((RuntimeActivityNode)node).run();
 		}
 	}
@@ -44,7 +43,7 @@ public interface RuntimeActivity extends Activity {
 	}
 
 	default void fireNode(RuntimeActivityNode node) {
-		System.out.println("Fire node " + node.name());
+//		System.out.println("Fire node " + node.name());
 		List<Token> tokens = node.takeOfferdTokens();
 		node.fire(tokens);
 
@@ -82,13 +81,7 @@ public interface RuntimeActivity extends Activity {
 		fireInitialNode();
 
 		List<ActivityNode> enabledNodes = getEnabledNodes();
-//		while(enabledNodes.size() > 0) {
-//			ActivityNode nextNode = selectNextNode(enabledNodes);
-//			fireNode(nextNode);
-//			enabledNodes = getEnabledNodes();
-//		}
 
-		// TODO: Change to this?
 		while (enabledNodes.size() > 0) {
 			for (ActivityNode nextNode : enabledNodes) {
 				fireNode((RuntimeActivityNode) nextNode);
@@ -96,10 +89,6 @@ public interface RuntimeActivity extends Activity {
 			}
 		}
 	}
-
-//	default ActivityNode selectNextNode(List<ActivityNode> activityNodes) {
-//		return activityNodes.get(0);
-//	}
 
 	default void terminateNodes() {
 		for (ActivityNode node : nodes()) {
