@@ -33,12 +33,43 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Var
 import nl.cwi.managed_data_4j.framework.SchemaFactoryProvider;
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
 import nl.cwi.managed_data_4j.language.data_manager.IDataManager;
+import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
 
 public class FactoriesProvider {
 
-    final static Schema runtimeActivityDiagramSchema = SchemaLoader.load(SchemaFactoryProvider.getSchemaFactory(),
+    final static SchemaFactory schemaFactory = SchemaFactoryProvider.getSchemaFactory();
+
+    final static Schema activityDiagramSchema = SchemaLoader.load(schemaFactory,
+
+            // Activity
+            Activity.class,
+
+            // Edges
+            ActivityEdge.class, ControlFlow.class,
+
+            // Nodes
+            ActivityNode.class,
+            ExecutableNode.class, Action.class, OpaqueAction.class,
+            FinalNode.class, ControlNode.class, ActivityFinalNode.class, DecisionNode.class,
+            ForkNode.class, InitialNode.class, MergeNode.class, JoinNode.class,
+
+            // Values
+            Value.class, BooleanValue.class, IntegerValue.class,
+
+            // Variables
+            Variable.class, BooleanVariable.class, IntegerVariable.class,
+
+            // Expressions
+            Expression.class,
+            BooleanExpression.class, BooleanBinaryExpression.class, BooleanUnaryExpression.class,
+            IntegerExpression.class, IntegerCalculationExpression.class, IntegerComparisonExpression.class,
+
+            // Primitives
+            OperatorsPrimitives.class);
+
+    final static Schema runtimeActivityDiagramSchema = SchemaLoader.load(schemaFactory,
 
             // Activity
             Activity.class,

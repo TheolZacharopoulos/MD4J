@@ -1,7 +1,6 @@
 package nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity;
 
 import nl.cwi.examples.uml_activity_diagram.schemas.NamedElement;
-import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.trace.Trace;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.ActivityEdge;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.ActivityNode;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Variable;
@@ -23,7 +22,4 @@ public interface Activity extends NamedElement {
 
 	@Contain
 	List<Variable> inputs(Variable...inputs);
-
-	@Contain
-	Trace trace(Trace...trace);
 }

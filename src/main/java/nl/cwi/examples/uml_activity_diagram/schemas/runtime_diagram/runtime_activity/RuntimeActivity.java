@@ -8,12 +8,16 @@ import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.trace.Trace;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.Activity;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.ActivityNode;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Variable;
+import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface RuntimeActivity extends Activity {
+
+	@Contain
+	Trace trace(Trace...trace);
 
 	default void initializeTrace() {
 		Trace newTrace = FactoriesProvider.getRuntimeActivityDiagramFactory().Trace();
