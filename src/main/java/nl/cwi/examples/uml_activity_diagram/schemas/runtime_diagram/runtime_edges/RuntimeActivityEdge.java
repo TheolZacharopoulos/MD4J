@@ -14,10 +14,6 @@ public interface RuntimeActivityEdge extends ActivityEdge {
     @Contain
     List<Offer> offers(Offer...offers);
 
-    default List<Offer> getOffers() {
-        return offers();
-    }
-
     default void sendOffer(List<Token> tokens) {
         Offer offer = FactoriesProvider.getRuntimeActivityDiagramFactory().Offer();
 
@@ -28,7 +24,7 @@ public interface RuntimeActivityEdge extends ActivityEdge {
 
         offer.offeredTokens(tokenList.toArray(new Token[tokenList.size()]));
 
-        List<Offer> offers = getOffers();
+        List<Offer> offers = offers();
         offers.add(offer);
         offers(offers.toArray(new Offer[offers.size()]));
     }
@@ -36,17 +32,16 @@ public interface RuntimeActivityEdge extends ActivityEdge {
     default List<Token> takeOfferedTokens() {
         List<Token> tokens = new ArrayList<Token>();
 
-        for (Offer o : getOffers()) {
+        for (Offer o : offers()) {
             tokens.addAll(o.offeredTokens());
         }
-//		getOffers().clear();
-        offers(null);
+        offers().clear();
 
         return tokens;
     }
 
     default boolean hasOffer() {
-        for (Offer o : getOffers()) {
+        for (Offer o : offers()) {
             if (o.hasTokens()) {
                 return true;
             }
