@@ -2,7 +2,6 @@ package nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_nod
 
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_edges.RuntimeActivityEdge;
 import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Contain;
-import nl.cwi.managed_data_4j.language.schema.models.definition.annotations.Inverse;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.tokens.Token;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.ActivityEdge;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.ActivityNode;
@@ -13,7 +12,6 @@ import java.util.List;
 public interface RuntimeActivityNode extends ActivityNode {
 
     @Contain
-    @Inverse(other = Token.class, field = "holder")
     List<Token> heldTokens(Token... tokens);
 
     Boolean running(Boolean... running);
