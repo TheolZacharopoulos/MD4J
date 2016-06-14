@@ -17,16 +17,11 @@ public interface RuntimeActivityEdge extends ActivityEdge {
     default void sendOffer(List<Token> tokens) {
         Offer offer = FactoriesProvider.getRuntimeActivityDiagramFactory().Offer();
 
-        List<Token> tokenList = offer.offeredTokens();
         for (Token token : tokens) {
-            tokenList.add(token);
+            offer.offeredTokens().add(token);
         }
 
-        offer.offeredTokens(tokenList.toArray(new Token[tokenList.size()]));
-
-        List<Offer> offers = offers();
-        offers.add(offer);
-        offers(offers.toArray(new Offer[offers.size()]));
+        offers().add(offer);
     }
 
     default List<Token> takeOfferedTokens() {

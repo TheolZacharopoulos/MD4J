@@ -16,9 +16,9 @@ public class Main {
         final RuntimeActivityFactory factory = FactoriesProvider.getRuntimeActivityDiagramFactory();
 
         System.out.println("> Building uml activity diagram");
-        final RuntimeActivity activity = (RuntimeActivity) TestPerformanceVariant3_2.testperformance_variant3_2(factory);
+        final RuntimeActivity activity = (RuntimeActivity) TestPerformanceVariant3_2.getActivity(factory);
 
-        System.out.println("> Executing uml activity diagram ...");
+        System.out.println("> Executing uml activity diagram...");
         double start = System.currentTimeMillis();
 
         activity.main(Collections.emptyList());

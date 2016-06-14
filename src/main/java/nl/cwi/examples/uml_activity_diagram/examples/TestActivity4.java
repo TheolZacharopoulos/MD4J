@@ -21,7 +21,7 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Int
 
 public class TestActivity4 {
 
-    public static Activity getTestActivity(ActivityFactory f) {
+    public static Activity getActivity(ActivityFactory f) {
 
         BooleanValue trueValue = f.BooleanValue();
         trueValue.value(true);

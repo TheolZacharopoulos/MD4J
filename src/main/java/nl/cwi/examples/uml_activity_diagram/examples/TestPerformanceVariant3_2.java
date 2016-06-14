@@ -16,7 +16,7 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Int
 
 public class TestPerformanceVariant3_2 {
 
-    public static Activity testperformance_variant3_2(ActivityFactory f) {
+    public static Activity getActivity(ActivityFactory f) {
 
         BooleanValue trueValue = f.BooleanValue();
         trueValue.value(true);

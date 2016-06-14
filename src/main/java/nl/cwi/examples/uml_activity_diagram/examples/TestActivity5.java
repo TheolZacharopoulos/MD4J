@@ -13,7 +13,7 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Int
 
 public class TestActivity5 {
     
-    public static Activity getTestActivity(ActivityFactory f) {
+    public static Activity getActivity(ActivityFactory f) {
 
         IntegerValue zeroValue = f.IntegerValue();
         zeroValue.value(0);
