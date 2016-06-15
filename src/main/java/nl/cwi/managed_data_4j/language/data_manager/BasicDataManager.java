@@ -1,15 +1,15 @@
 package nl.cwi.managed_data_4j.language.data_manager;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import nl.cwi.managed_data_4j.IFactory;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Represents the basic data manager.
@@ -84,10 +84,14 @@ public class BasicDataManager implements IDataManager {
         final MObject managedObject = this.createManagedObject(schemaKlass, inits);
 
         final Object proxyManagedObject = Proxy.newProxyInstance(
-                schemaFactoryCallingMethodClassLoader,   // the class loader of the return type of the called method of the schema factory.
-                additionalInterfaces.toArray(new Class[additionalInterfaces.size()]),  // the interfaces that the Proxy will proxy.
-                managedObject  // proxy it to a new Managed Object
-        );
+                // the class loader of the return type of the called method of the schema factory.
+                schemaFactoryCallingMethodClassLoader,
+
+                // the interfaces that the Proxy will proxy.
+                additionalInterfaces.toArray(new Class[additionalInterfaces.size()]),
+
+                // proxy it to a new Managed Object
+                managedObject);
 
         // wire the proxy object.
         managedObject.setProxy(proxyManagedObject);
