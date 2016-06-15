@@ -2,9 +2,12 @@ package nl.cwi.examples.uml_activity_diagram;
 
 import nl.cwi.examples.uml_activity_diagram.examples.TestPerformanceVariant3_2;
 import nl.cwi.examples.uml_activity_diagram.helpers.FactoriesProvider;
+import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.input.InputValue;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivity;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivityFactory;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.ActivityNode;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.values.IntegerValue;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.IntegerVariable;
 
 import java.util.Collections;
 
@@ -19,9 +22,20 @@ public class Main {
         final RuntimeActivity activity = (RuntimeActivity) TestPerformanceVariant3_2.getActivity(factory);
 
         System.out.println("> Executing uml activity diagram...");
+
+        // Input
+        IntegerValue oneValue = factory.IntegerValue();
+        oneValue.value(1);
+
+        IntegerVariable i_0 = TestPerformanceVariant3_2.getIForInput();
+
+        InputValue inputValue_i = factory.InputValue();
+        inputValue_i.setVariable(i_0);
+        inputValue_i.setValue(oneValue);
+
         double start = System.currentTimeMillis();
 
-        activity.main(Collections.emptyList());
+        activity.main(Collections.singletonList(inputValue_i));
 
         double end = System.currentTimeMillis();
 

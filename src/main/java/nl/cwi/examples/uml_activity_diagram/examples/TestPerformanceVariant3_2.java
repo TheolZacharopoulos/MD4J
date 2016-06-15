@@ -16,6 +16,12 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.Int
 
 public class TestPerformanceVariant3_2 {
 
+    private static IntegerVariable i_0 = null;
+
+    public static IntegerVariable getIForInput() {
+        return i_0;
+    }
+
     public static Activity getActivity(ActivityFactory f) {
 
         BooleanValue trueValue = f.BooleanValue();
@@ -81,11 +87,8 @@ public class TestPerformanceVariant3_2 {
         loopEiterations_7.initialValue(falseValue);
         loopEiterations_7.currentValue(falseValue);
 
-        // TODO: Input
-        IntegerVariable i_0 = f.IntegerVariable();
+        i_0 = f.IntegerVariable();
         i_0.name("i");
-        i_0.initialValue(oneValue);
-        i_0.currentValue(oneValue);
 
         OpaqueAction j_22 = f.OpaqueAction();
         j_22.name("j");
