@@ -235,8 +235,7 @@ public class MObject implements InvocationHandler, M {
      */
     protected void invokeLocalMethod(Method method, Object[] args) throws Throwable {
         for (Method objMethod : objectMethods) {
-            if (method.getName().equals(objMethod.getName())
-                && method.getReturnType().equals(objMethod.getReturnType())){
+            if (method.getName().equals(objMethod.getName()) && method.getReturnType().equals(objMethod.getReturnType())) {
                 objMethod.invoke(this, args);
                 return;
             }

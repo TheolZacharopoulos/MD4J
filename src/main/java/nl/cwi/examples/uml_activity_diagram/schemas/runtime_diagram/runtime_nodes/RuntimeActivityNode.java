@@ -41,14 +41,11 @@ public interface RuntimeActivityNode extends ActivityNode {
         }
     }
 
-    default List<Token> takeOfferdTokens() {
+    default List<Token> takeOffedTokens() {
         List<Token> allTokens = new ArrayList<Token>();
         for (ActivityEdge edge : incoming()) {
             List<Token> tokens = ((RuntimeActivityEdge)edge).takeOfferedTokens();
-
-            for (Token token : tokens) {
-                token.withdraw();
-            }
+            tokens.forEach(Token::withdraw);
             allTokens.addAll(tokens);
         }
         return allTokens;
