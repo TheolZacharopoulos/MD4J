@@ -5,6 +5,7 @@ import nl.cwi.examples.uml_activity_diagram.helpers.FactoriesProvider;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.input.InputValue;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivity;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivityFactory;
+import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.Activity;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.ActivityNode;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.values.IntegerValue;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.IntegerVariable;
@@ -39,6 +40,8 @@ public class Main {
 
         double end = System.currentTimeMillis();
 
+        printActivity(activity);
+
         printTrace(activity);
 
         System.out.println("Total seconds: " + ((end - start)/1000)%60);
@@ -50,5 +53,18 @@ public class Main {
         for (ActivityNode activityNode : a.trace().executedNodes()) {
             System.out.println(" " + activityNode.name());
         }
+    }
+
+    static void printActivity(Activity a) {
+        System.out.println("Activity: " + a.name());
+        a.nodes().forEach(activityNode -> {
+            System.out.println("> Node: " + activityNode.name());
+
+            System.out.println("\t from: ");
+            activityNode.incoming().forEach(edge -> System.out.println("\t > incomingEdge: " + edge.name()));
+
+            System.out.println("\t to: ");
+            activityNode.outgoing().forEach(edge -> System.out.println("\t > outgoingEdge: " + edge.name()));
+        });
     }
 }
