@@ -37,8 +37,16 @@ public class RunStateMachineWithMonitoring extends RunStateMachine {
         final Machine doorStateMachine = doors(stateMachineFactory);
 
         // Add logging concern
-        ((Observable) doorStateMachine)
-                .observe(StateMachineLogging::logCurrentStateChanges);
+        ((Observable) doorStateMachine).addObserver(
+        		(obj, name, state) -> {
+        		  if (name.equals("current")) {
+        		    System.out.println(" > State changed to " 
+        		      + ((State)state).name());
+        		  }
+        		});
+        
+        //((Observable) doorStateMachine)
+        //.addObserver(StateMachineLogging::logCurrentStateChanges);
 
         interpretStateMachine(doorStateMachine, new LinkedList<>(Arrays.asList(
                 LOCK_EVENT,
