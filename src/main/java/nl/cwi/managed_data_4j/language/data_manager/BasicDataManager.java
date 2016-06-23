@@ -1,15 +1,17 @@
 package nl.cwi.managed_data_4j.language.data_manager;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import nl.cwi.managed_data_4j.IFactory;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.primitives.PrimitivesManager;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * Represents the basic data manager.
@@ -17,8 +19,6 @@ import java.util.Set;
  */
 public class BasicDataManager implements IDataManager {
 
-    // we need those in order to add the to the java Proxy.
-    private Set<Class<?>> additionalInterfaces = new LinkedHashSet<>();
 
     /**
      * Used to build data managers which build managed objects.
@@ -35,25 +35,32 @@ public class BasicDataManager implements IDataManager {
      */
     @SuppressWarnings("unchecked")
     public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
-
-        // add the extra proxy interfaces
-        for (Class<?> proxyInterface : additionalInterfaces) {
-            this.addProxyInterface(proxyInterface);
-        }
-
-        // add the klass interfaces of the schema
-        for (Klass klass : schema.klasses()) {
-            this.addProxyInterface(klass.classOf());
-        }
-
+    	
+    	List<Class<?>> ifaces = interfacesForSchema(schema);
+    	ifaces.addAll(Arrays.asList(additionalInterfaces));
+    	
         return (T) Proxy.newProxyInstance(
             factoryClass.getClassLoader(),
             new Class<?>[]{factoryClass},
             (proxy, method, args) ->
-                createManagedObjectProxy(factoryClass, schema, method, args)
+                createManagedObjectProxy(factoryClass, schema, 
+                		onlyNonPrimitives(ifaces),
+                		method, args)
         );
     }
 
+    private List<Class<?>> interfacesForSchema(Schema schema){
+    	return schema.klasses().stream()
+    		.map((klass) -> { return klass.classOf(); })
+    		.collect(Collectors.toList());
+    }
+    
+    private List<Class<?>> onlyNonPrimitives(List<Class<?>> ifaces){
+    	return ifaces.stream()
+    		.filter((iface) -> { return (!PrimitivesManager.getInstance().isPrimitiveClass(iface)); })
+    		.collect(Collectors.toList());
+    }
+    
     /**
      * Creates a proxy for a managed object.
      * The reason of using a proxy here is to add methods
@@ -67,36 +74,32 @@ public class BasicDataManager implements IDataManager {
      *
      * @return a new Proxied ManagedObject.
      */
-    protected Object createManagedObjectProxy(
-            Class<?> factoryClass, Schema schema, Method schemaFactoryCallingMethod, Object... inits)
+    private Object createManagedObjectProxy(
+            Class<?> factoryClass, Schema schema, List<Class<?>> additionalIfaces,
+            Method schemaFactoryCallingMethod, Object... inits)
     {
-        final Class<?> schemaFactoryCallingMethodClass = schemaFactoryCallingMethod.getReturnType();
-        final ClassLoader schemaFactoryCallingMethodClassLoader = schemaFactoryCallingMethodClass.getClassLoader();
-
         // Find the schema klass
-        final Klass schemaKlass = schema.klasses().stream()
-            .filter(klass -> klass.name().equals(schemaFactoryCallingMethodClass.getSimpleName()))
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException(
-            "Error on klass extraction of class (" + schemaFactoryCallingMethodClass.getSimpleName() + ") " +
-            "from factory (" + factoryClass.getSimpleName() + ")"));
-
-        final MObject managedObject = this.createManagedObject(schemaKlass, inits);
-
-        final Object proxyManagedObject = Proxy.newProxyInstance(
-                // the class loader of the return type of the called method of the schema factory.
-                schemaFactoryCallingMethodClassLoader,
+        final Klass schemaKlass = klassForMethod(schemaFactoryCallingMethod, schema);
+        
+        return Proxy.newProxyInstance(
+        		// the class loader of the return type of the called method of the schema factory.
+                factoryClass.getClassLoader(),
 
                 // the interfaces that the Proxy will proxy.
-                additionalInterfaces.toArray(new Class[additionalInterfaces.size()]),
+                additionalIfaces.toArray(new Class[additionalIfaces.size()]),
 
                 // proxy it to a new Managed Object
-                managedObject);
+                createManagedObject(schemaKlass, inits));
 
-        // wire the proxy object.
-        managedObject.setProxy(proxyManagedObject);
-
-        return proxyManagedObject;
+    }
+    
+    private Klass klassForMethod(Method method, Schema schema){
+    	return  schema.klasses().stream()
+                .filter(klass -> klass.name().equals(method.getReturnType().getSimpleName()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(
+                "Error on klass extraction of class (" + method.getReturnType().getSimpleName() + ") "));
+                //"from factory (" + factoryClass.getSimpleName() + ")"));
     }
 
     /**
@@ -111,22 +114,13 @@ public class BasicDataManager implements IDataManager {
         return new MObject(klass, inits); // return a basic managed object
     }
 
-    /**
-     * Helper to add new proxy interfaces, this is needed in case we need a new interface
-     * to be proxy on the Managed Object.
-     *
-     * @param newInterface the interface to be added in the proxy interfaces list.
-     */
-    private void addProxyInterface(Class<?> newInterface) {
-        if (newInterface != null && !PrimitivesManager.getInstance().isPrimitiveClass(newInterface)) {
-            additionalInterfaces.add(newInterface);
-        }
-    }
 
-    protected Class<?>[] pushKlassToProxyInterfaces(Class<?> push, Class<?>... additional) {
+    public static Class<?>[] addAll(Class<?>[] additional, Class<?> push) {
         Class<?>[] longer = new Class<?>[additional.length + 1];
         System.arraycopy(additional, 0, longer, 0, additional.length);
         longer[additional.length] = push;
         return longer;
     }
+    
+    
 }
