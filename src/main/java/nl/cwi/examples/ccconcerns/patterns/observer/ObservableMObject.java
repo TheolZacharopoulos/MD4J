@@ -15,18 +15,18 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Klass;
 public class ObservableMObject extends MObject implements Observable {
 
     // a list of observers for that object
-    private List<Observe> observers;
+    private List<Observer> observers;
 
     public ObservableMObject(Klass schemaKlass, Object... initializers) {
         super(schemaKlass, initializers);
-        observers = new ArrayList<Observe>();
+        observers = new ArrayList<Observer>();
     }
 
     /**
      * Public method that adds new observes to the object
      * @param _observer the observe function to be added
      */
-    public void observe(Observe _observer) {
+    public void addObserver(Observer _observer) {
         observers.add(_observer);
     }
 

@@ -301,6 +301,9 @@ public class MObject implements InvocationHandler, M {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    	if (getProxy() == null)
+    		setProxy(proxy);
+    	
         final String fieldName = method.getName();
 
         // if the method is default, invoke this one

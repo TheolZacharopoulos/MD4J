@@ -128,7 +128,7 @@ public class GeometryExample2 {
         final Point3D observerPoint = observablePointFactory.Point3D();
 
         // Add Logging concerns
-        ((Observable) observerPoint).observe(UpdateLogger::log);
+        ((Observable) observerPoint).addObserver(UpdateLogger::log);
 
         observerPoint.x(1);
         observerPoint.y(6);
