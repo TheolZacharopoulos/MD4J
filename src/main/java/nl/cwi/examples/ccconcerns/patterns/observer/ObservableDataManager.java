@@ -16,7 +16,7 @@ public class ObservableDataManager extends BasicDataManager {
     }
 
     @Override
-    protected MObject createManagedObject(Klass klass, Object... _inits) {
+	public MObject createManagedObject(Klass klass, Object... _inits) {
         return new ObservableMObject(klass, _inits);
     }
 }

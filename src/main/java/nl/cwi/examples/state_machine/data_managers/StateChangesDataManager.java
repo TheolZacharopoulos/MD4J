@@ -14,7 +14,7 @@ public class StateChangesDataManager extends BasicDataManager {
     }
 
     @Override
-    protected MObject createManagedObject(Klass klass, Object... _inits) {
+	public MObject createManagedObject(Klass klass, Object... _inits) {
         return new StateChangesMObject(klass, _inits);
     }
 }

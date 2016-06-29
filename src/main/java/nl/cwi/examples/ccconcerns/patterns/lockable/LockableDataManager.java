@@ -21,7 +21,7 @@ public class LockableDataManager extends BasicDataManager {
     }
 
     @Override
-    protected MObject createManagedObject(Klass klass, Object... _inits) {
+	public MObject createManagedObject(Klass klass, Object... _inits) {
         return new LockableMObject(klass, _inits);
     }
 }

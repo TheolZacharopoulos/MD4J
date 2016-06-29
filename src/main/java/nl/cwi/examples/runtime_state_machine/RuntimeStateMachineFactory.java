@@ -5,6 +5,9 @@ import nl.cwi.examples.runtime_state_machine.schemas.RState;
 import nl.cwi.examples.state_machine.StateMachineFactory;
 
 public interface RuntimeStateMachineFactory extends StateMachineFactory {
-    RState State();
-    RMachine Machine();
+    @Override
+	RState State();
+    
+    @Override
+	RMachine Machine();
 }

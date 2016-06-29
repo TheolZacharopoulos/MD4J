@@ -3,7 +3,6 @@ package nl.cwi.managed_data_4j.language.data_manager;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -110,7 +109,8 @@ public class BasicDataManager implements IDataManager {
      * @param inits a list of initialized props for the object construction.
      * @return a new Managed Object.
      */
-    protected MObject createManagedObject(Klass klass, Object... inits) {
+    @Override
+	public MObject createManagedObject(Klass klass, Object... inits) {
         return new MObject(klass, inits); // return a basic managed object
     }
 
