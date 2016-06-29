@@ -1,5 +1,6 @@
 package nl.cwi.examples.uml_activity_diagram.examples;
 
+import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.input.InputValue;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.Activity;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.activity.ActivityFactory;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.edges.ActivityEdge;
@@ -14,13 +15,7 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.values.Intege
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.BooleanVariable;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.IntegerVariable;
 
-public class TestPerformanceVariant3_2 {
-
-    private static IntegerVariable i_0 = null;
-
-    public static IntegerVariable getIForInput() {
-        return i_0;
-    }
+public class TestPerformanceVariant_3_2 {
 
     public static Activity getActivity(ActivityFactory f) {
 
@@ -87,8 +82,13 @@ public class TestPerformanceVariant3_2 {
         loopEiterations_7.initialValue(falseValue);
         loopEiterations_7.currentValue(falseValue);
 
-        i_0 = f.IntegerVariable();
+        IntegerVariable i_0 = f.IntegerVariable();
         i_0.name("i");
+
+        // Input
+        InputValue inputValue_i = f.InputValue();
+        inputValue_i.setVariable(i_0);
+        inputValue_i.setValue(oneValue);
 
         OpaqueAction j_22 = f.OpaqueAction();
         j_22.name("j");
@@ -402,5 +402,4 @@ public class TestPerformanceVariant3_2 {
 
         return testperformance_variant3_2_48;
     }
-
 }
