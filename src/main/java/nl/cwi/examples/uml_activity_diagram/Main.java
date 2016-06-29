@@ -1,6 +1,6 @@
 package nl.cwi.examples.uml_activity_diagram;
 
-import nl.cwi.examples.uml_activity_diagram.examples.TestPerformanceVariant_2;
+import nl.cwi.examples.uml_activity_diagram.examples.TestPerformanceVariant_3_1;
 import nl.cwi.examples.uml_activity_diagram.helpers.FactoriesProvider;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivity;
 import nl.cwi.examples.uml_activity_diagram.schemas.runtime_diagram.runtime_activity.RuntimeActivityFactory;
@@ -17,7 +17,7 @@ public class Main {
         final RuntimeActivityFactory factory = FactoriesProvider.getRuntimeActivityDiagramFactory();
 
         System.out.println("> Building uml activity diagram");
-        final RuntimeActivity activity = (RuntimeActivity) TestPerformanceVariant_2.getActivity(factory);
+        final RuntimeActivity activity = (RuntimeActivity) TestPerformanceVariant_3_1.getActivity(factory);
 
         System.out.println("> Executing uml activity diagram...");
 
