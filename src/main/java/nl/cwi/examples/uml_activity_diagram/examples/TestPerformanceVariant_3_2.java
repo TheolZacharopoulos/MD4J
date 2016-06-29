@@ -15,7 +15,7 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.values.Intege
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.BooleanVariable;
 import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.variables.IntegerVariable;
 
-public class TestPerformanceVariant3_2 {
+public class TestPerformanceVariant_3_2 {
 
     public static Activity getActivity(ActivityFactory f) {
 
