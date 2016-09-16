@@ -114,11 +114,7 @@ public class SchemaLoader {
         // Filter out primitives by loading them separately
         final List<Class<?>> schemaKlasses = new LinkedList<>();
         for (Class<?> schemaClass : schemaKlassesDef) {
-            if (Primitives.class.isAssignableFrom(schemaClass)) {
-                primitiveManager.loadPrimitives(schemaClass);
-            } else {
-                schemaKlasses.add(schemaClass);
-            }
+            addClass(schemaClass, schemaKlasses);
         }
 
         // setup the cache for classes
@@ -137,7 +133,18 @@ public class SchemaLoader {
         return schema;
     }
 
-    private static void wireSchemaKlasses(Schema schemaSchema) {
+    private static void addClass(Class<?> schemaClass, List<Class<?>> schemaKlasses) {
+    	if (Primitives.class.isAssignableFrom(schemaClass)) {
+            primitiveManager.loadPrimitives(schemaClass);
+        } else {
+        	schemaKlasses.add(schemaClass);
+        	for (Class<?> sup : schemaClass.getInterfaces())
+        		addClass(sup, schemaKlasses);
+        }
+		
+	}
+
+	private static void wireSchemaKlasses(Schema schemaSchema) {
 
         // get the primitive's schemaKlass
         final Klass primitiveSchemaKlass = schemaSchema.klasses().stream()
