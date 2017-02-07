@@ -11,11 +11,12 @@ public class ObservableDataManager extends BasicDataManager {
     @Override
     public <T extends IFactory> T factory(Class<T> factoryClass, Schema schema, Class<?>... additionalInterfaces) {
         // Add the Observable class in order to use it in the managed object.
-        return super.factory(factoryClass, schema, pushKlassToProxyInterfaces(Observable.class, additionalInterfaces));
+    	return super.factory(factoryClass, schema, 
+        		addAll(additionalInterfaces, Observable.class));
     }
 
     @Override
-    protected MObject createManagedObject(Klass klass, Object... _inits) {
+	public MObject createManagedObject(Klass klass, Object... _inits) {
         return new ObservableMObject(klass, _inits);
     }
 }

@@ -48,7 +48,7 @@ public interface RuntimeActivity extends Activity {
 
 	default void fireNode(RuntimeActivityNode node) {
 //		System.out.println("Fire node " + node.name());
-		List<Token> tokens = node.takeOfferdTokens();
+		List<Token> tokens = node.takeOffedTokens();
 		node.fire(tokens);
 
 		trace().executedNodes().add(node);

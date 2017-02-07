@@ -50,6 +50,9 @@ public class MObject implements InvocationHandler, M {
     // Keeps the types (schemaKlass pointer)
     protected Klass schemaKlass;
 
+    // keeps the methods that have been defined in object's class
+    protected final Method[] objectMethods;
+
     /**
      * A managed object.
      *
@@ -66,6 +69,8 @@ public class MObject implements InvocationHandler, M {
         if (initializers != null) {
             this.safeInitializeProps(initializers);
         }
+
+        this.objectMethods = this.getClass().getMethods();
     }
 
     /**
@@ -229,10 +234,10 @@ public class MObject implements InvocationHandler, M {
      * @throws Throwable in case of invocation error.
      */
     protected void invokeLocalMethod(Method method, Object[] args) throws Throwable {
-        for (Method objMethod : this.getClass().getMethods()) {
-            if (method.getName().equals(objMethod.getName())
-                && method.getReturnType().equals(objMethod.getReturnType())){
+        for (Method objMethod : objectMethods) {
+            if (method.getName().equals(objMethod.getName()) && method.getReturnType().equals(objMethod.getReturnType())) {
                 objMethod.invoke(this, args);
+                return;
             }
         }
     }
@@ -296,6 +301,9 @@ public class MObject implements InvocationHandler, M {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    	if (getProxy() == null)
+    		setProxy(proxy);
+    	
         final String fieldName = method.getName();
 
         // if the method is default, invoke this one
@@ -309,7 +317,7 @@ public class MObject implements InvocationHandler, M {
         // In case there is already the method declared
         // (in one of the sub-classes/sub managedObjects),
         // then invoke it dynamically, and return.
-        for (Method declaredMethod : this.getClass().getMethods()) {
+        for (Method declaredMethod : objectMethods) {
             if (declaredMethod.getName().equals(fieldName)) {
                 return method.invoke(this, args);
             }

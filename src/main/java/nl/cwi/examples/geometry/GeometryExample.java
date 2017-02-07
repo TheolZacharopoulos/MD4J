@@ -70,7 +70,7 @@ public class GeometryExample {
         final Point3D observerPoint = observablePointFactory.Point3D();
 
         // Add Logging concerns
-        ((Observable) observerPoint).observe(UpdateLogger::log);
+        ((Observable) observerPoint).addObserver(UpdateLogger::log);
 
         observerPoint.x(1);
         observerPoint.y(6);
@@ -109,7 +109,7 @@ public class GeometryExample {
         final Point2D lockableObservablePoint = lockableObservablePointFactory.Point2D();
 
         // Add Logging concerns
-        ((Observable) lockableObservablePoint).observe(UpdateLogger::log);
+        ((Observable) lockableObservablePoint).addObserver(UpdateLogger::log);
 
         lockableObservablePoint.x(555);
         lockableObservablePoint.y(666);

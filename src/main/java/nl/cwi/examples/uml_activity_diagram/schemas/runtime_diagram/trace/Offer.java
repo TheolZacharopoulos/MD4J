@@ -17,15 +17,13 @@ public interface Offer extends M {
 
 	default void removeWithdrawnTokens() {
 		List<Token> tokensToBeRemoved = new ArrayList<Token>();
-		for(Token token : offeredTokens()) {
+		for (Token token : offeredTokens()) {
 			if (token.isWithdrawn()) {
 				tokensToBeRemoved.add(token);
 			}
 		}
 
-		List<Token> tokenList = this.offeredTokens();
-		tokenList.removeAll(tokensToBeRemoved);
-		this.offeredTokens(tokenList.toArray(new Token[tokenList.size()]));
+		this.offeredTokens().removeAll(tokensToBeRemoved);
 	}
 	
 }

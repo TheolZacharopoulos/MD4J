@@ -7,8 +7,6 @@ public interface RuntimeOpaqueAction extends RuntimeAction, OpaqueAction {
 
     @Override
     default void doAction() {
-        for (Expression e : expressions()) {
-            e.execute();
-        }
+        expressions().forEach(Expression::execute);
     }
 }

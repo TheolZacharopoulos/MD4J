@@ -13,7 +13,7 @@ public class TestDataManager extends BasicDataManager {
     }
 
     @Override
-    protected TestMObject createManagedObject(Klass klass, Object... inits) {
+	public TestMObject createManagedObject(Klass klass, Object... inits) {
         return new TestMObject(klass, inits);
     }
 }

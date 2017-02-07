@@ -25,6 +25,8 @@ public abstract class MObjectField {
     // the Inverse of the field.
     protected Field inverse;
 
+    protected Set<Klass> fieldOwnerSuperKlass;
+
     /**
      * A field of the Managed Object
      * @param owner the owner Klass of the field.
@@ -35,11 +37,12 @@ public abstract class MObjectField {
         this.field = field;
 
         this.inverse = field.inverse();
+        this.fieldOwnerSuperKlass = getAllSuperKlasses(this.field.owner());
 
         // in case no inverse exist,
         // check for inverse on the parent klasses
         if (this.inverse == null) {
-            for (Klass aSuper : getAllSuperKlasses(this.field.owner())) {
+            for (Klass aSuper : this.fieldOwnerSuperKlass) {
                 for (Field aSuperField : aSuper.fields()) {
                     if (aSuperField.name().equals(field.name()) && aSuperField.inverse() != null) {
                         this.inverse = aSuperField.inverse();

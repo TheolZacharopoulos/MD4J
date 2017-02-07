@@ -9,7 +9,7 @@ import nl.cwi.examples.uml_activity_diagram.schemas.static_diagram.nodes.OpaqueA
 
 public class TestActivity1 {
     
-    public static Activity getTestActivity(ActivityFactory f) {
+    public static Activity getActivity(ActivityFactory f) {
 
         OpaqueAction action1_1 = f.OpaqueAction();
         action1_1.name("action1");

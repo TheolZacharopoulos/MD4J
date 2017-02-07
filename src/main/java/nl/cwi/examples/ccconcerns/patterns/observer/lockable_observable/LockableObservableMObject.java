@@ -4,7 +4,7 @@ import nl.cwi.examples.ccconcerns.patterns.lockable.Lockable;
 import nl.cwi.examples.ccconcerns.patterns.lockable.LockableMObject;
 import nl.cwi.examples.ccconcerns.patterns.observer.Observable;
 import nl.cwi.examples.ccconcerns.patterns.observer.ObservableMObject;
-import nl.cwi.examples.ccconcerns.patterns.observer.Observe;
+import nl.cwi.examples.ccconcerns.patterns.observer.Observer;
 import nl.cwi.managed_data_4j.language.managed_object.MObject;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.InvalidFieldValueException;
 import nl.cwi.managed_data_4j.language.managed_object.managed_object_field.errors.NoKeyFieldException;
@@ -22,8 +22,8 @@ public class LockableObservableMObject extends MObject implements Lockable, Obse
     }
 
     @Override
-    public void observe(Observe _observer) {
-        observableMObject.observe(_observer);
+    public void addObserver(Observer _observer) {
+        observableMObject.addObserver(_observer);
     }
 
     @Override

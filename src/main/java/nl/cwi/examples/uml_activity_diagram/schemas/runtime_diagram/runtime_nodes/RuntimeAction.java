@@ -10,9 +10,7 @@ import java.util.List;
 
 public interface RuntimeAction extends RuntimeExecutableNode, Action {
 
-	default void doAction() {
-		
-	}
+	default void doAction() {}
 
 	default void fire(List<Token> tokens) {
 		doAction();
