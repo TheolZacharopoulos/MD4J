@@ -1,6 +1,8 @@
-# JavaManagedData
+# Managed Data for Java
 
 [![Build Status](https://travis-ci.org/TheolZacharopoulos/MD4J.svg?branch=master)](https://travis-ci.org/TheolZacharopoulos/MD4J)
+
+[![BCH compliance](https://bettercodehub.com/edge/badge/TheolZacharopoulos/MD4J?branch=master)](https://bettercodehub.com/)
 
 MD4J is a Managed Data implementation in Java.
 
