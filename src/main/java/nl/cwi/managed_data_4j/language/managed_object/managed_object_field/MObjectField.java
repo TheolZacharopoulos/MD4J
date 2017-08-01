@@ -39,18 +39,7 @@ public abstract class MObjectField {
         this.inverse = field.inverse();
         this.fieldOwnerSuperKlass = getAllSuperKlasses(this.field.owner());
 
-        // in case no inverse exist,
-        // check for inverse on the parent klasses
-        if (this.inverse == null) {
-            for (Klass aSuper : this.fieldOwnerSuperKlass) {
-                for (Field aSuperField : aSuper.fields()) {
-                    if (aSuperField.name().equals(field.name()) && aSuperField.inverse() != null) {
-                        this.inverse = aSuperField.inverse();
-                        break;
-                    }
-                }
-            }
-        }
+        this.buildInverse();
     }
 
     /**
@@ -103,6 +92,31 @@ public abstract class MObjectField {
         return supers;
     }
 
+    /**
+     * Helper method
+     * In case no inverse exist,
+     * check for inverse on the parent klasses
+     */
+    private void buildInverse() {
+
+        if (this.inverse == null) {
+            for (Klass aSuper : this.fieldOwnerSuperKlass) {
+                for (Field aSuperField : aSuper.fields()) {
+                    if (aSuperField.name().equals(field.name()) && aSuperField.inverse() != null) {
+                        this.inverse = aSuperField.inverse();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Helper method
+     * Returns all super klasses from a klass
+     * @param klass the Klass
+     * @param stack a stack that tracks the super classes
+     */
     protected void getAllSuperKlasses(Klass klass, Set<Klass> stack) {
         if (klass.supers() != null) {
             for (Klass superKlass : klass.supers()) {

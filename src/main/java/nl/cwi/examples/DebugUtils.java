@@ -1,4 +1,4 @@
-package nl.cwi.managed_data_4j.language.utils;
+package nl.cwi.examples;
 
 import java.util.Set;
 

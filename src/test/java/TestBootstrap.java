@@ -1,4 +1,4 @@
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import nl.cwi.managed_data_4j.language.data_manager.BasicDataManager;
@@ -11,11 +11,8 @@ import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 
 import static org.junit.Assert.assertTrue;
 
+@Ignore
 public class TestBootstrap {
-
-    @Before
-    public void setup() {
-    }
 
     @Test
     public void equality_Test() {

@@ -9,7 +9,7 @@ import nl.cwi.managed_data_4j.language.primitives.Primitives;
 import nl.cwi.managed_data_4j.language.schema.boot.SchemaFactory;
 import nl.cwi.managed_data_4j.language.schema.load.SchemaLoader;
 import nl.cwi.managed_data_4j.language.schema.models.definition.*;
-import nl.cwi.managed_data_4j.language.utils.DebugUtils;
+import nl.cwi.examples.DebugUtils;
 import nl.cwi.managed_data_4j.language.utils.MObjectUtils;
 import nl.cwi.examples.ccconcerns.aspects.UpdateLogger;
 import nl.cwi.examples.ccconcerns.patterns.lockable.Lockable;

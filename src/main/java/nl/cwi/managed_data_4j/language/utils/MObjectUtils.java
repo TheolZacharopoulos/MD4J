@@ -25,8 +25,6 @@ public class MObjectUtils {
     }
 
     private static boolean crossReferencesCheck(Map<Object, Object> equalityMap, Map<Object, List<Object>> crossReferences) {
-        // System.out.println(" Checking cross-references ");
-
         for (Object crossReferenceObject : crossReferences.keySet()) {
             for (Object equalityCheckedObject : equalityMap.keySet()) {
 

@@ -98,7 +98,6 @@ public class BasicDataManager implements IDataManager {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(
                 "Error on klass extraction of class (" + method.getReturnType().getSimpleName() + ") "));
-                //"from factory (" + factoryClass.getSimpleName() + ")"));
     }
 
     /**

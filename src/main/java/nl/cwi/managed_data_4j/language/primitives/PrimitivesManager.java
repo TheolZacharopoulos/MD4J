@@ -29,7 +29,6 @@ public class PrimitivesManager {
     private PrimitivesManager() {}
 
     public void loadPrimitives(Class<?> primitivesDefinition) {
-        // System.out.println(" > Primitives Manager: Loading primitives");
         for (Method primDef : primitivesDefinition.getMethods()) {
             Class<?> primitiveClass = primDef.getReturnType();
             if (isMany(primitiveClass)) {
@@ -49,7 +48,6 @@ public class PrimitivesManager {
             final Object defaultValue = getDefaultValue(primitiveClass);
 
             primitives.add(new AbstractPrimitive(defaultValue, primitiveClass, primitiveName) {});
-            // System.out.println("    > Primitives Manager: primitive added " + primitiveName);
         }
     }
 
@@ -75,6 +73,10 @@ public class PrimitivesManager {
     }
 
     public boolean isPrimitiveValue(String typeName, Object value) {
+        return isPrimitiveType(typeName, value) || isPrimitiveObject(typeName, value);
+    }
+
+    private boolean isPrimitiveType(String typeName, Object value) {
         for (AbstractPrimitive primitive : primitives) {
             if (primitive.getSimpleName().equals(typeName) ||
                 value.getClass().isAssignableFrom(primitive.getTypeClass()))
@@ -82,7 +84,10 @@ public class PrimitivesManager {
                 return true;
             }
         }
+        return false;
+    }
 
+    private boolean isPrimitiveObject(String typeName, Object value) {
         if (typeName.equals("Object")) {
             for (AbstractPrimitive primitive : primitives) {
                 if (value.getClass().isAssignableFrom(primitive.getTypeClass())) {
@@ -90,7 +95,6 @@ public class PrimitivesManager {
                 }
             }
         }
-
         return false;
     }
 
