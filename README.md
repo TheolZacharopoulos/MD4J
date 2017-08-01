@@ -1,8 +1,8 @@
 # JavaManagedData
 
-[![Build Status](https://travis-ci.org/TheolZacharopoulos/JavaMD.svg?branch=master)](https://travis-ci.org/TheolZacharopoulos/JavaMD)
+[![Build Status](https://travis-ci.org/TheolZacharopoulos/MD4J.svg?branch=master)](https://travis-ci.org/TheolZacharopoulos/MD4J)
 
-JavaMD is a Managed Data implementation in Java.
+MD4J is a Managed Data implementation in Java.
 
 ## Influence
 In their study on [managed data](http://www.cs.utexas.edu/~wcook/Drafts/2012/ensodata.pdf), 
@@ -109,7 +109,7 @@ A data manager is responsible for interpreting the schema and building virtual o
 The managed object's fields are defined by the given schema and acts according to the specifications given by the data manager.
 Additionally, the data manager ensures that the data given are valid with respect to the schema.
 More specifically, the data managers describe how a schema definition is handled from the outside world and what its specifications are.
-These properties may include \ac{ccc} that can be described separately by special data managers, separating schema and concern definitions.
+These properties may include CCC that can be described separately by special data managers, separating schema and concern definitions.
 Thus, a managed object can have multiple interpretations based on the data manager that is used to interpret it.
 
 A data manager is initialized with a **Schema** and provides a new **Managed Object** 
@@ -208,4 +208,4 @@ try {
 
 ## Examples
 
-A list of examples is given [here](https://github.com/TheolZacharopoulos/JavaMD/tree/master/src/main/java/nl/cwi/examples).
+A list of examples is given [here](https://github.com/TheolZacharopoulos/MD4J/tree/master/src/main/java/nl/cwi/examples).
