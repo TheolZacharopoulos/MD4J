@@ -1,3 +1,5 @@
-component_depth: 3
+exclude:
+- /src/main/java/nl/cwi/examples/.*
+component_depth: 4
 languages:
 - java
