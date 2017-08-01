@@ -18,7 +18,6 @@ import nl.cwi.managed_data_4j.language.schema.models.definition.Schema;
  */
 public class BasicDataManager implements IDataManager {
 
-
     /**
      * Used to build data managers which build managed objects.
      *
@@ -56,7 +55,7 @@ public class BasicDataManager implements IDataManager {
     
     private List<Class<?>> onlyNonPrimitives(List<Class<?>> ifaces){
     	return ifaces.stream()
-    		.filter((iface) -> { return (!PrimitivesManager.getInstance().isPrimitiveClass(iface)); })
+    		.filter((iface) -> (!PrimitivesManager.getInstance().isPrimitiveClass(iface)))
     		.collect(Collectors.toList());
     }
     
@@ -113,13 +112,10 @@ public class BasicDataManager implements IDataManager {
         return new MObject(klass, inits); // return a basic managed object
     }
 
-
-    public static Class<?>[] addAll(Class<?>[] additional, Class<?> push) {
+    protected static Class<?>[] addAll(Class<?>[] additional, Class<?> push) {
         Class<?>[] longer = new Class<?>[additional.length + 1];
         System.arraycopy(additional, 0, longer, 0, additional.length);
         longer[additional.length] = push;
         return longer;
     }
-    
-    
 }
