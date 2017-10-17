@@ -2,6 +2,6 @@ exclude:
 - /src/main/java/nl/cwi/examples/.*
 - /src/main/java/nl/cwi/managed_data_4j/IFactory.java
 - /src/main/java/nl/cwi/managed_data_4j/M.java
-component_depth: 6
+component_depth: 8
 languages:
 - java
