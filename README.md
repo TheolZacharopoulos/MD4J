@@ -208,6 +208,155 @@ try {
 ...
 ```
 
+## Architecture
+
+This section gives a high-level view of how MD4J turns plain **Java interfaces** into
+**managed objects** at runtime, using the Java Reflection API and `java.lang.reflect.Proxy`.
+
+> The diagrams below use [Mermaid](https://mermaid.js.org/), which GitHub renders automatically.
+
+### Core building blocks
+
+MD4J is built around four cooperating layers that live in `nl.cwi.managed_data_4j`:
+
+| Layer | Key types | Responsibility |
+| --- | --- | --- |
+| **Schema model** | `Schema`, `Klass`, `Field`, `Type`, `Primitive` (in `language/schema/models`) | A meta-model that describes the *structure* of data: which klasses exist, their fields, types, keys and inverses. |
+| **Schema loader / bootstrap** | `SchemaLoader`, `TypeFactory`, `BootSchema`, `SchemaFactory`, `SchemaFactoryProvider` | Reads a user's Java interfaces (plus `@Key`/`@Inverse`/`@Contain`/`@Optional` annotations) and *interprets* them into a `Schema` instance. The schema language is **self-describing**: the model that describes schemas is itself bootstrapped from a hand-written meta-schema. |
+| **Data manager** | `IDataManager`, `BasicDataManager` | Takes a `Schema` + a factory interface and produces a dynamic **proxy factory**. Each factory call mints a new managed object (another proxy). Data managers are *stackable* to add cross-cutting concerns. |
+| **Managed object** | `MObject` (an `InvocationHandler`) and the `MObjectField` hierarchy | Backs each managed-object proxy. It intercepts every method call and routes it to field reads/writes, enforcing types, defaults, `@Key` uniqueness, `@Inverse` bidirectional wiring and `@Contain` containment. |
+
+### Component overview
+
+```mermaid
+flowchart TB
+    subgraph User["User-defined code"]
+        UI["Schema interfaces<br/>(e.g. Point, Line)<br/>+ @Key @Inverse @Contain @Optional"]
+        UF["Factory interface<br/>(extends IFactory)<br/>e.g. PointFactory"]
+    end
+
+    subgraph Framework["managed_data_4j framework"]
+        SL["SchemaLoader<br/>+ TypeFactory"]
+        SM["Schema model<br/>Schema / Klass / Field / Type / Primitive"]
+        DM["BasicDataManager<br/>(IDataManager)"]
+        subgraph Runtime["Runtime objects"]
+            FP["Factory proxy<br/>(java.lang.reflect.Proxy)"]
+            MO["Managed-object proxy<br/>backed by MObject<br/>(InvocationHandler)"]
+            MF["MObjectField hierarchy<br/>single / many · primitive / mobj"]
+        end
+        PM["PrimitivesManager"]
+        BOOT["BootSchema + SchemaFactory<br/>(self-describing bootstrap)"]
+    end
+
+    UI -->|reflected & annotated| SL
+    SL -->|builds| SM
+    SL -.->|primitives| PM
+    BOOT -.->|seeds| SL
+    SM -->|input to| DM
+    UF -->|factory interface| DM
+    DM -->|creates| FP
+    FP -->|method call mints| MO
+    MO -->|owns| MF
+    MF -.->|type / default checks| PM
+```
+
+### How a schema is loaded (interpretation)
+
+`SchemaLoader.load(...)` walks the user's interfaces via reflection, turns each method into a
+`Field`, resolves annotations, and wires the resulting graph of schema objects together.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Dev as Developer
+    participant SL as SchemaLoader
+    participant SF as SchemaFactory proxy
+    participant PM as PrimitivesManager
+    participant TF as TypeFactory
+    participant Schema as Schema model
+
+    Dev->>SL: load(factory, Point.class, Line.class, ...)
+    SL->>SF: Schema()
+    SF-->>SL: empty Schema (managed object)
+    loop for each interface
+        SL->>SL: buildFieldsFromMethods() (skip default methods)
+        Note over SL: read @Key / @Inverse / @Contain / @Optional<br/>detect "many" (List/Set)
+        SL->>SF: Klass() / Field()
+        SF-->>SL: Klass & Field managed objects
+    end
+    SL->>TF: resolve field types
+    TF->>PM: isPrimitiveClass()?
+    PM-->>TF: yes/no
+    TF-->>SL: Primitive or Klass
+    SL->>Schema: wire types, inverses, keys, supers/subs
+    SL-->>Dev: fully wired Schema
+```
+
+### How a managed object is created and used (runtime)
+
+A `BasicDataManager` wraps the schema behind **two** layers of dynamic proxies: a *factory* proxy,
+and the *managed object* proxy it produces. Every call on a managed object is intercepted by its
+`MObject` invocation handler and dispatched as a field get or set.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Dev as Developer
+    participant DM as BasicDataManager
+    participant FP as Factory proxy
+    participant MOBJ as MObject InvocationHandler
+    participant MP as Managed-object proxy
+    participant Fld as MObjectField
+
+    Dev->>DM: factory(PointFactory.class, schema)
+    DM-->>Dev: PointFactory proxy
+    Dev->>FP: pointFactory.Point(1, 2)
+    FP->>DM: select Klass by return type ("Point")
+    DM->>MOBJ: new MObject(klass, inits)
+    MOBJ->>MOBJ: setupField() per schema field
+    MOBJ->>Fld: init() with initializers
+    DM-->>Dev: Point managed-object proxy (MP)
+
+    Note over Dev,Fld: reads & writes
+    Note over Dev,MP: getter (no args)
+    Dev->>MP: point.x()
+    MP->>MOBJ: invoke(getter)
+    MOBJ->>Fld: get()
+    Fld-->>Dev: value
+
+    Note over Dev,MP: setter (varargs arg)
+    Dev->>MP: point.x(5)
+    MP->>MOBJ: invoke(setter, [5])
+    MOBJ->>Fld: set(5)
+    Fld->>Fld: check() type / @Optional
+    Fld-->>MOBJ: stored (+ @Inverse notify)
+```
+
+### Annotation semantics at a glance
+
+| Annotation | Where it is read | Runtime effect |
+| --- | --- | --- |
+| `@Key` | `SchemaLoader.buildFieldsFromMethods` | Marks a klass's unique key field. Drives `List` vs keyed `Set` storage for `many` reference fields (`MObjectFieldManySet`). |
+| `@Inverse(other, field)` | resolved during loading, enforced in `MObjectField.notify` | Maintains **bidirectional references** automatically: setting one side updates the other via `Proxy.getInvocationHandler(...)`. |
+| `@Contain` | `SchemaLoader` → `field.contain(true)` | Marks a *containment* (ownership / "is part of") field, defining the spine of the model. |
+| `@Optional` | `MObjectFieldSingleMObj.check` | Relaxes the non-null constraint so the field may hold `null`. |
+
+### The self-describing bootstrap
+
+The schema language is itself expressed as managed data. `SchemaFactoryProvider` seeds the system
+from a hand-written meta-schema (`BootSchema`, built with the `*Impl` classes), proxies a
+`SchemaFactory` over it, and then re-loads the schema-language interfaces *through that factory* so
+that `Schema`, `Klass`, `Field`, etc. become managed objects described by their own `Klass`.
+
+```mermaid
+flowchart LR
+    A["BootSchema<br/>(hand-written *Impl meta-schema)"] -->|BasicDataManager.factory| B["SchemaFactory proxy"]
+    B -->|SchemaLoader.load schema-language interfaces| C["Real schema-of-schemas<br/>(managed data)"]
+    C -->|schemaKlass = its own 'Schema' Klass| C
+    C -->|used to build| D["Production SchemaFactory"]
+    D -->|loads| E["User schemas"]
+```
+
 ## Examples
 
 A list of examples is given [here](https://github.com/TheolZacharopoulos/MD4J/tree/master/src/main/java/nl/cwi/examples).
